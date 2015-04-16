@@ -1,17 +1,5 @@
 README
 ======
-
-.. image:: https://pypip.in/download/bbarchivist/badge.svg?period=day
-    :target: https://pypi.python.org/pypi/bbarchivist
-    :alt: Downloads
-
-.. image:: https://pypip.in/download/bbarchivist/badge.svg?period=week
-    :target: https://pypi.python.org/pypi/bbarchivist
-    :alt: Downloads
-    
-.. image:: https://pypip.in/download/bbarchivist/badge.svg?period=month
-    :target: https://pypi.python.org/pypi/bbarchivist
-    :alt: Downloads
     
 .. image:: https://pypip.in/py_versions/bbarchivist/badge.svg
     :target: https://pypi.python.org/pypi/bbarchivist
