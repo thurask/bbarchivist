@@ -1,7 +1,4 @@
 #!/usr/bin/env python3
-"""
-@author: Thurask
-"""
 
 import os
 import argparse
@@ -21,8 +18,8 @@ def file_exists(file):
 
 
 def str2bool(v):
-    """Parse bool from string input.
-
+    """
+    Parse bool from string input.
     :param v: String to check if it means True or False.
     :type v: str
     """
@@ -32,7 +29,6 @@ def str2bool(v):
 def is_amd64():
     """
     Returns true if script is running on an AMD64 system
-    :returns bool
     """
     amd64 = platform.machine().endswith("64")
     return amd64
@@ -65,12 +61,11 @@ def is_linux():
 def get_seven_zip(talkative=False):
     """
     Return name of 7-Zip executable.
-
     On POSIX, it MUST be 7za.
     On Windows, it can be installed or supplied with the script.
-    ``win_seven_zip()`` is used to determine if it's installed.
-
-    :param bool talkative: Whether to output to screen. False by default.
+    win_seven_zip() is used to determine if it's installed.
+    :param talkative: Whether to output to screen. False by default.
+    :type talkative: bool
     """
     if is_windows():
         smeg = win_seven_zip(talkative)
@@ -84,7 +79,7 @@ def win_seven_zip(talkative=False):
     For Windows, checks where 7-Zip is.
     Consults registry first for any installed instances of 7-Zip.
     If it's not there, it falls back onto the supplied executables.
-    :param talkative bool: Whether to output to screen. False by default.
+    :param talkative: Whether to output to screen. False by default.
     :type talkative: bool
     """
     if talkative:
