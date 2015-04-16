@@ -1,5 +1,30 @@
-bbarchivist
-===========
+README
+======
+
+.. image:: https://pypip.in/download/bbarchivist/badge.svg?period=day
+    :target: https://pypi.python.org/pypi/bbarchivist
+    :alt: Downloads
+
+.. image:: https://pypip.in/download/bbarchivist/badge.svg?period=week
+    :target: https://pypi.python.org/pypi/bbarchivist
+    :alt: Downloads
+    
+.. image:: https://pypip.in/download/bbarchivist/badge.svg?period=month
+    :target: https://pypi.python.org/pypi/bbarchivist
+    :alt: Downloads
+    
+.. image:: https://pypip.in/py_versions/bbarchivist/badge.svg
+    :target: https://pypi.python.org/pypi/bbarchivist
+    :alt: Supported Python versions
+
+.. image:: https://pypip.in/version/bbarchivist/badge.svg?text=version
+    :target: https://pypi.python.org/pypi/bbarchivist
+    :alt: Latest Version
+    
+.. image:: https://pypip.in/wheel/bbarchivist/badge.svg
+    :target: https://pypi.python.org/pypi/bbarchivist
+    :alt: Wheel Status
+
 
 A Python 3 package to download bars and turn them into autoloaders.
 Subsumes `archivist <https://github.com/thurask/archivist>`__ and
