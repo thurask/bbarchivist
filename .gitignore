@@ -1,0 +1,10 @@
+*.log
+*.exe
+*.dll
+*.pyd
+__pycache__
+*.pyc
+dist/
+*.egg-info
+build/
+bbarchivist/__pycache__
