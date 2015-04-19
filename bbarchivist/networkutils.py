@@ -7,16 +7,15 @@ import queue  # downloader multithreading
 import threading  # downloader multithreading
 import binascii  # downloader thread naming
 import math  # rounding of floats
+import xml.etree.ElementTree  # XML parsing
 
 
 class Downloader(threading.Thread):
-
     """
     Downloads files attached to supplied threads from DownloadManager.
     Based on:
     http://pipe-devnull.com/2012/09/13/queued-threaded-http-downloader-in-python.html
     """
-
     def __init__(self, queue, output_directory):
         threading.Thread.__init__(self, name=binascii.hexlify(os.urandom(8)))
         self.queue = queue
@@ -58,13 +57,11 @@ class Downloader(threading.Thread):
 
 
 class DownloadManager():
-
     """
     Class that handles queued downloads.
     Based on:
     http://pipe-devnull.com/2012/09/13/queued-threaded-http-downloader-in-python.html
     """
-
     def __init__(self, download_dict, output_directory, thread_count=5):
         self.thread_count = thread_count
         self.download_dict = download_dict
@@ -106,3 +103,94 @@ def availability(url):
             return True
         else:
             return False
+
+
+def carrier_checker(mcc, mnc):
+    """
+    Query BlackBerry World to map a MCC and a MNC to a country and carrier.
+    :param mcc: Country code.
+    :type mcc: int
+    :param mnc: Network code.
+    :type mnc: int
+    """
+    url = "http://appworld.blackberry.com/ClientAPI/checkcarrier?homemcc="
+    url += str(mcc)
+    url += "&homemnc="
+    url += str(mnc)
+    url += "&devicevendorid=-1&pin=0"
+    user_agent = {'User-agent': 'AppWorld/5.1.0.60'}
+    r = requests.get(url, headers=user_agent)
+    root = xml.etree.ElementTree.fromstring(r.text)
+    for child in root:
+        if child.tag == "country":
+            country = child.get("name")
+        if child.tag == "carrier":
+            carrier = child.get("name")
+    return country, carrier
+
+
+def carrier_update_request(mcc, mnc, device):
+    """
+    Query BlackBerry servers, check which update is out for a carrier.
+    :param mcc: Country code.
+    :type mcc: int
+    :param mnc: Network code.
+    :type mnc: int
+    :param device: Hexadecimal hardware ID.
+    :type device: str
+    """
+    npc = str(mcc).zfill(3) + str(mnc).zfill(3) + "30"
+    url = "https://cs.sl.blackberry.com/cse/updateDetails/2.2/"
+    query = '<?xml version="1.0" encoding="UTF-8"?>'
+    query += '<updateDetailRequest version="2.2.1"'
+    query += ' authEchoTS="1366644680359">'
+    query += "<clientProperties>"
+    query += "<hardware>"
+    query += "<pin>0x2FFFFFB3</pin><bsn>1128121361</bsn>"
+    query += "<imei>004401139269240</imei>"
+    query += "<id>0x" + device + "</id>"
+    query += "</hardware>"
+    query += "<network>"
+    query += "<homeNPC>0x" + npc + "</homeNPC>"
+    query += "<iccid>89014104255505565333</iccid>"
+    query += "</network>"
+    query += "<software>"
+    query += "<currentLocale>en_US</currentLocale>"
+    query += "<legalLocale>en_US</legalLocale>"
+    query += "</software>"
+    query += "</clientProperties>"
+    query += "<updateDirectives>"
+    query += '<allowPatching type="REDBEND">true</allowPatching>'
+    query += "<upgradeMode>repair</upgradeMode>"
+    query += "<provideDescriptions>false</provideDescriptions>"
+    query += "<provideFiles>true</provideFiles>"
+    query += "<queryType>NOTIFICATION_CHECK</queryType>"
+    query += "</updateDirectives>"
+    query += "<pollType>manual</pollType>"
+    query += "<resultPackageSetCriteria>"
+    query += '<softwareRelease softwareReleaseVersion="latest" />'
+    query += "<releaseIndependent>"
+    query += '<packageType operation="include">application</packageType>'
+    query += "</releaseIndependent>"
+    query += "</resultPackageSetCriteria>"
+    query += "</updateDetailRequest>"
+    header = {"Content-Type": "text/xml;charset=UTF-8"}
+    r = requests.post(url, headers=header, data=query)
+    root = xml.etree.ElementTree.fromstring(r.text)
+    package_exists = root.find('./data/content/fileSets/fileSet')
+    sw_exists = root.find('./data/content/softwareReleaseMetadata')
+    if package_exists is None:
+        osver = "N/A"
+        radver = "N/A"
+    else:
+        for child in root.iter("package"):
+            if child.get("type") == "system:radio":
+                radver = child.get("version")
+            if child.get("type") == "system:desktop":
+                osver = child.get("version")
+    if sw_exists is None:
+        swver = "N/A"
+    else:
+        for child in root.iter("softwareReleaseMetadata"):
+            swver = child.get("softwareReleaseVersion")
+    return swver, osver, radver

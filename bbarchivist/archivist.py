@@ -21,7 +21,7 @@ def do_magic(osversion, radioversion, softwareversion,
              compmethod="7z"):
 
     """
-    Actual meat of the program. Tie everything together.
+    Wrap around multi-autoloader creation code.
     Some combination of creating, downloading, hashing,
     compressing and moving autoloaders.
     :param osversion: OS version, 10.x.y.zzzz.

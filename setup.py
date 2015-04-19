@@ -31,5 +31,6 @@ setup(name='bbarchivist',
       ],
       entry_points={
         'console_scripts': ['bb-archivist=bbarchivist.bbarchivist:main',
-                            'bb-lazyloader=bbarchivist.bblazyloader:main'],
+                            'bb-lazyloader=bbarchivist.bblazyloader:main',
+                            'bb-cchecker=bbarchivist.bbcarrierchecker:main'],
         })

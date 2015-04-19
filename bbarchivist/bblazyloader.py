@@ -95,7 +95,7 @@ def main():
         softwareversion = input("SOFTWARE RELEASE: ")
         device = int(input(
             """SELECTED DEVICE (0=STL100-1; 1=STL100-2/3/P9983; 2=STL100-4; 3=Q10/Q5/P9983;
-\n4=Z30/CLASSIC/LEAP; 5=Z3; 6=PASSPORT): """))
+4=Z30/CLASSIC/LEAP; 5=Z3; 6=PASSPORT): """))
         if utilities.is_windows():
             autoloader = utilities.str2bool(
                 input("RUN AUTOLOADER (WILL WIPE YOUR DEVICE!)(Y/N)?: "))

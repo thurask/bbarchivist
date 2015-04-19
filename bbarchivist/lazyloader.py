@@ -13,6 +13,22 @@ from . import loadergen
 def doMagic(osversion, radioversion,
             softwareversion, device,
             localdir, autoloader):
+    """
+    Wrap the tools necessary to make one autoloader.
+    :param osversion: OS version, 10.x.y.zzzz.
+    :type osversion: str
+    :param radioversion: Radio version, 10.x.y.zzzz.
+    :type radioversion: str
+    :param softwareversion: Software version, 10.x.y.zzzz.
+    :type softwareversion: str
+    :param device: Device family to create loader for.
+    :type device: int
+    :param localdir: Working path. Default is local dir.
+    :type localdir: str
+    :param autoloader: Whether or not to run loaders. Default is false.
+    Windows-only, obviously.
+    :type autoloader: bool
+    """
     version = bbconstants._version
     devicelist = ["STL100-1",
                   "STL100-2/3/P9982",
