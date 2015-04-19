@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from . import bbconstants
 from . import networkutils
 

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os  # filesystem read
 import shutil  # directory read/write
 import hashlib  # SHA-x, MD5

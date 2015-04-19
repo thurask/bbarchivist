@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os  # filesystem read
 import time  # time for downloader
 import math  # rounding of floats
