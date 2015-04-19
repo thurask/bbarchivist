@@ -15,7 +15,7 @@ def doMagic(mcc, mnc, device):
     :type device: str
     """
     try:
-        devindex = bbconstants._devicelist.index(device)
+        devindex = bbconstants._devicelist.index(device.upper())
     except ValueError as e:
         print(str(e).upper())
         print("INVALID DEVICE!")
@@ -26,7 +26,7 @@ def doMagic(mcc, mnc, device):
     country, carrier = networkutils.carrier_checker(mcc, mnc)
     print("COUNTRY:", country.upper())
     print("CARRIER:", carrier.upper())
-    print("DEVICE:", device)
+    print("DEVICE:", device.upper())
     print("HARDWARE ID:", hwid)
     print("\nCHECKING CARRIER...")
     sw, os, rad = networkutils.carrier_update_request(mcc, mnc, hwid)
