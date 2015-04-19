@@ -7,6 +7,11 @@ from . import utilities
 
 
 def main():
+    """
+    Parse arguments from argparse/questionnaire.
+
+    Invoke `lazyloader.doMagic()` with those arguments.
+    """
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(
             prog="bb-lazyloader",

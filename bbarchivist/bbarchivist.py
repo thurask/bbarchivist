@@ -9,6 +9,11 @@ from . import archivist
 
 
 def main():
+    """
+    Parse arguments from argparse/questionnaire.
+
+    Invoke `archivist.doMagic()` with those arguments.
+    """
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(
             prog="bb-archivist",
