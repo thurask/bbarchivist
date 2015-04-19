@@ -224,7 +224,7 @@ Help
 
     http://github.com/thurask/bbarchivist
     
----
+----------------------------------------
 
 ::
 
@@ -252,7 +252,7 @@ Example
 
     > bb-archivist 10.3.1.2726 10.3.1.2727 10.3.1.1877 -nr --sha512 --no-md5
 
-would make OS-only autoloaders for OS 10.3.1.2726/radio 10.3.1.2727
+would make only OS+radio autoloaders for OS 10.3.1.2726/radio 10.3.1.2727
 (software release 10.3.1.1877), compress them, delete uncompressed
 loaders and verify with SHA-1, SHA-256, SHA-512.
 
