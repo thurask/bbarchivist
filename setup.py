@@ -1,4 +1,5 @@
 from setuptools import setup
+from bbarchivist import bbconstants
 
 
 def readme():
@@ -6,7 +7,7 @@ def readme():
         return f.read()
 
 setup(name='bbarchivist',
-      version='1.0.1',
+      version=bbconstants._version,
       description='BlackBerry 10 autoloader tools',
       long_description=readme(),
       url='http://github.com/thurask/bbarchivist',

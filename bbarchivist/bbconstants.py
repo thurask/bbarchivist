@@ -1,6 +1,6 @@
 from os.path import abspath, dirname, join
 
-_version = "1.0.1"
+_version = "1.1.0"
 _capversion = "3.11.0.18"
 _caplocation = join(dirname(abspath(__file__)), "cap-" + _capversion + ".dat")
 _devicelist = ["STL100-1",

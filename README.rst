@@ -23,8 +23,7 @@ line arguments, it queries the user as to OS version, radio version,
 software version, etc. Most arguments are assumed with the
 questionnaire, so if you want fine control, use arguments.
 
-This can be used either as importing bbarchivist., or the bb-archivist
-and bb-lazyloader scripts from a command line.
+This can be used either as importing bbarchivist, or the scripts from a command line.
 
 Requirements
 ------------
@@ -117,6 +116,12 @@ Lazyloader
 4. Create autoloader
 5. Ask to load autoloader (Windows only)
 
+CarrierChecker
+~~~~~~~~~~~~~~
+
+1. Ask for MCC, MNC, devicename (if not specified)
+2. Check which OS release is available with given conditions
+
 Command Line Arguments
 ----------------------
 
@@ -189,10 +194,10 @@ Help
 
     > bb-lazyloader -h
 
-    usage: bb-lazyloader-script.py [-h] [-v]
-                               (--stl100-1 | --stl100-x | --stl100-4 | --q10 | --z30 | --z3 | --passport)
-                               [--run-loader]
-                               os radio swrelease
+    usage: bb-lazyloader [-h] [-v]
+                         (--stl100-1 | --stl100-x | --stl100-4 | --q10 | --z30 | --z3 | --passport)
+                         [--run-loader]
+                         os radio swrelease
 
     Create one autoloader for personal use.
 
@@ -218,6 +223,27 @@ Help
       --passport     Passport
 
     http://github.com/thurask/bbarchivist
+    
+---
+
+::
+
+    > bb-cchecker -h
+
+    usage: bb-cchecker [-h] [-v] mcc mnc device
+
+    Checks a carrier for an OS version
+    
+    positional arguments:
+      mcc            1-3 digit country code
+      mnc            1-3 digit carrier code
+      device         'STL100-1', 'SQW100-3', etc.
+    
+    optional arguments:
+      -h, --help     show this help message and exit
+      -v, --version  show program's version number and exit
+    
+    http://github.com/thurask/bbarchivist
 
 Example
 ~~~~~~~
@@ -236,6 +262,12 @@ loaders and verify with SHA-1, SHA-256, SHA-512.
 
 would create a Passport autoloader for OS 10.3.1.1955/radio 10.3.1.1956
 (software release 10.3.1.1372), and run it (Windows only).
+
+::
+
+    > bb-cchecker 311 480 STA100-3
+
+would check the latest OS for the Z30 STA100-3 on Verizon Wireless.
 
 License
 -------
