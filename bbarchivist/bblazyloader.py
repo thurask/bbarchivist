@@ -111,3 +111,4 @@ def main():
             device,
             localdir,
             autoloader)
+        smeg = input("Press Enter to exit")  # @UnusedVariable

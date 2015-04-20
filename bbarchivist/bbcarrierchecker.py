@@ -40,3 +40,4 @@ def main():
             mcc,
             mnc,
             device)
+        smeg = input("Press Enter to exit")  # @UnusedVariable
