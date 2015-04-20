@@ -31,7 +31,7 @@ _devicelist = ["STL100-1",
                "SQC100-4",
                "SQC100-5",
                "STR100-1",
-               "STR100-1",
+               "STR100-2",
                "STJ100-1",
                "STJ100-2",
                "SQW100-1",
@@ -71,11 +71,21 @@ _hwidlist = ["4002607",
              "87002C0A",
              "85002C0A",
              "84002C0A"]
+_modellist = ["Z10",
+              "P9982",
+              "Q10",
+              "Q5",
+              "P9983",
+              "Z30",
+              "CLASSIC",
+              "LEAP",
+              "Z3",
+              "PASSPORT"]
 
 
 def return_constant(constant):
     """
-    Returns constant provided in function,
+    Returns constant referred to by given name/name + index.
     :param constant: A constant declared in this file.
     :type constant: str
     """

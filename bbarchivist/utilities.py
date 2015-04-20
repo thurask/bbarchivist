@@ -158,3 +158,31 @@ def prep_seven_zip():
             return False
         else:
             return True
+
+
+def return_model(index):
+    """
+    Return device model from selected HWID/variant index.
+    :param index: The index to look up
+    :type index: int
+    """
+    if 0 <= index <= 3:
+        return(0)  # Z10
+    elif 4 <= index <= 5:
+        return(1)  # P9982
+    elif 6 <= index <= 10:
+        return(2)  # Q10
+    elif 11 <= index <= 13:
+        return(3)  # Q5
+    elif 14 <= index <= 15:
+        return(4)  # P9983
+    elif 16 <= index <= 21:
+        return(5)  # Z30
+    elif 22 <= index <= 26:
+        return(6)  # Classic
+    elif 27 <= index <= 28:
+        return(7)  # Leap
+    elif 29 <= index <= 30:
+        return(8)  # Z3
+    elif 31 <= index <= 33:
+        return(9)  # Passport
