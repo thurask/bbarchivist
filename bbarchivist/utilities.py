@@ -163,6 +163,7 @@ def prep_seven_zip():
 def return_model(index):
     """
     Return device model from selected HWID/variant index.
+    Lists found in bbconstants module.
     :param index: The index to look up
     :type index: int
     """
