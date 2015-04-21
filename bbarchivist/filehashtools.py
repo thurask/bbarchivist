@@ -223,3 +223,28 @@ def ripemd160hash(filepath, blocksize=16 * 1024 * 1024):
         return r160.hexdigest()
     except Exception:
         print("RIPEMD160 HASH FAILED:\nIS IT AVAILABLE?")
+
+
+def whirlpoolhash(filepath, blocksize=16 * 1024 * 1024):
+    """
+    Return Whirlpool hash of a file; depends on system SSL library.
+    :param filepath: File you wish to verify.
+    :type filepath: str
+    :param blocksize: File read chunk size;
+    how much of it to load into memory at a time.
+    :type blocksize: int
+    """
+    try:
+        wp = hashlib.new('whirlpool')
+        f = open(filepath, 'rb')
+        try:
+            while True:
+                data = f.read(blocksize)
+                if not data:
+                    break
+                wp.update(data)
+        finally:
+            f.close()
+        return wp.hexdigest()
+    except Exception:
+        print("WHIRLPOOL HASH FAILED:\nIS IT AVAILABLE?")

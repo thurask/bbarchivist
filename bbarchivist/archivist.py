@@ -18,9 +18,9 @@ def do_magic(osversion, radioversion, softwareversion,
              hashed=True, crc32=False, adler32=False,
              sha1=True, sha224=False, sha256=False,
              sha384=False, sha512=False, md5=True,
-             md4=False, ripemd160=False, cappath="cap.exe",
-             download=True, extract=True, loaders=True, signed=True,
-             compmethod="7z"):
+             md4=False, ripemd160=False, whirlpool=False,
+             cappath="cap.exe", download=True, extract=True,
+             loaders=True, signed=True, compmethod="7z"):
 
     """
     Wrap around multi-autoloader creation code.
@@ -65,6 +65,9 @@ def do_magic(osversion, radioversion, softwareversion,
     :param ripemd160: Whether to use RIPEMD160. False by default. Dependent on
     system OpenSSL implementation (not in stdlib).
     :type ripemd160: bool
+    :param whirlpool: Whether to use Whirlpool. False by default. Dependent on
+    system OpenSSL implementation (not in stdlib).
+    :type whirlpool: bool
     :param cappath: Path to cap.exe. Default is local dir\\cap.exe.
     :type cappath: str
     :param download: Whether to download bar files. True by default.
@@ -226,7 +229,7 @@ def do_magic(osversion, radioversion, softwareversion,
 
     # Create loaders
     if loaders:
-        print("\nGENERATING LOADERS...\n")
+        print("\nGENERATING LOADERS...")
         loadergen.generate_loaders(osversion,
                                    radioversion,
                                    radios,
@@ -278,6 +281,8 @@ def do_magic(osversion, radioversion, softwareversion,
             sha512,
             "\nRIPEMD160:",
             ripemd160,
+            "WHIRLPOOL:",
+            whirlpool,
             "\n")
         blocksize = 32 * 1024 * 1024
         if compressed:
@@ -293,7 +298,8 @@ def do_magic(osversion, radioversion, softwareversion,
                 sha512,
                 md5,
                 md4,
-                ripemd160)
+                ripemd160,
+                whirlpool)
             if radios:
                 hashwrapper.verifier(
                     zipdir_radio,
@@ -307,7 +313,8 @@ def do_magic(osversion, radioversion, softwareversion,
                     sha512,
                     md5,
                     md4,
-                    ripemd160)
+                    ripemd160,
+                    whirlpool)
         if not deleted:
             hashwrapper.verifier(
                 loaderdir_os,
@@ -321,7 +328,8 @@ def do_magic(osversion, radioversion, softwareversion,
                 sha512,
                 md5,
                 md4,
-                ripemd160)
+                ripemd160,
+                whirlpool)
             if radios:
                 hashwrapper.verifier(
                     loaderdir_radio,
@@ -335,7 +343,8 @@ def do_magic(osversion, radioversion, softwareversion,
                     sha512,
                     md5,
                     md4,
-                    ripemd160)
+                    ripemd160,
+                    whirlpool)
 
     # Remove uncompressed loaders (if specified)
     if deleted:

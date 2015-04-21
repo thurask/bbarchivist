@@ -151,6 +151,12 @@ def main():
             action="store_true",
             default=False)
         hashgroup.add_argument(
+            "--whirlpool",
+            dest="whirlpool",
+            help="Enable Whirlpool verification",
+            action="store_true",
+            default=False)
+        hashgroup.add_argument(
             "--no-sha1",
             dest="sha1",
             help="Disable SHA-1 verification",
@@ -208,7 +214,7 @@ def main():
                            args.crc32, args.adler32, args.sha1,
                            args.sha224, args.sha256,
                            args.sha384, args.sha512, args.md5,
-                           args.md4, args.ripemd160,
+                           args.md4, args.ripemd160, args.whirlpool,
                            args.cappath, args.download,
                            args.extract, args.loaders,
                            args.signed, args.compmethod)
@@ -229,5 +235,6 @@ def main():
                            localdir, radios, compressed, deleted, hashed,
                            False, False, True, False, False,
                            False, False, True, False, False,
-                           "cap-3.11.0.18.dat", True, True, True, True, "7z")
+                           False, "cap-3.11.0.18.dat", True,
+                           True, True, True, "7z")
     smeg = input("Press Enter to exit")  # @UnusedVariable
