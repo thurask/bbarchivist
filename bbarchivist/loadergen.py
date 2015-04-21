@@ -23,6 +23,7 @@ def generate_loaders(
     :type localdir: str
     """
     # #OS Images
+    print("GETTING FILENAMES...")
     # 8960
     try:
         os_8960 = glob.glob(
@@ -119,9 +120,10 @@ def generate_loaders(
     radioversion = ".".join(splitrad)
 
     # Generate loaders
+    print("\nCREATING LOADERS...")
     # STL100-1
     try:
-        print("Creating OMAP Z10 OS...")
+        print("\nCreating OMAP Z10 OS...")
         pseudocap.make_autoloader(  # @UndefinedVariable, since PyDev is dumb
             filename="Z10_" +
             osversion +
@@ -147,7 +149,7 @@ def generate_loaders(
 
     # STL100-X
     try:
-        print("Creating Qualcomm Z10 OS...")
+        print("\nCreating Qualcomm Z10 OS...")
         pseudocap.make_autoloader(
             "Z10_" +
             osversion +
@@ -173,7 +175,7 @@ def generate_loaders(
 
     # STL100-4
     try:
-        print("Creating Verizon Z10 OS...")
+        print("\nCreating Verizon Z10 OS...")
         pseudocap.make_autoloader(
             "Z10_" +
             osversion +
@@ -199,7 +201,7 @@ def generate_loaders(
 
     # Q10/Q5
     try:
-        print("Creating Q10/Q5 OS...")
+        print("\nCreating Q10/Q5 OS...")
         pseudocap.make_autoloader(
             "Q10_" +
             osversion +
@@ -225,7 +227,7 @@ def generate_loaders(
 
     # Z30/Classic
     try:
-        print("Creating Z30/Classic OS...")
+        print("\nCreating Z30/Classic OS...")
         pseudocap.make_autoloader(
             "Z30_" +
             osversion +
@@ -251,7 +253,7 @@ def generate_loaders(
 
     # Z3
     try:
-        print("Creating Z3 OS...")
+        print("\nCreating Z3 OS...")
         pseudocap.make_autoloader(
             "Z3_" +
             osversion +
@@ -261,7 +263,7 @@ def generate_loaders(
             secondfile=radio_z3,
             folder=localdir)
     except Exception:
-        print("Could not create Z3 OS/radio loader (8x30)")
+        print("Could not create Z3 OS/radio loader")
     if radios:
         print("Creating Z3 radio...")
         try:
@@ -277,7 +279,7 @@ def generate_loaders(
 
     # Passport
     try:
-        print("Creating Passport OS...")
+        print("\nCreating Passport OS...")
         pseudocap.make_autoloader(
             "Passport_" +
             osversion +
