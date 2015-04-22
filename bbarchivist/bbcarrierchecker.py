@@ -2,8 +2,10 @@
 
 import argparse
 import sys
+import os
 from . import carrierchecker
 from . import bbconstants
+from . import utilities
 
 
 def main():
@@ -26,18 +28,49 @@ def main():
         parser.add_argument("mcc", help="1-3 digit country code")
         parser.add_argument("mnc", help="1-3 digit carrier code")
         parser.add_argument("device", help="'STL100-1', 'SQW100-3', etc.")
+        parser.add_argument(
+            "-d", "--download",
+            dest="download",
+            help="Download files after checking",
+            action="store_true",
+            default=False)
+        parser.add_argument(
+            "-u", "--upgrade",
+            dest="upgrade",
+            help="Upgrade instead of debrick bars",
+            action="store_true",
+            default=False),
+        parser.add_argument(
+            "-f",
+            "--folder",
+            type=utilities.file_exists,
+            dest="folder",
+            help="Working folder",
+            default=os.getcwd(),
+            metavar="DIR")
         args = parser.parse_args(sys.argv[1:])
+        if not args.download:
+            args.upgrade = False
         carrierchecker.doMagic(
             args.mcc,
             args.mnc,
-            args.device)
+            args.device,
+            args.download,
+            args.upgrade,
+            args.folder)
     else:
         mcc = int(input("MCC: "))
         mnc = int(input("MNC: "))
         device = input("DEVICE (SXX100-#): ")
+        download = utilities.str2bool(input("DOWNLOAD?: "))
+        upgrade = utilities.str2bool(input("UPGRADE BARS?: "))
+        directory = os.getcwd()
         print(" ")
         carrierchecker.doMagic(
             mcc,
             mnc,
-            device)
+            device,
+            download,
+            upgrade,
+            directory)
         smeg = input("Press Enter to exit")  # @UnusedVariable

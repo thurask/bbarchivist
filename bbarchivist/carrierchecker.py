@@ -3,9 +3,12 @@
 from . import bbconstants
 from . import networkutils
 from . import utilities
+import os
 
 
-def doMagic(mcc, mnc, device):
+def doMagic(mcc, mnc, device,
+            download=False, upgrade=False,
+            directory=os.getcwd()):
     """
     Wrap around networkutils' carrier checking code.
     :param mcc: Country code.
@@ -14,6 +17,12 @@ def doMagic(mcc, mnc, device):
     :type mnc: int
     :param device: Device ID (SXX100-#)
     :type device: str
+    :param download: Whether or not to download. Default is false.
+    :type download: bool
+    :param upgrade: Whether or not to use upgrade files. Default is false.
+    :type upgrade: bool
+    :param directory: Where to store files. Default is local directory.
+    :type directory: str
     """
     try:
         devindex = bbconstants._devicelist.index(device.upper())
@@ -32,7 +41,19 @@ def doMagic(mcc, mnc, device):
     print("VARIANT:", device.upper())
     print("HARDWARE ID:", hwid)
     print("\nCHECKING CARRIER...")
-    sw, os, rad = networkutils.carrier_update_request(mcc, mnc, hwid)
-    print("SOFTWARE RELEASE:", sw)
-    print("OS VERSION:", os)
-    print("RADIO VERSION:", rad)
+    swv, osv, radv, files = networkutils.carrier_update_request(mcc, mnc, hwid,
+                                                                download,
+                                                                upgrade)
+    print("SOFTWARE RELEASE:", swv)
+    print("OS VERSION:", osv)
+    print("RADIO VERSION:", radv)
+    bardir = os.path.join(directory, swv+"-"+model.upper())
+    if not os.path.exists(bardir):
+        os.mkdir(bardir)
+    if download:
+        print("\nDOWNLOADING...")
+        filedict = {}
+        for i in files:
+            filedict[str(i)] = i
+        download_manager = networkutils.DownloadManager(filedict, bardir)
+        download_manager.begin_downloads()

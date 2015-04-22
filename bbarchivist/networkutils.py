@@ -129,7 +129,7 @@ def carrier_checker(mcc, mnc):
     return country, carrier
 
 
-def carrier_update_request(mcc, mnc, device):
+def carrier_update_request(mcc, mnc, device, download=False, upgrade=False):
     """
     Query BlackBerry servers, check which update is out for a carrier.
     :param mcc: Country code.
@@ -138,7 +138,15 @@ def carrier_update_request(mcc, mnc, device):
     :type mnc: int
     :param device: Hexadecimal hardware ID.
     :type device: str
+    :param download: Whether to download files. False by default.
+    :type download: bool
+    :param upgrade: Whether to use upgrade files. False by default.
+    :type upgrade: bool
     """
+    if upgrade:
+        upg = "upgrade"
+    else:
+        upg = "repair"
     npc = str(mcc).zfill(3) + str(mnc).zfill(3) + "30"
     url = "https://cs.sl.blackberry.com/cse/updateDetails/2.2/"
     query = '<?xml version="1.0" encoding="UTF-8"?>'
@@ -161,7 +169,7 @@ def carrier_update_request(mcc, mnc, device):
     query += "</clientProperties>"
     query += "<updateDirectives>"
     query += '<allowPatching type="REDBEND">true</allowPatching>'
-    query += "<upgradeMode>repair</upgradeMode>"
+    query += "<upgradeMode>" + upg + "</upgradeMode>"
     query += "<provideDescriptions>false</provideDescriptions>"
     query += "<provideFiles>true</provideFiles>"
     query += "<queryType>NOTIFICATION_CHECK</queryType>"
@@ -177,20 +185,27 @@ def carrier_update_request(mcc, mnc, device):
     header = {"Content-Type": "text/xml;charset=UTF-8"}
     r = requests.post(url, headers=header, data=query)
     root = xml.etree.ElementTree.fromstring(r.text)
-    package_exists = root.find('./data/content/fileSets/fileSet')
     sw_exists = root.find('./data/content/softwareReleaseMetadata')
-    if package_exists is None:
-        osver = "N/A"
-        radver = "N/A"
-    else:
-        for child in root.iter("package"):
-            if child.get("type") == "system:radio":
-                radver = child.get("version")
-            if child.get("type") == "system:desktop":
-                osver = child.get("version")
+    swver = ""
     if sw_exists is None:
         swver = "N/A"
     else:
         for child in root.iter("softwareReleaseMetadata"):
             swver = child.get("softwareReleaseVersion")
-    return swver, osver, radver
+    files = []
+    osver = ""
+    radver = ""
+    package_exists = root.find('./data/content/fileSets/fileSet')
+    if package_exists is not None:
+        baseurl = package_exists.get("url") + "/"
+        for child in root.iter("package"):
+            files.append(baseurl + child.get("path"))
+            if child.get("type") == "system:radio":
+                radver = child.get("version")
+            if child.get("type") == "system:desktop":
+                osver = child.get("version")
+            if child.get("type") == "system:os":
+                osver = child.get("version")
+            else:
+                pass
+    return(swver, osver, radver, files)
