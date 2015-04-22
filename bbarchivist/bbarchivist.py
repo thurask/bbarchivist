@@ -31,7 +31,6 @@ def main():
         parser.add_argument(
             "-f",
             "--folder",
-            type=utilities.file_exists,
             dest="folder",
             help="Working folder",
             default=os.getcwd(),

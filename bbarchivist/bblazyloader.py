@@ -80,6 +80,13 @@ def main():
             help="Run autoloader after creation",
             action="store_true",
             default=False)
+        parser.add_argument(
+            "-f",
+            "--folder",
+            dest="folder",
+            help="Working folder",
+            default=os.getcwd(),
+            metavar="DIR")
         args = parser.parse_args(sys.argv[1:])
         if not utilities.is_windows():
             args.autoloader = False
@@ -88,7 +95,7 @@ def main():
             args.radio,
             args.swrelease,
             args.device,
-            os.getcwd(),
+            args.folder,
             args.autoloader)
     else:
         localdir = os.getcwd()

@@ -47,9 +47,9 @@ def doMagic(mcc, mnc, device,
     print("SOFTWARE RELEASE:", swv)
     print("OS VERSION:", osv)
     print("RADIO VERSION:", radv)
-    bardir = os.path.join(directory, swv+"-"+model.upper())
+    bardir = os.path.join(directory, swv+"-"+model)
     if not os.path.exists(bardir):
-        os.mkdir(bardir)
+        os.makedirs(bardir)
     if download:
         print("\nDOWNLOADING...")
         filedict = {}

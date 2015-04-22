@@ -165,6 +165,9 @@ def do_magic(osversion, radioversion, softwareversion,
             raise SystemExit  # bye bye
 
     # Make dirs
+    if not os.path.exists(localdir):
+        os.makedirs(localdir)
+
     if not os.path.exists(os.path.join(localdir, 'bars')):
         os.mkdir(os.path.join(localdir, 'bars'))
     bardir = os.path.join(localdir, 'bars')

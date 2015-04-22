@@ -34,20 +34,28 @@ def main():
             help="Download files after checking",
             action="store_true",
             default=False)
-        parser.add_argument(
+        comps = parser.add_argument_group("bartypes", "File types")
+        compgroup = comps.add_mutually_exclusive_group()
+        compgroup.add_argument(
             "-u", "--upgrade",
             dest="upgrade",
             help="Upgrade instead of debrick bars",
             action="store_true",
             default=False),
+        compgroup.add_argument(
+            "-r", "--repair",
+            dest="upgrade",
+            help="Debrick instead of upgrade bars",
+            action="store_false",
+            default=False),
         parser.add_argument(
             "-f",
             "--folder",
-            type=utilities.file_exists,
             dest="folder",
             help="Working folder",
             default=os.getcwd(),
             metavar="DIR")
+        parser.set_defaults(upgrade=False)
         args = parser.parse_args(sys.argv[1:])
         if not args.download:
             args.upgrade = False
