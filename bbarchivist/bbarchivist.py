@@ -173,6 +173,13 @@ def main():
             help="Disable MD5 verification",
             action="store_false",
             default=True)
+        hashgroup.add_argument(
+            "-a",
+            "--all",
+            dest="all",
+            help="Use all methods",
+            action="store_true",
+            default=False)
         comps = parser.add_argument_group("compressors", "Compression methods")
         compgroup = comps.add_mutually_exclusive_group()
         compgroup.add_argument(
@@ -207,6 +214,18 @@ def main():
             const="zip")
         parser.set_defaults(compmethod="7z")
         args = parser.parse_args(sys.argv[1:])
+        if args.all is True:
+            args.adler32 = True
+            args.crc32 = True
+            args.sha1 = True
+            args.sha224 = True
+            args.sha256 = True
+            args.sha384 = True
+            args.sha512 = True
+            args.md5 = True
+            args.md4 = True
+            args.ripemd160 = True
+            args.whirlpool = True
         archivist.do_magic(args.os, args.radio, args.swrelease,
                            args.folder, args.radloaders,
                            args.compress, args.delete, args.verify,
