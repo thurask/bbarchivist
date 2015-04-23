@@ -110,13 +110,18 @@ def generate_loaders(
         print("No Passport radio found")
 
     # Pretty format names
+    # 10.x.y.zzz becomes 10.x.0y.0zzz
     splitos = osversion.split(".")
     if len(splitos[2]) == 1:
         splitos[2] = "0" + splitos[2]
+    if len(splitos[3]) < 4:
+        splitos[3] = splitos[3].rjust(4, '0')
     osversion = ".".join(splitos)
     splitrad = radioversion.split(".")
     if len(splitrad[2]) == 1:
         splitrad[2] = "0" + splitrad[2]
+    if len(splitrad[3]) < 4:
+        splitrad[3] = splitrad[3].rjust(4, '0')
     radioversion = ".".join(splitrad)
 
     # Generate loaders
