@@ -17,7 +17,7 @@ def main():
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(
             prog="bb-cchecker",
-            description="Checks a carrier for an OS version",
+            description="Checks a carrier for an OS version, can download.",
             epilog="http://github.com/thurask/bbarchivist")
         parser.add_argument(
             "-v",

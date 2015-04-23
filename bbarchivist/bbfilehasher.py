@@ -28,7 +28,7 @@ Default: SHA-1, SHA-256, MD5""",
             bbconstants._version)
         parser.add_argument(
             "folder",
-            help="Working directory",
+            help="Working directory, default is local",
             nargs="?",
             default=os.getcwd())
         parser.add_argument(
