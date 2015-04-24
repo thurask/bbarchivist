@@ -43,7 +43,6 @@ def verifier(workingdir, blocksize=16 * 1024 * 1024,
     system OpenSSL implementation (not in stdlib).
     :type whirlpool: bool
     """
-    target = open(os.path.join(workingdir, 'all.cksum'), 'w')
     hashoutput_crc32 = "CRC32\n"
     hashoutput_adler32 = "ADLER32\n"
     hashoutput_sha1 = "SHA1\n"
@@ -184,26 +183,26 @@ def verifier(workingdir, blocksize=16 * 1024 * 1024,
                 hashoutput_whirlpool += str(file)
                 hashoutput_whirlpool += " \n"
             print("\n")
-    if adler32:
-        target.write(hashoutput_adler32 + "\n")
-    if crc32:
-        target.write(hashoutput_crc32 + "\n")
-    if md4:
-        target.write(hashoutput_md4 + "\n")
-    if md5:
-        target.write(hashoutput_md5 + "\n")
-    if sha1:
-        target.write(hashoutput_sha1 + "\n")
-    if sha224:
-        target.write(hashoutput_sha224 + "\n")
-    if sha256:
-        target.write(hashoutput_sha256 + "\n")
-    if sha384:
-        target.write(hashoutput_sha384 + "\n")
-    if sha512:
-        target.write(hashoutput_sha512 + "\n")
-    if ripemd160:
-        target.write(hashoutput_ripemd160 + "\n")
-    if whirlpool:
-        target.write(hashoutput_whirlpool + "\n")
-    target.close()
+    with open(os.path.join(workingdir, 'all.cksum'), 'w') as target:
+        if adler32:
+            target.write(hashoutput_adler32 + "\n")
+        if crc32:
+            target.write(hashoutput_crc32 + "\n")
+        if md4:
+            target.write(hashoutput_md4 + "\n")
+        if md5:
+            target.write(hashoutput_md5 + "\n")
+        if sha1:
+            target.write(hashoutput_sha1 + "\n")
+        if sha224:
+            target.write(hashoutput_sha224 + "\n")
+        if sha256:
+            target.write(hashoutput_sha256 + "\n")
+        if sha384:
+            target.write(hashoutput_sha384 + "\n")
+        if sha512:
+            target.write(hashoutput_sha512 + "\n")
+        if ripemd160:
+            target.write(hashoutput_ripemd160 + "\n")
+        if whirlpool:
+            target.write(hashoutput_whirlpool + "\n")
