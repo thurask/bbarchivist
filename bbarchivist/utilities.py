@@ -29,6 +29,11 @@ def positive_integer(inputint):
 
 
 def escreens_pin(pin):
+    """
+    Check if given PIN is valid (8 character hexadecimal)
+    :param pin: PIN to check.
+    :type pin: str
+    """
     if len(pin) == 8:
         try:
             int(pin, 16)  # hexadecimal-ness
