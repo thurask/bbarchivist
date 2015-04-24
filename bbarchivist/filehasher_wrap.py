@@ -16,8 +16,8 @@ def main():
     """
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(
-            prog="bb-verifier",
-            description="""Applies various hash functions to a group of files.
+            prog="bb-filehasher",
+            description="""Applies hash functions to files.
 Default: SHA-1, SHA-256, MD5""",
             epilog="http://github.com/thurask/bbarchivist")
         parser.add_argument(

@@ -131,6 +131,12 @@ FileHasher
 2. Apply given hash functions for all files in local/a given directory
 3. Output results to an "all.cksum" file
 
+EScreens
+~~~~~~~~
+
+1. Ask for PIN, OS version, uptime, duration (if not specified)
+2. Return EScreens key for given values
+
 Command Line Arguments
 ----------------------
 
@@ -236,7 +242,7 @@ Help
       --passport            Passport
     
     http://github.com/thurask/bbarchivist
-    
+
 ----------------------------------------
 
 ::
@@ -272,13 +278,12 @@ Help
 
     > bb-filehasher -h
     
-    usage: bb-verifier [-h] [-v] [-b INT] [--crc32] [--adler32] [--md4] [--sha224]
-                   [--sha384] [--sha512] [--ripemd160] [--whirlpool]
-                   [--no-sha1] [--no-sha256] [--no-md5] [-a]
-                   [folder]
+    usage: bb-filehasher [-h] [-v] [-b INT] [--crc32] [--adler32] [--md4]
+                     [--sha224] [--sha384] [--sha512] [--ripemd160]
+                     [--whirlpool] [--no-sha1] [--no-sha256] [--no-md5] [-a]
+                     [folder]
 
-    Applies various hash functions to a group of files. Default: SHA-1, SHA-256,
-    MD5
+    Applies hash functions to files. Default: SHA-1, SHA-256, MD5
     
     positional arguments:
       folder               Working directory, default is local
@@ -305,7 +310,28 @@ Help
       -a, --all            Use all methods
     
     http://github.com/thurask/bbarchivist
-        
+
+----------------------------------------
+
+::
+
+    > bb-escreens -h
+    
+    usage: bb-escreens [-h] [-v] pin app uptime duration
+
+    Calculates escreens codes.
+    
+    positional arguments:
+      pin            PIN, 8 characters
+      app            OS version, 10.x.y.zzzz
+      uptime         Uptime, in ms
+      duration       1/3/6/15/30 days
+    
+    optional arguments:
+      -h, --help     show this help message and exit
+      -v, --version  show program's version number and exit
+    
+    http://github.com/thurask/bbarchivist
 
 Example
 ~~~~~~~
@@ -336,6 +362,12 @@ would check the latest OS for the Z30 STA100-3 on Verizon Wireless.
     > bb-filehasher -a
     
 would use all available methods to hash all files in the local directory.
+
+::
+
+    > bb-escreens acdcacdc 10.3.2.6969 69696969 30
+    
+would generate the code for that PIN, OS version and uptime and for 30 days.
 
 License
 -------
