@@ -52,6 +52,7 @@ def main():
             "-no",
             "--no-download",
             dest="download",
+            type=str.lower(),
             help="Don't download files",
             action="store_false",
             default=True)
@@ -59,6 +60,7 @@ def main():
             "-nx",
             "--no-extract",
             dest="extract",
+            type=str.lower(),
             help="Don't extract bar files",
             action="store_false",
             default=True)
@@ -66,6 +68,7 @@ def main():
             "-nl",
             "--no-loaders",
             dest="loaders",
+            type=str.lower(),
             help="Don't create autoloaders",
             action="store_false",
             default=True)
@@ -73,6 +76,7 @@ def main():
             "-nr",
             "--no-radios",
             dest="radloaders",
+            type=str.lower(),
             help="Don't make radio autoloaders",
             action="store_false",
             default=True)
@@ -80,6 +84,7 @@ def main():
             "-ns",
             "--no-rmsigned",
             dest="signed",
+            type=str.lower(),
             help="Don't remove signed files",
             action="store_false",
             default=True)
@@ -87,6 +92,7 @@ def main():
             "-nc",
             "--no-compress",
             dest="compress",
+            type=str.lower(),
             help="Don't compress loaders",
             action="store_false",
             default=True)
@@ -94,6 +100,7 @@ def main():
             "-nd",
             "--no-delete",
             dest="delete",
+            type=str.lower(),
             help="Don't delete uncompressed loaders",
             action="store_false",
             default=True)
@@ -101,6 +108,7 @@ def main():
             "-nv",
             "--no-verify",
             dest="verify",
+            type=str.lower(),
             help="Don't verify created loaders",
             action="store_false",
             default=True)
@@ -110,66 +118,77 @@ def main():
         hashgroup.add_argument(
             "--crc32",
             dest="crc32",
+            type=str.lower(),
             help="Enable CRC32 verification",
             action="store_true",
             default=False)
         hashgroup.add_argument(
             "--adler32",
             dest="adler32",
+            type=str.lower(),
             help="Enable Adler-32 verification",
             action="store_true",
             default=False)
         hashgroup.add_argument(
             "--md4",
             dest="md4",
+            type=str.lower(),
             help="Enable MD4 verification",
             action="store_true",
             default=False)
         hashgroup.add_argument(
             "--sha224",
             dest="sha224",
+            type=str.lower(),
             help="Enable SHA-224 verification",
             action="store_true",
             default=False)
         hashgroup.add_argument(
             "--sha384",
             dest="sha384",
+            type=str.lower(),
             help="Enable SHA-384 verification",
             action="store_true",
             default=False)
         hashgroup.add_argument(
             "--sha512",
             dest="sha512",
+            type=str.lower(),
             help="Enable SHA-512 verification",
             action="store_true",
             default=False)
         hashgroup.add_argument(
             "--ripemd160",
             dest="ripemd160",
+            type=str.lower(),
             help="Enable RIPEMD-160 verification",
             action="store_true",
             default=False)
         hashgroup.add_argument(
             "--whirlpool",
             dest="whirlpool",
+            type=str.lower(),
             help="Enable Whirlpool verification",
             action="store_true",
             default=False)
         hashgroup.add_argument(
             "--no-sha1",
             dest="sha1",
+            type=str.lower(),
             help="Disable SHA-1 verification",
             action="store_false",
             default=True)
         hashgroup.add_argument(
             "--no-sha256",
             dest="sha256",
+            type=str.lower(),
             help="Disable SHA-256 verification",
             action="store_false",
             default=True)
         hashgroup.add_argument(
             "--no-md5",
             dest="md5",
+            type=str.lower(),
             help="Disable MD5 verification",
             action="store_false",
             default=True)
@@ -177,6 +196,7 @@ def main():
             "-a",
             "--all",
             dest="all",
+            type=str.lower(),
             help="Use all methods",
             action="store_true",
             default=False)
@@ -185,30 +205,35 @@ def main():
         compgroup.add_argument(
             "--7z",
             dest="compmethod",
+            type=str.lower(),
             help="Compress with 7z, LZMA2",
             action="store_const",
             const="7z")
         compgroup.add_argument(
             "--tgz",
             dest="compmethod",
+            type=str.lower(),
             help="Compress with tar, GZIP",
             action="store_const",
             const="tgz")
         compgroup.add_argument(
             "--tbz",
             dest="compmethod",
+            type=str.lower(),
             help="Compress with tar, BZIP2",
             action="store_const",
             const="tbz")
         compgroup.add_argument(
             "--txz",
             dest="compmethod",
+            type=str.lower(),
             help="Compress with tar, LZMA",
             action="store_const",
             const="txz")
         compgroup.add_argument(
             "--zip",
             dest="compmethod",
+            type=str.lower(),
             help="Compress with zip, DEFLATE",
             action="store_const",
             const="zip")

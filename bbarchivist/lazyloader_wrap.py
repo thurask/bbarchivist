@@ -34,48 +34,56 @@ def main():
         compgroup = devgroup.add_mutually_exclusive_group(required=True)
         compgroup.add_argument(
             "--stl100-1",
+            type=str.lower(),
             dest="device",
             help="STL100-1",
             action="store_const",
             const=0)
         compgroup.add_argument(
             "--stl100-x",
+            type=str.lower(),
             dest="device",
             help="STL100-2/3, P'9982",
             action="store_const",
             const=1)
         compgroup.add_argument(
             "--stl100-4",
+            type=str.lower(),
             dest="device",
             help="STL100-4",
             action="store_const",
             const=2)
         compgroup.add_argument(
             "--q10",
+            type=str.lower(),
             dest="device",
             help="Q10, Q5, P'9983",
             action="store_const",
             const=3)
         compgroup.add_argument(
             "--z30",
+            type=str.lower(),
             dest="device",
             help="Z30, Classic, Leap",
             action="store_const",
             const=4)
         compgroup.add_argument(
             "--z3",
+            type=str.lower(),
             dest="device",
             help="Z3",
             action="store_const",
             const=5)
         compgroup.add_argument(
             "--passport",
+            type=str.lower(),
             dest="device",
             help="Passport",
             action="store_const",
             const=6)
         parser.add_argument(
             "--run-loader",
+            type=str.lower(),
             dest="autoloader",
             help="Run autoloader after creation",
             action="store_true",
@@ -83,6 +91,7 @@ def main():
         parser.add_argument(
             "-f",
             "--folder",
+            type=str.lower(),
             dest="folder",
             help="Working folder",
             default=os.getcwd(),

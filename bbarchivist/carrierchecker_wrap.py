@@ -31,6 +31,7 @@ def main():
         parser.add_argument(
             "-d", "--download",
             dest="download",
+            type=str.lower(),
             help="Download files after checking",
             action="store_true",
             default=False)
@@ -39,12 +40,14 @@ def main():
         compgroup.add_argument(
             "-u", "--upgrade",
             dest="upgrade",
+            type=str.lower(),
             help="Upgrade instead of debrick bars",
             action="store_true",
             default=False),
         compgroup.add_argument(
             "-r", "--repair",
             dest="upgrade",
+            type=str.lower(),
             help="Debrick instead of upgrade bars",
             action="store_false",
             default=False),
