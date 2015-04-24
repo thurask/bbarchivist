@@ -34,5 +34,6 @@ setup(name='bbarchivist',
         'console_scripts': ['bb-archivist=bbarchivist.archivist_wrap:main',
                             'bb-lazyloader=bbarchivist.lazyloader_wrap:main',
                             'bb-cchecker=bbarchivist.carrierchecker_wrap:main',
-                            'bb-filehasher=bbarchivist.filehasher_wrap:main'],
+                            'bb-filehasher=bbarchivist.filehasher_wrap:main',
+                            'bb-escreens=bbarchivist.escreens_wrap:main'],
         })

@@ -13,19 +13,43 @@ def file_exists(file):
     :type file: str
     """
     if not os.path.exists(file):
-        raise argparse.ArgumentError("{0} does not exist".format(file))
+        raise argparse.ArgumentError("{0} does not exist.".format(file))
     return file
 
 
 def positive_integer(inputint):
     """
-    Check if file exists. Used for parsing file inputs from command line.
-    :param file: \\path\\to\\file.ext
-    :type file: str
+    Check if number > 0. Used for parsing integer inputs from command line.
+    :param inputint: Integer to check.
+    :type inputint: int
     """
     if inputint <= 0:
         raise argparse.ArgumentError("{0} is too low.".format(inputint))
     return inputint
+
+
+def escreens_pin(pin):
+    if len(pin) == 8:
+        try:
+            int(pin, 16)  # hexadecimal-ness
+        except ValueError:
+            raise argparse.ArgumentError("Invalid PIN.")
+        else:
+            return pin.lower()
+    else:
+        raise argparse.ArgumentError("Invalid PIN.")
+
+
+def escreens_duration(duration):
+    """
+    Check if escreens duration is valid.
+    :param duration: Duration to check.
+    :type duration: int
+    """
+    if int(duration) in (1, 3, 6, 15, 30):
+        return int(duration)
+    else:
+        raise argparse.ArgumentError("Invalid duration.")
 
 
 def str2bool(v):
