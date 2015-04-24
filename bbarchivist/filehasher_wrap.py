@@ -37,7 +37,7 @@ Default: SHA-1, SHA-256, MD5""",
             dest="blocksize",
             help="Blocksize (bytes), default = 16777216 (16MB)",
             default=16777216,
-            type=int,
+            type=utilities.positive_integer,
             metavar="INT")
         hashgroup = parser.add_argument_group(
             "verifiers",

@@ -17,6 +17,17 @@ def file_exists(file):
     return file
 
 
+def positive_integer(inputint):
+    """
+    Check if file exists. Used for parsing file inputs from command line.
+    :param file: \\path\\to\\file.ext
+    :type file: str
+    """
+    if inputint <= 0:
+        raise argparse.ArgumentError("{0} is too low.".format(inputint))
+    return inputint
+
+
 def str2bool(v):
     """
     Parse bool from string input.
