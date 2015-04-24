@@ -2,9 +2,11 @@
 
 import os  # filesystem read
 import requests  # downloading
+import time  # time for downloader
 import queue  # downloader multithreading
 import threading  # downloader multithreading
 import binascii  # downloader thread naming
+import math  # rounding of floats
 import xml.etree.ElementTree  # XML parsing
 
 
@@ -29,6 +31,7 @@ class Downloader(threading.Thread):
             self.queue.task_done()
 
     def download(self, url):
+        t_start = time.clock()
         local_filename = url.split('/')[-1]
         print("Downloading:", local_filename)
         r = requests.get(url, stream=True)
@@ -39,6 +42,15 @@ class Downloader(threading.Thread):
                     if chunk:  # filter out keep-alive new chunks
                         f.write(chunk)
                         f.flush()
+            t_elapsed = time.clock() - t_start
+            t_elapsed_proper = math.ceil(t_elapsed * 100) / 100
+            print(
+                "Downloaded " +
+                url +
+                " in " +
+                str(t_elapsed_proper) +
+                " seconds")
+            f.close()
         else:
             print("* Thread: " + self.name + " Bad URL: " + url)
             return
