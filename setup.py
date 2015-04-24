@@ -31,8 +31,8 @@ setup(name='bbarchivist',
           'requests',
       ],
       entry_points={
-        'console_scripts': ['bb-archivist=bbarchivist.bbarchivist:main',
-                            'bb-lazyloader=bbarchivist.bblazyloader:main',
-                            'bb-cchecker=bbarchivist.bbcarrierchecker:main',
-                            'bb-filehasher=bbarchivist.bbfilehasher:main'],
+        'console_scripts': ['bb-archivist=bbarchivist.archivist_wrap:main',
+                            'bb-lazyloader=bbarchivist.lazyloader_wrap:main',
+                            'bb-cchecker=bbarchivist.carrierchecker_wrap:main',
+                            'bb-filehasher=bbarchivist.filehasher_wrap:main'],
         })
