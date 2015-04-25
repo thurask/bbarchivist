@@ -206,3 +206,6 @@ def verifier(workingdir, blocksize=16 * 1024 * 1024,
             target.write(hashoutput_ripemd160 + "\n")
         if whirlpool:
             target.write(hashoutput_whirlpool + "\n")
+    with open(os.path.join(workingdir, 'all.cksum'), 'rb+') as target:
+        target.seek(-2, os.SEEK_END)  # navigate to last character
+        target.truncate()  # get rid of trailing \n
