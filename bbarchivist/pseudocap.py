@@ -3,15 +3,17 @@
 import os
 import binascii
 import glob
-from . import bbconstants
-
-_capversion = bbconstants._capversion
+try:
+    from . import bbconstants  # @UnusedImport
+except SystemError:
+    import bbconstants  # @UnresolvedImport @Reimport
 
 
 def ghetto_convert(intsize):
     """
     Convert from decimal integer to little endian
     hexadecimal string, padded to 16 characters with zeros.
+
     :param intsize: Integer you wish to convert.
     :type intsize: integer
     """
@@ -31,21 +33,29 @@ def make_offset(cap, firstfile, secondfile="", thirdfile="",
     """
     Create magic offset file for use in autoloader creation.
     Cap.exe MUST match separator version.
-    Defined in _capversion.
+    Version defined in :data:`bbarchivist.bbconstants._capversion`.
+
     :param cap: Location of cap.exe file.
     :type cap: str
+
     :param firstfile: First signed file. Required.
     :type firstfile: str
+
     :param secondfile: Second signed file. Optional.
     :type secondfile: str
+
     :param thirdfile: Third signed file. Optional.
     :type thirdfile: str
+
     :param fourthfile: Fourth signed file. Optional.
     :type fourthfile: str
+
     :param fifthfile: Fifth signed file. Optional.
     :type fifthfile: str
+
     :param sixthfile: Sixth signed file. Optional.
     :type sixthfile: str
+
     :param folder: Working folder. Optional.
     :type folder: str
     """
@@ -158,23 +168,32 @@ def make_autoloader(filename, cap, firstfile, secondfile="", thirdfile="",
     """
     Python implementation of cap.exe.
     Writes cap.exe, magic offset, signed files to a .exe file.
-    Uses output of make_offset().
+    :func:`make_offset` is used to create the offset.
+
     :param filename: Name of autoloader.
     :type filename: str
+
     :param cap: Location of cap.exe file.
     :type cap: str
+
     :param firstfile: First signed file. Required.
     :type firstfile: str
+
     :param secondfile: Second signed file. Optional.
     :type secondfile: str
+
     :param thirdfile: Third signed file. Optional.
     :type thirdfile: str
+
     :param fourthfile: Fourth signed file. Optional.
     :type fourthfile: str
+
     :param fifthfile: Fifth signed file. Optional.
     :type fifthfile: str
+
     :param sixthfile: Sixth signed file. Optional.
     :type sixthfile: str
+
     :param folder: Working folder. Optional.
     :type folder: str
     """
@@ -204,7 +223,8 @@ def make_autoloader(filename, cap, firstfile, secondfile="", thirdfile="",
                                filename), "wb") as autoloader:
             try:
                 with open(os.path.normpath(cap), "rb") as capfile:
-                    print("WRITING CAP VERSION", _capversion + "...")
+                    print("WRITING CAP VERSION",
+                          bbconstants._capversion + "...")
                     while True:
                         chunk = capfile.read(4096)  # 4k chunks
                         if not chunk:

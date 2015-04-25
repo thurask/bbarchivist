@@ -5,11 +5,26 @@ import glob
 import shutil
 import hashlib
 import subprocess
-from . import utilities
-from . import barutils
-from . import bbconstants
-from . import networkutils
-from . import loadergen
+try:
+    from . import utilities  # @UnusedImport
+except SystemError:
+    import utilities  # @UnresolvedImport @Reimport
+try:
+    from . import barutils  # @UnusedImport
+except SystemError:
+    import barutils  # @UnresolvedImport @Reimport
+try:
+    from . import bbconstants  # @UnusedImport
+except SystemError:
+    import bbconstants  # @UnresolvedImport @Reimport
+try:
+    from . import networkutils  # @UnusedImport
+except SystemError:
+    import networkutils  # @UnresolvedImport @Reimport
+try:
+    from . import loadergen  # @UnusedImport
+except SystemError:
+    import loadergen  # @UnresolvedImport @Reimport
 
 
 def doMagic(osversion, radioversion,
@@ -17,21 +32,25 @@ def doMagic(osversion, radioversion,
             localdir, autoloader):
     """
     Wrap the tools necessary to make one autoloader.
+
     :param osversion: OS version, 10.x.y.zzzz.
     :type osversion: str
+
     :param radioversion: Radio version, 10.x.y.zzzz.
     :type radioversion: str
+
     :param softwareversion: Software version, 10.x.y.zzzz.
     :type softwareversion: str
+
     :param device: Device family to create loader for.
     :type device: int
+
     :param localdir: Working path. Default is local dir.
     :type localdir: str
-    :param autoloader: Whether or not to run loaders. Default is false.
-    Windows-only, obviously.
+
+    :param autoloader: Whether to run loaders. Default is false. Windows-only.
     :type autoloader: bool
     """
-    version = bbconstants._version
     devicelist = ["STL100-1",
                   "STL100-2/3/P9982",
                   "STL100-4",
@@ -39,7 +58,7 @@ def doMagic(osversion, radioversion,
                   "Z30/CLASSIC/LEAP",
                   "Z3",
                   "PASSPORT"]
-    print("~~~LAZYLOADER VERSION", version + "~~~")
+    print("~~~LAZYLOADER VERSION", bbconstants._version + "~~~")
     print("OS VERSION:", osversion)
     print("RADIO VERSION:", radioversion)
     print("SOFTWARE VERSION:", softwareversion)

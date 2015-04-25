@@ -7,10 +7,11 @@ import hashlib
 def crc32hash(filepath, blocksize=16 * 1024 * 1024):
     """
     Return CRC32 checksum of a file.
+
     :param filepath: File you wish to verify.
     :type filepath: str
-    :param blocksize: File read chunk size;
-    how much of it to load into memory at a time.
+
+    :param blocksize: How much of file to read at once.
     :type blocksize: int
     """
     seed = 0
@@ -24,10 +25,11 @@ def crc32hash(filepath, blocksize=16 * 1024 * 1024):
 def adler32hash(filepath, blocksize=16 * 1024 * 1024):
     """
     Return Adler32 checksum of a file.
+
     :param filepath: File you wish to verify.
     :type filepath: str
-    :param blocksize: File read chunk size;
-    how much of it to load into memory at a time.
+
+    :param blocksize: How much of file to read at once.
     :type blocksize: int
     """
     asum = 1
@@ -46,10 +48,11 @@ def adler32hash(filepath, blocksize=16 * 1024 * 1024):
 def sha1hash(filepath, blocksize=16 * 1024 * 1024):
     """
     Return SHA-1 hash of a file.
+
     :param filepath: File you wish to verify.
     :type filepath: str
-    :param blocksize: File read chunk size;
-    how much of it to load into memory at a time.
+
+    :param blocksize: How much of file to read at once.
     :type blocksize: int
     """
     sha1 = hashlib.sha1()
@@ -65,10 +68,11 @@ def sha1hash(filepath, blocksize=16 * 1024 * 1024):
 def sha224hash(filepath, blocksize=16 * 1024 * 1024):
     """
     Return SHA-224 hash of a file.
+
     :param filepath: File you wish to verify.
     :type filepath: str
-    :param blocksize: File read chunk size;
-    how much of it to load into memory at a time.
+
+    :param blocksize: How much of file to read at once.
     :type blocksize: int
     """
     sha224 = hashlib.sha224()
@@ -84,10 +88,11 @@ def sha224hash(filepath, blocksize=16 * 1024 * 1024):
 def sha256hash(filepath, blocksize=16 * 1024 * 1024):
     """
     Return SHA-256 hash of a file.
+
     :param filepath: File you wish to verify.
     :type filepath: str
-    :param blocksize: File read chunk size;
-    how much of it to load into memory at a time.
+
+    :param blocksize: How much of file to read at once.
     :type blocksize: int
     """
     sha256 = hashlib.sha256()
@@ -103,10 +108,11 @@ def sha256hash(filepath, blocksize=16 * 1024 * 1024):
 def sha384hash(filepath, blocksize=16 * 1024 * 1024):
     """
     Return SHA-384 hash of a file.
+
     :param filepath: File you wish to verify.
     :type filepath: str
-    :param blocksize: File read chunk size;
-    how much of it to load into memory at a time.
+
+    :param blocksize: How much of file to read at once.
     :type blocksize: int
     """
     sha384 = hashlib.sha384()
@@ -122,10 +128,11 @@ def sha384hash(filepath, blocksize=16 * 1024 * 1024):
 def sha512hash(filepath, blocksize=16 * 1024 * 1024):
     """
     Return SHA-512 hash of a file.
+
     :param filepath: File you wish to verify.
     :type filepath: str
-    :param blocksize: File read chunk size;
-    how much of it to load into memory at a time.
+
+    :param blocksize: How much of file to read at once.
     :type blocksize: int
     """
     sha512 = hashlib.sha512()
@@ -141,10 +148,11 @@ def sha512hash(filepath, blocksize=16 * 1024 * 1024):
 def md4hash(filepath, blocksize=16 * 1024 * 1024):
     """
     Return MD4 hash of a file; depends on system SSL library.
+
     :param filepath: File you wish to verify.
     :type filepath: str
-    :param blocksize: File read chunk size;
-    how much of it to load into memory at a time.
+
+    :param blocksize: How much of file to read at once.
     :type blocksize: int
     """
     try:
@@ -163,10 +171,11 @@ def md4hash(filepath, blocksize=16 * 1024 * 1024):
 def md5hash(filepath, blocksize=16 * 1024 * 1024):
     """
     Return MD5 hash of a file.
+
     :param filepath: File you wish to verify.
     :type filepath: str
-    :param blocksize: File read chunk size;
-    how much of it to load into memory at a time.
+
+    :param blocksize: How much of file to read at once.
     :type blocksize: int
     """
     md5 = hashlib.md5()
@@ -182,10 +191,11 @@ def md5hash(filepath, blocksize=16 * 1024 * 1024):
 def ripemd160hash(filepath, blocksize=16 * 1024 * 1024):
     """
     Return RIPEMD160 hash of a file; depends on system SSL library.
+
     :param filepath: File you wish to verify.
     :type filepath: str
-    :param blocksize: File read chunk size;
-    how much of it to load into memory at a time.
+
+    :param blocksize: How much of file to read at once.
     :type blocksize: int
     """
     try:
@@ -204,10 +214,11 @@ def ripemd160hash(filepath, blocksize=16 * 1024 * 1024):
 def whirlpoolhash(filepath, blocksize=16 * 1024 * 1024):
     """
     Return Whirlpool hash of a file; depends on system SSL library.
+
     :param filepath: File you wish to verify.
     :type filepath: str
-    :param blocksize: File read chunk size;
-    how much of it to load into memory at a time.
+
+    :param blocksize: How much of file to read at once.
     :type blocksize: int
     """
     try:

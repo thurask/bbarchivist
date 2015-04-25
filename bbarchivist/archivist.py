@@ -5,12 +5,30 @@ import shutil  # directory read/write
 import hashlib  # SHA-x, MD5
 import time  # time for downloader
 import math  # rounding of floats
-from . import utilities
-from . import barutils
-from . import bbconstants
-from . import networkutils
-from . import loadergen
-from . import hashwrapper
+try:
+    from . import bbconstants  # @UnusedImport
+except SystemError:
+    import bbconstants  # @UnresolvedImport @Reimport
+try:
+    from . import utilities  # @UnusedImport
+except SystemError:
+    import utilities  # @UnresolvedImport @Reimport
+try:
+    from . import barutils  # @UnusedImport
+except SystemError:
+    import barutils  # @UnresolvedImport @Reimport
+try:
+    from . import networkutils  # @UnusedImport
+except SystemError:
+    import networkutils  # @UnresolvedImport @Reimport
+try:
+    from . import loadergen  # @UnusedImport
+except SystemError:
+    import loadergen  # @UnresolvedImport @Reimport
+try:
+    from . import hashwrapper  # @UnusedImport
+except SystemError:
+    import hashwrapper  # @UnresolvedImport @Reimport
 
 
 def do_magic(osversion, radioversion, softwareversion,
@@ -26,58 +44,79 @@ def do_magic(osversion, radioversion, softwareversion,
     Wrap around multi-autoloader creation code.
     Some combination of creating, downloading, hashing,
     compressing and moving autoloaders.
+
     :param osversion: OS version, 10.x.y.zzzz.
     :type osversion: str
+
     :param radioversion: Radio version, 10.x.y.zzzz.
-    Usually OS version + 1.
     :type radioversion: str
+
     :param softwareversion: Software release, 10.x.y.zzzz.
     :type softwareversion: str
+
     :param localdir: Working directory. Required.
     :type localdir: str
+
     :param radios: Whether to create radio autoloaders. True by default.
     :type radios: bool
+
     :param compressed: Whether to compress files. True by default.
     :type compressed: bool
+
     :param deleted: Whether to delete uncompressed files. True by default.
     :type deleted: bool
+
     :param hashed: Whether to hash files. True by default.
     :type hashed: bool
+
     :param crc32: Whether to use CRC32. False by default.
     :type crc32: bool
+
     :param adler32: Whether to use Adler-32. False by default.
     :type adler32: bool
+
     :param sha1: Whether to use SHA-1. True by default.
     :type sha1: bool
+
     :param sha224: Whether to use SHA-224. False by default.
     :type sha224: bool
+
     :param sha256: Whether to use SHA-256. False by default.
     :type sha256: bool
+
     :param sha384: Whether to use SHA-384. False by default.
     :type sha384: bool
+
     :param sha512: Whether to use SHA-512. False by default.
     :type sha512: bool
+
     :param md5: Whether to use MD5. True by default.
     :type md5: bool
-    :param md4: Whether to use MD4. False by default. Dependent on
-    system OpenSSL implementation (not in stdlib).
+
+    :param md4: Whether to use MD4. False by default.
     :type md4: bool
-    :param ripemd160: Whether to use RIPEMD160. False by default. Dependent on
-    system OpenSSL implementation (not in stdlib).
+
+    :param ripemd160: Whether to use RIPEMD160. False by default.
     :type ripemd160: bool
-    :param whirlpool: Whether to use Whirlpool. False by default. Dependent on
-    system OpenSSL implementation (not in stdlib).
+
+    :param whirlpool: Whether to use Whirlpool. False by default.
     :type whirlpool: bool
-    :param cappath: Path to cap.exe. Default is local dir\\cap.exe.
+
+    :param cappath: Path to cap.exe. Default is local dir 'cap.exe'.
     :type cappath: str
+
     :param download: Whether to download bar files. True by default.
     :type download: bool
+
     :param extract: Whether to extract bar files. True by default.
     :type extract: bool
+
     :param loaders: Whether to create autoloaders. True by default.
     :type loaders: bool
+
     :param signed: Whether to delete signed files. True by default.
     :type signed: bool
+
     :param compmethod: Compression method. Default is "7z" with fallback "zip".
     :type compmethod: str
     """

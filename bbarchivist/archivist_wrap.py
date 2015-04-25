@@ -3,16 +3,25 @@
 import sys  # arguments
 import argparse  # argument parsing
 import os
-from . import utilities
-from . import bbconstants
-from . import archivist
+try:
+    from . import archivist  # @UnusedImport
+except SystemError:
+    import archivist  # @UnresolvedImport @Reimport
+try:
+    from . import bbconstants  # @UnusedImport
+except SystemError:
+    import bbconstants  # @UnresolvedImport @Reimport
+try:
+    from . import utilities  # @UnusedImport
+except SystemError:
+    import utilities  # @UnresolvedImport @Reimport
 
 
 def main():
     """
     Parse arguments from argparse/questionnaire.
 
-    Invoke `archivist.doMagic()` with those arguments.
+    Invoke :func:`bbarchivist.archivist.doMagic` with those arguments.
     """
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(

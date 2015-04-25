@@ -2,16 +2,25 @@
 
 import argparse
 import sys
-from . import escreens
-from . import bbconstants
-from . import utilities
+try:
+    from . import escreens  # @UnusedImport
+except SystemError:
+    import escreens  # @UnresolvedImport @Reimport
+try:
+    from . import bbconstants  # @UnusedImport
+except SystemError:
+    import bbconstants  # @UnresolvedImport @Reimport
+try:
+    from . import utilities  # @UnusedImport
+except SystemError:
+    import utilities  # @UnresolvedImport @Reimport
 
 
 def main():
     """
     Parse arguments from argparse/questionnaire.
 
-    Invoke `escreens.calculate_escreens()` with those arguments.
+    Invoke :func:`bbarchivist.escreens.calculate_escreens` with arguments.
     """
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(

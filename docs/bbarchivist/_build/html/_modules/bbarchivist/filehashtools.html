@@ -1,0 +1,326 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>bbarchivist.filehashtools &mdash; bbarchivist  documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="bbarchivist  documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">bbarchivist  documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for bbarchivist.filehashtools</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python3</span>
+
+<span class="kn">import</span> <span class="nn">zlib</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+
+
+<div class="viewcode-block" id="crc32hash"><a class="viewcode-back" href="../../bbarchivist.html#bbarchivist.filehashtools.crc32hash">[docs]</a><span class="k">def</span> <span class="nf">crc32hash</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">blocksize</span><span class="o">=</span><span class="mi">16</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return CRC32 checksum of a file.</span>
+
+<span class="sd">    :param filepath: File you wish to verify.</span>
+<span class="sd">    :type filepath: str</span>
+
+<span class="sd">    :param blocksize: How much of file to read at once.</span>
+<span class="sd">    :type blocksize: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">seed</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1024</span><span class="p">),</span> <span class="n">b</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+            <span class="n">seed</span> <span class="o">=</span> <span class="n">zlib</span><span class="o">.</span><span class="n">crc32</span><span class="p">(</span><span class="n">chunk</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span>
+    <span class="n">final</span> <span class="o">=</span> <span class="n">format</span><span class="p">(</span><span class="n">seed</span> <span class="o">&amp;</span> <span class="mh">0xFFFFFFFF</span><span class="p">,</span> <span class="s">&quot;x&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">final</span>
+
+</div>
+<div class="viewcode-block" id="adler32hash"><a class="viewcode-back" href="../../bbarchivist.html#bbarchivist.filehashtools.adler32hash">[docs]</a><span class="k">def</span> <span class="nf">adler32hash</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">blocksize</span><span class="o">=</span><span class="mi">16</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return Adler32 checksum of a file.</span>
+
+<span class="sd">    :param filepath: File you wish to verify.</span>
+<span class="sd">    :type filepath: str</span>
+
+<span class="sd">    :param blocksize: How much of file to read at once.</span>
+<span class="sd">    :type blocksize: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">asum</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">blocksize</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">asum</span> <span class="o">=</span> <span class="n">zlib</span><span class="o">.</span><span class="n">adler32</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">asum</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">asum</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">asum</span> <span class="o">+=</span> <span class="mi">2</span> <span class="o">**</span> <span class="mi">32</span>
+    <span class="n">final</span> <span class="o">=</span> <span class="n">format</span><span class="p">(</span><span class="n">asum</span> <span class="o">&amp;</span> <span class="mh">0xFFFFFFFF</span><span class="p">,</span> <span class="s">&quot;x&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">final</span>
+
+</div>
+<div class="viewcode-block" id="sha1hash"><a class="viewcode-back" href="../../bbarchivist.html#bbarchivist.filehashtools.sha1hash">[docs]</a><span class="k">def</span> <span class="nf">sha1hash</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">blocksize</span><span class="o">=</span><span class="mi">16</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return SHA-1 hash of a file.</span>
+
+<span class="sd">    :param filepath: File you wish to verify.</span>
+<span class="sd">    :type filepath: str</span>
+
+<span class="sd">    :param blocksize: How much of file to read at once.</span>
+<span class="sd">    :type blocksize: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sha1</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">()</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">blocksize</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">sha1</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sha1</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="sha224hash"><a class="viewcode-back" href="../../bbarchivist.html#bbarchivist.filehashtools.sha224hash">[docs]</a><span class="k">def</span> <span class="nf">sha224hash</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">blocksize</span><span class="o">=</span><span class="mi">16</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return SHA-224 hash of a file.</span>
+
+<span class="sd">    :param filepath: File you wish to verify.</span>
+<span class="sd">    :type filepath: str</span>
+
+<span class="sd">    :param blocksize: How much of file to read at once.</span>
+<span class="sd">    :type blocksize: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sha224</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha224</span><span class="p">()</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">blocksize</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">sha224</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sha224</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="sha256hash"><a class="viewcode-back" href="../../bbarchivist.html#bbarchivist.filehashtools.sha256hash">[docs]</a><span class="k">def</span> <span class="nf">sha256hash</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">blocksize</span><span class="o">=</span><span class="mi">16</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return SHA-256 hash of a file.</span>
+
+<span class="sd">    :param filepath: File you wish to verify.</span>
+<span class="sd">    :type filepath: str</span>
+
+<span class="sd">    :param blocksize: How much of file to read at once.</span>
+<span class="sd">    :type blocksize: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sha256</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">()</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">blocksize</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">sha256</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sha256</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="sha384hash"><a class="viewcode-back" href="../../bbarchivist.html#bbarchivist.filehashtools.sha384hash">[docs]</a><span class="k">def</span> <span class="nf">sha384hash</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">blocksize</span><span class="o">=</span><span class="mi">16</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return SHA-384 hash of a file.</span>
+
+<span class="sd">    :param filepath: File you wish to verify.</span>
+<span class="sd">    :type filepath: str</span>
+
+<span class="sd">    :param blocksize: How much of file to read at once.</span>
+<span class="sd">    :type blocksize: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sha384</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha384</span><span class="p">()</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">blocksize</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">sha384</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sha384</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="sha512hash"><a class="viewcode-back" href="../../bbarchivist.html#bbarchivist.filehashtools.sha512hash">[docs]</a><span class="k">def</span> <span class="nf">sha512hash</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">blocksize</span><span class="o">=</span><span class="mi">16</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return SHA-512 hash of a file.</span>
+
+<span class="sd">    :param filepath: File you wish to verify.</span>
+<span class="sd">    :type filepath: str</span>
+
+<span class="sd">    :param blocksize: How much of file to read at once.</span>
+<span class="sd">    :type blocksize: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sha512</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha512</span><span class="p">()</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">blocksize</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">sha512</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sha512</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="md4hash"><a class="viewcode-back" href="../../bbarchivist.html#bbarchivist.filehashtools.md4hash">[docs]</a><span class="k">def</span> <span class="nf">md4hash</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">blocksize</span><span class="o">=</span><span class="mi">16</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return MD4 hash of a file; depends on system SSL library.</span>
+
+<span class="sd">    :param filepath: File you wish to verify.</span>
+<span class="sd">    :type filepath: str</span>
+
+<span class="sd">    :param blocksize: How much of file to read at once.</span>
+<span class="sd">    :type blocksize: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">md4</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s">&#39;md4&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">blocksize</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="n">md4</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">md4</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;MD4 HASH FAILED:</span><span class="se">\n</span><span class="s">IS IT AVAILABLE?&quot;</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="md5hash"><a class="viewcode-back" href="../../bbarchivist.html#bbarchivist.filehashtools.md5hash">[docs]</a><span class="k">def</span> <span class="nf">md5hash</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">blocksize</span><span class="o">=</span><span class="mi">16</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return MD5 hash of a file.</span>
+
+<span class="sd">    :param filepath: File you wish to verify.</span>
+<span class="sd">    :type filepath: str</span>
+
+<span class="sd">    :param blocksize: How much of file to read at once.</span>
+<span class="sd">    :type blocksize: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">md5</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">()</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">blocksize</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">md5</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">md5</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="ripemd160hash"><a class="viewcode-back" href="../../bbarchivist.html#bbarchivist.filehashtools.ripemd160hash">[docs]</a><span class="k">def</span> <span class="nf">ripemd160hash</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">blocksize</span><span class="o">=</span><span class="mi">16</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return RIPEMD160 hash of a file; depends on system SSL library.</span>
+
+<span class="sd">    :param filepath: File you wish to verify.</span>
+<span class="sd">    :type filepath: str</span>
+
+<span class="sd">    :param blocksize: How much of file to read at once.</span>
+<span class="sd">    :type blocksize: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">r160</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s">&#39;ripemd160&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">blocksize</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="n">r160</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">r160</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;RIPEMD160 HASH FAILED:</span><span class="se">\n</span><span class="s">IS IT AVAILABLE?&quot;</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="whirlpoolhash"><a class="viewcode-back" href="../../bbarchivist.html#bbarchivist.filehashtools.whirlpoolhash">[docs]</a><span class="k">def</span> <span class="nf">whirlpoolhash</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">blocksize</span><span class="o">=</span><span class="mi">16</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return Whirlpool hash of a file; depends on system SSL library.</span>
+
+<span class="sd">    :param filepath: File you wish to verify.</span>
+<span class="sd">    :type filepath: str</span>
+
+<span class="sd">    :param blocksize: How much of file to read at once.</span>
+<span class="sd">    :type blocksize: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">wp</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s">&#39;whirlpool&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">blocksize</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="n">wp</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">wp</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;WHIRLPOOL HASH FAILED:</span><span class="se">\n</span><span class="s">IS IT AVAILABLE?&quot;</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">bbarchivist  documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Thurask.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

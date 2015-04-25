@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 
 import os
-from . import filehashtools
+try:
+    from . import filehashtools  # @UnusedImport
+except SystemError:
+    import filehashtools  # @UnresolvedImport @Reimport
 
 
 def verifier(workingdir, blocksize=16 * 1024 * 1024,
@@ -11,36 +14,45 @@ def verifier(workingdir, blocksize=16 * 1024 * 1024,
              md4=False, ripemd160=False, whirlpool=False):
     """
     For all files in a directory, perform various hash/checksum functions.
-    on them based on boolean arguments, writing the output to a .cksum file.
-    :param workingdir: Path you wish to verify.
+    Functions based on boolean arguments, writing the output to a .cksum file.
+
+    :param workingdir: Path containing files you wish to verify.
     :type workingdir: str
-    :param blocksize: File read chunk size;
-    how much of it to load into memory at a time.
+
+    :param blocksize: How much of file to read at once.
     :type blocksize: int
-    :param crc32: Whether to use CRC32. False by default.
+
+    :param crc32: Use of CRC32. False by default.
     :type crc32: bool
-    :param adler32: Whether to use Adler-32. False by default.
+
+    :param adler32: Use of Adler-32. False by default.
     :type adler32: bool
-    :param sha1: Whether to use SHA-1. True by default.
+
+    :param sha1: Use of SHA-1. True by default.
     :type sha1: bool
-    :param sha224: Whether to use SHA-224. False by default.
+
+    :param sha224: Use of SHA-224. False by default.
     :type sha224: bool
-    :param sha256: Whether to use SHA-256. False by default.
+
+    :param sha256: Use of SHA-256. False by default.
     :type sha256: bool
-    :param sha384: Whether to use SHA-384. False by default.
+
+    :param sha384: Use of SHA-384. False by default.
     :type sha384: bool
-    :param sha512: Whether to use SHA-512. False by default.
+
+    :param sha512: Use of SHA-512. False by default.
     :type sha512: bool
-    :param md5: Whether to use MD5. True by default.
+
+    :param md5: Use of MD5. True by default.
     :type md5: bool
-    :param md4: Whether to use MD4. False by default. Dependent on
-    system OpenSSL implementation (not in stdlib).
+
+    :param md4: Use of MD4. False by default. Depends on system.
     :type md4: bool
-    :param ripemd160: Whether to use RIPEMD160. False by default. Dependent on
-    system OpenSSL implementation (not in stdlib).
+
+    :param ripemd160: Use of RIPEMD160. False by default. Depends on system.
     :type ripemd160: bool
-    :param whirlpool: Whether to use Whirlpool. False by default. Dependent on
-    system OpenSSL implementation (not in stdlib).
+
+    :param whirlpool: Use of Whirlpool. False by default. Depends on system.
     :type whirlpool: bool
     """
     hashoutput_crc32 = "CRC32\n"

@@ -17,11 +17,22 @@ class Downloader(threading.Thread):
     http://pipe-devnull.com/2012/09/13/queued-threaded-http-downloader-in-python.html
     """
     def __init__(self, queue, output_directory):
+        """
+        Initiate downloader thread.
+        :param queue: What to download.
+        :type queue: dict
+
+        :param output_directory: Where to output.
+        :type output_directory: str
+        """
         threading.Thread.__init__(self, name=binascii.hexlify(os.urandom(8)))
         self.queue = queue
         self.output_directory = output_directory
 
     def run(self):
+        """
+        Download files from queue.
+        """
         while True:
             # gets the url from the queue
             url = self.queue.get()
@@ -31,6 +42,12 @@ class Downloader(threading.Thread):
             self.queue.task_done()
 
     def download(self, url):
+        """
+        Download file from given URL.
+
+        :param url: URL to download from.
+        :type url: str
+        """
         t_start = time.clock()
         local_filename = url.split('/')[-1]
         print("Downloading:", local_filename)
@@ -63,13 +80,29 @@ class DownloadManager():
     http://pipe-devnull.com/2012/09/13/queued-threaded-http-downloader-in-python.html
     """
     def __init__(self, download_dict, output_directory, thread_count=5):
+        """
+        Initiate download manager.
+
+        :param download_dict: Dictionary of download URLs.
+        :type download_dict: dict
+
+        :param output_directory: Where to output.
+        :type output_directory: str
+
+        :param thread_count: Number of threads. 5 by default.
+        :type thread_count: int
+        """
         self.thread_count = thread_count
         self.download_dict = download_dict
-        self.output_directory = output_directory
+        self.output_directory = output_directory\
+
     # Start the downloader threads, fill the queue with the URLs and
     # then feed the threads URLs via the queue
 
     def begin_downloads(self):
+        """
+        Start :class:`Downloader` threads for queued downloads.
+        """
         dlqueue = queue.Queue()
         # Create i thread pool and give them a queue
         for t in range(self.thread_count):
@@ -90,8 +123,9 @@ def availability(url):
     """
     Check HTTP status code of given URL.
     200 or 301-308 is OK, else is not.
+
     :param url: URL to check.
-    :type url: http://site.to/check/
+    :type url: str
     """
     try:
         av = requests.head(str(url))
@@ -108,8 +142,10 @@ def availability(url):
 def carrier_checker(mcc, mnc):
     """
     Query BlackBerry World to map a MCC and a MNC to a country and carrier.
+
     :param mcc: Country code.
     :type mcc: int
+
     :param mnc: Network code.
     :type mnc: int
     """
@@ -132,14 +168,19 @@ def carrier_checker(mcc, mnc):
 def carrier_update_request(mcc, mnc, device, download=False, upgrade=False):
     """
     Query BlackBerry servers, check which update is out for a carrier.
+
     :param mcc: Country code.
     :type mcc: int
+
     :param mnc: Network code.
     :type mnc: int
+
     :param device: Hexadecimal hardware ID.
     :type device: str
+
     :param download: Whether to download files. False by default.
     :type download: bool
+
     :param upgrade: Whether to use upgrade files. False by default.
     :type upgrade: bool
     """

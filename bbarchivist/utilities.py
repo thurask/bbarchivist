@@ -9,7 +9,8 @@ import shutil
 def file_exists(file):
     """
     Check if file exists. Used for parsing file inputs from command line.
-    :param file: \\path\\to\\file.ext
+
+    :param file: Path to a file, including extension.
     :type file: str
     """
     if not os.path.exists(file):
@@ -20,6 +21,7 @@ def file_exists(file):
 def positive_integer(inputint):
     """
     Check if number > 0. Used for parsing integer inputs from command line.
+
     :param inputint: Integer to check.
     :type inputint: int
     """
@@ -31,6 +33,7 @@ def positive_integer(inputint):
 def escreens_pin(pin):
     """
     Check if given PIN is valid (8 character hexadecimal)
+
     :param pin: PIN to check.
     :type pin: str
     """
@@ -48,6 +51,7 @@ def escreens_pin(pin):
 def escreens_duration(duration):
     """
     Check if escreens duration is valid.
+
     :param duration: Duration to check.
     :type duration: int
     """
@@ -60,6 +64,7 @@ def escreens_duration(duration):
 def str2bool(v):
     """
     Parse bool from string input.
+
     :param v: String to check if it means True or False.
     :type v: str
     """
@@ -103,7 +108,8 @@ def get_seven_zip(talkative=False):
     Return name of 7-Zip executable.
     On POSIX, it MUST be 7za.
     On Windows, it can be installed or supplied with the script.
-    win_seven_zip() is used to determine if it's installed.
+    :func:`win_seven_zip` is used to determine if it's installed.
+
     :param talkative: Whether to output to screen. False by default.
     :type talkative: bool
     """
@@ -119,6 +125,8 @@ def win_seven_zip(talkative=False):
     For Windows, checks where 7-Zip is.
     Consults registry first for any installed instances of 7-Zip.
     If it's not there, it falls back onto the supplied executables.
+    If *those* aren't there, return "error".
+
     :param talkative: Whether to output to screen. False by default.
     :type talkative: bool
     """
@@ -171,7 +179,7 @@ def prep_seven_zip():
     Check for presence of 7-Zip.
     On POSIX, checks for p7zip.
     On Windows, checks for 7-Zip.
-    False if not found, True if found.
+    Returns False if not found, True if found.
     """
     if is_mac():
         path = shutil.which("7za")
@@ -204,7 +212,8 @@ def return_model(index):
     """
     Return device model from selected HWID/variant index.
     Lists found in bbconstants module.
-    :param index: The index to look up
+
+    :param index: The index to look up.
     :type index: int
     """
     if 0 <= index <= 3:

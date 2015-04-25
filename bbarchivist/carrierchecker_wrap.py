@@ -3,16 +3,25 @@
 import argparse
 import sys
 import os
-from . import carrierchecker
-from . import bbconstants
-from . import utilities
+try:
+    from . import carrierchecker  # @UnusedImport
+except SystemError:
+    import carrierchecker  # @UnresolvedImport @Reimport
+try:
+    from . import bbconstants  # @UnusedImport
+except SystemError:
+    import bbconstants  # @UnresolvedImport @Reimport
+try:
+    from . import utilities  # @UnusedImport
+except SystemError:
+    import utilities  # @UnresolvedImport @Reimport
 
 
 def main():
     """
     Parse arguments from argparse/questionnaire.
 
-    Invoke `carrierchecker.doMagic()` with those arguments.
+    Invoke :func:`bbarchivist.carrierchecker.doMagic` with those arguments.
     """
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(

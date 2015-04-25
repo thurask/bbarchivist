@@ -1,6 +1,9 @@
 import os
 import glob
-from . import pseudocap
+try:
+    from . import pseudocap  # @UnusedImport
+except SystemError:
+    import pseudocap  # @UnresolvedImport @Reimport
 
 
 def generate_loaders(
@@ -9,16 +12,19 @@ def generate_loaders(
     """
     Create and properly label autoloaders.
     Leverages Python implementation of cap.exe.
+
     :param osversion: OS version, 10.x.y.zzzz.
-    Autoconverted to 10.x.0y.zzzz if need be.
     :type osversion: str
+
     :param radioversion: Radio version, 10.x.y.zzzz.
-    Autoconverted to 10.x.0y.zzzz if need be.
     :type radioversion: str
+
     :param radios: Whether to make radios or not. True by default.
     :type radios: bool
+
     :param cap: Path to cap.exe. Default is local dir\\cap.exe.
     :type cap: str
+
     :param localdir: Working path. Default is local dir.
     :type localdir: str
     """
@@ -312,6 +318,25 @@ def generate_loaders(
 def generate_lazy_loader(
         osversion, radioversion, device,
         cap="cap.exe", localdir=os.getcwd()):
+    """
+    :func:`generate_loaders`, but for making one OS/radio loader.
+
+    :param osversion: OS version, 10.x.y.zzzz.
+    :type osversion: str
+
+    :param radioversion: Radio version, 10.x.y.zzzz.
+    :type radioversion: str
+
+    :param device: Selected device, from
+    :type device: int
+
+    :param cap: Path to cap.exe. Default is local dir\\cap.exe.
+    :type cap: str
+
+    :param localdir: Working path. Default is local dir.
+    :type localdir: str
+
+    """
     print("\nCREATING LOADER...")
     if device == 0:
         try:

@@ -1,8 +1,12 @@
 from os.path import abspath, dirname, join
 
+#: App version.
 _version = "1.2.2"
+#: Version of cap.exe bundled with app.
 _capversion = "3.11.0.22"
+#: Where cap.exe is. Should be in site-packages.
 _caplocation = join(dirname(abspath(__file__)), "cap-" + _capversion + ".dat")
+#: Device IDs.
 _devicelist = ["STL100-1",
                "STL100-2",
                "STL100-3",
@@ -37,6 +41,7 @@ _devicelist = ["STL100-1",
                "SQW100-1",
                "SQW100-2",
                "SQW100-3"]
+#: Device hardware IDs, mapped 1:1 to device list.
 _hwidlist = ["4002607",
              "8700240A",
              "8500240A",
@@ -71,6 +76,7 @@ _hwidlist = ["4002607",
              "87002C0A",
              "85002C0A",
              "84002C0A"]
+#: Device models.
 _modellist = ["Z10",
               "P9982",
               "Q10",
@@ -81,6 +87,7 @@ _modellist = ["Z10",
               "LEAP",
               "Z3",
               "PASSPORT"]
+#: Somehow, values for lifetimes for escreens.
 _lifetimes = {
      1: "",
      3: "Hello my baby, hello my honey, hello my rag time gal",
@@ -88,13 +95,5 @@ _lifetimes = {
      15: "So am I, still waiting, for this world to stop hating?",
      30: "I love myself today, not like yesterday. I'm cool, I'm calm, I'm gonna be okay"  # @IgnorePep8
     }
+#: Escreens magic HMAC secret.
 _secret = 'Up the time stream without a TARDIS'
-
-
-def return_constant(constant):
-    """
-    Returns constant referred to by given name/name + index.
-    :param constant: A constant declared in this file.
-    :type constant: str
-    """
-    return constant

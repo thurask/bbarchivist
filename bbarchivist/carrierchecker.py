@@ -1,8 +1,17 @@
 #!/usr/bin/env python3
 
-from . import bbconstants
-from . import networkutils
-from . import utilities
+try:
+    from . import bbconstants  # @UnusedImport
+except SystemError:
+    import bbconstants  # @UnresolvedImport @Reimport
+try:
+    from . import networkutils  # @UnusedImport
+except SystemError:
+    import networkutils  # @UnresolvedImport @Reimport
+try:
+    from . import utilities  # @UnusedImport
+except SystemError:
+    import utilities  # @UnresolvedImport @Reimport
 import os
 
 
@@ -10,17 +19,23 @@ def doMagic(mcc, mnc, device,
             download=False, upgrade=False,
             directory=os.getcwd()):
     """
-    Wrap around networkutils' carrier checking code.
+    Wrap around :mod:`bbarchivist.networkutils` carrier checking.
+
     :param mcc: Country code.
     :type mcc: int
+
     :param mnc: Network code.
     :type mnc: int
+
     :param device: Device ID (SXX100-#)
     :type device: str
+
     :param download: Whether or not to download. Default is false.
     :type download: bool
+
     :param upgrade: Whether or not to use upgrade files. Default is false.
     :type upgrade: bool
+
     :param directory: Where to store files. Default is local directory.
     :type directory: str
     """

@@ -1,0 +1,1000 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>bbarchivist API Documentation &mdash; bbarchivist  documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="bbarchivist  documentation" href="index.html" />
+    <link rel="prev" title="README" href="readme.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="readme.html" title="README"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">bbarchivist  documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="bbarchivist-api-documentation">
+<h1>bbarchivist API Documentation<a class="headerlink" href="#bbarchivist-api-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-bbarchivist.archivist">
+<span id="archivist-module"></span><h2>Archivist module<a class="headerlink" href="#module-bbarchivist.archivist" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="bbarchivist.archivist.do_magic">
+<code class="descclassname">bbarchivist.archivist.</code><code class="descname">do_magic</code><span class="sig-paren">(</span><em>osversion</em>, <em>radioversion</em>, <em>softwareversion</em>, <em>localdir</em>, <em>radios=True</em>, <em>compressed=True</em>, <em>deleted=True</em>, <em>hashed=True</em>, <em>crc32=False</em>, <em>adler32=False</em>, <em>sha1=True</em>, <em>sha224=False</em>, <em>sha256=False</em>, <em>sha384=False</em>, <em>sha512=False</em>, <em>md5=True</em>, <em>md4=False</em>, <em>ripemd160=False</em>, <em>whirlpool=False</em>, <em>cappath='cap.exe'</em>, <em>download=True</em>, <em>extract=True</em>, <em>loaders=True</em>, <em>signed=True</em>, <em>compmethod='7z'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/archivist.html#do_magic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.archivist.do_magic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrap around multi-autoloader creation code.
+Some combination of creating, downloading, hashing,
+compressing and moving autoloaders.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>osversion</strong> (<em>str</em>) &#8211; OS version, 10.x.y.zzzz.</li>
+<li><strong>radioversion</strong> (<em>str</em>) &#8211; Radio version, 10.x.y.zzzz.</li>
+<li><strong>softwareversion</strong> (<em>str</em>) &#8211; Software release, 10.x.y.zzzz.</li>
+<li><strong>localdir</strong> (<em>str</em>) &#8211; Working directory. Required.</li>
+<li><strong>radios</strong> (<em>bool</em>) &#8211; Whether to create radio autoloaders. True by default.</li>
+<li><strong>compressed</strong> (<em>bool</em>) &#8211; Whether to compress files. True by default.</li>
+<li><strong>deleted</strong> (<em>bool</em>) &#8211; Whether to delete uncompressed files. True by default.</li>
+<li><strong>hashed</strong> (<em>bool</em>) &#8211; Whether to hash files. True by default.</li>
+<li><strong>crc32</strong> (<em>bool</em>) &#8211; Whether to use CRC32. False by default.</li>
+<li><strong>adler32</strong> (<em>bool</em>) &#8211; Whether to use Adler-32. False by default.</li>
+<li><strong>sha1</strong> (<em>bool</em>) &#8211; Whether to use SHA-1. True by default.</li>
+<li><strong>sha224</strong> (<em>bool</em>) &#8211; Whether to use SHA-224. False by default.</li>
+<li><strong>sha256</strong> (<em>bool</em>) &#8211; Whether to use SHA-256. False by default.</li>
+<li><strong>sha384</strong> (<em>bool</em>) &#8211; Whether to use SHA-384. False by default.</li>
+<li><strong>sha512</strong> (<em>bool</em>) &#8211; Whether to use SHA-512. False by default.</li>
+<li><strong>md5</strong> (<em>bool</em>) &#8211; Whether to use MD5. True by default.</li>
+<li><strong>md4</strong> (<em>bool</em>) &#8211; Whether to use MD4. False by default.</li>
+<li><strong>ripemd160</strong> (<em>bool</em>) &#8211; Whether to use RIPEMD160. False by default.</li>
+<li><strong>whirlpool</strong> (<em>bool</em>) &#8211; Whether to use Whirlpool. False by default.</li>
+<li><strong>cappath</strong> (<em>str</em>) &#8211; Path to cap.exe. Default is local dir &#8216;cap.exe&#8217;.</li>
+<li><strong>download</strong> (<em>bool</em>) &#8211; Whether to download bar files. True by default.</li>
+<li><strong>extract</strong> (<em>bool</em>) &#8211; Whether to extract bar files. True by default.</li>
+<li><strong>loaders</strong> (<em>bool</em>) &#8211; Whether to create autoloaders. True by default.</li>
+<li><strong>signed</strong> (<em>bool</em>) &#8211; Whether to delete signed files. True by default.</li>
+<li><strong>compmethod</strong> (<em>str</em>) &#8211; Compression method. Default is &#8220;7z&#8221; with fallback &#8220;zip&#8221;.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-bbarchivist.archivist_wrap">
+<span id="archivist-wrapper"></span><h2>Archivist wrapper<a class="headerlink" href="#module-bbarchivist.archivist_wrap" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="bbarchivist.archivist_wrap.main">
+<code class="descclassname">bbarchivist.archivist_wrap.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/archivist_wrap.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.archivist_wrap.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse arguments from argparse/questionnaire.</p>
+<p>Invoke <code class="xref py py-func docutils literal"><span class="pre">bbarchivist.archivist.doMagic()</span></code> with those arguments.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-bbarchivist.barutils">
+<span id="barutils-module"></span><h2>Barutils module<a class="headerlink" href="#module-bbarchivist.barutils" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="bbarchivist.barutils.compress">
+<code class="descclassname">bbarchivist.barutils.</code><code class="descname">compress</code><span class="sig-paren">(</span><em>filepath</em>, <em>method='7z'</em>, <em>szexe='7za.exe'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/barutils.html#compress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.barutils.compress" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compress all autoloader files in a given folder, with a given method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filepath</strong> (<em>str</em>) &#8211; Working directory. Required.</li>
+<li><strong>method</strong> (<em>str</em>) &#8211; Compression type. Default is &#8220;7z&#8221;. Defined in source.</li>
+<li><strong>szexe</strong> (<em>str</em>) &#8211; Path to 7z executable, if needed.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.barutils.extract_bars">
+<code class="descclassname">bbarchivist.barutils.</code><code class="descname">extract_bars</code><span class="sig-paren">(</span><em>filepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/barutils.html#extract_bars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.barutils.extract_bars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract .signed files from .bar files.
+Use system zlib.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> (<em>str</em>) &#8211; Path to bar file directory.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.barutils.move_loaders">
+<code class="descclassname">bbarchivist.barutils.</code><code class="descname">move_loaders</code><span class="sig-paren">(</span><em>localdir</em>, <em>exedir_os</em>, <em>exedir_rad</em>, <em>zipdir_os</em>, <em>zipdir_rad</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/barutils.html#move_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.barutils.move_loaders" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move autoloaders to zipped and loaders directories in localdir.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>localdir</strong> (<em>str</em>) &#8211; Local directory, containing files you wish to move.</li>
+<li><strong>exedir_os</strong> (<em>str</em>) &#8211; Large autoloader .exe destination.</li>
+<li><strong>exedir_rad</strong> (<em>str</em>) &#8211; Small autoloader .exe destination.</li>
+<li><strong>zipdir_os</strong> (<em>str</em>) &#8211; Large autoloader archive destination.</li>
+<li><strong>zipdir_rad</strong> (<em>str</em>) &#8211; Small autoloader archive destination.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.barutils.remove_empty_folders">
+<code class="descclassname">bbarchivist.barutils.</code><code class="descname">remove_empty_folders</code><span class="sig-paren">(</span><em>a_folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/barutils.html#remove_empty_folders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.barutils.remove_empty_folders" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove empty folders in a given folder using os.walk().</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>a_folder</strong> (<em>str</em>) &#8211; Target folder.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.barutils.reset">
+<code class="descclassname">bbarchivist.barutils.</code><code class="descname">reset</code><span class="sig-paren">(</span><em>tarinfo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/barutils.html#reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.barutils.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter for TAR compression.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tarinfo</strong> (<em>TarInfo</em>) &#8211; TarInfo instance to use.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-bbarchivist.carrierchecker">
+<span id="carrierchecker-module"></span><h2>Carrierchecker module<a class="headerlink" href="#module-bbarchivist.carrierchecker" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="bbarchivist.carrierchecker.doMagic">
+<code class="descclassname">bbarchivist.carrierchecker.</code><code class="descname">doMagic</code><span class="sig-paren">(</span><em>mcc</em>, <em>mnc</em>, <em>device</em>, <em>download=False</em>, <em>upgrade=False</em>, <em>directory='X:\\bbndk\\workspace\\bbarchivist\\docs\\bbarchivist'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/carrierchecker.html#doMagic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.carrierchecker.doMagic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrap around <a class="reference internal" href="#module-bbarchivist.networkutils" title="bbarchivist.networkutils"><code class="xref py py-mod docutils literal"><span class="pre">bbarchivist.networkutils</span></code></a> carrier checking.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>mcc</strong> (<em>int</em>) &#8211; Country code.</li>
+<li><strong>mnc</strong> (<em>int</em>) &#8211; Network code.</li>
+<li><strong>device</strong> (<em>str</em>) &#8211; Device ID (SXX100-#)</li>
+<li><strong>download</strong> (<em>bool</em>) &#8211; Whether or not to download. Default is false.</li>
+<li><strong>upgrade</strong> (<em>bool</em>) &#8211; Whether or not to use upgrade files. Default is false.</li>
+<li><strong>directory</strong> (<em>str</em>) &#8211; Where to store files. Default is local directory.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-bbarchivist.carrierchecker_wrap">
+<span id="carrierchecker-wrapper"></span><h2>Carrierchecker wrapper<a class="headerlink" href="#module-bbarchivist.carrierchecker_wrap" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="bbarchivist.carrierchecker_wrap.main">
+<code class="descclassname">bbarchivist.carrierchecker_wrap.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/carrierchecker_wrap.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.carrierchecker_wrap.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse arguments from argparse/questionnaire.</p>
+<p>Invoke <a class="reference internal" href="#bbarchivist.carrierchecker.doMagic" title="bbarchivist.carrierchecker.doMagic"><code class="xref py py-func docutils literal"><span class="pre">bbarchivist.carrierchecker.doMagic()</span></code></a> with those arguments.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-bbarchivist.escreens">
+<span id="escreens-module"></span><h2>Escreens module<a class="headerlink" href="#module-bbarchivist.escreens" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="bbarchivist.escreens.calculate_escreens">
+<code class="descclassname">bbarchivist.escreens.</code><code class="descname">calculate_escreens</code><span class="sig-paren">(</span><em>pin</em>, <em>app</em>, <em>uptime</em>, <em>duration=30</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/escreens.html#calculate_escreens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.escreens.calculate_escreens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate key for the Engineering Screens based on input.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pin</strong> (<em>str</em>) &#8211; PIN to check. 8 character hexadecimal, lowercase.</li>
+<li><strong>app</strong> (<em>str</em>) &#8211; App version. 10.x.y.zzzz.</li>
+<li><strong>uptime</strong> (<em>str</em>) &#8211; Uptime in ms.</li>
+<li><strong>duration</strong> (<em>str</em>) &#8211; 1, 3, 6, 15, 30 (days).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-bbarchivist.escreens_wrap">
+<span id="escreens-wrapper"></span><h2>Escreens wrapper<a class="headerlink" href="#module-bbarchivist.escreens_wrap" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="bbarchivist.escreens_wrap.main">
+<code class="descclassname">bbarchivist.escreens_wrap.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/escreens_wrap.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.escreens_wrap.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse arguments from argparse/questionnaire.</p>
+<p>Invoke <a class="reference internal" href="#bbarchivist.escreens.calculate_escreens" title="bbarchivist.escreens.calculate_escreens"><code class="xref py py-func docutils literal"><span class="pre">bbarchivist.escreens.calculate_escreens()</span></code></a> with arguments.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-bbarchivist.filehasher_wrap">
+<span id="hashwrapper-wrapper"></span><h2>Hashwrapper wrapper<a class="headerlink" href="#module-bbarchivist.filehasher_wrap" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="bbarchivist.filehasher_wrap.main">
+<code class="descclassname">bbarchivist.filehasher_wrap.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/filehasher_wrap.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.filehasher_wrap.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse arguments from argparse/questionnaire.</p>
+<p>Invoke <a class="reference internal" href="#bbarchivist.hashwrapper.verifier" title="bbarchivist.hashwrapper.verifier"><code class="xref py py-func docutils literal"><span class="pre">bbarchivist.hashwrapper.verifier()</span></code></a> with those arguments.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-bbarchivist.filehashtools">
+<span id="filehashtools-module"></span><h2>Filehashtools module<a class="headerlink" href="#module-bbarchivist.filehashtools" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="bbarchivist.filehashtools.adler32hash">
+<code class="descclassname">bbarchivist.filehashtools.</code><code class="descname">adler32hash</code><span class="sig-paren">(</span><em>filepath</em>, <em>blocksize=16777216</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/filehashtools.html#adler32hash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.filehashtools.adler32hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return Adler32 checksum of a file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filepath</strong> (<em>str</em>) &#8211; File you wish to verify.</li>
+<li><strong>blocksize</strong> (<em>int</em>) &#8211; How much of file to read at once.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.filehashtools.crc32hash">
+<code class="descclassname">bbarchivist.filehashtools.</code><code class="descname">crc32hash</code><span class="sig-paren">(</span><em>filepath</em>, <em>blocksize=16777216</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/filehashtools.html#crc32hash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.filehashtools.crc32hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return CRC32 checksum of a file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filepath</strong> (<em>str</em>) &#8211; File you wish to verify.</li>
+<li><strong>blocksize</strong> (<em>int</em>) &#8211; How much of file to read at once.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.filehashtools.md4hash">
+<code class="descclassname">bbarchivist.filehashtools.</code><code class="descname">md4hash</code><span class="sig-paren">(</span><em>filepath</em>, <em>blocksize=16777216</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/filehashtools.html#md4hash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.filehashtools.md4hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return MD4 hash of a file; depends on system SSL library.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filepath</strong> (<em>str</em>) &#8211; File you wish to verify.</li>
+<li><strong>blocksize</strong> (<em>int</em>) &#8211; How much of file to read at once.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.filehashtools.md5hash">
+<code class="descclassname">bbarchivist.filehashtools.</code><code class="descname">md5hash</code><span class="sig-paren">(</span><em>filepath</em>, <em>blocksize=16777216</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/filehashtools.html#md5hash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.filehashtools.md5hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return MD5 hash of a file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filepath</strong> (<em>str</em>) &#8211; File you wish to verify.</li>
+<li><strong>blocksize</strong> (<em>int</em>) &#8211; How much of file to read at once.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.filehashtools.ripemd160hash">
+<code class="descclassname">bbarchivist.filehashtools.</code><code class="descname">ripemd160hash</code><span class="sig-paren">(</span><em>filepath</em>, <em>blocksize=16777216</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/filehashtools.html#ripemd160hash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.filehashtools.ripemd160hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return RIPEMD160 hash of a file; depends on system SSL library.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filepath</strong> (<em>str</em>) &#8211; File you wish to verify.</li>
+<li><strong>blocksize</strong> (<em>int</em>) &#8211; How much of file to read at once.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.filehashtools.sha1hash">
+<code class="descclassname">bbarchivist.filehashtools.</code><code class="descname">sha1hash</code><span class="sig-paren">(</span><em>filepath</em>, <em>blocksize=16777216</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/filehashtools.html#sha1hash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.filehashtools.sha1hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return SHA-1 hash of a file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filepath</strong> (<em>str</em>) &#8211; File you wish to verify.</li>
+<li><strong>blocksize</strong> (<em>int</em>) &#8211; How much of file to read at once.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.filehashtools.sha224hash">
+<code class="descclassname">bbarchivist.filehashtools.</code><code class="descname">sha224hash</code><span class="sig-paren">(</span><em>filepath</em>, <em>blocksize=16777216</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/filehashtools.html#sha224hash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.filehashtools.sha224hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return SHA-224 hash of a file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filepath</strong> (<em>str</em>) &#8211; File you wish to verify.</li>
+<li><strong>blocksize</strong> (<em>int</em>) &#8211; How much of file to read at once.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.filehashtools.sha256hash">
+<code class="descclassname">bbarchivist.filehashtools.</code><code class="descname">sha256hash</code><span class="sig-paren">(</span><em>filepath</em>, <em>blocksize=16777216</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/filehashtools.html#sha256hash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.filehashtools.sha256hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return SHA-256 hash of a file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filepath</strong> (<em>str</em>) &#8211; File you wish to verify.</li>
+<li><strong>blocksize</strong> (<em>int</em>) &#8211; How much of file to read at once.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.filehashtools.sha384hash">
+<code class="descclassname">bbarchivist.filehashtools.</code><code class="descname">sha384hash</code><span class="sig-paren">(</span><em>filepath</em>, <em>blocksize=16777216</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/filehashtools.html#sha384hash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.filehashtools.sha384hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return SHA-384 hash of a file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filepath</strong> (<em>str</em>) &#8211; File you wish to verify.</li>
+<li><strong>blocksize</strong> (<em>int</em>) &#8211; How much of file to read at once.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.filehashtools.sha512hash">
+<code class="descclassname">bbarchivist.filehashtools.</code><code class="descname">sha512hash</code><span class="sig-paren">(</span><em>filepath</em>, <em>blocksize=16777216</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/filehashtools.html#sha512hash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.filehashtools.sha512hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return SHA-512 hash of a file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filepath</strong> (<em>str</em>) &#8211; File you wish to verify.</li>
+<li><strong>blocksize</strong> (<em>int</em>) &#8211; How much of file to read at once.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.filehashtools.whirlpoolhash">
+<code class="descclassname">bbarchivist.filehashtools.</code><code class="descname">whirlpoolhash</code><span class="sig-paren">(</span><em>filepath</em>, <em>blocksize=16777216</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/filehashtools.html#whirlpoolhash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.filehashtools.whirlpoolhash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return Whirlpool hash of a file; depends on system SSL library.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filepath</strong> (<em>str</em>) &#8211; File you wish to verify.</li>
+<li><strong>blocksize</strong> (<em>int</em>) &#8211; How much of file to read at once.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-bbarchivist.hashwrapper">
+<span id="hashwrapper-module"></span><h2>Hashwrapper module<a class="headerlink" href="#module-bbarchivist.hashwrapper" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="bbarchivist.hashwrapper.verifier">
+<code class="descclassname">bbarchivist.hashwrapper.</code><code class="descname">verifier</code><span class="sig-paren">(</span><em>workingdir</em>, <em>blocksize=16777216</em>, <em>crc32=False</em>, <em>adler32=False</em>, <em>sha1=True</em>, <em>sha224=False</em>, <em>sha256=False</em>, <em>sha384=False</em>, <em>sha512=False</em>, <em>md5=True</em>, <em>md4=False</em>, <em>ripemd160=False</em>, <em>whirlpool=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/hashwrapper.html#verifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.hashwrapper.verifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>For all files in a directory, perform various hash/checksum functions.
+Functions based on boolean arguments, writing the output to a .cksum file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>workingdir</strong> (<em>str</em>) &#8211; Path containing files you wish to verify.</li>
+<li><strong>blocksize</strong> (<em>int</em>) &#8211; How much of file to read at once.</li>
+<li><strong>crc32</strong> (<em>bool</em>) &#8211; Use of CRC32. False by default.</li>
+<li><strong>adler32</strong> (<em>bool</em>) &#8211; Use of Adler-32. False by default.</li>
+<li><strong>sha1</strong> (<em>bool</em>) &#8211; Use of SHA-1. True by default.</li>
+<li><strong>sha224</strong> (<em>bool</em>) &#8211; Use of SHA-224. False by default.</li>
+<li><strong>sha256</strong> (<em>bool</em>) &#8211; Use of SHA-256. False by default.</li>
+<li><strong>sha384</strong> (<em>bool</em>) &#8211; Use of SHA-384. False by default.</li>
+<li><strong>sha512</strong> (<em>bool</em>) &#8211; Use of SHA-512. False by default.</li>
+<li><strong>md5</strong> (<em>bool</em>) &#8211; Use of MD5. True by default.</li>
+<li><strong>md4</strong> (<em>bool</em>) &#8211; Use of MD4. False by default. Depends on system.</li>
+<li><strong>ripemd160</strong> (<em>bool</em>) &#8211; Use of RIPEMD160. False by default. Depends on system.</li>
+<li><strong>whirlpool</strong> (<em>bool</em>) &#8211; Use of Whirlpool. False by default. Depends on system.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-bbarchivist.lazyloader">
+<span id="lazyloader-module"></span><h2>Lazyloader module<a class="headerlink" href="#module-bbarchivist.lazyloader" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="bbarchivist.lazyloader.doMagic">
+<code class="descclassname">bbarchivist.lazyloader.</code><code class="descname">doMagic</code><span class="sig-paren">(</span><em>osversion</em>, <em>radioversion</em>, <em>softwareversion</em>, <em>device</em>, <em>localdir</em>, <em>autoloader</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/lazyloader.html#doMagic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.lazyloader.doMagic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrap the tools necessary to make one autoloader.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>osversion</strong> (<em>str</em>) &#8211; OS version, 10.x.y.zzzz.</li>
+<li><strong>radioversion</strong> (<em>str</em>) &#8211; Radio version, 10.x.y.zzzz.</li>
+<li><strong>softwareversion</strong> (<em>str</em>) &#8211; Software version, 10.x.y.zzzz.</li>
+<li><strong>device</strong> (<em>int</em>) &#8211; Device family to create loader for.</li>
+<li><strong>localdir</strong> (<em>str</em>) &#8211; Working path. Default is local dir.</li>
+<li><strong>autoloader</strong> (<em>bool</em>) &#8211; Whether to run loaders. Default is false. Windows-only.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-bbarchivist.lazyloader_wrap">
+<span id="lazyloader-wrapper"></span><h2>Lazyloader wrapper<a class="headerlink" href="#module-bbarchivist.lazyloader_wrap" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="bbarchivist.lazyloader_wrap.main">
+<code class="descclassname">bbarchivist.lazyloader_wrap.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/lazyloader_wrap.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.lazyloader_wrap.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse arguments from argparse/questionnaire.</p>
+<p>Invoke <a class="reference internal" href="#bbarchivist.lazyloader.doMagic" title="bbarchivist.lazyloader.doMagic"><code class="xref py py-func docutils literal"><span class="pre">bbarchivist.lazyloader.doMagic()</span></code></a> with those arguments.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-bbarchivist.loadergen">
+<span id="loadergen-module"></span><h2>Loadergen module<a class="headerlink" href="#module-bbarchivist.loadergen" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="bbarchivist.loadergen.generate_lazy_loader">
+<code class="descclassname">bbarchivist.loadergen.</code><code class="descname">generate_lazy_loader</code><span class="sig-paren">(</span><em>osversion</em>, <em>radioversion</em>, <em>device</em>, <em>cap='cap.exe'</em>, <em>localdir='X:\\bbndk\\workspace\\bbarchivist\\docs\\bbarchivist'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/loadergen.html#generate_lazy_loader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.loadergen.generate_lazy_loader" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#bbarchivist.loadergen.generate_loaders" title="bbarchivist.loadergen.generate_loaders"><code class="xref py py-func docutils literal"><span class="pre">generate_loaders()</span></code></a>, but for making one OS/radio loader.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>osversion</strong> (<em>str</em>) &#8211; OS version, 10.x.y.zzzz.</li>
+<li><strong>radioversion</strong> (<em>str</em>) &#8211; Radio version, 10.x.y.zzzz.</li>
+<li><strong>device</strong> (<em>int</em>) &#8211; Selected device, from</li>
+<li><strong>cap</strong> (<em>str</em>) &#8211; Path to cap.exe. Default is local dircap.exe.</li>
+<li><strong>localdir</strong> (<em>str</em>) &#8211; Working path. Default is local dir.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.loadergen.generate_loaders">
+<code class="descclassname">bbarchivist.loadergen.</code><code class="descname">generate_loaders</code><span class="sig-paren">(</span><em>osversion</em>, <em>radioversion</em>, <em>radios=True</em>, <em>cap='cap.exe'</em>, <em>localdir='X:\\bbndk\\workspace\\bbarchivist\\docs\\bbarchivist'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/loadergen.html#generate_loaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.loadergen.generate_loaders" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and properly label autoloaders.
+Leverages Python implementation of cap.exe.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>osversion</strong> (<em>str</em>) &#8211; OS version, 10.x.y.zzzz.</li>
+<li><strong>radioversion</strong> (<em>str</em>) &#8211; Radio version, 10.x.y.zzzz.</li>
+<li><strong>radios</strong> (<em>bool</em>) &#8211; Whether to make radios or not. True by default.</li>
+<li><strong>cap</strong> (<em>str</em>) &#8211; Path to cap.exe. Default is local dircap.exe.</li>
+<li><strong>localdir</strong> (<em>str</em>) &#8211; Working path. Default is local dir.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-bbarchivist.networkutils">
+<span id="networkutils-module"></span><h2>Networkutils module<a class="headerlink" href="#module-bbarchivist.networkutils" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="bbarchivist.networkutils.DownloadManager">
+<em class="property">class </em><code class="descclassname">bbarchivist.networkutils.</code><code class="descname">DownloadManager</code><span class="sig-paren">(</span><em>download_dict</em>, <em>output_directory</em>, <em>thread_count=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/networkutils.html#DownloadManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.networkutils.DownloadManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Class that handles queued downloads.
+Based on:
+<a class="reference external" href="http://pipe-devnull.com/2012/09/13/queued-threaded-http-downloader-in-python.html">http://pipe-devnull.com/2012/09/13/queued-threaded-http-downloader-in-python.html</a></p>
+<dl class="method">
+<dt id="bbarchivist.networkutils.DownloadManager.begin_downloads">
+<code class="descname">begin_downloads</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/networkutils.html#DownloadManager.begin_downloads"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.networkutils.DownloadManager.begin_downloads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start <a class="reference internal" href="#bbarchivist.networkutils.Downloader" title="bbarchivist.networkutils.Downloader"><code class="xref py py-class docutils literal"><span class="pre">Downloader</span></code></a> threads for queued downloads.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="bbarchivist.networkutils.Downloader">
+<em class="property">class </em><code class="descclassname">bbarchivist.networkutils.</code><code class="descname">Downloader</code><span class="sig-paren">(</span><em>queue</em>, <em>output_directory</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/networkutils.html#Downloader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.networkutils.Downloader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></p>
+<p>Downloads files attached to supplied threads from DownloadManager.
+Based on:
+<a class="reference external" href="http://pipe-devnull.com/2012/09/13/queued-threaded-http-downloader-in-python.html">http://pipe-devnull.com/2012/09/13/queued-threaded-http-downloader-in-python.html</a></p>
+<dl class="method">
+<dt id="bbarchivist.networkutils.Downloader.download">
+<code class="descname">download</code><span class="sig-paren">(</span><em>url</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/networkutils.html#Downloader.download"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.networkutils.Downloader.download" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download file from given URL.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>url</strong> (<em>str</em>) &#8211; URL to download from.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bbarchivist.networkutils.Downloader.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/networkutils.html#Downloader.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.networkutils.Downloader.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download files from queue.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.networkutils.availability">
+<code class="descclassname">bbarchivist.networkutils.</code><code class="descname">availability</code><span class="sig-paren">(</span><em>url</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/networkutils.html#availability"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.networkutils.availability" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check HTTP status code of given URL.
+200 or 301-308 is OK, else is not.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>url</strong> (<em>str</em>) &#8211; URL to check.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.networkutils.carrier_checker">
+<code class="descclassname">bbarchivist.networkutils.</code><code class="descname">carrier_checker</code><span class="sig-paren">(</span><em>mcc</em>, <em>mnc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/networkutils.html#carrier_checker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.networkutils.carrier_checker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query BlackBerry World to map a MCC and a MNC to a country and carrier.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>mcc</strong> (<em>int</em>) &#8211; Country code.</li>
+<li><strong>mnc</strong> (<em>int</em>) &#8211; Network code.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.networkutils.carrier_update_request">
+<code class="descclassname">bbarchivist.networkutils.</code><code class="descname">carrier_update_request</code><span class="sig-paren">(</span><em>mcc</em>, <em>mnc</em>, <em>device</em>, <em>download=False</em>, <em>upgrade=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/networkutils.html#carrier_update_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.networkutils.carrier_update_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query BlackBerry servers, check which update is out for a carrier.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>mcc</strong> (<em>int</em>) &#8211; Country code.</li>
+<li><strong>mnc</strong> (<em>int</em>) &#8211; Network code.</li>
+<li><strong>device</strong> (<em>str</em>) &#8211; Hexadecimal hardware ID.</li>
+<li><strong>download</strong> (<em>bool</em>) &#8211; Whether to download files. False by default.</li>
+<li><strong>upgrade</strong> (<em>bool</em>) &#8211; Whether to use upgrade files. False by default.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-bbarchivist.pseudocap">
+<span id="pseudocap-module"></span><h2>Pseudocap module<a class="headerlink" href="#module-bbarchivist.pseudocap" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="bbarchivist.pseudocap.ghetto_convert">
+<code class="descclassname">bbarchivist.pseudocap.</code><code class="descname">ghetto_convert</code><span class="sig-paren">(</span><em>intsize</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/pseudocap.html#ghetto_convert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.pseudocap.ghetto_convert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert from decimal integer to little endian
+hexadecimal string, padded to 16 characters with zeros.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>intsize</strong> (<em>integer</em>) &#8211; Integer you wish to convert.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.pseudocap.make_autoloader">
+<code class="descclassname">bbarchivist.pseudocap.</code><code class="descname">make_autoloader</code><span class="sig-paren">(</span><em>filename</em>, <em>cap</em>, <em>firstfile</em>, <em>secondfile=''</em>, <em>thirdfile=''</em>, <em>fourthfile=''</em>, <em>fifthfile=''</em>, <em>sixthfile=''</em>, <em>folder='X:\\bbndk\\workspace\\bbarchivist\\docs\\bbarchivist'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/pseudocap.html#make_autoloader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.pseudocap.make_autoloader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Python implementation of cap.exe.
+Writes cap.exe, magic offset, signed files to a .exe file.
+<a class="reference internal" href="#bbarchivist.pseudocap.make_offset" title="bbarchivist.pseudocap.make_offset"><code class="xref py py-func docutils literal"><span class="pre">make_offset()</span></code></a> is used to create the offset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filename</strong> (<em>str</em>) &#8211; Name of autoloader.</li>
+<li><strong>cap</strong> (<em>str</em>) &#8211; Location of cap.exe file.</li>
+<li><strong>firstfile</strong> (<em>str</em>) &#8211; First signed file. Required.</li>
+<li><strong>secondfile</strong> (<em>str</em>) &#8211; Second signed file. Optional.</li>
+<li><strong>thirdfile</strong> (<em>str</em>) &#8211; Third signed file. Optional.</li>
+<li><strong>fourthfile</strong> (<em>str</em>) &#8211; Fourth signed file. Optional.</li>
+<li><strong>fifthfile</strong> (<em>str</em>) &#8211; Fifth signed file. Optional.</li>
+<li><strong>sixthfile</strong> (<em>str</em>) &#8211; Sixth signed file. Optional.</li>
+<li><strong>folder</strong> (<em>str</em>) &#8211; Working folder. Optional.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.pseudocap.make_offset">
+<code class="descclassname">bbarchivist.pseudocap.</code><code class="descname">make_offset</code><span class="sig-paren">(</span><em>cap</em>, <em>firstfile</em>, <em>secondfile=''</em>, <em>thirdfile=''</em>, <em>fourthfile=''</em>, <em>fifthfile=''</em>, <em>sixthfile=''</em>, <em>folder='X:\\bbndk\\workspace\\bbarchivist\\docs\\bbarchivist'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/pseudocap.html#make_offset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.pseudocap.make_offset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create magic offset file for use in autoloader creation.
+Cap.exe MUST match separator version.
+Version defined in <code class="xref py py-data docutils literal"><span class="pre">bbarchivist.bbconstants._capversion</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>cap</strong> (<em>str</em>) &#8211; Location of cap.exe file.</li>
+<li><strong>firstfile</strong> (<em>str</em>) &#8211; First signed file. Required.</li>
+<li><strong>secondfile</strong> (<em>str</em>) &#8211; Second signed file. Optional.</li>
+<li><strong>thirdfile</strong> (<em>str</em>) &#8211; Third signed file. Optional.</li>
+<li><strong>fourthfile</strong> (<em>str</em>) &#8211; Fourth signed file. Optional.</li>
+<li><strong>fifthfile</strong> (<em>str</em>) &#8211; Fifth signed file. Optional.</li>
+<li><strong>sixthfile</strong> (<em>str</em>) &#8211; Sixth signed file. Optional.</li>
+<li><strong>folder</strong> (<em>str</em>) &#8211; Working folder. Optional.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-bbarchivist.utilities">
+<span id="utilities-module"></span><h2>Utilities module<a class="headerlink" href="#module-bbarchivist.utilities" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="bbarchivist.utilities.escreens_duration">
+<code class="descclassname">bbarchivist.utilities.</code><code class="descname">escreens_duration</code><span class="sig-paren">(</span><em>duration</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/utilities.html#escreens_duration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.utilities.escreens_duration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if escreens duration is valid.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>duration</strong> (<em>int</em>) &#8211; Duration to check.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.utilities.escreens_pin">
+<code class="descclassname">bbarchivist.utilities.</code><code class="descname">escreens_pin</code><span class="sig-paren">(</span><em>pin</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/utilities.html#escreens_pin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.utilities.escreens_pin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if given PIN is valid (8 character hexadecimal)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pin</strong> (<em>str</em>) &#8211; PIN to check.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.utilities.file_exists">
+<code class="descclassname">bbarchivist.utilities.</code><code class="descname">file_exists</code><span class="sig-paren">(</span><em>file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/utilities.html#file_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.utilities.file_exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if file exists. Used for parsing file inputs from command line.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file</strong> (<em>str</em>) &#8211; Path to a file, including extension.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.utilities.get_core_count">
+<code class="descclassname">bbarchivist.utilities.</code><code class="descname">get_core_count</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/utilities.html#get_core_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.utilities.get_core_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find out how many CPU cores this system has.
+Good for multicore compression.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.utilities.get_seven_zip">
+<code class="descclassname">bbarchivist.utilities.</code><code class="descname">get_seven_zip</code><span class="sig-paren">(</span><em>talkative=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/utilities.html#get_seven_zip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.utilities.get_seven_zip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return name of 7-Zip executable.
+On POSIX, it MUST be 7za.
+On Windows, it can be installed or supplied with the script.
+<a class="reference internal" href="#bbarchivist.utilities.win_seven_zip" title="bbarchivist.utilities.win_seven_zip"><code class="xref py py-func docutils literal"><span class="pre">win_seven_zip()</span></code></a> is used to determine if it&#8217;s installed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>talkative</strong> (<em>bool</em>) &#8211; Whether to output to screen. False by default.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.utilities.is_amd64">
+<code class="descclassname">bbarchivist.utilities.</code><code class="descname">is_amd64</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/utilities.html#is_amd64"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.utilities.is_amd64" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns true if script is running on an AMD64 system</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.utilities.is_linux">
+<code class="descclassname">bbarchivist.utilities.</code><code class="descname">is_linux</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/utilities.html#is_linux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.utilities.is_linux" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns true if script is running on Linux.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.utilities.is_mac">
+<code class="descclassname">bbarchivist.utilities.</code><code class="descname">is_mac</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/utilities.html#is_mac"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.utilities.is_mac" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns true if script is running on OSX.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.utilities.is_windows">
+<code class="descclassname">bbarchivist.utilities.</code><code class="descname">is_windows</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/utilities.html#is_windows"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.utilities.is_windows" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns true if script is running on Windows.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.utilities.positive_integer">
+<code class="descclassname">bbarchivist.utilities.</code><code class="descname">positive_integer</code><span class="sig-paren">(</span><em>inputint</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/utilities.html#positive_integer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.utilities.positive_integer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if number &gt; 0. Used for parsing integer inputs from command line.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>inputint</strong> (<em>int</em>) &#8211; Integer to check.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.utilities.prep_seven_zip">
+<code class="descclassname">bbarchivist.utilities.</code><code class="descname">prep_seven_zip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/utilities.html#prep_seven_zip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.utilities.prep_seven_zip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check for presence of 7-Zip.
+On POSIX, checks for p7zip.
+On Windows, checks for 7-Zip.
+Returns False if not found, True if found.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.utilities.return_model">
+<code class="descclassname">bbarchivist.utilities.</code><code class="descname">return_model</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/utilities.html#return_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.utilities.return_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return device model from selected HWID/variant index.
+Lists found in bbconstants module.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>index</strong> (<em>int</em>) &#8211; The index to look up.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.utilities.str2bool">
+<code class="descclassname">bbarchivist.utilities.</code><code class="descname">str2bool</code><span class="sig-paren">(</span><em>v</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/utilities.html#str2bool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.utilities.str2bool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse bool from string input.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>v</strong> (<em>str</em>) &#8211; String to check if it means True or False.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.utilities.win_seven_zip">
+<code class="descclassname">bbarchivist.utilities.</code><code class="descname">win_seven_zip</code><span class="sig-paren">(</span><em>talkative=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/utilities.html#win_seven_zip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.utilities.win_seven_zip" title="Permalink to this definition">¶</a></dt>
+<dd><p>For Windows, checks where 7-Zip is.
+Consults registry first for any installed instances of 7-Zip.
+If it&#8217;s not there, it falls back onto the supplied executables.
+If <em>those</em> aren&#8217;t there, return &#8220;error&#8221;.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>talkative</strong> (<em>bool</em>) &#8211; Whether to output to screen. False by default.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">bbarchivist API Documentation</a><ul>
+<li><a class="reference internal" href="#module-bbarchivist.archivist">Archivist module</a></li>
+<li><a class="reference internal" href="#module-bbarchivist.archivist_wrap">Archivist wrapper</a></li>
+<li><a class="reference internal" href="#module-bbarchivist.barutils">Barutils module</a></li>
+<li><a class="reference internal" href="#module-bbarchivist.carrierchecker">Carrierchecker module</a></li>
+<li><a class="reference internal" href="#module-bbarchivist.carrierchecker_wrap">Carrierchecker wrapper</a></li>
+<li><a class="reference internal" href="#module-bbarchivist.escreens">Escreens module</a></li>
+<li><a class="reference internal" href="#module-bbarchivist.escreens_wrap">Escreens wrapper</a></li>
+<li><a class="reference internal" href="#module-bbarchivist.filehasher_wrap">Hashwrapper wrapper</a></li>
+<li><a class="reference internal" href="#module-bbarchivist.filehashtools">Filehashtools module</a></li>
+<li><a class="reference internal" href="#module-bbarchivist.hashwrapper">Hashwrapper module</a></li>
+<li><a class="reference internal" href="#module-bbarchivist.lazyloader">Lazyloader module</a></li>
+<li><a class="reference internal" href="#module-bbarchivist.lazyloader_wrap">Lazyloader wrapper</a></li>
+<li><a class="reference internal" href="#module-bbarchivist.loadergen">Loadergen module</a></li>
+<li><a class="reference internal" href="#module-bbarchivist.networkutils">Networkutils module</a></li>
+<li><a class="reference internal" href="#module-bbarchivist.pseudocap">Pseudocap module</a></li>
+<li><a class="reference internal" href="#module-bbarchivist.utilities">Utilities module</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="readme.html"
+                        title="previous chapter">README</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/bbarchivist.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="readme.html" title="README"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">bbarchivist  documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Thurask.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

@@ -7,14 +7,18 @@ import subprocess  # invocation of 7z, cap
 import zipfile  # zip extract, zip compresssion
 import tarfile  # txz/tbz/tgz compression
 import shutil
-from . import utilities
+try:
+    from . import utilities  # @UnusedImport
+except SystemError:
+    import utilities  # @UnresolvedImport @Reimport
 
 
 def extract_bars(filepath):
     """
     Extract .signed files from .bar files.
     Use system zlib.
-    :param filepath: \\path\\to\\bar_files
+
+    :param filepath: Path to bar file directory.
     :type filepath: str
     """
     for file in os.listdir(filepath):
@@ -34,8 +38,8 @@ def extract_bars(filepath):
 def reset(tarinfo):
     """
     Filter for TAR compression.
+
     :param tarinfo: TarInfo instance to use.
-    From provided TarFile, when used as filter.
     :type tarinfo: TarInfo
     """
     tarinfo.uid = tarinfo.gid = 0
@@ -46,19 +50,14 @@ def reset(tarinfo):
 def compress(filepath, method="7z", szexe="7za.exe"):
     """
     Compress all autoloader files in a given folder, with a given method.
+
     :param filepath: Working directory. Required.
     :type filepath: str
-    :param method: Compression type.
-    Can be:
-    - "7z" - 7-Zip, LZMA2
-    - "txz" - TAR, LZMA (xz)
-    - "tbz" - TAR, BZip2 (bz2)
-    - "tgz" - TAR, GZip (gz)
-    - "zip" - ZIP, DEFLATE
-    Default is "7z".
+
+    :param method: Compression type. Default is "7z". Defined in source.
     :type method: str
+
     :param szexe: Path to 7z executable, if needed.
-    Default is local dir\\7za.exe.
     :type szexe: str
     """
     for file in os.listdir(filepath):
@@ -130,8 +129,9 @@ def compress(filepath, method="7z", szexe="7za.exe"):
 def remove_empty_folders(a_folder):
     """
     Remove empty folders in a given folder using os.walk().
+
     :param a_folder: Target folder.
-    :type a_folder: \\path\\to\\a\path
+    :type a_folder: str
     """
     for curdir, subdirs, files in os.walk(a_folder):
         while True:
@@ -148,14 +148,19 @@ def move_loaders(localdir,
                  zipdir_os, zipdir_rad):
     """
     Move autoloaders to zipped and loaders directories in localdir.
+
     :param localdir: Local directory, containing files you wish to move.
     :type localdir: str
+
     :param exedir_os: Large autoloader .exe destination.
     :type exedir_os: str
+
     :param exedir_rad: Small autoloader .exe destination.
     :type exedir_rad: str
+
     :param zipdir_os: Large autoloader archive destination.
     :type zipdir_os: str
+
     :param zipdir_rad: Small autoloader archive destination.
     :type zipdir_rad: str
     """
