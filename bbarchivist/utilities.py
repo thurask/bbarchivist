@@ -25,9 +25,9 @@ def positive_integer(inputint):
     :param inputint: Integer to check.
     :type inputint: int
     """
-    if inputint <= 0:
-        raise argparse.ArgumentError("{0} is too low.".format(inputint))
-    return inputint
+    if int(inputint) <= 0:
+        raise argparse.ArgumentError("{0} is too low.".format(str(inputint)))
+    return str(inputint)
 
 
 def escreens_pin(pin):
