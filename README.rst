@@ -249,7 +249,7 @@ Help
 
     > bb-cchecker -h
 
-    usage: bb-cchecker [-h] [-v] [-d] [-u | -r] [-f DIR] mcc mnc device
+    usage: bb-cchecker [-h] [-v] [-d] [-e] [-u | -r] [-f DIR] mcc mnc device
 
     Checks a carrier for an OS version, can download.
     
@@ -262,6 +262,7 @@ Help
       -h, --help            show this help message and exit
       -v, --version         show program's version number and exit
       -d, --download        Download files after checking
+      -e, --export          Export links to files
       -f DIR, --folder DIR  Working folder
     
     bartypes:
@@ -271,6 +272,7 @@ Help
       -r, --repair          Debrick instead of upgrade bars
     
     http://github.com/thurask/bbarchivist
+
     
 ----------------------------------------
 
