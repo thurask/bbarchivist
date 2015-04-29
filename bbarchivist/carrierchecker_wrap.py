@@ -43,6 +43,12 @@ def main():
             help="Download files after checking",
             action="store_true",
             default=False)
+        parser.add_argument(
+            "-e", "--export",
+            dest="export",
+            help="Export links to files",
+            action="store_true",
+            default=False)
         comps = parser.add_argument_group("bartypes", "File types")
         compgroup = comps.add_mutually_exclusive_group()
         compgroup.add_argument(
@@ -66,21 +72,21 @@ def main():
             metavar="DIR")
         parser.set_defaults(upgrade=False)
         args = parser.parse_args(sys.argv[1:])
-        if not args.download:
-            args.upgrade = False
         carrierchecker.doMagic(
             args.mcc,
             args.mnc,
             args.device,
             args.download,
             args.upgrade,
-            args.folder)
+            args.folder,
+            args.export)
     else:
         mcc = int(input("MCC: "))
         mnc = int(input("MNC: "))
         device = input("DEVICE (SXX100-#): ")
         download = utilities.str2bool(input("DOWNLOAD?: "))
         upgrade = utilities.str2bool(input("UPGRADE BARS?: "))
+        export = utilities.str2bool(input("EXPORT TO FILE?: "))
         directory = os.getcwd()
         print(" ")
         carrierchecker.doMagic(
@@ -89,5 +95,6 @@ def main():
             device,
             download,
             upgrade,
-            directory)
+            directory,
+            export)
         smeg = input("Press Enter to exit")  # @UnusedVariable

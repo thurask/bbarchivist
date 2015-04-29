@@ -236,3 +236,25 @@ def return_model(index):
         return(8)  # Z3
     elif 31 <= index <= 33:
         return(9)  # Passport
+
+
+def return_family(index):
+    """
+    Return device family from selected HWID.
+    Lists found in bbconstants module.
+
+    :param index: The index to look up.
+    :type index: int
+    """
+    if index == 0:  # STL100-1
+        return(0)
+    elif 1 <= index <= 5:  # STL100-2/3/4, P9982
+        return(1)
+    elif 6 <= index <= 15:  # Q10, Q5, P9983
+        return(2)
+    elif 16 <= index <= 28:  # Z30, Classic, Leap
+        return(3)
+    elif 29 <= index <= 30:  # Z3
+        return(4)
+    elif 31 <= index <= 33:  # Passport
+        return(5)

@@ -196,7 +196,7 @@ Use system zlib.</p>
 <span id="carrierchecker-module"></span><h2>Carrierchecker module<a class="headerlink" href="#module-bbarchivist.carrierchecker" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="bbarchivist.carrierchecker.doMagic">
-<code class="descclassname">bbarchivist.carrierchecker.</code><code class="descname">doMagic</code><span class="sig-paren">(</span><em>mcc</em>, <em>mnc</em>, <em>device</em>, <em>download=False</em>, <em>upgrade=False</em>, <em>directory='X:\\bbndk\\workspace\\bbarchivist\\docs\\bbarchivist'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/carrierchecker.html#doMagic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.carrierchecker.doMagic" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bbarchivist.carrierchecker.</code><code class="descname">doMagic</code><span class="sig-paren">(</span><em>mcc</em>, <em>mnc</em>, <em>device</em>, <em>download=False</em>, <em>upgrade=False</em>, <em>directory='X:\\bbndk\\workspace\\bbarchivist\\docs\\bbarchivist'</em>, <em>export=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/carrierchecker.html#doMagic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.carrierchecker.doMagic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrap around <a class="reference internal" href="#module-bbarchivist.networkutils" title="bbarchivist.networkutils"><code class="xref py py-mod docutils literal"><span class="pre">bbarchivist.networkutils</span></code></a> carrier checking.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -209,6 +209,7 @@ Use system zlib.</p>
 <li><strong>download</strong> (<em>bool</em>) &#8211; Whether or not to download. Default is false.</li>
 <li><strong>upgrade</strong> (<em>bool</em>) &#8211; Whether or not to use upgrade files. Default is false.</li>
 <li><strong>directory</strong> (<em>str</em>) &#8211; Where to store files. Default is local directory.</li>
+<li><strong>export</strong> (<em>bool</em>) &#8211; Whether or not to write URLs to a file. Default is false.</li>
 </ul>
 </td>
 </tr>
@@ -870,6 +871,21 @@ On Windows, it can be installed or supplied with the script.
 On POSIX, checks for p7zip.
 On Windows, checks for 7-Zip.
 Returns False if not found, True if found.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bbarchivist.utilities.return_family">
+<code class="descclassname">bbarchivist.utilities.</code><code class="descname">return_family</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/utilities.html#return_family"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.utilities.return_family" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return device family from selected HWID.
+Lists found in bbconstants module.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>index</strong> (<em>int</em>) &#8211; The index to look up.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">

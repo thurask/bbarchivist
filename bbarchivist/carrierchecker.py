@@ -17,7 +17,8 @@ import os
 
 def doMagic(mcc, mnc, device,
             download=False, upgrade=False,
-            directory=os.getcwd()):
+            directory=os.getcwd(),
+            export=False):
     """
     Wrap around :mod:`bbarchivist.networkutils` carrier checking.
 
@@ -38,6 +39,9 @@ def doMagic(mcc, mnc, device,
 
     :param directory: Where to store files. Default is local directory.
     :type directory: str
+
+    :param export: Whether or not to write URLs to a file. Default is false.
+    :type export: bool
     """
     try:
         devindex = bbconstants._devicelist.index(device.upper())
@@ -46,6 +50,7 @@ def doMagic(mcc, mnc, device,
         print("INVALID DEVICE!")
         raise SystemExit
     model = bbconstants._modellist[utilities.return_model(devindex)]
+    family = bbconstants._familylist[utilities.return_family(devindex)]
     hwid = bbconstants._hwidlist[devindex]
     version = bbconstants._version
     print("~~~CARRIERCHECKER VERSION", version + "~~~")
@@ -62,13 +67,25 @@ def doMagic(mcc, mnc, device,
     print("SOFTWARE RELEASE:", swv)
     print("OS VERSION:", osv)
     print("RADIO VERSION:", radv)
+    if export:
+        print("\nEXPORTING...")
+        with open(swv + "-" + family + ".txt", "w") as target:
+            target.write("OS: " + osv + "\n")
+            target.write("RADIO: " + swv + "\n")
+            target.write("SOFTWARE: " + radv + "\n")
+            target.write("DEVICE TYPE: " + family.upper() + "\n")
+            target.write("\nFILES\n")
+            for i in files:
+                target.write(i + "\n")
+        print("\nFINISHED!!!")
     if download:
-        bardir = os.path.join(directory, swv+"-"+model)
+        bardir = os.path.join(directory, swv + "-" + family)
         if not os.path.exists(bardir):
             os.makedirs(bardir)
-        print("\nDOWNLOADING...")
         filedict = {}
         for i in files:
             filedict[str(i)] = i
+        print("\nDOWNLOADING...")
         download_manager = networkutils.DownloadManager(filedict, bardir)
         download_manager.begin_downloads()
+        print("\nFINISHED!!!")

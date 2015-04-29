@@ -87,6 +87,13 @@ _modellist = ["Z10",
               "LEAP",
               "Z3",
               "PASSPORT"]
+#: Device families.
+_familylist = ["Z10OMAP",
+               "Z10QCOM-P9982",
+               "Q10-Q5-P9983",
+               "Z30-CLASSIC-LEAP",
+               "Z3",
+               "PASSPORT"]
 #: Somehow, values for lifetimes for escreens.
 _lifetimes = {
      1: "",

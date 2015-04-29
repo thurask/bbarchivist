@@ -53,6 +53,7 @@
 <span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">from</span> <span class="nn">calendar</span> <span class="kn">import</span> <span class="n">leapdays</span>
 
 
 <div class="viewcode-block" id="file_exists"><a class="viewcode-back" href="../../bbarchivist.html#bbarchivist.utilities.file_exists">[docs]</a><span class="k">def</span> <span class="nf">file_exists</span><span class="p">(</span><span class="nb">file</span><span class="p">):</span>
@@ -74,9 +75,9 @@
 <span class="sd">    :param inputint: Integer to check.</span>
 <span class="sd">    :type inputint: int</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">inputint</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentError</span><span class="p">(</span><span class="s">&quot;{0} is too low.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">inputint</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">inputint</span>
+    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">inputint</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentError</span><span class="p">(</span><span class="s">&quot;{0} is too low.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">inputint</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">inputint</span><span class="p">)</span>
 
 </div>
 <div class="viewcode-block" id="escreens_pin"><a class="viewcode-back" href="../../bbarchivist.html#bbarchivist.utilities.escreens_pin">[docs]</a><span class="k">def</span> <span class="nf">escreens_pin</span><span class="p">(</span><span class="n">pin</span><span class="p">):</span>
@@ -284,7 +285,29 @@
     <span class="k">elif</span> <span class="mi">29</span> <span class="o">&lt;=</span> <span class="n">index</span> <span class="o">&lt;=</span> <span class="mi">30</span><span class="p">:</span>
         <span class="k">return</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>  <span class="c"># Z3</span>
     <span class="k">elif</span> <span class="mi">31</span> <span class="o">&lt;=</span> <span class="n">index</span> <span class="o">&lt;=</span> <span class="mi">33</span><span class="p">:</span>
-        <span class="k">return</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>  <span class="c"># Passport</span></div>
+        <span class="k">return</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>  <span class="c"># Passport</span>
+
+</div>
+<div class="viewcode-block" id="return_family"><a class="viewcode-back" href="../../bbarchivist.html#bbarchivist.utilities.return_family">[docs]</a><span class="k">def</span> <span class="nf">return_family</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return device family from selected HWID.</span>
+<span class="sd">    Lists found in bbconstants module.</span>
+
+<span class="sd">    :param index: The index to look up.</span>
+<span class="sd">    :type index: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c"># STL100-1</span>
+        <span class="k">return</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">index</span> <span class="o">&lt;=</span> <span class="mi">5</span><span class="p">:</span>  <span class="c"># STL100-2/3/4, P9982</span>
+        <span class="k">return</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="mi">6</span> <span class="o">&lt;=</span> <span class="n">index</span> <span class="o">&lt;=</span> <span class="mi">15</span><span class="p">:</span>  <span class="c"># Q10, Q5, P9983</span>
+        <span class="k">return</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="mi">16</span> <span class="o">&lt;=</span> <span class="n">index</span> <span class="o">&lt;=</span> <span class="mi">28</span><span class="p">:</span>  <span class="c"># Z30, Classic, Leap</span>
+        <span class="k">return</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="mi">29</span> <span class="o">&lt;=</span> <span class="n">index</span> <span class="o">&lt;=</span> <span class="mi">30</span><span class="p">:</span>  <span class="c"># Z3</span>
+        <span class="k">return</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="mi">31</span> <span class="o">&lt;=</span> <span class="n">index</span> <span class="o">&lt;=</span> <span class="mi">33</span><span class="p">:</span>  <span class="c"># Passport</span>
+        <span class="k">return</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span></div>
 </pre></div>
 
           </div>
