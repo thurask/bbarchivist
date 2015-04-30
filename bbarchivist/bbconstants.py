@@ -1,7 +1,7 @@
 from os.path import abspath, dirname, join
 
 #: App version.
-_version = "1.3.0"
+_version = "1.3.1"
 #: Version of cap.exe bundled with app.
 _capversion = "3.11.0.22"
 #: Where cap.exe is. Should be in site-packages.
