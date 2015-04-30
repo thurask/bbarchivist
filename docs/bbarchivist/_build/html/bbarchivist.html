@@ -128,6 +128,24 @@ compressing and moving autoloaders.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="bbarchivist.barutils.create_blitz">
+<code class="descclassname">bbarchivist.barutils.</code><code class="descname">create_blitz</code><span class="sig-paren">(</span><em>a_folder</em>, <em>swver</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/barutils.html#create_blitz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.barutils.create_blitz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a blitz file: a zipped archive of all app/core/radio bars.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>a_folder</strong> (<em>str</em>) &#8211; Target folder.</li>
+<li><strong>swver</strong> (<em>str</em>) &#8211; Software version to title the blitz.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="bbarchivist.barutils.extract_bars">
 <code class="descclassname">bbarchivist.barutils.</code><code class="descname">extract_bars</code><span class="sig-paren">(</span><em>filepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/barutils.html#extract_bars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.barutils.extract_bars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extract .signed files from .bar files.
@@ -196,7 +214,7 @@ Use system zlib.</p>
 <span id="carrierchecker-module"></span><h2>Carrierchecker module<a class="headerlink" href="#module-bbarchivist.carrierchecker" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="bbarchivist.carrierchecker.doMagic">
-<code class="descclassname">bbarchivist.carrierchecker.</code><code class="descname">doMagic</code><span class="sig-paren">(</span><em>mcc</em>, <em>mnc</em>, <em>device</em>, <em>download=False</em>, <em>upgrade=False</em>, <em>directory='X:\\bbndk\\workspace\\bbarchivist\\docs\\bbarchivist'</em>, <em>export=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/carrierchecker.html#doMagic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.carrierchecker.doMagic" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bbarchivist.carrierchecker.</code><code class="descname">doMagic</code><span class="sig-paren">(</span><em>mcc</em>, <em>mnc</em>, <em>device</em>, <em>download=False</em>, <em>upgrade=False</em>, <em>directory='X:\\bbndk\\workspace\\bbarchivist\\docs\\bbarchivist'</em>, <em>export=False</em>, <em>blitz=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/carrierchecker.html#doMagic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.carrierchecker.doMagic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrap around <a class="reference internal" href="#module-bbarchivist.networkutils" title="bbarchivist.networkutils"><code class="xref py py-mod docutils literal"><span class="pre">bbarchivist.networkutils</span></code></a> carrier checking.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -210,6 +228,7 @@ Use system zlib.</p>
 <li><strong>upgrade</strong> (<em>bool</em>) &#8211; Whether or not to use upgrade files. Default is false.</li>
 <li><strong>directory</strong> (<em>str</em>) &#8211; Where to store files. Default is local directory.</li>
 <li><strong>export</strong> (<em>bool</em>) &#8211; Whether or not to write URLs to a file. Default is false.</li>
+<li><strong>blitz</strong> (<em>bool</em>) &#8211; Whether or not to create a blitz package. Default is false.</li>
 </ul>
 </td>
 </tr>
@@ -540,6 +559,38 @@ Functions based on boolean arguments, writing the output to a .cksum file.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-bbarchivist.linkgen">
+<span id="linkgen-module"></span><h2>Linkgen module<a class="headerlink" href="#module-bbarchivist.linkgen" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="bbarchivist.linkgen.doMagic">
+<code class="descclassname">bbarchivist.linkgen.</code><code class="descname">doMagic</code><span class="sig-paren">(</span><em>osversion</em>, <em>radioversion</em>, <em>softwareversion</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/linkgen.html#doMagic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.linkgen.doMagic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate debrick/core/radio links for given OS, radio, software release.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>osversion</strong> (<em>str</em>) &#8211; OS version, 10.x.y.zzzz.</li>
+<li><strong>radioversion</strong> (<em>str</em>) &#8211; Radio version, 10.x.y.zzzz.</li>
+<li><strong>softwareversion</strong> (<em>str</em>) &#8211; Software version, 10.x.y.zzzz.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-bbarchivist.linkgen_wrap">
+<span id="linkgen-wrapper"></span><h2>Linkgen wrapper<a class="headerlink" href="#module-bbarchivist.linkgen_wrap" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="bbarchivist.linkgen_wrap.main">
+<code class="descclassname">bbarchivist.linkgen_wrap.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/linkgen_wrap.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.linkgen_wrap.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse arguments from argparse/questionnaire.</p>
+<p>Invoke <a class="reference internal" href="#bbarchivist.linkgen.doMagic" title="bbarchivist.linkgen.doMagic"><code class="xref py py-func docutils literal"><span class="pre">bbarchivist.linkgen.doMagic()</span></code></a> with those arguments.</p>
+</dd></dl>
+
+</div>
 <div class="section" id="module-bbarchivist.loadergen">
 <span id="loadergen-module"></span><h2>Loadergen module<a class="headerlink" href="#module-bbarchivist.loadergen" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
@@ -667,7 +718,7 @@ Based on:
 
 <dl class="function">
 <dt id="bbarchivist.networkutils.carrier_update_request">
-<code class="descclassname">bbarchivist.networkutils.</code><code class="descname">carrier_update_request</code><span class="sig-paren">(</span><em>mcc</em>, <em>mnc</em>, <em>device</em>, <em>download=False</em>, <em>upgrade=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/networkutils.html#carrier_update_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.networkutils.carrier_update_request" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bbarchivist.networkutils.</code><code class="descname">carrier_update_request</code><span class="sig-paren">(</span><em>mcc</em>, <em>mnc</em>, <em>device</em>, <em>download=False</em>, <em>upgrade=False</em>, <em>blitz=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bbarchivist/networkutils.html#carrier_update_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bbarchivist.networkutils.carrier_update_request" title="Permalink to this definition">¶</a></dt>
 <dd><p>Query BlackBerry servers, check which update is out for a carrier.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -679,6 +730,7 @@ Based on:
 <li><strong>device</strong> (<em>str</em>) &#8211; Hexadecimal hardware ID.</li>
 <li><strong>download</strong> (<em>bool</em>) &#8211; Whether to download files. False by default.</li>
 <li><strong>upgrade</strong> (<em>bool</em>) &#8211; Whether to use upgrade files. False by default.</li>
+<li><strong>blitz</strong> (<em>bool</em>) &#8211; Whether or not to create a blitz package. False by default.</li>
 </ul>
 </td>
 </tr>
@@ -958,6 +1010,8 @@ If <em>those</em> aren&#8217;t there, return &#8220;error&#8221;.</p>
 <li><a class="reference internal" href="#module-bbarchivist.hashwrapper">Hashwrapper module</a></li>
 <li><a class="reference internal" href="#module-bbarchivist.lazyloader">Lazyloader module</a></li>
 <li><a class="reference internal" href="#module-bbarchivist.lazyloader_wrap">Lazyloader wrapper</a></li>
+<li><a class="reference internal" href="#module-bbarchivist.linkgen">Linkgen module</a></li>
+<li><a class="reference internal" href="#module-bbarchivist.linkgen_wrap">Linkgen wrapper</a></li>
 <li><a class="reference internal" href="#module-bbarchivist.loadergen">Loadergen module</a></li>
 <li><a class="reference internal" href="#module-bbarchivist.networkutils">Networkutils module</a></li>
 <li><a class="reference internal" href="#module-bbarchivist.pseudocap">Pseudocap module</a></li>

@@ -61,13 +61,20 @@
     <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utilities</span>  <span class="c"># @UnusedImport</span>
 <span class="k">except</span> <span class="ne">SystemError</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">utilities</span>  <span class="c"># @UnresolvedImport @Reimport</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">barutils</span>  <span class="c"># @UnusedImport</span>
+<span class="k">except</span> <span class="ne">SystemError</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">barutils</span>  <span class="c"># @UnresolvedImport @Reimport</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
 
 
 <div class="viewcode-block" id="doMagic"><a class="viewcode-back" href="../../bbarchivist.html#bbarchivist.carrierchecker.doMagic">[docs]</a><span class="k">def</span> <span class="nf">doMagic</span><span class="p">(</span><span class="n">mcc</span><span class="p">,</span> <span class="n">mnc</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span>
             <span class="n">download</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">upgrade</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
             <span class="n">directory</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span>
-            <span class="n">export</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+            <span class="n">export</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">blitz</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrap around :mod:`bbarchivist.networkutils` carrier checking.</span>
 
@@ -91,6 +98,9 @@
 
 <span class="sd">    :param export: Whether or not to write URLs to a file. Default is false.</span>
 <span class="sd">    :type export: bool</span>
+
+<span class="sd">    :param blitz: Whether or not to create a blitz package. Default is false.</span>
+<span class="sd">    :type blitz: bool</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">devindex</span> <span class="o">=</span> <span class="n">bbconstants</span><span class="o">.</span><span class="n">_devicelist</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
@@ -112,13 +122,17 @@
     <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">CHECKING CARRIER...&quot;</span><span class="p">)</span>
     <span class="n">swv</span><span class="p">,</span> <span class="n">osv</span><span class="p">,</span> <span class="n">radv</span><span class="p">,</span> <span class="n">files</span> <span class="o">=</span> <span class="n">networkutils</span><span class="o">.</span><span class="n">carrier_update_request</span><span class="p">(</span><span class="n">mcc</span><span class="p">,</span> <span class="n">mnc</span><span class="p">,</span> <span class="n">hwid</span><span class="p">,</span>
                                                                 <span class="n">download</span><span class="p">,</span>
-                                                                <span class="n">upgrade</span><span class="p">)</span>
+                                                                <span class="n">upgrade</span><span class="p">,</span>
+                                                                <span class="n">blitz</span><span class="p">)</span>
+    <span class="n">swv</span> <span class="o">=</span> <span class="s">&quot;10.3.1.1877&quot;</span>
+    <span class="n">osv</span> <span class="o">=</span> <span class="s">&quot;10.3.1.2726&quot;</span>
+    <span class="n">radv</span> <span class="o">=</span> <span class="s">&quot;10.3.1.2727&quot;</span>
     <span class="k">print</span><span class="p">(</span><span class="s">&quot;SOFTWARE RELEASE:&quot;</span><span class="p">,</span> <span class="n">swv</span><span class="p">)</span>
     <span class="k">print</span><span class="p">(</span><span class="s">&quot;OS VERSION:&quot;</span><span class="p">,</span> <span class="n">osv</span><span class="p">)</span>
     <span class="k">print</span><span class="p">(</span><span class="s">&quot;RADIO VERSION:&quot;</span><span class="p">,</span> <span class="n">radv</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">export</span><span class="p">:</span>
         <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">EXPORTING...&quot;</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;Links-&quot;</span> <span class="o">+</span> <span class="n">swv</span> <span class="o">+</span> <span class="s">&quot;.txt&quot;</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">target</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">swv</span> <span class="o">+</span> <span class="s">&quot;-&quot;</span> <span class="o">+</span> <span class="n">family</span> <span class="o">+</span> <span class="s">&quot;.txt&quot;</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">target</span><span class="p">:</span>
             <span class="n">target</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;OS: &quot;</span> <span class="o">+</span> <span class="n">osv</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
             <span class="n">target</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;RADIO: &quot;</span> <span class="o">+</span> <span class="n">swv</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
             <span class="n">target</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;SOFTWARE: &quot;</span> <span class="o">+</span> <span class="n">radv</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
@@ -126,16 +140,61 @@
             <span class="n">target</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">FILES</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
                 <span class="n">target</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">FINISHED!!!&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">download</span><span class="p">:</span>
-        <span class="n">bardir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">swv</span><span class="o">+</span><span class="s">&quot;-&quot;</span><span class="o">+</span><span class="n">family</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">blitz</span><span class="p">:</span>
+            <span class="n">bardir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">swv</span> <span class="o">+</span> <span class="s">&quot;-BLITZ&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bardir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">swv</span> <span class="o">+</span> <span class="s">&quot;-&quot;</span> <span class="o">+</span> <span class="n">family</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">bardir</span><span class="p">):</span>
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">bardir</span><span class="p">)</span>
         <span class="n">filedict</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
             <span class="n">filedict</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="k">if</span> <span class="n">blitz</span><span class="p">:</span>
+            <span class="c"># Hash software version</span>
+            <span class="n">swhash</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">(</span><span class="n">swv</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">))</span>
+            <span class="n">hashedsoftwareversion</span> <span class="o">=</span> <span class="n">swhash</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+
+            <span class="c"># Root of all urls</span>
+            <span class="n">baseurl</span> <span class="o">=</span> <span class="s">&quot;http://cdn.fs.sl.blackberry.com/fs/qnx/production/&quot;</span>
+            <span class="n">baseurl</span> <span class="o">+=</span> <span class="n">hashedsoftwareversion</span>
+            <span class="c"># List of debrick urls</span>
+            <span class="n">coreurls</span> <span class="o">=</span> <span class="p">[</span><span class="n">baseurl</span> <span class="o">+</span> <span class="s">&quot;/winchester.factory_sfi-&quot;</span> <span class="o">+</span>
+                        <span class="n">osv</span> <span class="o">+</span> <span class="s">&quot;-nto+armle-v7+signed.bar&quot;</span><span class="p">,</span>
+                        <span class="n">baseurl</span> <span class="o">+</span> <span class="s">&quot;/qc8960.factory_sfi-&quot;</span> <span class="o">+</span>
+                        <span class="n">osv</span> <span class="o">+</span> <span class="s">&quot;-nto+armle-v7+signed.bar&quot;</span><span class="p">,</span>
+                        <span class="n">baseurl</span> <span class="o">+</span> <span class="s">&quot;/qc8960.factory_sfi_hybrid_qc8x30-&quot;</span> <span class="o">+</span>
+                        <span class="n">osv</span> <span class="o">+</span> <span class="s">&quot;-nto+armle-v7+signed.bar&quot;</span><span class="p">,</span>
+                        <span class="n">baseurl</span> <span class="o">+</span> <span class="s">&quot;/qc8960.factory_sfi_hybrid_qc8974-&quot;</span> <span class="o">+</span>
+                        <span class="n">osv</span> <span class="o">+</span> <span class="s">&quot;-nto+armle-v7+signed.bar&quot;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">coreurls</span><span class="p">:</span>
+                <span class="n">filedict</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span> <span class="o">=</span> <span class="n">i</span>
+
+            <span class="c"># List of radio urls</span>
+            <span class="n">radiourls</span> <span class="o">=</span> <span class="p">[</span><span class="n">baseurl</span> <span class="o">+</span> <span class="s">&quot;/m5730-&quot;</span> <span class="o">+</span> <span class="n">radv</span> <span class="o">+</span>
+                         <span class="s">&quot;-nto+armle-v7+signed.bar&quot;</span><span class="p">,</span>
+                         <span class="n">baseurl</span> <span class="o">+</span> <span class="s">&quot;/qc8960-&quot;</span> <span class="o">+</span> <span class="n">radv</span> <span class="o">+</span>
+                         <span class="s">&quot;-nto+armle-v7+signed.bar&quot;</span><span class="p">,</span>
+                         <span class="n">baseurl</span> <span class="o">+</span> <span class="s">&quot;/qc8960.wtr-&quot;</span> <span class="o">+</span> <span class="n">radv</span> <span class="o">+</span>
+                         <span class="s">&quot;-nto+armle-v7+signed.bar&quot;</span><span class="p">,</span>
+                         <span class="n">baseurl</span> <span class="o">+</span> <span class="s">&quot;/qc8960.wtr5-&quot;</span> <span class="o">+</span>
+                         <span class="n">radv</span> <span class="o">+</span> <span class="s">&quot;-nto+armle-v7+signed.bar&quot;</span><span class="p">,</span>
+                         <span class="n">baseurl</span> <span class="o">+</span> <span class="s">&quot;/qc8930.wtr5-&quot;</span> <span class="o">+</span> <span class="n">radv</span> <span class="o">+</span>
+                         <span class="s">&quot;-nto+armle-v7+signed.bar&quot;</span><span class="p">,</span>
+                         <span class="n">baseurl</span> <span class="o">+</span> <span class="s">&quot;/qc8974.wtr2-&quot;</span> <span class="o">+</span> <span class="n">radv</span> <span class="o">+</span>
+                         <span class="s">&quot;-nto+armle-v7+signed.bar&quot;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">radiourls</span><span class="p">:</span>
+                <span class="n">filedict</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span> <span class="o">=</span> <span class="n">i</span>
+
         <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">DOWNLOADING...&quot;</span><span class="p">)</span>
         <span class="n">download_manager</span> <span class="o">=</span> <span class="n">networkutils</span><span class="o">.</span><span class="n">DownloadManager</span><span class="p">(</span><span class="n">filedict</span><span class="p">,</span> <span class="n">bardir</span><span class="p">)</span>
-        <span class="n">download_manager</span><span class="o">.</span><span class="n">begin_downloads</span><span class="p">()</span></div>
+        <span class="n">download_manager</span><span class="o">.</span><span class="n">begin_downloads</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">blitz</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">CREATING BLITZ...&quot;</span><span class="p">)</span>
+            <span class="n">barutils</span><span class="o">.</span><span class="n">create_blitz</span><span class="p">(</span><span class="n">bardir</span><span class="p">,</span> <span class="n">swv</span><span class="p">)</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">bardir</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">FINISHED!!!&quot;</span><span class="p">)</span></div>
 </pre></div>
 
           </div>

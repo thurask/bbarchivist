@@ -1,8 +1,8 @@
 bbarchivist API Documentation
-==============================
+=============================
 
 Archivist module
-----------------------------
+----------------
 
 .. automodule:: bbarchivist.archivist
     :members:
@@ -10,7 +10,7 @@ Archivist module
     :show-inheritance:
 
 Archivist wrapper
----------------------------------
+-----------------
 
 .. automodule:: bbarchivist.archivist_wrap
     :members:
@@ -18,7 +18,7 @@ Archivist wrapper
     :show-inheritance:
 
 Barutils module
----------------------------
+---------------
 
 .. automodule:: bbarchivist.barutils
     :members:
@@ -26,7 +26,7 @@ Barutils module
     :show-inheritance:
 
 Carrierchecker module
----------------------------------
+---------------------
 
 .. automodule:: bbarchivist.carrierchecker
     :members:
@@ -34,7 +34,7 @@ Carrierchecker module
     :show-inheritance:
 
 Carrierchecker wrapper
---------------------------------------
+----------------------
 
 .. automodule:: bbarchivist.carrierchecker_wrap
     :members:
@@ -42,7 +42,7 @@ Carrierchecker wrapper
     :show-inheritance:
 
 Escreens module
----------------------------
+---------------
 
 .. automodule:: bbarchivist.escreens
     :members:
@@ -50,7 +50,7 @@ Escreens module
     :show-inheritance:
 
 Escreens wrapper
---------------------------------
+----------------
 
 .. automodule:: bbarchivist.escreens_wrap
     :members:
@@ -58,7 +58,7 @@ Escreens wrapper
     :show-inheritance:
 
 Hashwrapper wrapper
-----------------------------------
+-------------------
 
 .. automodule:: bbarchivist.filehasher_wrap
     :members:
@@ -66,7 +66,7 @@ Hashwrapper wrapper
     :show-inheritance:
 
 Filehashtools module
---------------------------------
+--------------------
 
 .. automodule:: bbarchivist.filehashtools
     :members:
@@ -74,7 +74,7 @@ Filehashtools module
     :show-inheritance:
 
 Hashwrapper module
-------------------------------
+------------------
 
 .. automodule:: bbarchivist.hashwrapper
     :members:
@@ -82,7 +82,7 @@ Hashwrapper module
     :show-inheritance:
 
 Lazyloader module
------------------------------
+-----------------
 
 .. automodule:: bbarchivist.lazyloader
     :members:
@@ -90,15 +90,31 @@ Lazyloader module
     :show-inheritance:
 
 Lazyloader wrapper
-----------------------------------
+------------------
 
 .. automodule:: bbarchivist.lazyloader_wrap
     :members:
     :undoc-members:
     :show-inheritance:
+	
+Linkgen module
+--------------
+
+.. automodule:: bbarchivist.linkgen
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Linkgen wrapper
+---------------
+
+.. automodule:: bbarchivist.linkgen_wrap
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 Loadergen module
-----------------------------
+----------------
 
 .. automodule:: bbarchivist.loadergen
     :members:
@@ -106,7 +122,7 @@ Loadergen module
     :show-inheritance:
 
 Networkutils module
--------------------------------
+-------------------
 
 .. automodule:: bbarchivist.networkutils
     :members:
@@ -114,7 +130,7 @@ Networkutils module
     :show-inheritance:
 
 Pseudocap module
-----------------------------
+----------------
 
 .. automodule:: bbarchivist.pseudocap
     :members:
@@ -122,7 +138,7 @@ Pseudocap module
     :show-inheritance:
 
 Utilities module
-----------------------------
+----------------
 
 .. automodule:: bbarchivist.utilities
     :members:

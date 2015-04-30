@@ -112,7 +112,7 @@
             <span class="n">t_elapsed_proper</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">t_elapsed</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span> <span class="o">/</span> <span class="mi">100</span>
             <span class="k">print</span><span class="p">(</span>
                 <span class="s">&quot;Downloaded &quot;</span> <span class="o">+</span>
-                <span class="n">url</span> <span class="o">+</span>
+                <span class="n">local_filename</span> <span class="o">+</span>
                 <span class="s">&quot; in &quot;</span> <span class="o">+</span>
                 <span class="nb">str</span><span class="p">(</span><span class="n">t_elapsed_proper</span><span class="p">)</span> <span class="o">+</span>
                 <span class="s">&quot; seconds&quot;</span><span class="p">)</span>
@@ -214,7 +214,8 @@
     <span class="k">return</span> <span class="n">country</span><span class="p">,</span> <span class="n">carrier</span>
 
 </div>
-<div class="viewcode-block" id="carrier_update_request"><a class="viewcode-back" href="../../bbarchivist.html#bbarchivist.networkutils.carrier_update_request">[docs]</a><span class="k">def</span> <span class="nf">carrier_update_request</span><span class="p">(</span><span class="n">mcc</span><span class="p">,</span> <span class="n">mnc</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">upgrade</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="carrier_update_request"><a class="viewcode-back" href="../../bbarchivist.html#bbarchivist.networkutils.carrier_update_request">[docs]</a><span class="k">def</span> <span class="nf">carrier_update_request</span><span class="p">(</span><span class="n">mcc</span><span class="p">,</span> <span class="n">mnc</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span>
+                           <span class="n">download</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">upgrade</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">blitz</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Query BlackBerry servers, check which update is out for a carrier.</span>
 
@@ -232,6 +233,9 @@
 
 <span class="sd">    :param upgrade: Whether to use upgrade files. False by default.</span>
 <span class="sd">    :type upgrade: bool</span>
+
+<span class="sd">    :param blitz: Whether or not to create a blitz package. False by default.</span>
+<span class="sd">    :type blitz: bool</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">upgrade</span><span class="p">:</span>
         <span class="n">upg</span> <span class="o">=</span> <span class="s">&quot;upgrade&quot;</span>
@@ -289,7 +293,13 @@
     <span class="k">if</span> <span class="n">package_exists</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">baseurl</span> <span class="o">=</span> <span class="n">package_exists</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;url&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;/&quot;</span>
         <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s">&quot;package&quot;</span><span class="p">):</span>
-            <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">baseurl</span> <span class="o">+</span> <span class="n">child</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;path&quot;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">blitz</span><span class="p">:</span>
+                <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">baseurl</span> <span class="o">+</span> <span class="n">child</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;path&quot;</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;type&quot;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&quot;system:radio&quot;</span><span class="p">,</span>
+                                             <span class="s">&quot;system:desktop&quot;</span><span class="p">,</span>
+                                             <span class="s">&quot;system:os&quot;</span><span class="p">]:</span>
+                    <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">baseurl</span> <span class="o">+</span> <span class="n">child</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;path&quot;</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s">&quot;system:radio&quot;</span><span class="p">:</span>
                 <span class="n">radver</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;version&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s">&quot;system:desktop&quot;</span><span class="p">:</span>

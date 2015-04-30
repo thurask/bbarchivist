@@ -192,6 +192,21 @@
             <span class="k">break</span>
 
 </div>
+<div class="viewcode-block" id="create_blitz"><a class="viewcode-back" href="../../bbarchivist.html#bbarchivist.barutils.create_blitz">[docs]</a><span class="k">def</span> <span class="nf">create_blitz</span><span class="p">(</span><span class="n">a_folder</span><span class="p">,</span> <span class="n">swver</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a blitz file: a zipped archive of all app/core/radio bars.</span>
+
+<span class="sd">    :param a_folder: Target folder.</span>
+<span class="sd">    :type a_folder: str</span>
+
+<span class="sd">    :param swver: Software version to title the blitz.</span>
+<span class="sd">    :type swver: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">shutil</span><span class="o">.</span><span class="n">make_archive</span><span class="p">(</span><span class="s">&quot;Blitz-&quot;</span> <span class="o">+</span> <span class="n">swver</span><span class="p">,</span>
+                        <span class="n">format</span><span class="o">=</span><span class="s">&quot;zip&quot;</span><span class="p">,</span>
+                        <span class="n">root_dir</span><span class="o">=</span><span class="n">a_folder</span><span class="p">)</span>
+
+</div>
 <div class="viewcode-block" id="move_loaders"><a class="viewcode-back" href="../../bbarchivist.html#bbarchivist.barutils.move_loaders">[docs]</a><span class="k">def</span> <span class="nf">move_loaders</span><span class="p">(</span><span class="n">localdir</span><span class="p">,</span>
                  <span class="n">exedir_os</span><span class="p">,</span> <span class="n">exedir_rad</span><span class="p">,</span>
                  <span class="n">zipdir_os</span><span class="p">,</span> <span class="n">zipdir_rad</span><span class="p">):</span>
