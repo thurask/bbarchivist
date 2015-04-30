@@ -70,16 +70,16 @@ def doMagic(osversion, radioversion, softwareversion):
                  "-nto+armle-v7+signed.bar"]
 
     with open(softwareversion + ".txt", "w") as target:
-        target.write("OS VERSION: " + osversion)
-        target.write("RADIO VERSION: " + radioversion)
-        target.write("SOFTWARE RELEASE: " + softwareversion)
+        target.write("OS VERSION: " + osversion + "\n")
+        target.write("RADIO VERSION: " + radioversion + "\n")
+        target.write("SOFTWARE RELEASE: " + softwareversion + "\n")
         target.write("\n!!EXISTENCE NOT GUARANTEED!!\n")
-        target.write("DEBRICK URLS:")
+        target.write("DEBRICK URLS:\n")
         for i in osurls:
             target.write(i + "\n")
-        target.write("\nCORE URLS:")
+        target.write("\nCORE URLS:\n")
         for i in coreurls:
             target.write(i + "\n")
-        target.write("\nRADIO URLS:")
+        target.write("\nRADIO URLS:\n")
         for i in radiourls:
             target.write(i + "\n")
