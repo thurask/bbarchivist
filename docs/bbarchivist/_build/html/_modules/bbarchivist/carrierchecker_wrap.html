@@ -127,6 +127,8 @@
             <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">upgrade</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
         <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">blitz</span><span class="p">:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">upgrade</span> <span class="o">=</span> <span class="bp">True</span>  <span class="c"># blitz takes precedence</span>
         <span class="n">carrierchecker</span><span class="o">.</span><span class="n">doMagic</span><span class="p">(</span>
             <span class="n">args</span><span class="o">.</span><span class="n">mcc</span><span class="p">,</span>
             <span class="n">args</span><span class="o">.</span><span class="n">mnc</span><span class="p">,</span>

@@ -166,6 +166,13 @@ recognized signed file</li>
 <li>Return EScreens key for given values</li>
 </ol>
 </div>
+<div class="section" id="linkgen">
+<h3>LinkGen<a class="headerlink" href="#linkgen" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Ask for OS version, radio version, software version (if not specified)</li>
+<li>Write debrick/core/radio links to file</li>
+</ol>
+</div>
 </div>
 <div class="section" id="command-line-arguments">
 <h2>Command Line Arguments<a class="headerlink" href="#command-line-arguments" title="Permalink to this headline">¶</a></h2>
@@ -271,7 +278,7 @@ http://github.com/thurask/bbarchivist
 <hr class="docutils" />
 <div class="highlight-python"><div class="highlight"><pre>&gt; bb-cchecker -h
 
-usage: bb-cchecker [-h] [-v] [-d] [-e] [-u | -r] [-f DIR] mcc mnc device
+usage: bb-cchecker [-h] [-v] [-d] [-e] [-u | -r] [-f DIR] [-b] mcc mnc device
 
 Checks a carrier for an OS version, can download.
 
@@ -286,6 +293,7 @@ optional arguments:
   -d, --download        Download files after checking
   -e, --export          Export links to files
   -f DIR, --folder DIR  Working folder
+  -b, --blitz           Create blitz package
 
 bartypes:
   File types
@@ -353,6 +361,25 @@ optional arguments:
 http://github.com/thurask/bbarchivist
 </pre></div>
 </div>
+<hr class="docutils" />
+<div class="highlight-python"><div class="highlight"><pre>&gt; bb-linkgen -h
+
+usage: bb-linkgen [-h] [-v] os radio swrelease
+
+Generate links from OS/radio/software.
+
+positional arguments:
+  os             OS version, 10.x.y.zzzz
+  radio          Radio version, 10.x.y.zzzz
+  swrelease      Software version, 10.x.y.zzzz
+
+optional arguments:
+  -h, --help     show this help message and exit
+  -v, --version  show program&#39;s version number and exit
+
+http://github.com/thurask/bbarchivist
+</pre></div>
+</div>
 </div>
 <div class="section" id="example">
 <h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
@@ -379,6 +406,10 @@ loaders and verify with SHA-1, SHA-256, SHA-512.</p>
 </pre></div>
 </div>
 <p>would generate the code for that PIN, OS version and uptime and for 30 days.</p>
+<div class="highlight-python"><div class="highlight"><pre>&gt; bb-linkgen 10.3.1.2726 10.3.1.2727 10.3.1.18777
+</pre></div>
+</div>
+<p>would generate the URLs for that given OS/radio/software release combination.</p>
 </div>
 </div>
 <div class="section" id="license">
@@ -418,6 +449,7 @@ via pull request.</p>
 <li><a class="reference internal" href="#carrierchecker">CarrierChecker</a></li>
 <li><a class="reference internal" href="#filehasher">FileHasher</a></li>
 <li><a class="reference internal" href="#escreens">EScreens</a></li>
+<li><a class="reference internal" href="#linkgen">LinkGen</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#command-line-arguments">Command Line Arguments</a><ul>

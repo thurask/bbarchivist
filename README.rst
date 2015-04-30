@@ -137,6 +137,12 @@ EScreens
 1. Ask for PIN, OS version, uptime, duration (if not specified)
 2. Return EScreens key for given values
 
+LinkGen
+~~~~~~~
+
+1. Ask for OS version, radio version, software version (if not specified)
+2. Write debrick/core/radio links to file
+
 Command Line Arguments
 ----------------------
 
@@ -249,7 +255,7 @@ Help
 
     > bb-cchecker -h
 
-    usage: bb-cchecker [-h] [-v] [-d] [-e] [-u | -r] [-f DIR] mcc mnc device
+    usage: bb-cchecker [-h] [-v] [-d] [-e] [-u | -r] [-f DIR] [-b] mcc mnc device
 
     Checks a carrier for an OS version, can download.
     
@@ -264,6 +270,7 @@ Help
       -d, --download        Download files after checking
       -e, --export          Export links to files
       -f DIR, --folder DIR  Working folder
+      -b, --blitz           Create blitz package
     
     bartypes:
       File types
@@ -272,7 +279,6 @@ Help
       -r, --repair          Debrick instead of upgrade bars
     
     http://github.com/thurask/bbarchivist
-
     
 ----------------------------------------
 
@@ -334,6 +340,27 @@ Help
       -v, --version  show program's version number and exit
     
     http://github.com/thurask/bbarchivist
+    
+----------------------------------------
+
+::
+
+    > bb-linkgen -h
+    
+    usage: bb-linkgen [-h] [-v] os radio swrelease
+
+    Generate links from OS/radio/software.
+    
+    positional arguments:
+      os             OS version, 10.x.y.zzzz
+      radio          Radio version, 10.x.y.zzzz
+      swrelease      Software version, 10.x.y.zzzz
+    
+    optional arguments:
+      -h, --help     show this help message and exit
+      -v, --version  show program's version number and exit
+    
+    http://github.com/thurask/bbarchivist
 
 Example
 ~~~~~~~
@@ -370,6 +397,12 @@ would use all available methods to hash all files in the local directory.
     > bb-escreens acdcacdc 10.3.2.6969 69696969 30
     
 would generate the code for that PIN, OS version and uptime and for 30 days.
+
+::
+
+    > bb-linkgen 10.3.1.2726 10.3.1.2727 10.3.1.18777
+    
+would generate the URLs for that given OS/radio/software release combination.
 
 License
 -------
