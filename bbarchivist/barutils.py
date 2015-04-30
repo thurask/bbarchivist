@@ -143,6 +143,21 @@ def remove_empty_folders(a_folder):
             break
 
 
+def create_blitz(a_folder, swver):
+    """
+    Create a blitz file: a zipped archive of all app/core/radio bars.
+
+    :param a_folder: Target folder.
+    :type a_folder: str
+
+    :param swver: Software version to title the blitz.
+    :type swver: str
+    """
+    shutil.make_archive("Blitz-" + swver,
+                        format="zip",
+                        root_dir=a_folder)
+
+
 def move_loaders(localdir,
                  exedir_os, exedir_rad,
                  zipdir_os, zipdir_rad):

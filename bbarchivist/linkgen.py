@@ -38,7 +38,7 @@ def doMagic(osversion, radioversion, softwareversion):
               "/qc8960.factory_sfi_hybrid_qc8974.desktop-" +
               osversion + "-nto+armle-v7+signed.bar"]
 
-    # List of debrick urls
+    # List of core urls
     coreurls = ["STL100-1: " + baseurl +
                 "/winchester.factory_sfi-" +
                 osversion + "-nto+armle-v7+signed.bar",

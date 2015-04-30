@@ -70,8 +70,16 @@ def main():
             help="Working folder",
             default=os.getcwd(),
             metavar="DIR")
+        parser.add_argument(
+            "-b", "--blitz",
+            dest="blitz",
+            help="Create blitz package",
+            action="store_true",
+            default=False)
         parser.set_defaults(upgrade=False)
         args = parser.parse_args(sys.argv[1:])
+        if args.blitz:
+            args.upgrade = True  # blitz takes precedence
         carrierchecker.doMagic(
             args.mcc,
             args.mnc,
@@ -79,7 +87,8 @@ def main():
             args.download,
             args.upgrade,
             args.folder,
-            args.export)
+            args.export,
+            args.blitz)
     else:
         mcc = int(input("MCC: "))
         mnc = int(input("MNC: "))
@@ -87,6 +96,13 @@ def main():
         download = utilities.str2bool(input("DOWNLOAD?: "))
         upgrade = utilities.str2bool(input("UPGRADE BARS?: "))
         export = utilities.str2bool(input("EXPORT TO FILE?: "))
+        if download:
+            if upgrade:
+                blitz = utilities.str2bool(input("CREATE BLITZ?: "))
+            else:
+                blitz = False
+        else:
+            blitz = False
         directory = os.getcwd()
         print(" ")
         carrierchecker.doMagic(
@@ -96,5 +112,6 @@ def main():
             download,
             upgrade,
             directory,
-            export)
+            export,
+            blitz)
         smeg = input("Press Enter to exit")  # @UnusedVariable

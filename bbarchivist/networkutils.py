@@ -166,7 +166,9 @@ def carrier_checker(mcc, mnc):
 
 
 def carrier_update_request(mcc, mnc, device,
-                           download=False, upgrade=False, blitz=False):
+                           download=False,
+                           upgrade=False,
+                           blitz=False):
     """
     Query BlackBerry servers, check which update is out for a carrier.
 
@@ -184,6 +186,9 @@ def carrier_update_request(mcc, mnc, device,
 
     :param upgrade: Whether to use upgrade files. False by default.
     :type upgrade: bool
+
+    :param blitz: Whether or not to create a blitz package. False by default.
+    :type blitz: bool
     """
     if upgrade:
         upg = "upgrade"
