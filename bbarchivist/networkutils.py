@@ -63,7 +63,7 @@ class Downloader(threading.Thread):
             t_elapsed_proper = math.ceil(t_elapsed * 100) / 100
             print(
                 "Downloaded " +
-                url +
+                local_filename +
                 " in " +
                 str(t_elapsed_proper) +
                 " seconds")
@@ -165,7 +165,8 @@ def carrier_checker(mcc, mnc):
     return country, carrier
 
 
-def carrier_update_request(mcc, mnc, device, download=False, upgrade=False):
+def carrier_update_request(mcc, mnc, device,
+                           download=False, upgrade=False, blitz=False):
     """
     Query BlackBerry servers, check which update is out for a carrier.
 
@@ -240,7 +241,13 @@ def carrier_update_request(mcc, mnc, device, download=False, upgrade=False):
     if package_exists is not None:
         baseurl = package_exists.get("url") + "/"
         for child in root.iter("package"):
-            files.append(baseurl + child.get("path"))
+            if not blitz:
+                files.append(baseurl + child.get("path"))
+            else:
+                if child.get("type") not in ["system:radio",
+                                             "system:desktop",
+                                             "system:os"]:
+                    files.append(baseurl + child.get("path"))
             if child.get("type") == "system:radio":
                 radver = child.get("version")
             if child.get("type") == "system:desktop":
