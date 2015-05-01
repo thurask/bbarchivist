@@ -87,22 +87,6 @@ def is_windows():
     return windows
 
 
-def is_mac():
-    """
-    Returns true if script is running on OSX.
-    """
-    mac = platform.system() == "Darwin"
-    return mac
-
-
-def is_linux():
-    """
-    Returns true if script is running on Linux.
-    """
-    linux = platform.system() == "Linux"
-    return linux
-
-
 def get_seven_zip(talkative=False):
     """
     Return name of 7-Zip executable.
@@ -168,10 +152,19 @@ def get_core_count():
     Find out how many CPU cores this system has.
     Good for multicore compression.
     """
-    cores = str(os.cpu_count())  # thank you Python 3.4
-    if os.cpu_count() is None:
-        cores = str(1)
-    return cores
+    try:
+        cores = str(os.cpu_count())  # thank you Python 3.4
+    except AttributeError:  # less than 3.4
+        import multiprocessing
+        try:
+            cores = str(multiprocessing.cpu_count())  # @UndefinedVariable
+        except:
+            cores = "1"
+    else:
+        if os.cpu_count() is None:
+            cores = "1"
+    finally:
+        return cores
 
 
 def prep_seven_zip():
@@ -181,31 +174,31 @@ def prep_seven_zip():
     On Windows, checks for 7-Zip.
     Returns False if not found, True if found.
     """
-    if is_mac():
-        path = shutil.which("7za")
-        if path is None:
-            print("NO 7ZIP")
-            print("PLEASE INSTALL p7zip FROM SOURCE/HOMEBREW/MACPORTS")
-            return False
-        else:
-            print("7ZIP FOUND AT", path)
-            return True
-    elif is_linux():
-        path = shutil.which("7za")
-        if path is None:
-            print("NO 7ZIP")
-            print("PLEASE INSTALL p7zip AND ANY RELATED PACKAGES")
-            print("CONSULT YOUR PACKAGE MANAGER, OR GOOGLE IT")
-            return False
-        else:
-            print("7ZIP FOUND AT", path)
-            return True
-    elif is_windows():
+    if is_windows():
         smeg = get_seven_zip(True)
         if smeg == "error":
             return False
         else:
             return True
+    else:
+        try:
+            path = shutil.which("7za")
+        except ImportError:  # less than 3.3
+            try:
+                from shutilwhich import which
+            except ImportError:
+                print("PLEASE INSTALL SHUTILWHICH WITH PIP")
+                return False
+            else:
+                path = which("7za")
+        finally:
+            if path is None:
+                print("NO 7ZIP")
+                print("PLEASE INSTALL p7zip")
+                return False
+            else:
+                print("7ZIP FOUND AT", path)
+                return True
 
 
 def return_model(index):

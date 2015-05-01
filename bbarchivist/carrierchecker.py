@@ -21,11 +21,11 @@ import hashlib
 import shutil
 
 
-def doMagic(mcc, mnc, device,
-            download=False, upgrade=False,
-            directory=os.getcwd(),
-            export=False,
-            blitz=False):
+def do_magic(mcc, mnc, device,
+             download=False, upgrade=False,
+             directory=os.getcwd(),
+             export=False,
+             blitz=False):
     """
     Wrap around :mod:`bbarchivist.networkutils` carrier checking.
 

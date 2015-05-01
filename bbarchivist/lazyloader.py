@@ -27,9 +27,9 @@ except SystemError:
     import loadergen  # @UnresolvedImport @Reimport
 
 
-def doMagic(osversion, radioversion,
-            softwareversion, device,
-            localdir, autoloader):
+def do_magic(osversion, radioversion,
+             softwareversion, device,
+             localdir, autoloader):
     """
     Wrap the tools necessary to make one autoloader.
 

@@ -32,7 +32,7 @@ Requirements
 Universal
 ~~~~~~~~~
 
-Requires Python >=3.4. Install the latest.
+Requires Python >=3.2. Install the latest.
 
 To get this package, install with pip:
 
@@ -207,7 +207,7 @@ Help
       --7z                  Compress with 7z, LZMA2
       --tgz                 Compress with tar, GZIP
       --tbz                 Compress with tar, BZIP2
-      --txz                 Compress with tar, LZMA
+      --txz                 Compress with tar, LZMA (py3.3+)
       --zip                 Compress with zip, DEFLATE
     
     http://github.com/thurask/bbarchivist

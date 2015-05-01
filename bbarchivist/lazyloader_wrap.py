@@ -21,7 +21,7 @@ def main():
     """
     Parse arguments from argparse/questionnaire.
 
-    Invoke :func:`bbarchivist.lazyloader.doMagic` with those arguments.
+    Invoke :func:`bbarchivist.lazyloader.do_magic` with those arguments.
     """
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(
@@ -99,7 +99,7 @@ def main():
         args = parser.parse_args(sys.argv[1:])
         if not utilities.is_windows():
             args.autoloader = False
-        lazyloader.doMagic(
+        lazyloader.do_magic(
             args.os,
             args.radio,
             args.swrelease,
@@ -120,7 +120,7 @@ def main():
         else:
             autoloader = False
         print(" ")
-        lazyloader.doMagic(
+        lazyloader.do_magic(
             osversion,
             radioversion,
             softwareversion,

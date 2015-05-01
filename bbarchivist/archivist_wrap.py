@@ -21,7 +21,7 @@ def main():
     """
     Parse arguments from argparse/questionnaire.
 
-    Invoke :func:`bbarchivist.archivist.doMagic` with those arguments.
+    Invoke :func:`bbarchivist.archivist.do_magic` with those arguments.
     """
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(
@@ -212,7 +212,7 @@ def main():
         compgroup.add_argument(
             "--txz",
             dest="compmethod",
-            help="Compress with tar, LZMA",
+            help="Compress with tar, LZMA (py3.3+)",
             action="store_const",
             const="txz")
         compgroup.add_argument(
@@ -223,6 +223,10 @@ def main():
             const="zip")
         parser.set_defaults(compmethod="7z")
         args = parser.parse_args(sys.argv[1:])
+        majver = sys.version_info[1]
+        if majver <= 2:  # 3.2 and under
+            if args.compmethod == "txz":
+                args.compmethod = "zip"  # fallback
         if args.all is True:
             args.adler32 = True
             args.crc32 = True
@@ -262,6 +266,6 @@ def main():
                            localdir, radios, compressed, deleted, hashed,
                            False, False, True, False, False,
                            False, False, True, False, False,
-                           False, "cap-3.11.0.18.dat", True,
+                           False, "cap-3.11.0.22.dat", True,
                            True, True, True, "7z")
     smeg = input("Press Enter to exit")  # @UnusedVariable

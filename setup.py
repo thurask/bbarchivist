@@ -1,10 +1,18 @@
 from setuptools import setup
 from bbarchivist import bbconstants
+from sys import version_info
 
 
 def readme():
     with open('README.rst') as f:
         return f.read()
+
+cond_requires = []
+if version_info[1] == 2:  # 3.2
+    cond_requires = ['requests',
+                     'shutilwhich']
+elif version_info[1] >= 3:  # 3.3 and up
+    cond_requires = ['requests']
 
 setup(name='bbarchivist',
       version=bbconstants._version,
@@ -38,9 +46,7 @@ setup(name='bbarchivist',
       packages=['bbarchivist'],
       zip_safe=False,
       include_package_data=True,
-      install_requires=[
-          'requests',
-      ],
+      install_requires=cond_requires,
       entry_points={
         'console_scripts': ['bb-archivist=bbarchivist.archivist_wrap:main',
                             'bb-lazyloader=bbarchivist.lazyloader_wrap:main',

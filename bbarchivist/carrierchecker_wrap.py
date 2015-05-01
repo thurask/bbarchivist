@@ -21,7 +21,7 @@ def main():
     """
     Parse arguments from argparse/questionnaire.
 
-    Invoke :func:`bbarchivist.carrierchecker.doMagic` with those arguments.
+    Invoke :func:`bbarchivist.carrierchecker.do_magic` with those arguments.
     """
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(
@@ -80,7 +80,7 @@ def main():
         args = parser.parse_args(sys.argv[1:])
         if args.blitz:
             args.upgrade = True  # blitz takes precedence
-        carrierchecker.doMagic(
+        carrierchecker.do_magic(
             args.mcc,
             args.mnc,
             args.device,
@@ -105,7 +105,7 @@ def main():
             blitz = False
         directory = os.getcwd()
         print(" ")
-        carrierchecker.doMagic(
+        carrierchecker.do_magic(
             mcc,
             mnc,
             device,

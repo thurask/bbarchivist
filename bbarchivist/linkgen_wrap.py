@@ -16,7 +16,7 @@ def main():
     """
     Parse arguments from argparse/questionnaire.
 
-    Invoke :func:`bbarchivist.linkgen.doMagic` with those arguments.
+    Invoke :func:`bbarchivist.linkgen.do_magic` with those arguments.
     """
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(
@@ -33,7 +33,7 @@ def main():
         parser.add_argument("radio", help="Radio version, 10.x.y.zzzz")
         parser.add_argument("swrelease", help="Software version, 10.x.y.zzzz")
         args = parser.parse_args(sys.argv[1:])
-        linkgen.doMagic(
+        linkgen.do_magic(
             args.os,
             args.radio,
             args.swrelease)
@@ -42,7 +42,7 @@ def main():
         radioversion = input("RADIO VERSION: ")
         softwareversion = input("SOFTWARE RELEASE: ")
         print(" ")
-        linkgen.doMagic(
+        linkgen.do_magic(
             osversion,
             radioversion,
             softwareversion)

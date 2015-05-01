@@ -6,6 +6,7 @@ import math  # rounding of floats
 import subprocess  # invocation of 7z, cap
 import zipfile  # zip extract, zip compresssion
 import tarfile  # txz/tbz/tgz compression
+import sys
 import shutil
 try:
     from . import utilities  # @UnusedImport
@@ -60,6 +61,9 @@ def compress(filepath, method="7z", szexe="7za.exe"):
     :param szexe: Path to 7z executable, if needed.
     :type szexe: str
     """
+    majver = sys.version_info[1]
+    if majver < 3 and method == "txz":  # 3.2 and under
+        method = "zip"  # fallback
     for file in os.listdir(filepath):
         if file.endswith(".exe") and file.startswith(
                 ("Q10", "Z10", "Z30", "Z3", "Passport")):
@@ -124,6 +128,9 @@ def compress(filepath, method="7z", szexe="7za.exe"):
                     endtime = time.clock() - starttime
                     endtime_proper = math.ceil(endtime * 100) / 100
                     print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
+            else:
+                print("INVALID METHOD")
+                raise SystemExit
 
 
 def remove_empty_folders(a_folder):

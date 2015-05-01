@@ -3,7 +3,7 @@
 import hashlib
 
 
-def doMagic(osversion, radioversion, softwareversion):
+def do_magic(osversion, radioversion, softwareversion):
     """
     Generate debrick/core/radio links for given OS, radio, software release.
 
