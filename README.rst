@@ -1,18 +1,29 @@
 README
 ======
     
-.. image:: https://pypip.in/py_versions/bbarchivist/badge.svg
+.. image:: https://img.shields.io/pypi/dd/bbarchivist.svg
     :target: https://pypi.python.org/pypi/bbarchivist
-    :alt: Supported Python versions
+    :alt: Downloads/day
 
-.. image:: https://pypip.in/version/bbarchivist/badge.svg?text=version
+.. image:: https://img.shields.io/pypi/v/bbarchivist.svg?label=release
     :target: https://pypi.python.org/pypi/bbarchivist
-    :alt: Latest Version
+    :alt: Pypi version
     
-.. image:: https://pypip.in/wheel/bbarchivist/badge.svg
-    :target: https://pypi.python.org/pypi/bbarchivist
-    :alt: Wheel Status
+.. image:: https://img.shields.io/github/tag/thurask/bbarchivist.svg?label=source
+    :target: https://github.com/thurask/bbarchivist
+    :alt: GitHub version
 
+.. image:: https://img.shields.io/github/issues/thurask/bbarchivist.svg
+    :target: https://github.com/thurask/bbarchivist
+    :alt: GitHub issues
+    
+.. image:: https://img.shields.io/github/forks/thurask/bbarchivist.svg
+    :target: https://github.com/thurask/bbarchivist
+    :alt: GitHub forks
+    
+.. image:: https://img.shields.io/github/stars/thurask/bbarchivist.svg
+    :target: https://github.com/thurask/bbarchivist
+    :alt: GitHub stars
 
 A Python 3 package to download bars and turn them into autoloaders.
 Includes support scripts.
