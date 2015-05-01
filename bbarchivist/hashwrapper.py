@@ -252,16 +252,19 @@ def gpgrunner(workingdir, keyid=None, passphrase=None):
         if not keyid.startswith("0x"):
             keyid = "0x" + keyid.upper()
         for file in os.listdir(workingdir):
-            print("VERIFYING:", str(file))
-            try:
-                filehashtools.gpgfile(os.path.join(
-                                               workingdir,
-                                               file
-                                  ),
-                                  gpg,
-                                  keyid=keyid,
-                                  passphrase=passphrase)
-            except Exception as e:
-                print("SOMETHING WENT WRONG")
-                print(str(e))
+            if os.path.isdir(os.path.join(workingdir, file)):
+                pass  # exclude folders
+            else:
+                print("VERIFYING:", str(file))
+                try:
+                    filehashtools.gpgfile(os.path.join(
+                                                   workingdir,
+                                                   file
+                                      ),
+                                      gpg,
+                                      keyid=keyid,
+                                      passphrase=passphrase)
+                except Exception as e:
+                    print("SOMETHING WENT WRONG")
+                    print(str(e))
                 raise SystemExit
