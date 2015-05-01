@@ -14,3 +14,4 @@ bbarchivist/__pycache__
 *.sig
 *.txt
 docs/
+docgen.bat
