@@ -1,6 +1,6 @@
 import os
 import glob
-from . import pseudocap  # @UnusedImport
+from . import pseudocap
 
 
 def generate_loaders(

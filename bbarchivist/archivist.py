@@ -7,10 +7,10 @@ import time  # time for downloader
 import math  # rounding of floats
 from . import bbconstants
 from . import utilities
-from . import barutils  # @UnusedImport
-from . import networkutils  # @UnusedImport
-from . import loadergen  # @UnusedImport
-from . import hashwrapper  # @UnusedImport
+from . import barutils
+from . import networkutils
+from . import loadergen
+from . import hashwrapper
 
 
 def do_magic(osversion, radioversion, softwareversion,

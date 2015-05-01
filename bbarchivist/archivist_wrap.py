@@ -3,9 +3,9 @@
 import sys  # arguments
 import argparse  # argument parsing
 import os
-from . import archivist  # @UnusedImport
-from . import bbconstants  # @UnusedImport
-from . import utilities  # @UnusedImport
+from . import archivist
+from . import bbconstants
+from . import utilities
 
 
 def main():
