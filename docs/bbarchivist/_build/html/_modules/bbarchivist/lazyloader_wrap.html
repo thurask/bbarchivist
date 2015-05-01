@@ -70,7 +70,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parse arguments from argparse/questionnaire.</span>
 
-<span class="sd">    Invoke :func:`bbarchivist.lazyloader.doMagic` with those arguments.</span>
+<span class="sd">    Invoke :func:`bbarchivist.lazyloader.do_magic` with those arguments.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
@@ -148,7 +148,7 @@
         <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">utilities</span><span class="o">.</span><span class="n">is_windows</span><span class="p">():</span>
             <span class="n">args</span><span class="o">.</span><span class="n">autoloader</span> <span class="o">=</span> <span class="bp">False</span>
-        <span class="n">lazyloader</span><span class="o">.</span><span class="n">doMagic</span><span class="p">(</span>
+        <span class="n">lazyloader</span><span class="o">.</span><span class="n">do_magic</span><span class="p">(</span>
             <span class="n">args</span><span class="o">.</span><span class="n">os</span><span class="p">,</span>
             <span class="n">args</span><span class="o">.</span><span class="n">radio</span><span class="p">,</span>
             <span class="n">args</span><span class="o">.</span><span class="n">swrelease</span><span class="p">,</span>
@@ -169,7 +169,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">autoloader</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="k">print</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">)</span>
-        <span class="n">lazyloader</span><span class="o">.</span><span class="n">doMagic</span><span class="p">(</span>
+        <span class="n">lazyloader</span><span class="o">.</span><span class="n">do_magic</span><span class="p">(</span>
             <span class="n">osversion</span><span class="p">,</span>
             <span class="n">radioversion</span><span class="p">,</span>
             <span class="n">softwareversion</span><span class="p">,</span>

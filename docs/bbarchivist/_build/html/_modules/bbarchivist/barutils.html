@@ -55,6 +55,7 @@
 <span class="kn">import</span> <span class="nn">subprocess</span>  <span class="c"># invocation of 7z, cap</span>
 <span class="kn">import</span> <span class="nn">zipfile</span>  <span class="c"># zip extract, zip compresssion</span>
 <span class="kn">import</span> <span class="nn">tarfile</span>  <span class="c"># txz/tbz/tgz compression</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utilities</span>  <span class="c"># @UnusedImport</span>
@@ -109,6 +110,9 @@
 <span class="sd">    :param szexe: Path to 7z executable, if needed.</span>
 <span class="sd">    :type szexe: str</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">majver</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">majver</span> <span class="o">&lt;</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">method</span> <span class="o">==</span> <span class="s">&quot;txz&quot;</span><span class="p">:</span>  <span class="c"># 3.2 and under</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="s">&quot;zip&quot;</span>  <span class="c"># fallback</span>
     <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&quot;.exe&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">file</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span>
                 <span class="p">(</span><span class="s">&quot;Q10&quot;</span><span class="p">,</span> <span class="s">&quot;Z10&quot;</span><span class="p">,</span> <span class="s">&quot;Z30&quot;</span><span class="p">,</span> <span class="s">&quot;Z3&quot;</span><span class="p">,</span> <span class="s">&quot;Passport&quot;</span><span class="p">)):</span>
@@ -173,6 +177,9 @@
                     <span class="n">endtime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">clock</span><span class="p">()</span> <span class="o">-</span> <span class="n">starttime</span>
                     <span class="n">endtime_proper</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">endtime</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span> <span class="o">/</span> <span class="mi">100</span>
                     <span class="k">print</span><span class="p">(</span><span class="s">&quot;COMPLETED IN &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">endtime_proper</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot; SECONDS&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">&quot;INVALID METHOD&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">SystemExit</span>
 
 </div>
 <div class="viewcode-block" id="remove_empty_folders"><a class="viewcode-back" href="../../bbarchivist.html#bbarchivist.barutils.remove_empty_folders">[docs]</a><span class="k">def</span> <span class="nf">remove_empty_folders</span><span class="p">(</span><span class="n">a_folder</span><span class="p">):</span>
