@@ -74,7 +74,7 @@ def do_magic(osversion, radioversion, softwareversion):
         target.write("RADIO VERSION: " + radioversion + "\n")
         target.write("SOFTWARE RELEASE: " + softwareversion + "\n")
         target.write("\n!!EXISTENCE NOT GUARANTEED!!\n")
-        target.write("DEBRICK URLS:\n")
+        target.write("\nDEBRICK URLS:\n")
         for i in osurls:
             target.write(i + "\n")
         target.write("\nCORE URLS:\n")
