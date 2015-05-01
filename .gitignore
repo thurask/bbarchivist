@@ -8,3 +8,9 @@ dist/
 *.egg-info
 build/
 bbarchivist/__pycache__
+*.bar
+*.7z
+*.cksum
+*.sig
+*.txt
+docs/
