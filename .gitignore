@@ -13,5 +13,4 @@ bbarchivist/__pycache__
 *.cksum
 *.sig
 *.txt
-docs/
-docgen.bat
+docs/bbarchivist/_build
