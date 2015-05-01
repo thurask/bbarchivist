@@ -156,8 +156,8 @@ Help
     usage: bb-archivist [-h] [-v] [-f DIR] [-c PATH] [-no] [-nx] [-nl] [-nr] [-ns]
                     [-nc] [-nd] [-nv] [--crc32] [--adler32] [--md4] [--sha224]
                     [--sha384] [--sha512] [--ripemd160] [--whirlpool]
-                    [--no-sha1] [--no-sha256] [--no-md5] [-a]
-                    [--7z | --tgz | --tbz | --txz | --zip]
+                    [--no-sha1] [--no-sha256] [--no-md5] [-a] [-g] [-gk KEY]
+                    [-gp PASS] [--7z | --tgz | --tbz | --txz | --zip]
                     os radio swrelease
 
     Download bar files, create autoloaders.
@@ -201,6 +201,15 @@ Help
       --no-md5              Disable MD5 verification
       -a, --all             Use all methods
     
+    gpg:
+      GnuPG verification
+    
+      -g, --gpg             Enable GPG signing. Set up GnuPG.
+      -gk KEY, --gpg-key KEY
+                            Key ID (0xABCDEF01)
+      -gp PASS, --gpg-pass PASS
+                            Key passphrase
+    
     compressors:
       Compression methods
     
@@ -211,6 +220,7 @@ Help
       --zip                 Compress with zip, DEFLATE
     
     http://github.com/thurask/bbarchivist
+
 
 ----------------------------------------
 
@@ -411,8 +421,9 @@ No fancy licensing here, just fork this and do whatever. Although, if
 you figure out something interesting, please do try to put it upstream
 via pull request.
 
-Authors
+Credits
 -------
-
--  `Thurask <https://twitter.com/thuraski>`__
--  Viewers Like You
+-  bbarchivist: `Thurask <https://twitter.com/thuraski>`__
+-  Requests: `Kenneth Reitz et al. <http://docs.python-requests.org/en/latest/dev/authors/>`__
+-  Python-GnuPG: `Vinay Sajip et al. <https://pythonhosted.org/python-gnupg/index.html#acknowledgements>`__
+-  Feedback, testing: Users Like You

@@ -232,3 +232,27 @@ def whirlpoolhash(filepath, blocksize=16 * 1024 * 1024):
         return wp.hexdigest()
     except Exception:
         print("WHIRLPOOL HASH FAILED:\nIS IT AVAILABLE?")
+
+
+def gpgfile(filepath, gpginst, keyid=None, passphrase=None):
+    """
+    Make ASCII-armored signature files with a given private key.
+
+    :param filepath: File you wish to verify.
+    :type filepath: str
+
+    :param gpginst: Instance of Python GnuPG executable.
+    :type gpginst: gnupg.GPG()
+
+    :param keyid: Key ID. 0xABCDEF01
+    :type keyid: str
+
+    :param passphrase: Passphrase for key.
+    :type passphrase: str
+    """
+    with open(filepath, "rb") as f:
+        gpginst.sign_file(f,
+                          detach=True,
+                          keyid=keyid,
+                          passphrase=passphrase,
+                          output=f.name + ".asc")

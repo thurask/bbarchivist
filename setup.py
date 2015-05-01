@@ -7,13 +7,10 @@ def readme():
     with open('README.rst') as f:
         return f.read()
 
-cond_requires = []
-if version_info[1] == 2:  # 3.2
-    cond_requires = ['requests',
-                     'shutilwhich']
-elif version_info[1] >= 3:  # 3.3 and up
-    cond_requires = ['requests']
-
+cond_requires = ['requests',
+                 'python-gnupg']
+if version_info[1] < 3:  # 3.2 and under
+    cond_requires.append('shutilwhich')
 setup(name='bbarchivist',
       version=bbconstants._version,
       description='BlackBerry 10 autoloader tools',
@@ -55,5 +52,6 @@ setup(name='bbarchivist',
                             'bb-cchecker=bbarchivist.carrierchecker_wrap:main',
                             'bb-filehasher=bbarchivist.filehasher_wrap:main',
                             'bb-escreens=bbarchivist.escreens_wrap:main',
-                            'bb-linkgen=bbarchivist.linkgen_wrap:main'],
+                            'bb-linkgen=bbarchivist.linkgen_wrap:main',
+                            'bb-gpgrunner=bbarchivist.gpgrunner_wrap:main'],
         })

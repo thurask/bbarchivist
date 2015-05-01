@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import gnupg
 try:
     from . import filehashtools  # @UnusedImport
 except SystemError:
@@ -218,6 +219,49 @@ def verifier(workingdir, blocksize=16 * 1024 * 1024,
             target.write(hashoutput_ripemd160 + "\n")
         if whirlpool:
             target.write(hashoutput_whirlpool + "\n")
-    with open(os.path.join(workingdir, 'all.cksum'), 'rb+') as target:
-        target.seek(-2, os.SEEK_END)  # navigate to last character
-        target.truncate()  # get rid of trailing \n
+    if any((crc32, adler32,
+           md4, md5,
+           sha1, sha224, sha256, sha384, sha512,
+           ripemd160, whirlpool)):
+        with open(os.path.join(workingdir, 'all.cksum'), 'rb+') as target:
+            target.seek(-2, os.SEEK_END)  # navigate to last character
+            target.truncate()  # get rid of trailing \n
+    else:
+        os.remove(os.path.join(workingdir, 'all.cksum'))
+
+
+def gpgrunner(workingdir, keyid=None, passphrase=None):
+    """
+    Create ASCII-armored PGP signatures for all files in a given directory.
+
+    :param workingdir: Path containing files you wish to verify.
+    :type workingdir: str
+
+    :param keyid: Key to use. 8-character hexadecimal, with or without 0x.
+    :type keyid: str
+
+    :param passphrase: Passphrase for given key.
+    :type passphrase: str
+    """
+    try:
+        gpg = gnupg.GPG()
+    except ValueError:
+        print("COULD NOT FIND GnuPG!")
+        raise SystemExit
+    else:
+        if not keyid.startswith("0x"):
+            keyid = "0x" + keyid.upper()
+        for file in os.listdir(workingdir):
+            print("VERIFYING:", str(file))
+            try:
+                filehashtools.gpgfile(os.path.join(
+                                               workingdir,
+                                               file
+                                  ),
+                                  gpg,
+                                  keyid=keyid,
+                                  passphrase=passphrase)
+            except Exception as e:
+                print("SOMETHING WENT WRONG")
+                print(str(e))
+                raise SystemExit

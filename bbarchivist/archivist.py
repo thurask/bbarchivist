@@ -38,7 +38,8 @@ def do_magic(osversion, radioversion, softwareversion,
              sha384=False, sha512=False, md5=True,
              md4=False, ripemd160=False, whirlpool=False,
              cappath="cap.exe", download=True, extract=True,
-             loaders=True, signed=True, compmethod="7z"):
+             loaders=True, signed=True, compmethod="7z",
+             gpg=False, gpgkey=None, gpgpass=None):
 
     """
     Wrap around multi-autoloader creation code.
@@ -119,6 +120,15 @@ def do_magic(osversion, radioversion, softwareversion,
 
     :param compmethod: Compression method. Default is "7z" with fallback "zip".
     :type compmethod: str
+
+    :param gpg: Whether to use GnuPG verification. False by default.
+    :type gpg: bool
+
+    :param gpgkey: Key to use with GnuPG verification.
+    :type gpgkey: str
+
+    :param gpgpass: Passphrase to use with GnuPG verification.
+    :type gpgpass: str
     """
     starttime = time.clock()
     version = bbconstants._version  # update as needed
@@ -387,6 +397,33 @@ def do_magic(osversion, radioversion, softwareversion,
                     md4,
                     ripemd160,
                     whirlpool)
+    if gpg:
+        if gpgpass is not None or gpgkey is not None:
+            print("\nVERIFYING LOADERS...")
+            print("KEY:", gpgkey, "\n")
+            if compressed:
+                hashwrapper.gpgrunner(
+                    zipdir_os,
+                    gpgkey,
+                    gpgpass)
+                if radios:
+                    hashwrapper.gpgrunner(
+                        zipdir_radio,
+                        gpgkey,
+                        gpgpass)
+            if not deleted:
+                hashwrapper.gpgrunner(
+                    loaderdir_os,
+                    gpgkey,
+                    gpgpass)
+                if radios:
+                    hashwrapper.gpgrunner(
+                        loaderdir_radio,
+                        gpgkey,
+                        gpgpass)
+        else:
+            print("\nNO KEY AND/OR PASS PROVIDED!")
+            raise SystemExit
 
     # Remove uncompressed loaders (if specified)
     if deleted:

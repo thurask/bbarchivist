@@ -189,6 +189,32 @@ def main():
             help="Use all methods",
             action="store_true",
             default=False)
+        gpggroup = parser.add_argument_group(
+            "gpg",
+            "GnuPG verification")
+        gpggroup.add_argument(
+            "-g",
+            "--gpg",
+            dest="gpg",
+            help="Enable GPG signing. Set up GnuPG.",
+            action="store_true",
+            default=False)
+        gpggroup.add_argument(
+            "-gk",
+            "--gpg-key",
+            dest="gpgkey",
+            help="Key ID (0xABCDEF01)",
+            action="store",
+            metavar="KEY",
+            default=None)
+        gpggroup.add_argument(
+            "-gp",
+            "--gpg-pass",
+            dest="gpgpass",
+            help="Key passphrase",
+            action="store",
+            metavar="PASS",
+            default=None)
         comps = parser.add_argument_group("compressors", "Compression methods")
         compgroup = comps.add_mutually_exclusive_group()
         compgroup.add_argument(
@@ -239,6 +265,9 @@ def main():
             args.md4 = True
             args.ripemd160 = True
             args.whirlpool = True
+        if args.gpg is True:
+            if args.gpgkey is None or args.gpgpass is None:
+                args.gpg = False  # talk the talk, walk the walk
         archivist.do_magic(args.os, args.radio, args.swrelease,
                            args.folder, args.radloaders,
                            args.compress, args.delete, args.verify,
@@ -248,7 +277,8 @@ def main():
                            args.md4, args.ripemd160, args.whirlpool,
                            args.cappath, args.download,
                            args.extract, args.loaders,
-                           args.signed, args.compmethod)
+                           args.signed, args.compmethod,
+                           args.gpg, args.gpgkey, args.gpgpass)
     else:
         localdir = os.getcwd()
         osversion = input("OS VERSION: ")
@@ -267,5 +297,6 @@ def main():
                            False, False, True, False, False,
                            False, False, True, False, False,
                            False, "cap-3.11.0.22.dat", True,
-                           True, True, True, "7z")
+                           True, True, True, "7z", False,
+                           False, None, None)
     smeg = input("Press Enter to exit")  # @UnusedVariable

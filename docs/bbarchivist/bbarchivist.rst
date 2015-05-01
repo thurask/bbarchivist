@@ -64,6 +64,14 @@ Hashwrapper wrapper
     :members:
     :undoc-members:
     :show-inheritance:
+	
+GPGRunner wrapper
+------------------
+
+.. automodule:: bbarchivist.gpgrunner_wrap
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 Filehashtools module
 --------------------
