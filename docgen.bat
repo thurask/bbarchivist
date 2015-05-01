@@ -1,1 +1,0 @@
-sphinx-apidoc bbarchivist -o docs\bbarchivist
