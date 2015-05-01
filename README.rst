@@ -154,6 +154,12 @@ LinkGen
 1. Ask for OS version, radio version, software version (if not specified)
 2. Write debrick/core/radio links to file
 
+GPGRunner
+~~~~~~~~~
+
+1. Ask for PGP key ID, passphrase (if not specified)
+2. Verify all files in local/given folder
+
 Command Line Arguments
 ----------------------
 
@@ -382,7 +388,28 @@ Help
       -v, --version  show program's version number and exit
     
     http://github.com/thurask/bbarchivist
+    
+----------------------------------------
 
+::
+
+    > bb-gpgrunner -h
+    
+    usage: bb-gpgrunner [-h] [-v] [folder] key password
+
+    GPG-sign all files in a directory.
+    
+    positional arguments:
+      folder         Working directory, default is local
+      key            Key to use, 8-character hexadecimal
+      password       Passphrase for key; quote if multi-word
+    
+    optional arguments:
+      -h, --help     show this help message and exit
+      -v, --version  show program's version number and exit
+    
+    http://github.com/thurask/bbarchivist
+        
 Example
 ~~~~~~~
 
@@ -421,9 +448,16 @@ would generate the code for that PIN, OS version and uptime and for 30 days.
 
 ::
 
-    > bb-linkgen 10.3.1.2726 10.3.1.2727 10.3.1.18777
+    > bb-linkgen 10.3.1.2726 10.3.1.2727 10.3.1.1877
     
 would generate the URLs for that given OS/radio/software release combination.
+
+::
+
+    > bb-gpgrunner "~/some_stuff" 0xACDCACDC "Correct horse battery staple"
+    
+would create ASCII signature files for all files in the given folder with the given key.
+MAKE SURE TO HAVE GnuPG SET UP BEFOREHAND!
 
 License
 -------
