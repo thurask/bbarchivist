@@ -1,21 +1,9 @@
 #!/usr/bin/env python3
 
-try:
-    from . import bbconstants  # @UnusedImport
-except SystemError:
-    import bbconstants  # @UnresolvedImport @Reimport
-try:
-    from . import networkutils  # @UnusedImport
-except SystemError:
-    import networkutils  # @UnresolvedImport @Reimport
-try:
-    from . import utilities  # @UnusedImport
-except SystemError:
-    import utilities  # @UnresolvedImport @Reimport
-try:
-    from . import barutils  # @UnusedImport
-except SystemError:
-    import barutils  # @UnresolvedImport @Reimport
+from . import bbconstants
+from . import networkutils
+from . import utilities
+from . import barutils
 import os
 import hashlib
 import shutil

@@ -2,14 +2,8 @@
 
 import argparse
 import sys
-try:
-    from . import linkgen  # @UnusedImport
-except SystemError:
-    import linkgen  # @UnresolvedImport @Reimport
-try:
-    from . import bbconstants  # @UnusedImport
-except SystemError:
-    import bbconstants  # @UnresolvedImport @Reimport
+from . import linkgen
+from . import bbconstants
 
 
 def main():

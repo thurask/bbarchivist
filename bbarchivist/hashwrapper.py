@@ -2,10 +2,7 @@
 
 import os
 import gnupg
-try:
-    from . import filehashtools  # @UnusedImport
-except SystemError:
-    import filehashtools  # @UnresolvedImport @Reimport
+from . import filehashtools
 
 
 def verifier(workingdir, blocksize=16 * 1024 * 1024,
@@ -230,7 +227,7 @@ def verifier(workingdir, blocksize=16 * 1024 * 1024,
         os.remove(os.path.join(workingdir, 'all.cksum'))
 
 
-def gpgrunner(workingdir, keyid=None, passphrase=None):
+def gpgrunner(workingdir, keyid=None, passphrase=None, selective=False):
     """
     Create ASCII-armored PGP signatures for all files in a given directory.
 
@@ -242,6 +239,9 @@ def gpgrunner(workingdir, keyid=None, passphrase=None):
 
     :param passphrase: Passphrase for given key.
     :type passphrase: str
+
+    :param selective: Filtering filenames/extensions. Default is false.
+    :type selective: bool
     """
     try:
         gpg = gnupg.GPG()
@@ -255,16 +255,44 @@ def gpgrunner(workingdir, keyid=None, passphrase=None):
             if os.path.isdir(os.path.join(workingdir, file)):
                 pass  # exclude folders
             else:
-                print("VERIFYING:", str(file))
-                try:
-                    filehashtools.gpgfile(os.path.join(
-                                                   workingdir,
-                                                   file
-                                      ),
-                                      gpg,
-                                      keyid=keyid,
-                                      passphrase=passphrase)
-                except Exception as e:
-                    print("SOMETHING WENT WRONG")
-                    print(str(e))
-                raise SystemExit
+                if not file.endswith(".cksum"):
+                    print("VERIFYING:", str(file))
+                    if selective:
+                        if file.endswith(
+                            (".7z",
+                             ".tar.xz",
+                             ".tar.bz2",
+                             ".tar.gz",
+                             ".zip",
+                             ".exe")
+                        ) and file.startswith(
+                                ("Q10",
+                                 "Z10",
+                                 "Z30",
+                                 "Z3",
+                                 "Passport")):
+                            try:
+                                filehashtools.gpgfile(os.path.join(
+                                                               workingdir,
+                                                               file
+                                                  ),
+                                                  gpg,
+                                                  keyid=keyid,
+                                                  passphrase=passphrase)
+                            except Exception as e:
+                                print("SOMETHING WENT WRONG")
+                                print(str(e))
+                                raise SystemExit
+                    else:
+                        try:
+                            filehashtools.gpgfile(os.path.join(
+                                                               workingdir,
+                                                               file
+                                                  ),
+                                                  gpg,
+                                                  keyid=keyid,
+                                                  passphrase=passphrase)
+                        except Exception as e:
+                            print("SOMETHING WENT WRONG")
+                            print(str(e))
+                            raise SystemExit

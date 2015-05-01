@@ -3,14 +3,8 @@
 import argparse
 import sys
 import os
-try:
-    from . import hashwrapper  # @UnusedImport
-except SystemError:
-    import hashwrapper  # @UnresolvedImport @Reimport
-try:
-    from . import bbconstants  # @UnusedImport
-except SystemError:
-    import bbconstants  # @UnresolvedImport @Reimport
+from . import hashwrapper
+from . import bbconstants
 
 
 def main():

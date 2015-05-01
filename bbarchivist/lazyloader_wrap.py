@@ -3,18 +3,9 @@
 import argparse
 import sys
 import os
-try:
-    from . import lazyloader  # @UnusedImport
-except SystemError:
-    import lazyloader  # @UnresolvedImport @Reimport
-try:
-    from . import bbconstants  # @UnusedImport
-except SystemError:
-    import bbconstants  # @UnresolvedImport @Reimport
-try:
-    from . import utilities  # @UnusedImport
-except SystemError:
-    import utilities  # @UnresolvedImport @Reimport
+from . import lazyloader
+from . import bbconstants
+from . import utilities
 
 
 def main():

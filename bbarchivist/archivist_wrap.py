@@ -3,18 +3,9 @@
 import sys  # arguments
 import argparse  # argument parsing
 import os
-try:
-    from . import archivist  # @UnusedImport
-except SystemError:
-    import archivist  # @UnresolvedImport @Reimport
-try:
-    from . import bbconstants  # @UnusedImport
-except SystemError:
-    import bbconstants  # @UnresolvedImport @Reimport
-try:
-    from . import utilities  # @UnusedImport
-except SystemError:
-    import utilities  # @UnresolvedImport @Reimport
+from . import archivist  # @UnusedImport
+from . import bbconstants  # @UnusedImport
+from . import utilities  # @UnusedImport
 
 
 def main():

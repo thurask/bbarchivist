@@ -5,30 +5,12 @@ import shutil  # directory read/write
 import hashlib  # SHA-x, MD5
 import time  # time for downloader
 import math  # rounding of floats
-try:
-    from . import bbconstants  # @UnusedImport
-except SystemError:
-    import bbconstants  # @UnresolvedImport @Reimport
-try:
-    from . import utilities  # @UnusedImport
-except SystemError:
-    import utilities  # @UnresolvedImport @Reimport
-try:
-    from . import barutils  # @UnusedImport
-except SystemError:
-    import barutils  # @UnresolvedImport @Reimport
-try:
-    from . import networkutils  # @UnusedImport
-except SystemError:
-    import networkutils  # @UnresolvedImport @Reimport
-try:
-    from . import loadergen  # @UnusedImport
-except SystemError:
-    import loadergen  # @UnresolvedImport @Reimport
-try:
-    from . import hashwrapper  # @UnusedImport
-except SystemError:
-    import hashwrapper  # @UnresolvedImport @Reimport
+from . import bbconstants
+from . import utilities
+from . import barutils  # @UnusedImport
+from . import networkutils  # @UnusedImport
+from . import loadergen  # @UnusedImport
+from . import hashwrapper  # @UnusedImport
 
 
 def do_magic(osversion, radioversion, softwareversion,
@@ -201,8 +183,8 @@ def do_magic(osversion, radioversion, softwareversion,
 
     # Check availability of software release
     print("\nCHECKING SOFTWARE RELEASE AVAILABILITY...")
-    av = networkutils.availability(baseurl)
-    if av:
+    avail = networkutils.availability(baseurl)
+    if avail:
         print("SOFTWARE RELEASE", softwareversion, "EXISTS")
     else:
         print("SOFTWARE RELEASE", softwareversion, "NOT FOUND")
@@ -405,22 +387,26 @@ def do_magic(osversion, radioversion, softwareversion,
                 hashwrapper.gpgrunner(
                     zipdir_os,
                     gpgkey,
-                    gpgpass)
+                    gpgpass,
+                    True)
                 if radios:
                     hashwrapper.gpgrunner(
                         zipdir_radio,
                         gpgkey,
-                        gpgpass)
+                        gpgpass,
+                        True)
             if not deleted:
                 hashwrapper.gpgrunner(
                     loaderdir_os,
                     gpgkey,
-                    gpgpass)
+                    gpgpass,
+                    True)
                 if radios:
                     hashwrapper.gpgrunner(
                         loaderdir_radio,
                         gpgkey,
-                        gpgpass)
+                        gpgpass,
+                        True)
         else:
             print("\nNO KEY AND/OR PASS PROVIDED!")
             raise SystemExit

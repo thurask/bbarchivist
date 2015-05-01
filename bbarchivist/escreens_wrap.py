@@ -2,18 +2,9 @@
 
 import argparse
 import sys
-try:
-    from . import escreens  # @UnusedImport
-except SystemError:
-    import escreens  # @UnresolvedImport @Reimport
-try:
-    from . import bbconstants  # @UnusedImport
-except SystemError:
-    import bbconstants  # @UnresolvedImport @Reimport
-try:
-    from . import utilities  # @UnusedImport
-except SystemError:
-    import utilities  # @UnresolvedImport @Reimport
+from . import escreens
+from . import bbconstants
+from . import utilities
 
 
 def main():

@@ -3,10 +3,7 @@
 import os
 import binascii
 import glob
-try:
-    from . import bbconstants  # @UnusedImport
-except SystemError:
-    import bbconstants  # @UnresolvedImport @Reimport
+from . import bbconstants
 
 
 def ghetto_convert(intsize):

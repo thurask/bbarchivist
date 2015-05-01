@@ -5,26 +5,11 @@ import glob
 import shutil
 import hashlib
 import subprocess
-try:
-    from . import utilities  # @UnusedImport
-except SystemError:
-    import utilities  # @UnresolvedImport @Reimport
-try:
-    from . import barutils  # @UnusedImport
-except SystemError:
-    import barutils  # @UnresolvedImport @Reimport
-try:
-    from . import bbconstants  # @UnusedImport
-except SystemError:
-    import bbconstants  # @UnresolvedImport @Reimport
-try:
-    from . import networkutils  # @UnusedImport
-except SystemError:
-    import networkutils  # @UnresolvedImport @Reimport
-try:
-    from . import loadergen  # @UnusedImport
-except SystemError:
-    import loadergen  # @UnresolvedImport @Reimport
+from . import utilities
+from . import barutils
+from . import bbconstants
+from . import networkutils
+from . import loadergen
 
 
 def do_magic(osversion, radioversion,

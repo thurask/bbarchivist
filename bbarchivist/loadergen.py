@@ -1,9 +1,6 @@
 import os
 import glob
-try:
-    from . import pseudocap  # @UnusedImport
-except SystemError:
-    import pseudocap  # @UnresolvedImport @Reimport
+from . import pseudocap  # @UnusedImport
 
 
 def generate_loaders(

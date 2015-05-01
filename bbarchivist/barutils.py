@@ -8,10 +8,7 @@ import zipfile  # zip extract, zip compresssion
 import tarfile  # txz/tbz/tgz compression
 import sys
 import shutil
-try:
-    from . import utilities  # @UnusedImport
-except SystemError:
-    import utilities  # @UnresolvedImport @Reimport
+from . import utilities
 
 
 def extract_bars(filepath):

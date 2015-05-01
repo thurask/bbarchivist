@@ -2,10 +2,7 @@
 
 import hmac
 import hashlib
-try:
-    from . import bbconstants  # @UnusedImport
-except SystemError:
-    import bbconstants  # @UnresolvedImport @Reimport
+from . import bbconstants
 
 
 def calculate_escreens(pin, app, uptime, duration=30):
