@@ -22,13 +22,14 @@ def extract_bars(filepath):
     for file in os.listdir(filepath):
         if file.endswith(".bar"):
             try:
-                z = zipfile.ZipFile(file, 'r')
-                names = z.namelist()
+                zfile = zipfile.ZipFile(file, 'r')
+                names = zfile.namelist()
                 for name in names:
                     if str(name).endswith(".signed"):
-                        z.extract(name, filepath)
-            except Exception:
+                        zfile.extract(name, filepath)
+            except Exception as exc:
                 print("EXTRACTION FAILURE")
+                print(str(exc))
                 print("DID IT DOWNLOAD PROPERLY?")
                 return
 
@@ -142,7 +143,7 @@ def remove_empty_folders(a_folder):
             try:
                 if len(subdirs) == 0 and len(files) == 0:
                     os.rmdir(curdir)
-            except:
+            except Exception:
                 continue
             break
 
@@ -207,9 +208,18 @@ def move_loaders(localdir,
                         continue
                     break
         if files.endswith(
-            (".7z", ".tar.xz", ".tar.bz2", ".tar.gz", ".zip")
+            (".7z",
+             ".tar.xz",
+             ".tar.bz2",
+             ".tar.gz",
+             ".zip")
         ) and files.startswith(
-                ("Q10", "Z10", "Z30", "Z3", "Passport")):
+            ("Q10",
+             "Z10",
+             "Z30",
+             "Z3",
+             "Passport")
+        ):
             print("MOVING: " + files)
             zipdest_os = os.path.join(zipdir_os, files)
             zipdest_rad = os.path.join(zipdir_rad, files)

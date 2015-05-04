@@ -16,6 +16,7 @@ class Downloader(threading.Thread):
     Based on:
     http://pipe-devnull.com/2012/09/13/queued-threaded-http-downloader-in-python.html
     """
+
     def __init__(self, queue, output_directory):
         """
         Initiate downloader thread.
@@ -79,6 +80,7 @@ class DownloadManager():
     Based on:
     http://pipe-devnull.com/2012/09/13/queued-threaded-http-downloader-in-python.html
     """
+
     def __init__(self, download_dict, output_directory, thread_count=5):
         """
         Initiate download manager.

@@ -217,9 +217,9 @@ def verifier(workingdir, blocksize=16 * 1024 * 1024,
         if whirlpool:
             target.write(hashoutput_whirlpool + "\n")
     if any((crc32, adler32,
-           md4, md5,
-           sha1, sha224, sha256, sha384, sha512,
-           ripemd160, whirlpool)):
+            md4, md5,
+            sha1, sha224, sha256, sha384, sha512,
+            ripemd160, whirlpool)):
         with open(os.path.join(workingdir, 'all.cksum'), 'rb+') as target:
             target.seek(-2, os.SEEK_END)  # navigate to last character
             target.truncate()  # get rid of trailing \n
@@ -273,12 +273,12 @@ def gpgrunner(workingdir, keyid=None, passphrase=None, selective=False):
                                  "Passport")):
                             try:
                                 filehashtools.gpgfile(os.path.join(
-                                                               workingdir,
-                                                               file
-                                                  ),
-                                                  gpg,
-                                                  keyid=keyid,
-                                                  passphrase=passphrase)
+                                    workingdir,
+                                    file
+                                ),
+                                    gpg,
+                                    keyid=keyid,
+                                    passphrase=passphrase)
                             except Exception as e:
                                 print("SOMETHING WENT WRONG")
                                 print(str(e))
@@ -286,12 +286,12 @@ def gpgrunner(workingdir, keyid=None, passphrase=None, selective=False):
                     else:
                         try:
                             filehashtools.gpgfile(os.path.join(
-                                                               workingdir,
-                                                               file
-                                                  ),
-                                                  gpg,
-                                                  keyid=keyid,
-                                                  passphrase=passphrase)
+                                workingdir,
+                                file
+                            ),
+                                gpg,
+                                keyid=keyid,
+                                passphrase=passphrase)
                         except Exception as e:
                             print("SOMETHING WENT WRONG")
                             print(str(e))

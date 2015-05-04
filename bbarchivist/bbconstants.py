@@ -96,11 +96,11 @@ _familylist = ["Z10OMAP",
                "PASSPORT"]
 #: Somehow, values for lifetimes for escreens.
 _lifetimes = {
-     1: "",
-     3: "Hello my baby, hello my honey, hello my rag time gal",
-     7: "He was a boy, and she was a girl, can I make it any more obvious?",
-     15: "So am I, still waiting, for this world to stop hating?",
-     30: "I love myself today, not like yesterday. I'm cool, I'm calm, I'm gonna be okay"  # @IgnorePep8
-    }
+    1: "",
+    3: "Hello my baby, hello my honey, hello my rag time gal",
+    7: "He was a boy, and she was a girl, can I make it any more obvious?",
+    15: "So am I, still waiting, for this world to stop hating?",
+    30: "I love myself today, not like yesterday. I'm cool, I'm calm, I'm gonna be okay" # @IgnorePep8
+}
 #: Escreens magic HMAC secret.
 _secret = 'Up the time stream without a TARDIS'

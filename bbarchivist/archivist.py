@@ -22,7 +22,6 @@ def do_magic(osversion, radioversion, softwareversion,
              cappath="cap.exe", download=True, extract=True,
              loaders=True, signed=True, compmethod="7z",
              gpg=False, gpgkey=None, gpgpass=None):
-
     """
     Wrap around multi-autoloader creation code.
     Some combination of creating, downloading, hashing,
