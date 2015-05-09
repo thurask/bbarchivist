@@ -4,8 +4,12 @@ from sys import version_info
 
 
 def readme():
-    with open('README.rst') as f:
-        return f.read()
+    """
+    Read ReST readme file, use as long description.
+    """
+    with open('README.rst') as file:
+        return file.read()
+
 
 cond_requires = ['requests',
                  'python-gnupg']
@@ -53,5 +57,6 @@ setup(name='bbarchivist',
                             'bb-filehasher=bbarchivist.filehasher_wrap:main',
                             'bb-escreens=bbarchivist.escreens_wrap:main',
                             'bb-linkgen=bbarchivist.linkgen_wrap:main',
-                            'bb-gpgrunner=bbarchivist.gpgrunner_wrap:main'],
+                            'bb-gpgrunner=bbarchivist.gpgrunner_wrap:main',
+                            'bb-autolookup=bbarchivist.autolookup_wrap:main'],
         })
