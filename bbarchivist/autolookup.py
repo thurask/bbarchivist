@@ -4,20 +4,29 @@ from . import bbconstants
 from . import networkutils
 from . import utilities
 import hashlib
+import time
+import os
 
 
-def do_magic(osversion, recurse=False):
+def do_magic(osversion, loop=False, log=False):
     """
     Lookup a software release from an OS. Can iterate.
 
     :param osversion: OS version, 10.x.y.zzzz.
     :type osversion: str:param mcc: Country code.
 
-    :param recurse: Whether or not to automatically lookup. Default is false.
-    :type recurse: bool
+    :param loop: Whether or not to automatically lookup. Default is false.
+    :type loop: bool
+
+    :param log: Whether to log. Default is False
+    :type log: bool
     """
     print("~~~AUTOLOOKUP VERSION", bbconstants.VERSION + "~~~")
     print("")
+    if log:
+        logfile = time.strftime("%Y_%m_%d_%H%M%S") + ".txt"
+        record = os.path.join(os.path.expanduser("~"),
+                              logfile)
     try:
         while True:
             swrelease = ""
@@ -73,7 +82,7 @@ def do_magic(osversion, recurse=False):
             else:
                 swrelease = ""
             if swrelease != "":
-                print("OS {} - SR {} - [{}|{}|{}|{}|{}] - {}".format(osversion,
+                out = "OS {} - SR {} - [{}|{}|{}|{}|{}] - {}".format(osversion,
                                                                      swrelease,
                                                                      pav,
                                                                      a1av,
@@ -81,8 +90,11 @@ def do_magic(osversion, recurse=False):
                                                                      b1av,
                                                                      b2av,
                                                                      available)
-                      )
-            if not recurse:
+                if log:
+                    with open(record, "a") as rec:
+                        rec.write(out+"\n")
+                print(out)
+            if not loop:
                 raise KeyboardInterrupt  # hack, but whateva, I do what I want
             else:
                 osversion = utilities.version_incrementer(osversion, 3)

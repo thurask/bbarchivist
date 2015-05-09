@@ -28,18 +28,27 @@ def main():
         parser.add_argument(
             "-l", "--loop",
             dest="recurse",
-            help="Loop lookup; CTRL-C to quit",
+            help="Loop lookup, CTRL-C to quit",
+            action="store_true",
+            default=False)
+        parser.add_argument(
+            "-o", "--output",
+            dest="log",
+            help="Output to file",
             action="store_true",
             default=False)
         args = parser.parse_args(sys.argv[1:])
+        parser.set_defaults()
         autolookup.do_magic(
             args.os,
-            args.recurse)
+            args.recurse,
+            args.log)
     else:
         osversion = input("OS VERSION: ")
         recurse = utilities.str2bool(input("LOOP?: "))
         print(" ")
         autolookup.do_magic(
             osversion,
-            recurse)
+            recurse,
+            True)
         smeg = input("Press Enter to exit")  # @UnusedVariable
