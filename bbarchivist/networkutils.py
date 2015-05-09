@@ -8,6 +8,7 @@ import threading  # downloader multithreading
 import binascii  # downloader thread naming
 import math  # rounding of floats
 import xml.etree.ElementTree  # XML parsing
+import re  # regexes
 
 
 class Downloader(threading.Thread):
@@ -285,6 +286,7 @@ def software_release_lookup(osver, server):
     :param server: Server to use.
     :type server: str
     """
+    reg = re.compile("(\d{1,4}\.)(\d{1,4}\.)(\d{1,4}\.)(\d{1,4})")
     query = '<?xml version="1.0" encoding="UTF-8"?>'
     query += '<srVersionLookupRequest version="2.0.0"'
     query += ' authEchoTS="1366644680359">'
@@ -307,8 +309,14 @@ def software_release_lookup(osver, server):
     header = {"Content-Type": "text/xml;charset=UTF-8"}
     req = requests.post(server, headers=header, data=query)
     root = xml.etree.ElementTree.fromstring(req.text)
-    package = root.find('./data/content/')
-    return package.text
+    packages = root.findall('./data/content/')
+    for package in packages:
+        if package.text is not None:
+            match = reg.match(package.text)
+            if match:
+                return package.text
+            else:
+                return "SR not in system"
 
 
 def available_bundle_lookup(mcc, mnc, device):
