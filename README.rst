@@ -28,14 +28,14 @@ README
 A Python 3 package to download bars and turn them into autoloaders.
 Includes support scripts.
 Subsumes `archivist <https://github.com/thurask/archivist>`__ and
-`lazyloader <https://github.com/thurask/lazyloader>`__.
+`lazyloader <https://github.com/thurask/lazyloader>`__. Don't use those anymore.
 
 With command line arguments, it proceeds as directed. Without command
 line arguments, it queries the user as to OS version, radio version,
 software version, etc. Most arguments are assumed with the
 questionnaire, so if you want fine control, use arguments.
 
-This can be used either as importing bbarchivist, or the scripts from a command line.
+This can be used either as importing the bbarchivist module, or the scripts from a command line.
 
 Requirements
 ------------
@@ -43,7 +43,7 @@ Requirements
 Universal
 ~~~~~~~~~
 
-Requires Python >=3.2. Install the latest.
+Requires Python >=3.2. Install the latest, though.
 
 To get this package, install with pip:
 
@@ -56,12 +56,18 @@ On POSIX, type that in your command line. For Windows, I recommend
 
 A copy of cap.exe is included with this script.
 
-Since it does the entire autoloader process for all devices from start
+Since archivist does the entire autoloader process for all devices from start
 to finish, make sure to have A LOT of hard drive space. 40GB at least,
-even more if you aren't using 7-Zip compression.
+even more if you aren't using 7-Zip compression. Other processes require several GB,
+but not 40.
 
 It also requires the
 `requests <http://docs.python-requests.org/en/latest/user/install/>`__
+library installed somehow. Installation with pip does this
+automatically, or use your package manager's version.
+
+PGP support requires the
+`python-gnupg <https://pythonhosted.org/python-gnupg/index.html>`__
 library installed somehow. Installation with pip does this
 automatically, or use your package manager's version.
 
@@ -159,6 +165,12 @@ GPGRunner
 
 1. Ask for PGP key ID, passphrase (if not specified)
 2. Verify all files in local/given folder
+
+Autolookup
+~~~~~~~~~~
+
+1. Ask for OS version, whether to loop (if not specified)
+2. Return lookup/availability for given OS (if lookup is valid)
 
 Command Line Arguments
 ----------------------
@@ -282,8 +294,9 @@ Help
 
     > bb-cchecker -h
 
-    usage: bb-cchecker [-h] [-v] [-d] [-e] [-u | -r] [-f DIR] [-b] mcc mnc device
-
+    usage: bb-cchecker [-h] [-v] [-a] [-d] [-e] [-u | -r] [-f DIR] [-b]
+                       mcc mnc device
+    
     Checks a carrier for an OS version, can download.
     
     positional arguments:
@@ -294,6 +307,8 @@ Help
     optional arguments:
       -h, --help            show this help message and exit
       -v, --version         show program's version number and exit
+      -a, --available-bundles
+                            Check available bundles
       -d, --download        Download files after checking
       -e, --export          Export links to files
       -f DIR, --folder DIR  Working folder
@@ -409,6 +424,27 @@ Help
       -v, --version  show program's version number and exit
     
     http://github.com/thurask/bbarchivist
+    
+----------------------------------------
+
+::
+
+    > bb-autolookup -h
+    
+    usage: bb-autolookup [-h] [-v] [-l] [-o] os
+
+    Get software release for one/many OS versions.
+    
+    positional arguments:
+      os             OS version, 10.x.y.zzzz
+    
+    optional arguments:
+      -h, --help     show this help message and exit
+      -v, --version  show program's version number and exit
+      -l, --loop     Loop lookup, CTRL-C to quit
+      -o, --output   Output to file
+    
+    http://github.com/thurask/bbarchivist
         
 Example
 ~~~~~~~
@@ -458,6 +494,13 @@ would generate the URLs for that given OS/radio/software release combination.
     
 would create ASCII signature files for all files in the given folder with the given key.
 MAKE SURE TO HAVE GnuPG SET UP BEFOREHAND!
+
+::
+
+    > bb-autolookup 10.3.1.2726 -l -o
+    
+would start a lookup loop from OS 10.3.1.2726, outputting results to screen and to a log file.
+Location is in your home directory.
 
 License
 -------
