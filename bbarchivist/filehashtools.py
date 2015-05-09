@@ -16,7 +16,7 @@ def crc32hash(filepath, blocksize=16 * 1024 * 1024):
     """
     seed = 0
     with open(filepath, 'rb') as file:
-        for chunk in iter(lambda: file.read(1024), b''):
+        for chunk in iter(lambda: file.read(blocksize), b''):
             seed = zlib.crc32(chunk, seed)
     final = format(seed & 0xFFFFFFFF, "x")
     return final
