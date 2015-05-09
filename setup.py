@@ -12,7 +12,7 @@ cond_requires = ['requests',
 if version_info[1] < 3:  # 3.2 and under
     cond_requires.append('shutilwhich')
 setup(name='bbarchivist',
-      version=bbconstants._version,
+      version=bbconstants.VERSION,
       description='BlackBerry 10 autoloader tools',
       long_description=readme(),
       url='http://github.com/thurask/bbarchivist',
