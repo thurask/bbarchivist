@@ -16,6 +16,22 @@ Archivist wrapper
     :members:
     :undoc-members:
     :show-inheritance:
+	
+Autolookup module
+-----------------
+
+.. automodule:: bbarchivist.autolookup
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Autolookup wrapper
+------------------
+
+.. automodule:: bbarchivist.autolookup_wrap
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 Barutils module
 ---------------
