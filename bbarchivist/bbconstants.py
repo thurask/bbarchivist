@@ -110,8 +110,8 @@ LIFETIMES = {
 #: Escreens magic HMAC secret.
 SECRET = 'Up the time stream without a TARDIS'
 #: Lookup server list.
-SERVERDICT = {
-    "p0": "https://cs.sl.blackberry.com/cse/srVersionLookup/2.0.0/",
+SERVERS = {
+    "p": "https://cs.sl.blackberry.com/cse/srVersionLookup/2.0.0/",
     "b1": "https://beta.sl.eval.blackberry.com/slscse/srVersionLookup/2.0.0/",
     "b2": "https://beta2.sl.eval.blackberry.com/slscse/srVersionLookup/2.0.0/",
     "a1": "https://alpha.sl.eval.blackberry.com/slscse/srVersionLookup/2.0.0/",
