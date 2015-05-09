@@ -140,7 +140,8 @@ def generate_loaders(
             firstfile=os_ti,
             secondfile=radio_z10_ti,
             folder=localdir)
-    except Exception:
+    except Exception as exc:
+        print(str(exc))
         print("Could not create STL100-1 OS/radio loader")
     if radios:
         print("Creating OMAP Z10 radio...")
@@ -152,7 +153,8 @@ def generate_loaders(
                 cap=cap,
                 firstfile=radio_z10_ti,
                 folder=localdir)
-        except Exception:
+        except Exception as exc:
+            print(str(exc))
             print("Could not create STL100-1 radio loader")
 
     # STL100-X
@@ -166,7 +168,8 @@ def generate_loaders(
             firstfile=os_8960,
             secondfile=radio_z10_qcm,
             folder=localdir)
-    except Exception:
+    except Exception as exc:
+        print(str(exc))
         print("Could not create Qualcomm Z10 OS/radio loader")
     if radios:
         print("Creating Qualcomm Z10 radio...")
@@ -178,7 +181,8 @@ def generate_loaders(
                 cap=cap,
                 firstfile=radio_z10_qcm,
                 folder=localdir)
-        except Exception:
+        except Exception as exc:
+            print(str(exc))
             print("Could not create Qualcomm Z10 radio loader")
 
     # STL100-4
@@ -192,7 +196,8 @@ def generate_loaders(
             firstfile=os_8960,
             secondfile=radio_z10_vzw,
             folder=localdir)
-    except Exception:
+    except Exception as exc:
+        print(str(exc))
         print("Could not create Verizon Z10 OS/radio loader")
     if radios:
         print("Creating Verizon Z10 radio...")
@@ -204,7 +209,8 @@ def generate_loaders(
                 cap=cap,
                 firstfile=radio_z10_vzw,
                 folder=localdir)
-        except Exception:
+        except Exception as exc:
+            print(str(exc))
             print("Could not create Verizon Z10 radio loader")
 
     # Q10/Q5
@@ -218,7 +224,8 @@ def generate_loaders(
             firstfile=os_8960,
             secondfile=radio_q10,
             folder=localdir)
-    except Exception:
+    except Exception as exc:
+        print(str(exc))
         print("Could not create Q10/Q5 OS/radio loader")
     if radios:
         print("Creating Q10/Q5 radio...")
@@ -230,7 +237,8 @@ def generate_loaders(
                 cap=cap,
                 firstfile=radio_q10,
                 folder=localdir)
-        except Exception:
+        except Exception as exc:
+            print(str(exc))
             print("Could not create Q10/Q5 radio loader")
 
     # Z30/Classic
@@ -244,7 +252,8 @@ def generate_loaders(
             firstfile=os_8960,
             secondfile=radio_z30,
             folder=localdir)
-    except Exception:
+    except Exception as exc:
+        print(str(exc))
         print("Could not create Z30/Classic OS/radio loader")
     if radios:
         print("Creating Z30/Classic radio...")
@@ -256,7 +265,8 @@ def generate_loaders(
                 cap=cap,
                 firstfile=radio_z30,
                 folder=localdir)
-        except Exception:
+        except Exception as exc:
+            print(str(exc))
             print("Could not create Z30/Classic radio loader")
 
     # Z3
@@ -270,7 +280,8 @@ def generate_loaders(
             firstfile=os_8x30,
             secondfile=radio_z3,
             folder=localdir)
-    except Exception:
+    except Exception as exc:
+        print(str(exc))
         print("Could not create Z3 OS/radio loader")
     if radios:
         print("Creating Z3 radio...")
@@ -282,7 +293,8 @@ def generate_loaders(
                 cap=cap,
                 firstfile=radio_z3,
                 folder=localdir)
-        except Exception:
+        except Exception as exc:
+            print(str(exc))
             print("Could not create Z3 radio loader")
 
     # Passport
@@ -296,7 +308,8 @@ def generate_loaders(
             firstfile=os_8974,
             secondfile=radio_8974,
             folder=localdir)
-    except Exception:
+    except Exception as exc:
+        print(str(exc))
         print("Could not create Passport OS/radio loader")
     if radios:
         print("Creating Passport radio...")
@@ -308,7 +321,8 @@ def generate_loaders(
                 cap=cap,
                 firstfile=radio_8974,
                 folder=localdir)
-        except Exception:
+        except Exception as exc:
+            print(str(exc))
             print("Could not create Passport radio loader")
 
 
@@ -361,7 +375,8 @@ def generate_lazy_loader(
                     fifthfile="",
                     sixthfile="",
                     folder=localdir)
-            except Exception:
+            except Exception as exc:
+                print(str(exc))
                 print("Could not create STL100-1 OS/radio loader")
                 return
     elif device == 1:
@@ -386,7 +401,8 @@ def generate_lazy_loader(
                     os_8960,
                     radio_z10_qcm,
                     folder=localdir)
-            except Exception:
+            except Exception as exc:
+                print(str(exc))
                 print("Could not create Qualcomm Z10 OS/radio loader")
                 return
     elif device == 2:
@@ -411,7 +427,8 @@ def generate_lazy_loader(
                     os_8960,
                     radio_z10_vzw,
                     folder=localdir)
-            except Exception:
+            except Exception as exc:
+                print(str(exc))
                 print("Could not create Verizon Z10 OS/radio loader")
                 return
     elif device == 3:
@@ -436,7 +453,8 @@ def generate_lazy_loader(
                     os_8960,
                     radio_q10,
                     folder=localdir)
-            except Exception:
+            except Exception as exc:
+                print(str(exc))
                 print("Could not create Q10/Q5 OS/radio loader")
                 return
     elif device == 4:
@@ -461,7 +479,8 @@ def generate_lazy_loader(
                     os_8960,
                     radio_z30,
                     folder=localdir)
-            except Exception:
+            except Exception as exc:
+                print(str(exc))
                 print("Could not create Z30/Classic OS/radio loader")
                 return
     elif device == 5:
@@ -486,7 +505,8 @@ def generate_lazy_loader(
                     os_8x30,
                     radio_z3,
                     folder=localdir)
-            except Exception:
+            except Exception as exc:
+                print(str(exc))
                 print("Could not create Z3 OS/radio loader")
                 return
     elif device == 6:
@@ -511,7 +531,8 @@ def generate_lazy_loader(
                     os_8974,
                     radio_8974,
                     folder=localdir)
-            except Exception:
+            except Exception as exc:
+                print(str(exc))
                 print("Could not create Passport OS/radio loader")
                 return
     else:
