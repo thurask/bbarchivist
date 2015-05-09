@@ -29,6 +29,12 @@ def main():
         parser.add_argument("mnc", help="1-3 digit carrier code")
         parser.add_argument("device", help="'STL100-1', 'SQW100-3', etc.")
         parser.add_argument(
+            "-a", "--available-bundles",
+            dest="bundles",
+            help="Check available bundles",
+            action="store_true",
+            default=False)
+        parser.add_argument(
             "-d", "--download",
             dest="download",
             help="Download files after checking",
@@ -79,21 +85,29 @@ def main():
             args.upgrade,
             args.folder,
             args.export,
-            args.blitz)
+            args.blitz,
+            args.bundles)
     else:
         mcc = int(input("MCC: "))
         mnc = int(input("MNC: "))
         device = input("DEVICE (SXX100-#): ")
-        download = utilities.str2bool(input("DOWNLOAD?: "))
-        upgrade = utilities.str2bool(input("UPGRADE BARS?: "))
-        export = utilities.str2bool(input("EXPORT TO FILE?: "))
-        if download:
-            if upgrade:
-                blitz = utilities.str2bool(input("CREATE BLITZ?: "))
+        bundles = utilities.str2bool(input("CHECK BUNDLES?: "))
+        if bundles:
+            download = False
+            upgrade = False
+            export = False
+            blitz = False
+        else:
+            download = utilities.str2bool(input("DOWNLOAD?: "))
+            upgrade = utilities.str2bool(input("UPGRADE BARS?: "))
+            export = utilities.str2bool(input("EXPORT TO FILE?: "))
+            if download:
+                if upgrade:
+                    blitz = utilities.str2bool(input("CREATE BLITZ?: "))
+                else:
+                    blitz = False
             else:
                 blitz = False
-        else:
-            blitz = False
         directory = os.getcwd()
         print(" ")
         carrierchecker.do_magic(
