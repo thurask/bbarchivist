@@ -31,6 +31,9 @@ def do_magic(osversion, radioversion, softwareversion):
               "QC8960: " + baseurl +
               "/qc8960.factory_sfi.desktop-" +
               osversion + "-nto+armle-v7+signed.bar",
+              "VERIZON 8960: " + baseurl +
+              "/qc8960.verizon_sfi.desktop-" +
+              osversion + "-nto+armle-v7+signed.bar",
               "Z3: " + baseurl +
               "/qc8960.factory_sfi_hybrid_qc8x30.desktop-" +
               osversion + "-nto+armle-v7+signed.bar",
@@ -44,6 +47,9 @@ def do_magic(osversion, radioversion, softwareversion):
                 osversion + "-nto+armle-v7+signed.bar",
                 "QC8960: " + baseurl +
                 "/qc8960.factory_sfi-" +
+                osversion + "-nto+armle-v7+signed.bar",
+                "VERIZON 8960: " + baseurl +
+                "/qc8960.verizon_sfi-" +
                 osversion + "-nto+armle-v7+signed.bar",
                 "Z3: " + baseurl +
                 "/qc8960.factory_sfi_hybrid_qc8x30-" +
