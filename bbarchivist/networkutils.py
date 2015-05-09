@@ -17,7 +17,7 @@ class Downloader(threading.Thread):
     http://pipe-devnull.com/2012/09/13/queued-threaded-http-downloader-in-python.html
     """
 
-    def __init__(self, queue, output_directory):
+    def __init__(self, dlqueue, output_directory):
         """
         Initiate downloader thread.
         :param queue: What to download.
@@ -27,7 +27,7 @@ class Downloader(threading.Thread):
         :type output_directory: str
         """
         threading.Thread.__init__(self, name=binascii.hexlify(os.urandom(8)))
-        self.queue = queue
+        self.queue = dlqueue
         self.output_directory = output_directory
 
     def run(self):
@@ -52,14 +52,14 @@ class Downloader(threading.Thread):
         t_start = time.clock()
         local_filename = url.split('/')[-1]
         print("Downloading:", local_filename)
-        r = requests.get(url, stream=True)
-        if (r.status_code != 404):  # 200 OK
+        req = requests.get(url, stream=True)
+        if req.status_code != 404:  # 200 OK
             fname = self.output_directory + "/" + os.path.basename(url)
-            with open(fname, "wb") as f:
-                for chunk in r.iter_content(chunk_size=1024):
+            with open(fname, "wb") as file:
+                for chunk in req.iter_content(chunk_size=1024):
                     if chunk:  # filter out keep-alive new chunks
-                        f.write(chunk)
-                        f.flush()
+                        file.write(chunk)
+                        file.flush()
             t_elapsed = time.clock() - t_start
             t_elapsed_proper = math.ceil(t_elapsed * 100) / 100
             print(
@@ -68,7 +68,6 @@ class Downloader(threading.Thread):
                 " in " +
                 str(t_elapsed_proper) +
                 " seconds")
-            f.close()
         else:
             print("* Thread: " + self.name + " Bad URL: " + url)
             return
@@ -107,10 +106,10 @@ class DownloadManager():
         """
         dlqueue = queue.Queue()
         # Create i thread pool and give them a queue
-        for t in range(self.thread_count):
-            t = Downloader(dlqueue, self.output_directory)
-            t.setDaemon(True)
-            t.start()
+        for thr in range(self.thread_count):
+            thr = Downloader(dlqueue, self.output_directory)
+            thr.setDaemon(True)
+            thr.start()
         # Load the queue from the download dict
         for linkname in self.download_dict:
             # print uri
@@ -130,11 +129,11 @@ def availability(url):
     :type url: str
     """
     try:
-        av = requests.head(str(url))
+        avlty = requests.head(str(url))
     except requests.ConnectionError:
         return False
     else:
-        status = int(av.status_code)
+        status = int(avlty.status_code)
         if (status == 200) or (300 < status <= 308):
             return True
         else:
@@ -157,8 +156,8 @@ def carrier_checker(mcc, mnc):
     url += str(mnc)
     url += "&devicevendorid=-1&pin=0"
     user_agent = {'User-agent': 'AppWorld/5.1.0.60'}
-    r = requests.get(url, headers=user_agent)
-    root = xml.etree.ElementTree.fromstring(r.text)
+    req = requests.get(url, headers=user_agent)
+    root = xml.etree.ElementTree.fromstring(req.text)
     for child in root:
         if child.tag == "country":
             country = child.get("name")
@@ -167,8 +166,20 @@ def carrier_checker(mcc, mnc):
     return country, carrier
 
 
+def return_npc(mcc, mnc):
+    """
+    Format MCC and MNC into a NPC.
+
+    :param mcc: Country code.
+    :type mcc: int
+
+    :param mnc: Network code.
+    :type mnc: int
+    """
+    return str(mcc).zfill(3) + str(mnc).zfill(3) + "30"
+
+
 def carrier_update_request(mcc, mnc, device,
-                           download=False,
                            upgrade=False,
                            blitz=False):
     """
@@ -183,9 +194,6 @@ def carrier_update_request(mcc, mnc, device,
     :param device: Hexadecimal hardware ID.
     :type device: str
 
-    :param download: Whether to download files. False by default.
-    :type download: bool
-
     :param upgrade: Whether to use upgrade files. False by default.
     :type upgrade: bool
 
@@ -196,8 +204,8 @@ def carrier_update_request(mcc, mnc, device,
         upg = "upgrade"
     else:
         upg = "repair"
-    npc = str(mcc).zfill(3) + str(mnc).zfill(3) + "30"
     url = "https://cs.sl.blackberry.com/cse/updateDetails/2.2/"
+    npc = return_npc(mcc, mnc)
     query = '<?xml version="1.0" encoding="UTF-8"?>'
     query += '<updateDetailRequest version="2.2.1"'
     query += ' authEchoTS="1366644680359">'
@@ -232,8 +240,8 @@ def carrier_update_request(mcc, mnc, device,
     query += "</resultPackageSetCriteria>"
     query += "</updateDetailRequest>"
     header = {"Content-Type": "text/xml;charset=UTF-8"}
-    r = requests.post(url, headers=header, data=query)
-    root = xml.etree.ElementTree.fromstring(r.text)
+    req = requests.post(url, headers=header, data=query)
+    root = xml.etree.ElementTree.fromstring(req.text)
     sw_exists = root.find('./data/content/softwareReleaseMetadata')
     swver = ""
     if sw_exists is None:
@@ -264,3 +272,84 @@ def carrier_update_request(mcc, mnc, device,
             else:
                 pass
     return(swver, osver, radver, files)
+
+
+def software_release_lookup(osver, server):
+    """
+    Software release lookup, with choice of server.
+    :data:`bbarchivist.bbconstants._serverlist` for server list.
+
+    :param osver: OS version to lookup, 10.x.y.zzzz.
+    :type osver: str
+
+    :param server: Server to use.
+    :type server: str
+    """
+    query = '<?xml version="1.0" encoding="UTF-8"?>'
+    query += '<srVersionLookupRequest version="2.0.0"'
+    query += ' authEchoTS="1366644680359">'
+    query += '<clientProperties><hardware>'
+    query += '<pin>0x2FFFFFB3</pin><bsn>1140011878</bsn>'
+    query += '<imei>004402242176786</imei><id>0x8D00240A</id>'
+    query += '<isBootROMSecure>true</isBootROMSecure>'
+    query += '</hardware>'
+    query += '<network>'
+    query += '<vendorId>0x0</vendorId><homeNPC>0x60</homeNPC>'
+    query += '<currentNPC>0x60</currentNPC><ecid>0x1</ecid>'
+    query += '</network>'
+    query += '<software><currentLocale>en_US</currentLocale>'
+    query += '<legalLocale>en_US</legalLocale>'
+    query += '<osVersion>'
+    query += osver
+    query += '</osVersion><omadmEnabled>false</omadmEnabled>'
+    query += '</software></clientProperties>'
+    query += '</srVersionLookupRequest>'
+    header = {"Content-Type": "text/xml;charset=UTF-8"}
+    req = requests.post(server, headers=header, data=query)
+    root = xml.etree.ElementTree.fromstring(req.text)
+    package = root.find('./data/content/')
+    return package.text
+
+
+def available_bundle_lookup(mcc, mnc, device):
+    """
+    Check which software releases were ever released for a carrier.
+
+    :param mcc: Country code.
+    :type mcc: int
+
+    :param mnc: Network code.
+    :type mnc: int
+
+    :param device: Hexadecimal hardware ID.
+    :type device: str
+    """
+    server = "https://cs.sl.blackberry.com/cse/availableBundles/1.0.0/"
+    npc = return_npc(mcc, mnc)
+    query = '<?xml version="1.0" encoding="UTF-8"?>'
+    query += '<availableBundlesRequest version="1.0.0" '
+    query += 'authEchoTS="1366644680359">'
+    query += '<deviceId><pin>0x2FFFFFB3</pin></deviceId>'
+    query += '<clientProperties><hardware><id>0x'
+    query += device
+    query += '</id><isBootROMSecure>true</isBootROMSecure></hardware>'
+    query += '<network><vendorId>0x0</vendorId><homeNPC>0x'
+    query += npc
+    query += '</homeNPC><currentNPC>0x'
+    query += npc
+    query += '</currentNPC></network><software>'
+    query += '<currentLocale>en_US</currentLocale>'
+    query += '<legalLocale>en_US</legalLocale>'
+    query += '<osVersion>10.0.0.0</osVersion>'
+    query += '<radioVersion>10.0.0.0</radioVersion></software>'
+    query += '</clientProperties><updateDirectives><bundleVersionFilter>'
+    query += '</bundleVersionFilter></updateDirectives>'
+    query += '</availableBundlesRequest>'
+    header = {"Content-Type": "text/xml;charset=UTF-8"}
+    req = requests.post(server, headers=header, data=query, verify=True)
+    root = xml.etree.ElementTree.fromstring(req.text)
+    package = root.find('./data/content')
+    bundlelist = []
+    for child in package:
+        bundlelist.append(child.attrib["version"])
+    return bundlelist
