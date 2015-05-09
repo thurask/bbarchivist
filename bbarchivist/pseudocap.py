@@ -91,35 +91,35 @@ F514F514F534E464D514E4947514E51474F70709CD5C5979CD5C5979CD5C597""")
 
     first = str(glob.glob(firstfile)[0])
     firstsize = os.path.getsize(first)  # required
-    if (filecount >= 2):
+    if filecount >= 2:
         second = str(glob.glob(secondfile)[0])
         secondsize = os.path.getsize(second)
-    if (filecount >= 3):
+    if filecount >= 3:
         third = str(glob.glob(thirdfile)[0])
         thirdsize = os.path.getsize(third)
-    if (filecount >= 4):
+    if filecount >= 4:
         fourth = str(glob.glob(fourthfile)[0])
         fourthsize = os.path.getsize(fourth)
-    if (filecount >= 5):
+    if filecount >= 5:
         fifth = str(glob.glob(fifthfile)[0])
         fifthsize = os.path.getsize(fifth)
 
     # start of first file; length of cap + length of offset
     firstoffset = len(separator) + len(password) + 64 + capsize
     firststart = ghetto_convert(firstoffset)
-    if (filecount >= 2):
+    if filecount >= 2:
         secondoffset = firstoffset + firstsize  # start of second file
         secondstart = ghetto_convert(secondoffset)
-    if (filecount >= 3):
+    if filecount >= 3:
         thirdoffset = secondstart + secondsize  # start of third file
         thirdstart = ghetto_convert(thirdoffset)
-    if (filecount >= 4):
+    if filecount >= 4:
         fourthoffset = thirdoffset + thirdsize  # start of fourth file
         fourthstart = ghetto_convert(fourthoffset)
-    if (filecount >= 5):
+    if filecount >= 5:
         fifthoffset = fourthstart + fourthsize  # start of fifth file
         fifthstart = ghetto_convert(fifthoffset)
-    if (filecount == 6):
+    if filecount == 6:
         sixthoffset = fifthoffset + fifthsize  # start of sixth file
         sixthstart = ghetto_convert(sixthoffset)
 
@@ -130,27 +130,27 @@ F514F514F534E464D514E4947514E51474F70709CD5C5979CD5C5979CD5C597""")
         file.write(doublepad)
         file.write(firststart)
         file.write(singlepad)
-        if (filecount >= 2):
+        if filecount >= 2:
             file.write(secondstart)
         else:
             file.write(signedpad)
         file.write(singlepad)
-        if (filecount >= 3):
+        if filecount >= 3:
             file.write(thirdstart)
         else:
             file.write(signedpad)
         file.write(singlepad)
-        if (filecount >= 4):
+        if filecount >= 4:
             file.write(fourthstart)
         else:
             file.write(signedpad)
         file.write(singlepad)
-        if (filecount >= 5):
+        if filecount >= 5:
             file.write(fifthstart)
         else:
             file.write(signedpad)
         file.write(singlepad)
-        if (filecount == 6):
+        if filecount == 6:
             file.write(sixthstart)
         else:
             file.write(signedpad)
@@ -221,20 +221,20 @@ def make_autoloader(filename, cap, firstfile, secondfile="", thirdfile="",
             try:
                 with open(os.path.normpath(cap), "rb") as capfile:
                     print("WRITING CAP VERSION",
-                          bbconstants._capversion + "...")
+                          bbconstants.CAPVERSION + "...")
                     while True:
                         chunk = capfile.read(4096)  # 4k chunks
                         if not chunk:
                             break
                         autoloader.write(chunk)
-            except IOError as e:
-                print("Operation failed:", e.strerror)
+            except IOError as exc:
+                print("Operation failed:", exc.strerror)
             try:
                 with open(os.path.join(folder, "offset.hex"), "rb") as offset:
                     print("WRITING MAGIC OFFSET...")
                     autoloader.write(offset.read())
-            except IOError as e:
-                print("Operation failed:", e.strerror)
+            except IOError as exc:
+                print("Operation failed:", exc.strerror)
             try:
                 with open(firstfile, "rb") as first:
                     print(
@@ -245,9 +245,9 @@ def make_autoloader(filename, cap, firstfile, secondfile="", thirdfile="",
                         if not chunk:
                             break
                         autoloader.write(chunk)
-            except IOError as e:
-                print("Operation failed:", e.strerror)
-            if (filecount >= 2):
+            except IOError as exc:
+                print("Operation failed:", exc.strerror)
+            if filecount >= 2:
                 try:
                     print(
                         "WRITING SIGNED FILE #2...\n",
@@ -258,9 +258,9 @@ def make_autoloader(filename, cap, firstfile, secondfile="", thirdfile="",
                             if not chunk:
                                 break
                             autoloader.write(chunk)
-                except IOError as e:
-                    print("Operation failed:", e.strerror)
-            if (filecount >= 3):
+                except IOError as exc:
+                    print("Operation failed:", exc.strerror)
+            if filecount >= 3:
                 try:
                     print(
                         "WRITING SIGNED FILE #3...\n",
@@ -271,9 +271,9 @@ def make_autoloader(filename, cap, firstfile, secondfile="", thirdfile="",
                             if not chunk:
                                 break
                             autoloader.write(chunk)
-                except IOError as e:
-                    print("Operation failed:", e.strerror)
-            if (filecount >= 4):
+                except IOError as exc:
+                    print("Operation failed:", exc.strerror)
+            if filecount >= 4:
                 try:
                     print(
                         "WRITING SIGNED FILE #5...\n",
@@ -284,9 +284,9 @@ def make_autoloader(filename, cap, firstfile, secondfile="", thirdfile="",
                             if not chunk:
                                 break
                             autoloader.write(chunk)
-                except IOError as e:
-                    print("Operation failed:", e.strerror)
-            if (filecount >= 5):
+                except IOError as exc:
+                    print("Operation failed:", exc.strerror)
+            if filecount >= 5:
                 try:
                     print(
                         "WRITING SIGNED FILE #5...\n",
@@ -297,9 +297,9 @@ def make_autoloader(filename, cap, firstfile, secondfile="", thirdfile="",
                             if not chunk:
                                 break
                             autoloader.write(chunk)
-                except IOError as e:
-                    print("Operation failed:", e.strerror)
-            if (filecount == 6):
+                except IOError as exc:
+                    print("Operation failed:", exc.strerror)
+            if filecount == 6:
                 try:
                     print(
                         "WRITING SIGNED FILE #6...\n",
@@ -310,10 +310,10 @@ def make_autoloader(filename, cap, firstfile, secondfile="", thirdfile="",
                             if not chunk:
                                 break
                             autoloader.write(chunk)
-                except IOError as e:
-                    print("Operation failed:", e.strerror)
-    except IOError as e:
-        print("Operation failed:", e.strerror)
+                except IOError as exc:
+                    print("Operation failed:", exc.strerror)
+    except IOError as exc:
+        print("Operation failed:", exc.strerror)
 
     print(filename, "FINISHED!\n")
     os.remove(os.path.join(folder, "offset.hex"))

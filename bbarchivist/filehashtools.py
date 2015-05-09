@@ -15,8 +15,8 @@ def crc32hash(filepath, blocksize=16 * 1024 * 1024):
     :type blocksize: int
     """
     seed = 0
-    with open(filepath, 'rb') as f:
-        for chunk in iter(lambda: f.read(1024), b''):
+    with open(filepath, 'rb') as file:
+        for chunk in iter(lambda: file.read(1024), b''):
             seed = zlib.crc32(chunk, seed)
     final = format(seed & 0xFFFFFFFF, "x")
     return final
@@ -33,9 +33,9 @@ def adler32hash(filepath, blocksize=16 * 1024 * 1024):
     :type blocksize: int
     """
     asum = 1
-    with open(filepath, 'rb') as f:
+    with open(filepath, 'rb') as file:
         while True:
-            data = f.read(blocksize)
+            data = file.read(blocksize)
             if not data:
                 break
             asum = zlib.adler32(data, asum)
@@ -56,9 +56,9 @@ def sha1hash(filepath, blocksize=16 * 1024 * 1024):
     :type blocksize: int
     """
     sha1 = hashlib.sha1()
-    with open(filepath, 'rb') as f:
+    with open(filepath, 'rb') as file:
         while True:
-            data = f.read(blocksize)
+            data = file.read(blocksize)
             if not data:
                 break
             sha1.update(data)
@@ -76,9 +76,9 @@ def sha224hash(filepath, blocksize=16 * 1024 * 1024):
     :type blocksize: int
     """
     sha224 = hashlib.sha224()
-    with open(filepath, 'rb') as f:
+    with open(filepath, 'rb') as file:
         while True:
-            data = f.read(blocksize)
+            data = file.read(blocksize)
             if not data:
                 break
             sha224.update(data)
@@ -96,9 +96,9 @@ def sha256hash(filepath, blocksize=16 * 1024 * 1024):
     :type blocksize: int
     """
     sha256 = hashlib.sha256()
-    with open(filepath, 'rb') as f:
+    with open(filepath, 'rb') as file:
         while True:
-            data = f.read(blocksize)
+            data = file.read(blocksize)
             if not data:
                 break
             sha256.update(data)
@@ -116,9 +116,9 @@ def sha384hash(filepath, blocksize=16 * 1024 * 1024):
     :type blocksize: int
     """
     sha384 = hashlib.sha384()
-    with open(filepath, 'rb') as f:
+    with open(filepath, 'rb') as file:
         while True:
-            data = f.read(blocksize)
+            data = file.read(blocksize)
             if not data:
                 break
             sha384.update(data)
@@ -136,9 +136,9 @@ def sha512hash(filepath, blocksize=16 * 1024 * 1024):
     :type blocksize: int
     """
     sha512 = hashlib.sha512()
-    with open(filepath, 'rb') as f:
+    with open(filepath, 'rb') as file:
         while True:
-            data = f.read(blocksize)
+            data = file.read(blocksize)
             if not data:
                 break
             sha512.update(data)
@@ -157,14 +157,15 @@ def md4hash(filepath, blocksize=16 * 1024 * 1024):
     """
     try:
         md4 = hashlib.new('md4')
-        with open(filepath, 'rb') as f:
+        with open(filepath, 'rb') as file:
             while True:
-                data = f.read(blocksize)
+                data = file.read(blocksize)
                 if not data:
                     break
                 md4.update(data)
         return md4.hexdigest()
-    except Exception:
+    except Exception as exc:
+        print(str(exc))
         print("MD4 HASH FAILED:\nIS IT AVAILABLE?")
 
 
@@ -179,9 +180,9 @@ def md5hash(filepath, blocksize=16 * 1024 * 1024):
     :type blocksize: int
     """
     md5 = hashlib.md5()
-    with open(filepath, 'rb') as f:
+    with open(filepath, 'rb') as file:
         while True:
-            data = f.read(blocksize)
+            data = file.read(blocksize)
             if not data:
                 break
             md5.update(data)
@@ -200,14 +201,15 @@ def ripemd160hash(filepath, blocksize=16 * 1024 * 1024):
     """
     try:
         r160 = hashlib.new('ripemd160')
-        with open(filepath, 'rb') as f:
+        with open(filepath, 'rb') as file:
             while True:
-                data = f.read(blocksize)
+                data = file.read(blocksize)
                 if not data:
                     break
                 r160.update(data)
         return r160.hexdigest()
-    except Exception:
+    except Exception as exc:
+        print(str(exc))
         print("RIPEMD160 HASH FAILED:\nIS IT AVAILABLE?")
 
 
@@ -223,14 +225,15 @@ def whirlpoolhash(filepath, blocksize=16 * 1024 * 1024):
     """
     try:
         wp = hashlib.new('whirlpool')
-        with open(filepath, 'rb') as f:
+        with open(filepath, 'rb') as file:
             while True:
-                data = f.read(blocksize)
+                data = file.read(blocksize)
                 if not data:
                     break
                 wp.update(data)
         return wp.hexdigest()
-    except Exception:
+    except Exception as exc:
+        print(str(exc))
         print("WHIRLPOOL HASH FAILED:\nIS IT AVAILABLE?")
 
 
@@ -250,9 +253,9 @@ def gpgfile(filepath, gpginst, keyid=None, passphrase=None):
     :param passphrase: Passphrase for key.
     :type passphrase: str
     """
-    with open(filepath, "rb") as f:
-        gpginst.sign_file(f,
+    with open(filepath, "rb") as file:
+        gpginst.sign_file(file,
                           detach=True,
                           keyid=keyid,
                           passphrase=passphrase,
-                          output=f.name + ".asc")
+                          output=file.name + ".asc")

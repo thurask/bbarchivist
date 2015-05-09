@@ -61,14 +61,14 @@ def escreens_duration(duration):
         raise argparse.ArgumentError("Invalid duration.")
 
 
-def str2bool(v):
+def str2bool(input_check):
     """
     Parse bool from string input.
 
-    :param v: String to check if it means True or False.
-    :type v: str
+    :param input_check: String to check if it means True or False.
+    :type input_check: str
     """
-    return str(v).lower() in ("yes", "true", "t", "1", "y")
+    return str(input_check).lower() in ("yes", "true", "t", "1", "y")
 
 
 def is_amd64():
@@ -120,10 +120,10 @@ def win_seven_zip(talkative=False):
         import winreg  # windows registry
         hk7z = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\\7-Zip")
         path = winreg.QueryValueEx(hk7z, "Path")
-    except Exception as e:
+    except Exception as exc:
         if talkative:
             print("SOMETHING WENT WRONG")
-            print(str(e))
+            print(str(exc))
             print("TRYING LOCAL FILES...")
         listdir = os.listdir(os.getcwd())
         filecount = 0
@@ -158,13 +158,12 @@ def get_core_count():
         import multiprocessing
         try:
             cores = str(multiprocessing.cpu_count())  # @UndefinedVariable
-        except:
+        except Exception:
             cores = "1"
     else:
         if os.cpu_count() is None:
             cores = "1"
-    finally:
-        return cores
+    return cores
 
 
 def prep_seven_zip():
@@ -191,7 +190,7 @@ def prep_seven_zip():
                 return False
             else:
                 path = which("7za")
-        finally:
+        else:
             if path is None:
                 print("NO 7ZIP")
                 print("PLEASE INSTALL p7zip")
@@ -210,25 +209,25 @@ def return_model(index):
     :type index: int
     """
     if 0 <= index <= 3:
-        return(0)  # Z10
+        return 0  # Z10
     elif 4 <= index <= 5:
-        return(1)  # P9982
+        return 1  # P9982
     elif 6 <= index <= 10:
-        return(2)  # Q10
+        return 2  # Q10
     elif 11 <= index <= 13:
-        return(3)  # Q5
+        return 3  # Q5
     elif 14 <= index <= 15:
-        return(4)  # P9983
+        return 4  # P9983
     elif 16 <= index <= 21:
-        return(5)  # Z30
+        return 5  # Z30
     elif 22 <= index <= 26:
-        return(6)  # Classic
+        return 6  # Classic
     elif 27 <= index <= 28:
-        return(7)  # Leap
+        return 7  # Leap
     elif 29 <= index <= 30:
-        return(8)  # Z3
+        return 8  # Z3
     elif 31 <= index <= 33:
-        return(9)  # Passport
+        return 9  # Passport
 
 
 def return_family(index):
@@ -240,14 +239,33 @@ def return_family(index):
     :type index: int
     """
     if index == 0:  # STL100-1
-        return(0)
+        return 0
     elif 1 <= index <= 5:  # STL100-2/3/4, P9982
-        return(1)
+        return 1
     elif 6 <= index <= 15:  # Q10, Q5, P9983
-        return(2)
+        return 2
     elif 16 <= index <= 28:  # Z30, Classic, Leap
-        return(3)
+        return 3
     elif 29 <= index <= 30:  # Z3
-        return(4)
+        return 4
     elif 31 <= index <= 33:  # Passport
-        return(5)
+        return 5
+
+
+def version_incrementer(version, increment=3):
+    """
+    Increment version by given number. For repeated lookups.
+
+    :param version: w.x.y.ZZZZ, becomes w.x.y.(ZZZZ+increment).
+    :type version: str
+
+    :param increment: What to increment by. Default is 3.
+    :type increment: str
+    """
+    splitos = version.split(".")
+    splitos[3] = int(splitos[3])
+    if splitos[3] > 9996:  # prevent overflow
+        splitos[3] = 0
+    splitos[3] += int(increment)
+    splitos[3] = str(splitos[3])
+    return ".".join(splitos)

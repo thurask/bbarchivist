@@ -112,9 +112,8 @@ def do_magic(osversion, radioversion, softwareversion,
     :type gpgpass: str
     """
     starttime = time.clock()
-    version = bbconstants._version  # update as needed
 
-    print("~~~ARCHIVIST VERSION", version + "~~~")
+    print("~~~ARCHIVIST VERSION", bbconstants.VERSION + "~~~")
     print("OS VERSION:", osversion)
     print("RADIO VERSION:", radioversion)
     print("SOFTWARE VERSION:", softwareversion)

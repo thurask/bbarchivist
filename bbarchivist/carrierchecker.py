@@ -42,15 +42,15 @@ def do_magic(mcc, mnc, device,
     :type blitz: bool
     """
     try:
-        devindex = bbconstants._devicelist.index(device.upper())
-    except ValueError as e:
-        print(str(e).upper())
+        devindex = bbconstants.DEVICELIST.index(device.upper())
+    except ValueError as exc:
+        print(str(exc).upper())
         print("INVALID DEVICE!")
         raise SystemExit
-    model = bbconstants._modellist[utilities.return_model(devindex)]
-    family = bbconstants._familylist[utilities.return_family(devindex)]
-    hwid = bbconstants._hwidlist[devindex]
-    version = bbconstants._version
+    model = bbconstants.MODELLIST[utilities.return_model(devindex)]
+    family = bbconstants.FAMILYLIST[utilities.return_family(devindex)]
+    hwid = bbconstants.HWIDLIST[devindex]
+    version = bbconstants.VERSION
     print("~~~CARRIERCHECKER VERSION", version + "~~~")
     country, carrier = networkutils.carrier_checker(mcc, mnc)
     print("COUNTRY:", country.upper())
@@ -60,7 +60,6 @@ def do_magic(mcc, mnc, device,
     print("HARDWARE ID:", hwid)
     print("\nCHECKING CARRIER...")
     swv, osv, radv, files = networkutils.carrier_update_request(mcc, mnc, hwid,
-                                                                download,
                                                                 upgrade,
                                                                 blitz)
     print("SOFTWARE RELEASE:", swv)

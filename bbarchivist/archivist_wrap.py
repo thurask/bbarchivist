@@ -24,7 +24,7 @@ def main():
             "--version",
             action="version",
             version="%(prog)s " +
-            bbconstants._version)
+            bbconstants.VERSION)
         parser.add_argument("os", help="OS version, 10.x.y.zzzz")
         parser.add_argument("radio", help="Radio version, 10.x.y.zzzz")
         parser.add_argument("swrelease", help="Software version, 10.x.y.zzzz")
@@ -43,7 +43,7 @@ def main():
             help="Path to cap.exe",
             default=os.path.join(
                 os.getcwd(),
-                bbconstants._caplocation),
+                bbconstants.CAPLOCATION),
             metavar="PATH")
         negategroup = parser.add_argument_group(
             "negators",

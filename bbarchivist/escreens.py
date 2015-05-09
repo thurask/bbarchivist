@@ -22,8 +22,8 @@ def calculate_escreens(pin, app, uptime, duration=30):
     :type duration: str
     """
     duration = int(duration)
-    data = pin.lower() + app + uptime + bbconstants._lifetimes[duration]
-    newhmac = hmac.new(bbconstants._secret.encode(),
+    data = pin.lower() + app + uptime + bbconstants.LIFETIMES[duration]
+    newhmac = hmac.new(bbconstants.SECRET.encode(),
                        data.encode(),
                        digestmod=hashlib.sha1)
     key = newhmac.hexdigest()[:8]

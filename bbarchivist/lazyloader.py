@@ -43,7 +43,7 @@ def do_magic(osversion, radioversion,
                   "Z30/CLASSIC/LEAP",
                   "Z3",
                   "PASSPORT"]
-    print("~~~LAZYLOADER VERSION", bbconstants._version + "~~~")
+    print("~~~LAZYLOADER VERSION", bbconstants.VERSION + "~~~")
     print("OS VERSION:", osversion)
     print("RADIO VERSION:", radioversion)
     print("SOFTWARE VERSION:", softwareversion)
@@ -95,8 +95,8 @@ def do_magic(osversion, radioversion,
         return
 
     # Check availability of software release
-    av = networkutils.availability(baseurl)
-    if av:
+    avlty = networkutils.availability(baseurl)
+    if avlty:
         print("\nSOFTWARE RELEASE", softwareversion, "EXISTS")
     else:
         print("\nSOFTWARE RELEASE", softwareversion, "NOT FOUND")
@@ -154,7 +154,7 @@ def do_magic(osversion, radioversion,
                     os.remove(bardest_radio)
 
     loadergen.generate_lazy_loader(osversion, radioversion, device,
-                                   cap=bbconstants._caplocation,
+                                   cap=bbconstants.CAPLOCATION,
                                    localdir=localdir)
 
     print("\nREMOVING .signed FILES...")
