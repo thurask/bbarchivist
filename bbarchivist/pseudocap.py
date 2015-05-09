@@ -30,7 +30,7 @@ def make_offset(cap, firstfile, secondfile="", thirdfile="",
     """
     Create magic offset file for use in autoloader creation.
     Cap.exe MUST match separator version.
-    Version defined in :data:`bbarchivist.bbconstants._capversion`.
+    Version defined in :data:`bbarchivist.bbconstants.CAPVERSION`.
 
     :param cap: Location of cap.exe file.
     :type cap: str

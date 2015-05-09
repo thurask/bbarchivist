@@ -277,7 +277,7 @@ def carrier_update_request(mcc, mnc, device,
 def software_release_lookup(osver, server):
     """
     Software release lookup, with choice of server.
-    :data:`bbarchivist.bbconstants._serverlist` for server list.
+    :data:`bbarchivist.bbconstants.SERVERLIST` for server list.
 
     :param osver: OS version to lookup, 10.x.y.zzzz.
     :type osver: str
