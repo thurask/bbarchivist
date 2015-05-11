@@ -1,11 +1,12 @@
 import os
 import glob
 from . import pseudocap
+from . import bbconstants
 
 
 def generate_loaders(
         osversion, radioversion, radios=True,
-        cap="cap.exe", localdir=os.getcwd()):
+        cap=bbconstants.CAPLOCATION, localdir=os.getcwd()):
     """
     Create and properly label autoloaders.
     Leverages Python implementation of cap.exe.
@@ -19,7 +20,7 @@ def generate_loaders(
     :param radios: Whether to make radios or not. True by default.
     :type radios: bool
 
-    :param cap: Path to cap.exe. Default is local dir\\cap.exe.
+    :param cap: Path to cap.exe. Default is cap supplied with package.
     :type cap: str
 
     :param localdir: Working path. Default is local dir.
