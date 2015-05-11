@@ -68,13 +68,11 @@ def make_offset(cap, firstfile, secondfile="", thirdfile="",
         if i:
             filecount += 1
     # immutable things
-    separator = binascii.unhexlify(
-        """6ADF5D144E4B4D4E474F46464D4E532B170A0D1E0C14532B372A2D3E2C34522F3C534F514\
-F514F514F534E464D514E4947514E51474F70709CD5C5979CD5C5979CD5C597""")
-    password = binascii.unhexlify("0" * 160)
-    singlepad = binascii.unhexlify("0" * 2)
-    doublepad = binascii.unhexlify("0" * 4)
-    signedpad = binascii.unhexlify("0" * 16)
+    separator = binascii.unhexlify(bytes("6ADF5D144E4B4D4E474F46464D4E532B170A0D1E0C14532B372A2D3E2C34522F3C534F514F514F514F534E464D514E4947514E51474F70709CD5C5979CD5C5979CD5C597", 'ascii'))  # @IgnorePep8
+    password = binascii.unhexlify(bytes("0" * 160, 'ascii'))
+    singlepad = binascii.unhexlify(bytes("0" * 2, 'ascii'))
+    doublepad = binascii.unhexlify(bytes("0" * 4, 'ascii'))
+    signedpad = binascii.unhexlify(bytes("0" * 16, 'ascii'))
     filepad = binascii.unhexlify(
         bytes(
             str(filecount).rjust(
@@ -84,7 +82,7 @@ F514F514F534E464D514E4947514E51474F70709CD5C5979CD5C5979CD5C597""")
     trailermax = int(7 - int(filecount))
     trailermax = trailermax * 2
     trailer = "0" * trailermax  # 00 repeated between 1 and 6 times
-    trailers = binascii.unhexlify(trailer)
+    trailers = binascii.unhexlify(bytes(trailer, 'ascii'))
 
     capfile = str(glob.glob(cap)[0])
     capsize = os.path.getsize(capfile)  # size of cap.exe, in bytes
