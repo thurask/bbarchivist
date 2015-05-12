@@ -2,7 +2,6 @@
 
 import os  # filesystem read
 import shutil  # directory read/write
-import hashlib  # SHA-x, MD5
 import time  # time for downloader
 import math  # rounding of floats
 from . import bbconstants
@@ -137,13 +136,7 @@ def do_magic(osversion, radioversion, softwareversion,
     else:
         szexe = ""
 
-    # Hash software version
-    swhash = hashlib.sha1(softwareversion.encode('utf-8'))
-    hashedsoftwareversion = swhash.hexdigest()
-
-    # Root of all urls
-    baseurl = "http://cdn.fs.sl.blackberry.com/fs/qnx/production/"
-    baseurl += hashedsoftwareversion
+    baseurl = networkutils.create_base_url(softwareversion)
 
     # List of OS urls
     osurls = [baseurl + "/winchester.factory_sfi.desktop-" +

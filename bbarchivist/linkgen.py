@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import hashlib
+from . import networkutils
 
 
 def do_magic(osversion, radioversion, softwareversion):
@@ -16,13 +16,7 @@ def do_magic(osversion, radioversion, softwareversion):
     :param softwareversion: Software version, 10.x.y.zzzz.
     :type softwareversion: str
     """
-    # Hash software version
-    swhash = hashlib.sha1(softwareversion.encode('utf-8'))
-    hashedsoftwareversion = swhash.hexdigest()
-
-    # Root of all urls
-    baseurl = "http://cdn.fs.sl.blackberry.com/fs/qnx/production/"
-    baseurl += hashedsoftwareversion
+    baseurl = networkutils.create_base_url(softwareversion)
 
     # List of debrick urls
     osurls = ["STL100-1: " + baseurl +

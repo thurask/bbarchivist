@@ -5,7 +5,6 @@ from . import networkutils
 from . import utilities
 from . import barutils
 import os
-import hashlib
 import shutil
 
 
@@ -98,14 +97,7 @@ def do_magic(mcc, mnc, device,
             for i in files:
                 filedict[str(i)] = i
             if blitz:
-                # Hash software version
-                swhash = hashlib.sha1(swv.encode('utf-8'))
-                hashedsoftwareversion = swhash.hexdigest()
-    
-                # Root of all urls
-                baseurl = "http://cdn.fs.sl.blackberry.com/fs/qnx/production/"
-                baseurl += hashedsoftwareversion
-                # List of debrick urls
+                baseurl = networkutils.create_base_url(swv)
                 coreurls = [baseurl + "/winchester.factory_sfi-" +
                             osv + "-nto+armle-v7+signed.bar",
                             baseurl + "/qc8960.factory_sfi-" +
@@ -116,7 +108,6 @@ def do_magic(mcc, mnc, device,
                             osv + "-nto+armle-v7+signed.bar"]
                 for i in coreurls:
                     filedict[str(i)] = i
-    
                 # List of radio urls
                 radiourls = [baseurl + "/m5730-" + radv +
                              "-nto+armle-v7+signed.bar",
@@ -132,7 +123,6 @@ def do_magic(mcc, mnc, device,
                              "-nto+armle-v7+signed.bar"]
                 for i in radiourls:
                     filedict[str(i)] = i
-    
             print("\nDOWNLOADING...")
             download_manager = networkutils.DownloadManager(filedict, bardir)
             download_manager.begin_downloads()

@@ -3,7 +3,6 @@
 from . import bbconstants
 from . import networkutils
 from . import utilities
-import hashlib
 import time
 import os
 
@@ -53,12 +52,7 @@ def do_magic(osversion, loop=False, log=False):
                                                         bbconstants.SERVERS["p"])  # @IgnorePep8
             if prel != "SR not in system" and prel is not None:
                 pav = "PD"
-                # Hash software version
-                swhash = hashlib.sha1(prel.encode('utf-8'))
-                hashedsoftwareversion = swhash.hexdigest()
-                # Root of all urls
-                baseurl = "http://cdn.fs.sl.blackberry.com/fs/qnx/production/"
-                baseurl += hashedsoftwareversion
+                baseurl = networkutils.create_base_url(prel)
                 # Check availability of software release
                 avail = networkutils.availability(baseurl)
                 if avail:

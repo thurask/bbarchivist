@@ -9,6 +9,7 @@ import binascii  # downloader thread naming
 import math  # rounding of floats
 import xml.etree.ElementTree  # XML parsing
 import re  # regexes
+import hashlib  # base url creation
 
 
 class Downloader(threading.Thread):
@@ -119,6 +120,21 @@ class DownloadManager():
         # Wait for the queue to finish
         dlqueue.join()
         return
+
+
+def create_base_url(softwareversion):
+    '''
+    Make the root URL for production server files.
+    :param softwareversion: Software version to hash.
+    :type softwareversion: str
+    '''
+    # Hash software version
+    swhash = hashlib.sha1(softwareversion.encode('utf-8'))
+    hashedsoftwareversion = swhash.hexdigest()
+    # Root of all urls
+    baseurl = "http://cdn.fs.sl.blackberry.com/fs/qnx/production/"
+    baseurl += hashedsoftwareversion
+    return baseurl
 
 
 def availability(url):

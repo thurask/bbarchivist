@@ -3,7 +3,6 @@
 import os
 import glob
 import shutil
-import hashlib
 import subprocess
 from . import utilities
 from . import barutils
@@ -49,12 +48,7 @@ def do_magic(osversion, radioversion,
     print("SOFTWARE VERSION:", softwareversion)
     print("DEVICE:", devicelist[device])
 
-    # hash SW release
-    sha1 = hashlib.sha1(softwareversion.encode('utf-8'))
-    hashedsoftwareversion = sha1.hexdigest()
-
-    baseurl = "http://cdn.fs.sl.blackberry.com/fs/qnx/production/"
-    baseurl += hashedsoftwareversion
+    baseurl = networkutils.create_base_url(softwareversion)
 
     if device == 0:
         osurl = baseurl + "/winchester.factory_sfi.desktop-"
