@@ -37,13 +37,6 @@ def do_magic(osversion, loop=False, log=False):
                 a1av = "A1"
             else:
                 a1av = "  "
-    #         a2rel = networkutils.software_release_lookup(osversion,
-    #                                                      bbconstants.SERVERS["a2"])
-            a2rel = "SR not in system"
-            if a2rel != "SR not in system" and a2rel is not None:
-                a2av = "A2"
-            else:
-                a2av = "  "
             b1rel = networkutils.software_release_lookup(osversion,
                                                          bbconstants.SERVERS["b1"])  # @IgnorePep8
             if b1rel != "SR not in system" and b1rel is not None:
@@ -75,7 +68,7 @@ def do_magic(osversion, loop=False, log=False):
             else:
                 pav = "  "
                 available = "Unavailable"
-            swrelset = set([a1rel, a2rel, b1rel, b2rel, prel])
+            swrelset = set([a1rel, b1rel, b2rel, prel])
             for i in swrelset:
                 if i != "SR not in system" and i is not None:
                     swrelease = i
@@ -83,14 +76,13 @@ def do_magic(osversion, loop=False, log=False):
             else:
                 swrelease = ""
             if swrelease != "":
-                out = "OS {} - SR {} - [{}|{}|{}|{}|{}] - {}".format(osversion,
-                                                                     swrelease,
-                                                                     pav,
-                                                                     a1av,
-                                                                     a2av,
-                                                                     b1av,
-                                                                     b2av,
-                                                                     available)
+                out = "OS {} - SR {} - [{}|{}|{}|{}] - {}".format(osversion,
+                                                                  swrelease,
+                                                                  pav,
+                                                                  a1av,
+                                                                  b1av,
+                                                                  b2av,
+                                                                  available)
                 if log:
                     with open(record, "a") as rec:
                         rec.write(out+"\n")
