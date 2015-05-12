@@ -123,11 +123,12 @@ class DownloadManager():
 
 
 def create_base_url(softwareversion):
-    '''
+    """
     Make the root URL for production server files.
+
     :param softwareversion: Software version to hash.
     :type softwareversion: str
-    '''
+    """
     # Hash software version
     swhash = hashlib.sha1(softwareversion.encode('utf-8'))
     hashedsoftwareversion = swhash.hexdigest()

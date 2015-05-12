@@ -120,7 +120,8 @@ def compress(filepath, method="7z", szexe="7za.exe"):
             elif method == "zip":
                 with zipfile.ZipFile(fileloc + '.zip',
                                      'w',
-                                     zipfile.ZIP_DEFLATED) as zfile:
+                                     zipfile.ZIP_DEFLATED,
+                                     allowZip64=True) as zfile:
                     starttime = time.clock()
                     zfile.write(file)
                     endtime = time.clock() - starttime
@@ -158,9 +159,15 @@ def create_blitz(a_folder, swver):
     :param swver: Software version to title the blitz.
     :type swver: str
     """
-    shutil.make_archive("Blitz-" + swver,
-                        format="zip",
-                        root_dir=a_folder)
+    with zipfile.ZipFile("Blitz-" + swver + '.zip',
+                         'w',
+                         zipfile.ZIP_DEFLATED,
+                         allowZip64=True) as zfile:
+        for root, dirs, files in os.walk(a_folder):  # @UnusedVariable
+            for file in files:
+                print("ZIPPING:", file)
+                zfile.write(os.path.join(root, file),
+                            os.path.basename(os.path.join(root, file)))
 
 
 def move_loaders(localdir,
