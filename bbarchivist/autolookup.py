@@ -30,6 +30,7 @@ def do_magic(osversion, loop=False, log=False):
     try:
         while True:
             swrelease = ""
+            print("NOW SCANNING:", osversion, end="\r"),
             a1rel = networkutils.software_release_lookup(osversion,
                                                          bbconstants.SERVERS["a1"])  # @IgnorePep8
             if a1rel != "SR not in system" and a1rel is not None:
@@ -101,5 +102,4 @@ def do_magic(osversion, loop=False, log=False):
                 swrelease = ""
                 continue
     except KeyboardInterrupt:
-        print("\nFINISHED!!!")
         raise SystemExit
