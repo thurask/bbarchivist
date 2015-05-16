@@ -185,70 +185,62 @@ Help
     usage: bb-archivist [-h] [-v] [-f DIR] [-c PATH] [-no] [-nx] [-nl] [-nr] [-ns]
                     [-nc] [-nd] [-nv] [--crc32] [--adler32] [--md4] [--sha224]
                     [--sha384] [--sha512] [--ripemd160] [--whirlpool]
-                    [--no-sha1] [--no-sha256] [--no-md5] [-a] [-g] [-gk KEY]
-                    [-gp PASS] [--7z | --tgz | --tbz | --txz | --zip]
+                    [--no-sha1] [--no-sha256] [--no-md5] [-a] [-g]
+                    [--7z | --tgz | --tbz | --txz | --zip]
                     os radio swrelease
 
-    Download bar files, create autoloaders.
-    
-    positional arguments:
-      os                    OS version, 10.x.y.zzzz
-      radio                 Radio version, 10.x.y.zzzz
-      swrelease             Software version, 10.x.y.zzzz
-    
-    optional arguments:
-      -h, --help            show this help message and exit
-      -v, --version         show program's version number and exit
-      -f DIR, --folder DIR  Working folder
-      -c PATH, --cap PATH   Path to cap.exe
-    
-    negators:
-      Disable program functionality
-    
-      -no, --no-download    Don't download files
-      -nx, --no-extract     Don't extract bar files
-      -nl, --no-loaders     Don't create autoloaders
-      -nr, --no-radios      Don't make radio autoloaders
-      -ns, --no-rmsigned    Don't remove signed files
-      -nc, --no-compress    Don't compress loaders
-      -nd, --no-delete      Don't delete uncompressed loaders
-      -nv, --no-verify      Don't verify created loaders
-    
-    verifiers:
-      Verification methods
-    
-      --crc32               Enable CRC32 verification
-      --adler32             Enable Adler-32 verification
-      --md4                 Enable MD4 verification
-      --sha224              Enable SHA-224 verification
-      --sha384              Enable SHA-384 verification
-      --sha512              Enable SHA-512 verification
-      --ripemd160           Enable RIPEMD-160 verification
-      --whirlpool           Enable Whirlpool verification
-      --no-sha1             Disable SHA-1 verification
-      --no-sha256           Disable SHA-256 verification
-      --no-md5              Disable MD5 verification
-      -a, --all             Use all methods
-    
-    gpg:
-      GnuPG verification
-    
-      -g, --gpg             Enable GPG signing. Set up GnuPG.
-      -gk KEY, --gpg-key KEY
-                            Key ID (0xABCDEF01)
-      -gp PASS, --gpg-pass PASS
-                            Key passphrase
-    
-    compressors:
-      Compression methods
-    
-      --7z                  Compress with 7z, LZMA2
-      --tgz                 Compress with tar, GZIP
-      --tbz                 Compress with tar, BZIP2
-      --txz                 Compress with tar, LZMA (py3.3+)
-      --zip                 Compress with zip, DEFLATE
-    
-    http://github.com/thurask/bbarchivist
+	Download bar files, create autoloaders.
+
+	positional arguments:
+	  os                    OS version, 10.x.y.zzzz
+	  radio                 Radio version, 10.x.y.zzzz
+	  swrelease             Software version, 10.x.y.zzzz
+
+	optional arguments:
+	  -h, --help            show this help message and exit
+	  -v, --version         show program's version number and exit
+	  -f DIR, --folder DIR  Working folder
+	  -c PATH, --cap PATH   Path to cap.exe
+	  -g, --gpg             Enable GPG signing. Set up GnuPG.
+
+	negators:
+	  Disable program functionality
+
+	  -no, --no-download    Don't download files
+	  -nx, --no-extract     Don't extract bar files
+	  -nl, --no-loaders     Don't create autoloaders
+	  -nr, --no-radios      Don't make radio autoloaders
+	  -ns, --no-rmsigned    Don't remove signed files
+	  -nc, --no-compress    Don't compress loaders
+	  -nd, --no-delete      Don't delete uncompressed loaders
+	  -nv, --no-verify      Don't verify created loaders
+
+	verifiers:
+	  Verification methods
+
+	  --crc32               Enable CRC32 verification
+	  --adler32             Enable Adler-32 verification
+	  --md4                 Enable MD4 verification
+	  --sha224              Enable SHA-224 verification
+	  --sha384              Enable SHA-384 verification
+	  --sha512              Enable SHA-512 verification
+	  --ripemd160           Enable RIPEMD-160 verification
+	  --whirlpool           Enable Whirlpool verification
+	  --no-sha1             Disable SHA-1 verification
+	  --no-sha256           Disable SHA-256 verification
+	  --no-md5              Disable MD5 verification
+	  -a, --all             Use all methods
+
+	compressors:
+	  Compression methods
+
+	  --7z                  Compress with 7z, LZMA2
+	  --tgz                 Compress with tar, GZIP
+	  --tbz                 Compress with tar, BZIP2
+	  --txz                 Compress with tar, LZMA (py3.3+)
+	  --zip                 Compress with zip, DEFLATE
+
+	http://github.com/thurask/bbarchivist
 
 
 ----------------------------------------
@@ -410,20 +402,19 @@ Help
 
     > bb-gpgrunner -h
     
-    usage: bb-gpgrunner [-h] [-v] [folder] key password
+    usage: bb-gpgrunner [-h] [-v] [folder]
 
-    GPG-sign all files in a directory.
-    
-    positional arguments:
-      folder         Working directory, default is local
-      key            Key to use, 8-character hexadecimal
-      password       Passphrase for key; quote if multi-word
-    
-    optional arguments:
-      -h, --help     show this help message and exit
-      -v, --version  show program's version number and exit
-    
-    http://github.com/thurask/bbarchivist
+	GPG-sign all files in a directory.
+
+	positional arguments:
+	  folder         Working directory, default is local
+
+	optional arguments:
+	  -h, --help     show this help message and exit
+	  -v, --version  show program's version number and exit
+
+	http://github.com/thurask/bbarchivist
+
     
 ----------------------------------------
 
