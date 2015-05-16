@@ -405,7 +405,10 @@ def do_magic(osversion, radioversion, softwareversion,
     # Remove uncompressed loaders (if specified)
     if deleted:
         print("\nDELETING UNCOMPRESSED LOADERS...")
-        shutil.rmtree(loaderdir)
+        if radios:
+            shutil.rmtree(loaderdir_radio)
+        if loaders:
+            shutil.rmtree(loaderdir_os)
 
     # Delete empty folders
     print("\nREMOVING EMPTY FOLDERS...")
