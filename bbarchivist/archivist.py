@@ -371,7 +371,7 @@ def do_magic(osversion, radioversion, softwareversion,
                     ripemd160,
                     whirlpool)
     if gpg:
-        if gpgpass is not None or gpgkey is not None:
+        if gpgpass is not None and gpgkey is not None:
             print("\nVERIFYING LOADERS...")
             print("KEY:", gpgkey)
             if compressed:
