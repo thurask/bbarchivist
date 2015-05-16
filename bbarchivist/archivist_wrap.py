@@ -3,6 +3,7 @@
 import sys  # arguments
 import argparse  # argument parsing
 import os
+import configparser
 from . import archivist
 from . import bbconstants
 from . import utilities
@@ -180,32 +181,13 @@ def main():
             help="Use all methods",
             action="store_true",
             default=False)
-        gpggroup = parser.add_argument_group(
-            "gpg",
-            "GnuPG verification")
-        gpggroup.add_argument(
+        parser.add_argument(
             "-g",
             "--gpg",
             dest="gpg",
             help="Enable GPG signing. Set up GnuPG.",
             action="store_true",
             default=False)
-        gpggroup.add_argument(
-            "-gk",
-            "--gpg-key",
-            dest="gpgkey",
-            help="Key ID (0xABCDEF01)",
-            action="store",
-            metavar="KEY",
-            default=None)
-        gpggroup.add_argument(
-            "-gp",
-            "--gpg-pass",
-            dest="gpgpass",
-            help="Key passphrase",
-            action="store",
-            metavar="PASS",
-            default=None)
         comps = parser.add_argument_group("compressors", "Compression methods")
         compgroup = comps.add_mutually_exclusive_group()
         compgroup.add_argument(
@@ -257,8 +239,28 @@ def main():
             args.ripemd160 = True
             args.whirlpool = True
         if args.gpg is True:
-            if args.gpgkey is None or args.gpgpass is None:
-                args.gpg = False  # talk the talk, walk the walk
+            config = configparser.ConfigParser()
+            homepath = os.path.expanduser("~")
+            conffile = os.path.join(homepath, "bbarchivist.ini")
+            config.read(conffile)
+            gpgkey = config.get('gpgrunner', 'key', fallback=None)
+            gpgpass = config.get('gpgrunner', 'pass', fallback=None)
+            if gpgkey is None or gpgpass is None:
+                print("NO PGP KEY FOUND")
+                cont = utilities.str2bool(input("CONTINUE (Y/N)?: "))
+                if cont:
+                    gpgkey = input("PGP KEY (0x12345678): ")
+                    gpgpass = input("PGP PASSPHRASE: ")
+                    config['gpgrunner'] = {}
+                    config['gpgrunner']['key'] = gpgkey
+                    config['gpgrunner']['pass'] = gpgpass
+                    with open(conffile, "w") as configfile:
+                        config.write(configfile)
+                else:
+                    args.gpg = False
+        else:
+            gpgkey = None
+            gpgpass = None
         archivist.do_magic(args.os, args.radio, args.swrelease,
                            args.folder, args.radloaders,
                            args.compress, args.delete, args.verify,
@@ -269,7 +271,7 @@ def main():
                            args.cappath, args.download,
                            args.extract, args.loaders,
                            args.signed, args.compmethod,
-                           args.gpg, args.gpgkey, args.gpgpass)
+                           args.gpg, gpgkey, gpgpass)
     else:
         localdir = os.getcwd()
         osversion = input("OS VERSION: ")
