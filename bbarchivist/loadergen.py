@@ -354,7 +354,7 @@ def generate_loaders(
 
 def generate_lazy_loader(
         osversion, device,
-        cap="cap.exe", localdir=os.getcwd()):
+        cap=bbconstants.CAPLOCATION, localdir=os.getcwd()):
     """
     :func:`generate_loaders`, but for making one OS/radio loader.
 
@@ -364,7 +364,7 @@ def generate_lazy_loader(
     :param device: Selected device, from
     :type device: int
 
-    :param cap: Path to cap.exe. Default is local dir\\cap.exe.
+    :param cap: Path to cap.exe. Default is cap supplied with package.
     :type cap: str
 
     :param localdir: Working path. Default is local dir.
@@ -372,191 +372,42 @@ def generate_lazy_loader(
 
     """
     print("\nCREATING LOADER...")
+    try:
+        osfile = str(glob.glob("*desktop*.signed")[0])
+    except IndexError:
+        print("No OS found")
+        return
+    try:
+        rset = set(glob.glob("*.signed")) - set(glob.glob("*desktop*.signed"))
+        radiofile = str(list(rset)[0])
+    except IndexError:
+        print("No radio found")
+        return
     if device == 0:
-        try:
-            os_ti = str(glob.glob("*winchester*.signed")[0])
-        except IndexError:
-            print("No OMAP image found")
-            return
-        try:
-            radio_z10_ti = str(glob.glob("*radio.m5730*.signed")[0])
-        except IndexError:
-            print("No OMAP radio found")
-            return
-        else:
-            print("Creating OMAP Z10 OS...")
-            try:
-                pseudocap.make_autoloader(
-                    filename="Z10_" +
-                    osversion +
-                    "_STL100-1.exe",
-                    cap=cap,
-                    firstfile=os_ti,
-                    secondfile=radio_z10_ti,
-                    thirdfile="",
-                    fourthfile="",
-                    fifthfile="",
-                    sixthfile="",
-                    folder=localdir)
-            except Exception as exc:
-                print(str(exc))
-                print("Could not create STL100-1 OS/radio loader")
-                return
+        loadername = "Z10_" + osversion + "_STL100-1.exe"
     elif device == 1:
-        try:
-            os_8960 = str(glob.glob("*qc8960*_sfi.desktop*.signed")[0])
-        except IndexError:
-            print("No 8960 image found")
-            return
-        try:
-            radio_z10_qcm = str(glob.glob("*radio.qc8960.BB*.signed")[0])
-        except IndexError:
-            print("No 8960 radio found")
-            return
-        else:
-            print("Creating Qualcomm Z10 OS...")
-            try:
-                pseudocap.make_autoloader(
-                    "Z10_" +
-                    osversion +
-                    "_STL100-2-3.exe",
-                    cap,
-                    os_8960,
-                    radio_z10_qcm,
-                    folder=localdir)
-            except Exception as exc:
-                print(str(exc))
-                print("Could not create Qualcomm Z10 OS/radio loader")
-                return
+        loadername = "Z10_" + osversion + "_STL100-2-3.exe"
     elif device == 2:
-        try:
-            os_8960 = str(glob.glob("*qc8960*_sfi.desktop*.signed")[0])
-        except IndexError:
-            print("No 8960 image found")
-            return
-        try:
-            radio_z10_vzw = str(glob.glob("*radio.qc8960*omadm*.signed")[0])
-        except IndexError:
-            print("No Verizon 8960 radio found")
-            return
-        else:
-            print("Creating Verizon Z10 OS...")
-            try:
-                pseudocap.make_autoloader(
-                    "Z10_" +
-                    osversion +
-                    "_STL100-4.exe",
-                    cap,
-                    os_8960,
-                    radio_z10_vzw,
-                    folder=localdir)
-            except Exception as exc:
-                print(str(exc))
-                print("Could not create Verizon Z10 OS/radio loader")
-                return
+        loadername = "Z10_" + osversion + "_STL100-4.exe"
     elif device == 3:
-        try:
-            os_8960 = str(glob.glob("*qc8960*_sfi.desktop*.signed")[0])
-        except IndexError:
-            print("No 8960 image found")
-            return
-        try:
-            radio_q10 = str(glob.glob("*8960*wtr.*.signed")[0])
-        except IndexError:
-            print("No Q10/Q5 radio found")
-            return
-        else:
-            print("Creating Q10/Q5 OS...")
-            try:
-                pseudocap.make_autoloader(
-                    "Q10_" +
-                    osversion +
-                    "_SQN100-1-2-3-4-5.exe",
-                    cap,
-                    os_8960,
-                    radio_q10,
-                    folder=localdir)
-            except Exception as exc:
-                print(str(exc))
-                print("Could not create Q10/Q5 OS/radio loader")
-                return
+        loadername = "Q10_" + osversion + "_SQN100-1-2-3-4-5.exe"
     elif device == 4:
-        try:
-            os_8960 = str(glob.glob("*qc8960*_sfi.desktop*.signed")[0])
-        except IndexError:
-            print("No 8960 image found")
-            return
-        try:
-            radio_z30 = str(glob.glob("*8960*wtr5*.signed")[0])
-        except IndexError:
-            print("No Z30/Classic radio found")
-            return
-        else:
-            print("Creating Z30/Classic OS...")
-            try:
-                pseudocap.make_autoloader(
-                    "Z30_" +
-                    osversion +
-                    "_STA100-1-2-3-4-5-6.exe",
-                    cap,
-                    os_8960,
-                    radio_z30,
-                    folder=localdir)
-            except Exception as exc:
-                print(str(exc))
-                print("Could not create Z30/Classic OS/radio loader")
-                return
+        loadername = "Z30_" + osversion + "_STA100-1-2-3-4-5-6.exe"
     elif device == 5:
-        try:
-            os_8x30 = str(glob.glob("*qc8x30*desktop*.signed")[0])
-        except IndexError:
-            print("No 8x30 image found")
-            return
-        try:
-            radio_z3 = str(glob.glob("*8930*wtr5*.signed")[0])
-        except IndexError:
-            print("No Z3 radio found")
-            return
-        else:
-            print("Creating Z3 OS...")
-            try:
-                pseudocap.make_autoloader(
-                    "Z3_" +
-                    osversion +
-                    "_STJ100-1-2.exe",
-                    cap,
-                    os_8x30,
-                    radio_z3,
-                    folder=localdir)
-            except Exception as exc:
-                print(str(exc))
-                print("Could not create Z3 OS/radio loader")
-                return
+        loadername = "Z3_" + osversion + "_STJ100-1-2.exe"
     elif device == 6:
-        try:
-            os_8974 = str(glob.glob("*qc8974*desktop*.signed")[0])
-        except IndexError:
-            print("No 8974 image found")
-            return
-        try:
-            radio_8974 = str(glob.glob("*8974*wtr2*.signed")[0])
-        except IndexError:
-            print("No Passport radio found")
-            return
-        else:
-            print("Creating Passport OS...")
-            try:
-                pseudocap.make_autoloader(
-                    "Passport_" +
-                    osversion +
-                    "_SQW100-1-2-3.exe",
-                    cap,
-                    os_8974,
-                    radio_8974,
-                    folder=localdir)
-            except Exception as exc:
-                print(str(exc))
-                print("Could not create Passport OS/radio loader")
-                return
+        loadername = "Passport_" + osversion + "_SQW100-1-2-3.exe"
     else:
+        print("Invalid device")
+        return
+    try:
+        pseudocap.make_autoloader(
+            filename=loadername,
+            cap=cap,
+            firstfile=osfile,
+            secondfile=radiofile,
+            folder=localdir)
+    except Exception as exc:
+        print(str(exc))
+        print("Could not create autoloader")
         return
