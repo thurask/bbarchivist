@@ -373,7 +373,7 @@ def do_magic(osversion, radioversion, softwareversion,
     if gpg:
         if gpgpass is not None or gpgkey is not None:
             print("\nVERIFYING LOADERS...")
-            print("KEY:", gpgkey, "\n")
+            print("KEY:", gpgkey)
             if compressed:
                 hashwrapper.gpgrunner(
                     zipdir_os,
