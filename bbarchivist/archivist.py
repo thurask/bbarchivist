@@ -400,7 +400,6 @@ def do_magic(osversion, radioversion, softwareversion,
                         True)
         else:
             print("\nNO KEY AND/OR PASS PROVIDED!")
-            raise SystemExit
 
     # Remove uncompressed loaders (if specified)
     if deleted:

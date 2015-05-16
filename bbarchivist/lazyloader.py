@@ -147,7 +147,7 @@ def do_magic(osversion, radioversion,
                 except shutil.Error:
                     os.remove(bardest_radio)
 
-    loadergen.generate_lazy_loader(osversion, radioversion, device,
+    loadergen.generate_lazy_loader(osversion, device,
                                    cap=bbconstants.CAPLOCATION,
                                    localdir=localdir)
 
