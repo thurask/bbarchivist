@@ -6,7 +6,7 @@ from . import bbconstants
 
 def generate_loaders(
         osversion, radioversion, radios=True,
-        cap=bbconstants.CAPLOCATION, localdir=os.getcwd()):
+        cap=None, localdir=None):
     """
     Create and properly label autoloaders.
     Leverages Python implementation of cap.exe.
@@ -26,6 +26,11 @@ def generate_loaders(
     :param localdir: Working path. Default is local dir.
     :type localdir: str
     """
+    # default parsing
+    if cap is None:
+        cap = bbconstants.CAPLOCATION
+    if localdir is None:
+        localdir = os.getcwd()
     # #OS Images
     print("GETTING FILENAMES...")
     # 8960
@@ -354,7 +359,7 @@ def generate_loaders(
 
 def generate_lazy_loader(
         osversion, device,
-        cap=bbconstants.CAPLOCATION, localdir=os.getcwd()):
+        cap=None, localdir=None):
     """
     :func:`generate_loaders`, but for making one OS/radio loader.
 
@@ -369,8 +374,12 @@ def generate_lazy_loader(
 
     :param localdir: Working path. Default is local dir.
     :type localdir: str
-
     """
+    # default parsing
+    if cap is None:
+        cap = bbconstants.CAPLOCATION
+    if localdir is None:
+        localdir = os.getcwd()
     print("\nCREATING LOADER...")
     try:
         osfile = str(glob.glob("*desktop*.signed")[0])

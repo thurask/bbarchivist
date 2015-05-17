@@ -65,7 +65,7 @@ def main():
             "--folder",
             dest="folder",
             help="Working folder",
-            default=os.getcwd(),
+            default=None,
             metavar="DIR")
         parser.add_argument(
             "-b", "--blitz",
@@ -75,6 +75,8 @@ def main():
             default=False)
         parser.set_defaults(upgrade=False)
         args = parser.parse_args(sys.argv[1:])
+        if args.folder is None:
+            args.folder = os.getcwd()
         if args.blitz:
             args.upgrade = True  # blitz takes precedence
         carrierchecker.do_magic(

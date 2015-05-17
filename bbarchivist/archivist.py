@@ -18,7 +18,7 @@ def do_magic(osversion, radioversion, softwareversion,
              sha1=True, sha224=False, sha256=False,
              sha384=False, sha512=False, md5=True,
              md4=False, ripemd160=False, whirlpool=False,
-             cappath="cap.exe", download=True, extract=True,
+             cappath=None, download=True, extract=True,
              loaders=True, signed=True, compmethod="7z",
              gpg=False, gpgkey=None, gpgpass=None):
     """
@@ -83,7 +83,7 @@ def do_magic(osversion, radioversion, softwareversion,
     :param whirlpool: Whether to use Whirlpool. False by default.
     :type whirlpool: bool
 
-    :param cappath: Path to cap.exe. Default is local dir 'cap.exe'.
+    :param cappath: Path to cap.exe. Default is cap supplied with package.
     :type cappath: str
 
     :param download: Whether to download bar files. True by default.
@@ -111,7 +111,8 @@ def do_magic(osversion, radioversion, softwareversion,
     :type gpgpass: str
     """
     starttime = time.clock()
-
+    if cappath is None:
+        cappath = bbconstants.CAPLOCATION
     print("~~~ARCHIVIST VERSION", bbconstants.VERSION + "~~~")
     print("OS VERSION:", osversion)
     print("RADIO VERSION:", radioversion)

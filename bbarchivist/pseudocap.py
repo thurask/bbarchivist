@@ -26,7 +26,7 @@ def ghetto_convert(intsize):
 
 
 def make_offset(cap, firstfile, secondfile="", thirdfile="",
-                fourthfile="", fifthfile="", sixthfile="", folder=os.getcwd()):
+                fourthfile="", fifthfile="", sixthfile="", folder=None):
     """
     Create magic offset file for use in autoloader creation.
     Cap.exe MUST match separator version.
@@ -53,9 +53,11 @@ def make_offset(cap, firstfile, secondfile="", thirdfile="",
     :param sixthfile: Sixth signed file. Optional.
     :type sixthfile: str
 
-    :param folder: Working folder. Optional.
+    :param folder: Working folder. Optional. Default is local.
     :type folder: str
     """
+    if folder is None:
+        folder = os.getcwd()
     filecount = 0
     filelist = [
         firstfile,
@@ -159,7 +161,7 @@ def make_offset(cap, firstfile, secondfile="", thirdfile="",
 
 def make_autoloader(filename, cap, firstfile, secondfile="", thirdfile="",
                     fourthfile="", fifthfile="", sixthfile="",
-                    folder=os.getcwd()):
+                    folder=None):
     """
     Python implementation of cap.exe.
     Writes cap.exe, magic offset, signed files to a .exe file.
@@ -189,9 +191,11 @@ def make_autoloader(filename, cap, firstfile, secondfile="", thirdfile="",
     :param sixthfile: Sixth signed file. Optional.
     :type sixthfile: str
 
-    :param folder: Working folder. Optional.
+    :param folder: Working folder. Optional. Default is local.
     :type folder: str
     """
+    if folder is None:
+        folder = os.getcwd()
     make_offset(
         cap,
         firstfile,
@@ -310,8 +314,10 @@ def make_autoloader(filename, cap, firstfile, secondfile="", thirdfile="",
                             autoloader.write(chunk)
                 except IOError as exc:
                     print("Operation failed:", exc.strerror)
+            else:
+                print("Invalid filecount")
+                return
     except IOError as exc:
         print("Operation failed:", exc.strerror)
-
     print(filename, "FINISHED!\n")
     os.remove(os.path.join(folder, "offset.hex"))

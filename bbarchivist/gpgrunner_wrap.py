@@ -28,9 +28,11 @@ def main():
         "folder",
         help="Working directory, default is local",
         nargs="?",
-        default=os.getcwd())
+        default=None)
     parser.set_defaults()
     args = parser.parse_args(sys.argv[1:])
+    if args.folder is None:
+        args.folder = os.getcwd()
     workfolder = args.folder
     config = configparser.ConfigParser()
     homepath = os.path.expanduser("~")

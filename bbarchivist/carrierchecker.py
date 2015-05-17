@@ -10,7 +10,7 @@ import shutil
 
 def do_magic(mcc, mnc, device,
              download=False, upgrade=False,
-             directory=os.getcwd(),
+             directory=None,
              export=False,
              blitz=False,
              bundles=False):
@@ -44,6 +44,8 @@ def do_magic(mcc, mnc, device,
     :param bundles: Whether or not to check software bundles. Default is false.
     :type bundles: bool
     """
+    if directory is None:
+        directory = os.getcwd()
     try:
         devindex = bbconstants.DEVICELIST.index(device.upper())
     except ValueError as exc:

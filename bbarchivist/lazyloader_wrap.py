@@ -85,9 +85,11 @@ def main():
             "--folder",
             dest="folder",
             help="Working folder",
-            default=os.getcwd(),
+            default=None,
             metavar="DIR")
         args = parser.parse_args(sys.argv[1:])
+        if args.folder is None:
+            args.folder = os.getcwd()
         if not utilities.is_windows():
             args.autoloader = False
         lazyloader.do_magic(

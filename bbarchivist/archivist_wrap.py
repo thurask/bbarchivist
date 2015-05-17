@@ -34,7 +34,7 @@ def main():
             "--folder",
             dest="folder",
             help="Working folder",
-            default=os.getcwd(),
+            default=None,
             metavar="DIR")
         parser.add_argument(
             "-c",
@@ -42,9 +42,7 @@ def main():
             type=utilities.file_exists,
             dest="cappath",
             help="Path to cap.exe",
-            default=os.path.join(
-                os.getcwd(),
-                bbconstants.CAPLOCATION),
+            default=None,
             metavar="PATH")
         negategroup = parser.add_argument_group(
             "negators",
@@ -222,6 +220,10 @@ def main():
             const="zip")
         parser.set_defaults(compmethod="7z")
         args = parser.parse_args(sys.argv[1:])
+        if args.folder is None:
+            args.folder = os.getcwd()
+        if args.cappath is None:
+            args.cappath = bbconstants.CAPLOCATION
         majver = sys.version_info[1]
         if majver <= 2:  # 3.2 and under
             if args.compmethod == "txz":
@@ -289,7 +291,7 @@ def main():
                            localdir, radios, compressed, deleted, hashed,
                            False, False, True, False, False,
                            False, False, True, False, False,
-                           False, "cap-3.11.0.22.dat", True,
+                           False, bbconstants.CAPLOCATION, True,
                            True, True, True, "7z", False,
                            False, None, None)
     smeg = input("Press Enter to exit")  # @UnusedVariable

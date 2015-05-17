@@ -30,7 +30,7 @@ Default: SHA-1, SHA-256, MD5""",
             "folder",
             help="Working directory, default is local",
             nargs="?",
-            default=os.getcwd())
+            default=None)
         parser.add_argument(
             "-b",
             "--block",
@@ -117,6 +117,8 @@ Default: SHA-1, SHA-256, MD5""",
             default=False)
         parser.set_defaults()
         args = parser.parse_args(sys.argv[1:])
+        if args.folder is None:
+            args.folder = os.getcwd()
         if args.all is True:
             args.adler32 = True
             args.crc32 = True
