@@ -10,6 +10,7 @@ import math  # rounding of floats
 import xml.etree.ElementTree  # XML parsing
 import re  # regexes
 import hashlib  # base url creation
+from . import utilities
 
 
 class Downloader(threading.Thread):
@@ -53,8 +54,11 @@ class Downloader(threading.Thread):
         """
         t_start = time.clock()
         local_filename = url.split('/')[-1]
-        print("Downloading:", local_filename)
         req = requests.get(url, stream=True)
+        fsize = req.headers['content-length']
+        print("Downloading:",
+              local_filename,
+              "[" + utilities.filesize_parser(fsize) + "]")
         if req.status_code != 404:  # 200 OK
             fname = self.output_directory + "/" + os.path.basename(url)
             with open(fname, "wb") as file:

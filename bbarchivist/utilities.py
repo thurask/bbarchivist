@@ -6,6 +6,21 @@ import platform
 import shutil
 
 
+def filesize_parser(num):
+    """
+    Raw byte filesize to human-readable string.
+
+    :param num: Number to parse.
+    :type num: float
+    """
+    num = float(num)
+    for x in ['bytes', 'KB', 'MB', 'GB']:
+        if num < 1024.0:
+            return "%3.1f%s" % (num, x)
+        num /= 1024.0
+    return "%3.1f%s" % (num, 'TB')
+
+
 def file_exists(file):
     """
     Check if file exists. Used for parsing file inputs from command line.
