@@ -230,6 +230,7 @@ Help
 	  --no-sha256           Disable SHA-256 verification
 	  --no-md5              Disable MD5 verification
 	  -a, --all             Use all methods
+      -o, --one-file        One checksum file per folder
 
 	compressors:
 	  Compression methods
@@ -350,6 +351,7 @@ Help
       --no-sha256          Disable SHA-256 verification
       --no-md5             Disable MD5 verification
       -a, --all            Use all methods
+      -o, --one-file       One checksum file per folder
     
     http://github.com/thurask/bbarchivist
 
