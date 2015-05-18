@@ -314,7 +314,7 @@ def make_autoloader(filename, cap, firstfile, secondfile="", thirdfile="",
                             autoloader.write(chunk)
                 except IOError as exc:
                     print("Operation failed:", exc.strerror)
-            else:
+            if filecount == 0 or filecount > 6:
                 print("Invalid filecount")
                 return
     except IOError as exc:

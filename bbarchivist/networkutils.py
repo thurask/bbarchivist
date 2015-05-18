@@ -56,10 +56,10 @@ class Downloader(threading.Thread):
         local_filename = url.split('/')[-1]
         req = requests.get(url, stream=True)
         fsize = req.headers['content-length']
-        print("Downloading:",
-              local_filename,
-              "[" + utilities.filesize_parser(fsize) + "]")
         if req.status_code != 404:  # 200 OK
+            print("Downloading:",
+                  local_filename,
+                  "[" + utilities.filesize_parser(fsize) + "]")
             fname = self.output_directory + "/" + os.path.basename(url)
             with open(fname, "wb") as file:
                 for chunk in req.iter_content(chunk_size=1024):
@@ -69,14 +69,11 @@ class Downloader(threading.Thread):
             t_elapsed = time.clock() - t_start
             t_elapsed_proper = math.ceil(t_elapsed * 100) / 100
             print(
-                "Downloaded " +
+                "Downloaded:  " +
                 local_filename +
                 " in " +
                 str(t_elapsed_proper) +
                 " seconds")
-        else:
-            print("* Thread: " + self.name + " Bad URL: " + url)
-            return
 
 
 class DownloadManager():
