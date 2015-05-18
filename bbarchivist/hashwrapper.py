@@ -9,7 +9,8 @@ def verifier(workingdir, blocksize=16 * 1024 * 1024,
              crc32=False, adler32=False,
              sha1=True, sha224=False, sha256=False,
              sha384=False, sha512=False, md5=True,
-             md4=False, ripemd160=False, whirlpool=False):
+             md4=False, ripemd160=False, whirlpool=False,
+             splitfiles=True):
     """
     For all files in a directory, perform various hash/checksum functions.
     Functions based on boolean arguments, writing the output to a .cksum file.
@@ -52,6 +53,9 @@ def verifier(workingdir, blocksize=16 * 1024 * 1024,
 
     :param whirlpool: Use of Whirlpool. False by default. Depends on system.
     :type whirlpool: bool
+
+    :param splitfiles: Create individual cksum files. True by default.
+    :type splitfiles: bool
     """
     hashoutput_crc32 = "CRC32\n"
     hashoutput_adler32 = "ADLER32\n"
@@ -196,38 +200,75 @@ def verifier(workingdir, blocksize=16 * 1024 * 1024,
                     hashoutput_whirlpool += str(file)
                     hashoutput_whirlpool += " \n"
                 print("\n")
-        with open(os.path.join(workingdir, 'all.cksum'), 'w') as target:
-            if adler32:
-                target.write(hashoutput_adler32 + "\n")
-            if crc32:
-                target.write(hashoutput_crc32 + "\n")
-            if md4:
-                target.write(hashoutput_md4 + "\n")
-            if md5:
-                target.write(hashoutput_md5 + "\n")
-            if sha1:
-                target.write(hashoutput_sha1 + "\n")
-            if sha224:
-                target.write(hashoutput_sha224 + "\n")
-            if sha256:
-                target.write(hashoutput_sha256 + "\n")
-            if sha384:
-                target.write(hashoutput_sha384 + "\n")
-            if sha512:
-                target.write(hashoutput_sha512 + "\n")
-            if ripemd160:
-                target.write(hashoutput_ripemd160 + "\n")
-            if whirlpool:
-                target.write(hashoutput_whirlpool + "\n")
-        if any((crc32, adler32,
-                md4, md5,
-                sha1, sha224, sha256, sha384, sha512,
-                ripemd160, whirlpool)):
-            with open(os.path.join(workingdir, 'all.cksum'), 'rb+') as target:
-                target.seek(-2, os.SEEK_END)  # navigate to last character
-                target.truncate()  # get rid of trailing \n
-        else:
-            os.remove(os.path.join(workingdir, 'all.cksum'))
+                if splitfiles:
+                    basename = file + ".cksum"
+                    targetname = os.path.join(workingdir, basename)
+                    with open(targetname, 'w') as target:
+                        if adler32:
+                            target.write(hashoutput_adler32 + "\n")
+                        if crc32:
+                            target.write(hashoutput_crc32 + "\n")
+                        if md4:
+                            target.write(hashoutput_md4 + "\n")
+                        if md5:
+                            target.write(hashoutput_md5 + "\n")
+                        if sha1:
+                            target.write(hashoutput_sha1 + "\n")
+                        if sha224:
+                            target.write(hashoutput_sha224 + "\n")
+                        if sha256:
+                            target.write(hashoutput_sha256 + "\n")
+                        if sha384:
+                            target.write(hashoutput_sha384 + "\n")
+                        if sha512:
+                            target.write(hashoutput_sha512 + "\n")
+                        if ripemd160:
+                            target.write(hashoutput_ripemd160 + "\n")
+                        if whirlpool:
+                            target.write(hashoutput_whirlpool + "\n")
+                    if any((crc32, adler32,
+                            md4, md5,
+                            sha1, sha224, sha256, sha384, sha512,
+                            ripemd160, whirlpool)):
+                        with open(targetname, 'rb+') as target:
+                            target.seek(-2, os.SEEK_END)
+                            target.truncate()
+                    else:
+                        os.remove(targetname)
+        if not splitfiles:
+            with open(os.path.join(workingdir, 'all.cksum'), 'w') as target:
+                if adler32:
+                    target.write(hashoutput_adler32 + "\n")
+                if crc32:
+                    target.write(hashoutput_crc32 + "\n")
+                if md4:
+                    target.write(hashoutput_md4 + "\n")
+                if md5:
+                    target.write(hashoutput_md5 + "\n")
+                if sha1:
+                    target.write(hashoutput_sha1 + "\n")
+                if sha224:
+                    target.write(hashoutput_sha224 + "\n")
+                if sha256:
+                    target.write(hashoutput_sha256 + "\n")
+                if sha384:
+                    target.write(hashoutput_sha384 + "\n")
+                if sha512:
+                    target.write(hashoutput_sha512 + "\n")
+                if ripemd160:
+                    target.write(hashoutput_ripemd160 + "\n")
+                if whirlpool:
+                    target.write(hashoutput_whirlpool + "\n")
+            if any((crc32, adler32,
+                    md4, md5,
+                    sha1, sha224, sha256, sha384, sha512,
+                    ripemd160, whirlpool)):
+                with open(os.path.join(workingdir,
+                                       'all.cksum'), 'rb+') as target:
+                    target.seek(-2, os.SEEK_END)  # navigate to last character
+                    target.truncate()  # get rid of trailing \n
+            else:
+                os.remove(os.path.join(workingdir, 'all.cksum'))
 
 
 def gpgrunner(workingdir, keyid=None, passphrase=None, selective=False):
