@@ -481,10 +481,18 @@ would generate the URLs for that given OS/radio/software release combination.
 
 ::
 
-    > bb-gpgrunner "~/some_stuff" 0xACDCACDC "Correct horse battery staple"
+    > bb-gpgrunner "~/some_stuff"
     
-would create ASCII signature files for all files in the given folder with the given key.
-MAKE SURE TO HAVE GnuPG SET UP BEFOREHAND!
+would create ASCII signature files for all files in the given folder.
+Make sure to have bbarchivist.ini in ~ or \Users\<your username> like so:
+
+::    
+    [gpgrunner]
+    key = 0xACDCACDC
+    pass = correct horse battery staple
+    
+If not, it'll ask you while running the script and make the file.
+More importantly, MAKE SURE TO HAVE GnuPG SET UP BEFOREHAND!
 
 ::
 
@@ -500,9 +508,13 @@ No fancy licensing here, just fork this and do whatever. Although, if
 you figure out something interesting, please do try to put it upstream
 via pull request.
 
-Credits
--------
+Credits/Software Used
+---------------------
+
 -  bbarchivist: `Thurask <https://twitter.com/thuraski>`__
+-  Python: `The Python Software Foundation <https://www.python.org>`__
 -  Requests: `Kenneth Reitz et al. <http://docs.python-requests.org/en/latest/dev/authors/>`__
 -  Python-GnuPG: `Vinay Sajip et al. <https://pythonhosted.org/python-gnupg/index.html#acknowledgements>`__
+-  PyDev: `Brainwy Software Ltda. <http://pydev.org>`__
+-  Momentics: `BlackBerry Ltd. <https://developer.blackberry.com/native/downloads/>`__
 -  Feedback, testing: Users Like You
