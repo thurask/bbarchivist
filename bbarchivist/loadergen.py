@@ -51,8 +51,14 @@ def generate_loaders(
                 localdir,
                 "*qc8x30*desktop*.signed"))[0]
     except IndexError:
-        os_8x30 = None
-        print("No 8x30 image found")
+        try:
+            os_8x30 = glob.glob(
+                os.path.join(
+                    localdir,
+                    "*qc8960*_sfi.desktop*.signed"))[0]
+        except IndexError:
+            os_8x30 = None
+            print("No 8x30 image found")
 
     # 8974
     try:
