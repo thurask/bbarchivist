@@ -179,6 +179,13 @@ def main():
             help="Use all methods",
             action="store_true",
             default=False)
+        hashgroup.add_argument(
+            "-o",
+            "--one-file",
+            dest="onefile",
+            help="One checksum file per folder",
+            action="store_true",
+            default=False)
         parser.add_argument(
             "-g",
             "--gpg",
@@ -273,7 +280,7 @@ def main():
                            args.cappath, args.download,
                            args.extract, args.loaders,
                            args.signed, args.compmethod,
-                           args.gpg, gpgkey, gpgpass)
+                           args.gpg, gpgkey, gpgpass, args.onefile)
     else:
         localdir = os.getcwd()
         osversion = input("OS VERSION: ")
@@ -293,5 +300,5 @@ def main():
                            False, False, True, False, False,
                            False, bbconstants.CAPLOCATION, True,
                            True, True, True, "7z", False,
-                           False, None, None)
+                           False, None, None, False)
     smeg = input("Press Enter to exit")  # @UnusedVariable

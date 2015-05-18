@@ -20,7 +20,8 @@ def do_magic(osversion, radioversion, softwareversion,
              md4=False, ripemd160=False, whirlpool=False,
              cappath=None, download=True, extract=True,
              loaders=True, signed=True, compmethod="7z",
-             gpg=False, gpgkey=None, gpgpass=None):
+             gpg=False, gpgkey=None, gpgpass=None,
+             onefile=False):
     """
     Wrap around multi-autoloader creation code.
     Some combination of creating, downloading, hashing,
@@ -109,6 +110,9 @@ def do_magic(osversion, radioversion, softwareversion,
 
     :param gpgpass: Passphrase to use with GnuPG verification.
     :type gpgpass: str
+
+    :param onefile: Whether to use one checksum file. False by default.
+    :type onefile: bool
     """
     starttime = time.clock()
     if cappath is None:
@@ -325,7 +329,8 @@ def do_magic(osversion, radioversion, softwareversion,
                 md5,
                 md4,
                 ripemd160,
-                whirlpool)
+                whirlpool,
+                not onefile)
             if radios:
                 hashwrapper.verifier(
                     zipdir_radio,
@@ -340,7 +345,8 @@ def do_magic(osversion, radioversion, softwareversion,
                     md5,
                     md4,
                     ripemd160,
-                    whirlpool)
+                    whirlpool,
+                    not onefile)
         if not deleted:
             hashwrapper.verifier(
                 loaderdir_os,
@@ -355,7 +361,8 @@ def do_magic(osversion, radioversion, softwareversion,
                 md5,
                 md4,
                 ripemd160,
-                whirlpool)
+                whirlpool,
+                not onefile)
             if radios:
                 hashwrapper.verifier(
                     loaderdir_radio,
@@ -370,7 +377,8 @@ def do_magic(osversion, radioversion, softwareversion,
                     md5,
                     md4,
                     ripemd160,
-                    whirlpool)
+                    whirlpool,
+                    not onefile)
     if gpg:
         if gpgpass is not None and gpgkey is not None:
             print("\nVERIFYING LOADERS...")

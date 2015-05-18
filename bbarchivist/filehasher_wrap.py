@@ -115,6 +115,13 @@ Default: SHA-1, SHA-256, MD5""",
             help="Use all methods",
             action="store_true",
             default=False)
+        hashgroup.add_argument(
+            "-o",
+            "--one-file",
+            dest="onefile",
+            help="One checksum file per folder",
+            action="store_true",
+            default=False)
         parser.set_defaults()
         args = parser.parse_args(sys.argv[1:])
         if args.folder is None:
@@ -143,7 +150,8 @@ Default: SHA-1, SHA-256, MD5""",
                              args.md5,
                              args.md4,
                              args.ripemd160,
-                             args.whirlpool)
+                             args.whirlpool,
+                             not args.onefile)
     else:
         folder = os.getcwd()
         blocksize = 16777216
@@ -158,6 +166,7 @@ Default: SHA-1, SHA-256, MD5""",
         md4 = utilities.str2bool(input("MD4?: "))
         ripemd160 = utilities.str2bool(input("RIPEMD160?: "))
         whirlpool = utilities.str2bool(input("WHIRLPOOL?: "))
+        onefile = utilities.str2bool(input("USE ONE CHECKSUM FILE?: "))
         print(" ")
         hashwrapper.verifier(
             folder,
@@ -172,5 +181,6 @@ Default: SHA-1, SHA-256, MD5""",
             md5,
             md4,
             ripemd160,
-            whirlpool)
+            whirlpool,
+            not onefile)
         smeg = input("Press Enter to exit")  # @UnusedVariable
