@@ -31,7 +31,8 @@ def generate_loaders(
         cap = bbconstants.CAPLOCATION
     if localdir is None:
         localdir = os.getcwd()
-    # #OS Images
+
+    # OS Images
     print("GETTING FILENAMES...")
     # 8960
     try:
@@ -67,8 +68,12 @@ def generate_loaders(
     try:
         os_ti = glob.glob(os.path.join(localdir, "*winchester*.signed"))[0]
     except IndexError:
-        os_ti = None
-        print("No OMAP image found")
+        try:
+            os_ti = glob.glob(os.path.join(localdir,
+                                           "*os.factory_sfi.*.signed")[0])
+        except IndexError:
+            os_ti = None
+            print("No OMAP image found")
 
     # Radio files
     # STL100-1
