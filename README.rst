@@ -486,7 +486,8 @@ would generate the URLs for that given OS/radio/software release combination.
 would create ASCII signature files for all files in the given folder.
 Make sure to have bbarchivist.ini in ~ or \Users\<your username> like so:
 
-::    
+::
+
     [gpgrunner]
     key = 0xACDCACDC
     pass = correct horse battery staple
