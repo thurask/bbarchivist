@@ -23,9 +23,19 @@ def main():
             action="version",
             version="%(prog)s " +
             bbconstants.VERSION)
-        parser.add_argument("os", help="OS version, 10.x.y.zzzz")
-        parser.add_argument("radio", help="Radio version, 10.x.y.zzzz")
-        parser.add_argument("swrelease", help="Software version, 10.x.y.zzzz")
+        parser.add_argument(
+                            "os",
+                            help="OS version, 10.x.y.zzzz")
+        parser.add_argument(
+                            "radio",
+                            help="Radio version, 10.x.y.zzzz",
+                            nargs="?",
+                            default=None)
+        parser.add_argument(
+                            "swrelease",
+                            help="Software version, 10.x.y.zzzz",
+                            nargs="?",
+                            default=None)
         args = parser.parse_args(sys.argv[1:])
         linkgen.do_magic(
             args.os,

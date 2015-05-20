@@ -88,7 +88,7 @@ def str2bool(input_check):
 
 def is_amd64():
     """
-    Returns true if script is running on an AMD64 system
+    Returns true if script is running on an AMD64 system.
     """
     amd64 = platform.machine().endswith("64")
     return amd64

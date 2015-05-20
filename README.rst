@@ -185,63 +185,64 @@ Help
     usage: bb-archivist [-h] [-v] [-f DIR] [-c PATH] [-no] [-nx] [-nl] [-nr] [-ns]
                     [-nc] [-nd] [-nv] [--crc32] [--adler32] [--md4] [--sha224]
                     [--sha384] [--sha512] [--ripemd160] [--whirlpool]
-                    [--no-sha1] [--no-sha256] [--no-md5] [-a] [-g]
+                    [--no-sha1] [--no-sha256] [--no-md5] [-a] [-o] [-g]
                     [--7z | --tgz | --tbz | --txz | --zip]
-                    os radio swrelease
+                    os [radio] [swrelease]
 
-	Download bar files, create autoloaders.
+   Download bar files, create autoloaders.
+   
+   positional arguments:
+     os                    OS version, 10.x.y.zzzz
+     radio                 Radio version, 10.x.y.zzzz
+     swrelease             Software version, 10.x.y.zzzz
+   
+   optional arguments:
+     -h, --help            show this help message and exit
+     -v, --version         show program's version number and exit
+     -f DIR, --folder DIR  Working folder
+     -c PATH, --cap PATH   Path to cap.exe
+     -g, --gpg             Enable GPG signing. Set up GnuPG.
+   
+   negators:
+     Disable program functionality
+   
+     -no, --no-download    Don't download files
+     -nx, --no-extract     Don't extract bar files
+     -nl, --no-loaders     Don't create autoloaders
+     -nr, --no-radios      Don't make radio autoloaders
+     -ns, --no-rmsigned    Don't remove signed files
+     -nc, --no-compress    Don't compress loaders
+     -nd, --no-delete      Don't delete uncompressed loaders
+     -nv, --no-verify      Don't verify created loaders
+   
+   verifiers:
+     Verification methods
+   
+     --crc32               Enable CRC32 verification
+     --adler32             Enable Adler-32 verification
+     --md4                 Enable MD4 verification
+     --sha224              Enable SHA-224 verification
+     --sha384              Enable SHA-384 verification
+     --sha512              Enable SHA-512 verification
+     --ripemd160           Enable RIPEMD-160 verification
+     --whirlpool           Enable Whirlpool verification
+     --no-sha1             Disable SHA-1 verification
+     --no-sha256           Disable SHA-256 verification
+     --no-md5              Disable MD5 verification
+     -a, --all             Use all methods
+     -o, --one-file        One checksum file per folder
+   
+   compressors:
+     Compression methods
+   
+     --7z                  Compress with 7z, LZMA2
+     --tgz                 Compress with tar, GZIP
+     --tbz                 Compress with tar, BZIP2
+     --txz                 Compress with tar, LZMA (py3.3+)
+     --zip                 Compress with zip, DEFLATE
+   
+   http://github.com/thurask/bbarchivist
 
-	positional arguments:
-	  os                    OS version, 10.x.y.zzzz
-	  radio                 Radio version, 10.x.y.zzzz
-	  swrelease             Software version, 10.x.y.zzzz
-
-	optional arguments:
-	  -h, --help            show this help message and exit
-	  -v, --version         show program's version number and exit
-	  -f DIR, --folder DIR  Working folder
-	  -c PATH, --cap PATH   Path to cap.exe
-	  -g, --gpg             Enable GPG signing. Set up GnuPG.
-
-	negators:
-	  Disable program functionality
-
-	  -no, --no-download    Don't download files
-	  -nx, --no-extract     Don't extract bar files
-	  -nl, --no-loaders     Don't create autoloaders
-	  -nr, --no-radios      Don't make radio autoloaders
-	  -ns, --no-rmsigned    Don't remove signed files
-	  -nc, --no-compress    Don't compress loaders
-	  -nd, --no-delete      Don't delete uncompressed loaders
-	  -nv, --no-verify      Don't verify created loaders
-
-	verifiers:
-	  Verification methods
-
-	  --crc32               Enable CRC32 verification
-	  --adler32             Enable Adler-32 verification
-	  --md4                 Enable MD4 verification
-	  --sha224              Enable SHA-224 verification
-	  --sha384              Enable SHA-384 verification
-	  --sha512              Enable SHA-512 verification
-	  --ripemd160           Enable RIPEMD-160 verification
-	  --whirlpool           Enable Whirlpool verification
-	  --no-sha1             Disable SHA-1 verification
-	  --no-sha256           Disable SHA-256 verification
-	  --no-md5              Disable MD5 verification
-	  -a, --all             Use all methods
-      -o, --one-file        One checksum file per folder
-
-	compressors:
-	  Compression methods
-
-	  --7z                  Compress with 7z, LZMA2
-	  --tgz                 Compress with tar, GZIP
-	  --tbz                 Compress with tar, BZIP2
-	  --txz                 Compress with tar, LZMA (py3.3+)
-	  --zip                 Compress with zip, DEFLATE
-
-	http://github.com/thurask/bbarchivist
 
 
 ----------------------------------------
@@ -253,33 +254,33 @@ Help
     usage: bb-lazyloader [-h] [-v]
                      (--stl100-1 | --stl100-x | --stl100-4 | --q10 | --z30 | --z3 | --passport)
                      [--run-loader] [-f DIR]
-                     os radio swrelease
+                     os [radio] [swrelease]
 
-    Create one autoloader for personal use.
-    
-    positional arguments:
-      os                    OS version, 10.x.y.zzzz
-      radio                 Radio version, 10.x.y.zzzz
-      swrelease             Software version, 10.x.y.zzzz
-    
-    optional arguments:
-      -h, --help            show this help message and exit
-      -v, --version         show program's version number and exit
-      --run-loader          Run autoloader after creation
-      -f DIR, --folder DIR  Working folder
-    
-    devices:
-      Device to load (one required)
-    
-      --stl100-1            STL100-1
-      --stl100-x            STL100-2/3, P'9982
-      --stl100-4            STL100-4
-      --q10                 Q10, Q5, P'9983
-      --z30                 Z30, Classic, Leap
-      --z3                  Z3
-      --passport            Passport
-    
-    http://github.com/thurask/bbarchivist
+   Create one autoloader for personal use.
+   
+   positional arguments:
+     os                    OS version, 10.x.y.zzzz
+     radio                 Radio version, 10.x.y.zzzz
+     swrelease             Software version, 10.x.y.zzzz
+   
+   optional arguments:
+     -h, --help            show this help message and exit
+     -v, --version         show program's version number and exit
+     --run-loader          Run autoloader after creation
+     -f DIR, --folder DIR  Working folder
+   
+   devices:
+     Device to load (one required)
+   
+     --stl100-1            STL100-1
+     --stl100-x            STL100-2/3, P'9982
+     --stl100-4            STL100-4
+     --q10                 Q10, Q5, P'9983
+     --z30                 Z30, Classic, Leap
+     --z3                  Z3
+     --passport            Passport
+   
+   http://github.com/thurask/bbarchivist
 
 ----------------------------------------
 
@@ -383,20 +384,20 @@ Help
 
     > bb-linkgen -h
     
-    usage: bb-linkgen [-h] [-v] os radio swrelease
+    usage: bb-linkgen [-h] [-v] os [radio] [swrelease]
 
-    Generate links from OS/radio/software.
-    
-    positional arguments:
-      os             OS version, 10.x.y.zzzz
-      radio          Radio version, 10.x.y.zzzz
-      swrelease      Software version, 10.x.y.zzzz
-    
-    optional arguments:
-      -h, --help     show this help message and exit
-      -v, --version  show program's version number and exit
-    
-    http://github.com/thurask/bbarchivist
+   Generate links from OS/radio/software.
+   
+   positional arguments:
+     os             OS version, 10.x.y.zzzz
+     radio          Radio version, 10.x.y.zzzz
+     swrelease      Software version, 10.x.y.zzzz
+   
+   optional arguments:
+     -h, --help     show this help message and exit
+     -v, --version  show program's version number and exit
+   
+   http://github.com/thurask/bbarchivist
     
 ----------------------------------------
 

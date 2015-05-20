@@ -11,11 +11,13 @@ from . import networkutils
 from . import loadergen
 
 
-def do_magic(osversion, radioversion,
-             softwareversion, device,
-             localdir, autoloader):
+def do_magic(device, osversion, radioversion=None,
+             softwareversion=None, localdir=None, autoloader=False):
     """
     Wrap the tools necessary to make one autoloader.
+
+    :param device: Device family to create loader for.
+    :type device: int
 
     :param osversion: OS version, 10.x.y.zzzz.
     :type osversion: str
@@ -26,15 +28,25 @@ def do_magic(osversion, radioversion,
     :param softwareversion: Software version, 10.x.y.zzzz.
     :type softwareversion: str
 
-    :param device: Device family to create loader for.
-    :type device: int
-
     :param localdir: Working path. Default is local dir.
     :type localdir: str
 
     :param autoloader: Whether to run loaders. Default is false. Windows-only.
     :type autoloader: bool
     """
+    if radioversion is None:
+        radioversion = utilities.version_incrementer(osversion, 1)
+    if softwareversion is None:
+        serv = bbconstants.SERVERS["p"]
+        softwareversion = networkutils.software_release_lookup(osversion, serv)
+        if softwareversion == "SR not in system":
+            print("SOFTWARE RELEASE NOT FOUND")
+            cont = utilities.str2bool(input("INPUT MANUALLY? Y/N "))
+            if cont:
+                softwareversion = input("SOFTWARE RELEASE: ")
+            else:
+                print("\nEXITING...")
+                raise SystemExit  # bye bye
     devicelist = ["STL100-1",
                   "STL100-2/3/P9982",
                   "STL100-4",
