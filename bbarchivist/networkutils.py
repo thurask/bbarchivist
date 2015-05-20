@@ -10,7 +10,7 @@ import math  # rounding of floats
 import xml.etree.ElementTree  # XML parsing
 import re  # regexes
 import hashlib  # base url creation
-from . import utilities
+from . import utilities  # parse filesize
 
 
 class Downloader(threading.Thread):

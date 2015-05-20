@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
-import argparse
-import sys
-from . import linkgen
-from . import bbconstants
+import argparse  # parse arguments
+import sys  # load arguments
+from . import linkgen  # main function
+from . import bbconstants  # versions/constants
 
 
 def main():

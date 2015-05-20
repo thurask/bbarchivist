@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
-import argparse
-import sys
-import os
-import configparser
-import getpass
-from . import hashwrapper
-from . import bbconstants
+import argparse  # parse arguments
+import sys  # load arguments
+import os  # path operations
+import configparser  # INI reading
+import getpass  # invisible passwords (cf. sudo)
+from . import hashwrapper  # main program
+from . import bbconstants  # constants/versions
 
 
 def main():

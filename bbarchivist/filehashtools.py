@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-import zlib
-import hashlib
+import zlib  # crc32/adler32
+import hashlib  # all other hashes
 
 
 def crc32hash(filepath, blocksize=16 * 1024 * 1024):

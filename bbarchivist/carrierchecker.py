@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-from . import bbconstants
-from . import networkutils
-from . import utilities
-from . import barutils
-import os
-import shutil
+from . import bbconstants  # versions/constants
+from . import networkutils  # check function
+from . import utilities  # index lookup
+from . import barutils  # file/folder operations
+import os  # file/path operations
+import shutil  # folder removal
 
 
 def do_magic(mcc, mnc, device,

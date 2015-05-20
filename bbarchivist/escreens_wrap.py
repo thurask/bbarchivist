@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-import argparse
-import sys
-from . import escreens
-from . import bbconstants
-from . import utilities
+import argparse  # parse arguments
+import sys  # load arguments
+from . import escreens  # main program
+from . import bbconstants  # constants/versions
+from . import utilities  # input validation
 
 
 def main():

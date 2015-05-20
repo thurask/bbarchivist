@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
-import sys  # arguments
-import argparse  # argument parsing
-import os
-import configparser
-import getpass
-from . import archivist
-from . import bbconstants
-from . import utilities
+import sys  # load arguments
+import argparse  # parse arguments
+import os  # filesystem utils
+import configparser  # read ini file
+import getpass  # invisible password
+from . import archivist  # main program
+from . import bbconstants  # versions/constants
+from . import utilities  # input validation
 
 
 def main():

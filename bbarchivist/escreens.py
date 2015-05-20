@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-import hmac
-import hashlib
-from . import bbconstants
+import hmac  # escreens is a hmac, news at 11
+import hashlib  # to get sha1
+from . import bbconstants  # constants/versions
 
 
 def calculate_escreens(pin, app, uptime, duration=30):

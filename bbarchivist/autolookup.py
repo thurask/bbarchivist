@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-from . import bbconstants
-from . import networkutils
-from . import utilities
-import time
-import os
+from . import bbconstants  # versions/constants
+from . import networkutils  # lookup
+from . import utilities  # incrementer
+import time  # get datestamp for lookup
+import os  # path work
 
 
 def do_magic(osversion, loop=False, log=False):

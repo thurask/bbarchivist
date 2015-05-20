@@ -6,9 +6,9 @@ import math  # rounding of floats
 import subprocess  # invocation of 7z, cap
 import zipfile  # zip extract, zip compresssion
 import tarfile  # txz/tbz/tgz compression
-import sys
-import shutil
-from . import utilities
+import sys  # version info
+import shutil  # folder operations
+from . import utilities  # platform determination
 
 
 def extract_bars(filepath):

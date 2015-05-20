@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 
-import os
-import glob
-import shutil
-import subprocess
-from . import utilities
-from . import barutils
-from . import bbconstants
-from . import networkutils
-from . import loadergen
+import os  # path work
+import glob  # filename matching
+import shutil  # folder removal
+import subprocess  # autoloader running
+from . import utilities  # input validation
+from . import barutils  # file operations
+from . import bbconstants  # constants/versions
+from . import networkutils  # download/lookup
+from . import loadergen  # cap wrapper
 
 
 def do_magic(device, osversion, radioversion=None,

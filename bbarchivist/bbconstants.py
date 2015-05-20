@@ -1,4 +1,4 @@
-import os.path
+import os.path  # for producing cap location constant
 
 #: App version.
 VERSION = "1.6.1"

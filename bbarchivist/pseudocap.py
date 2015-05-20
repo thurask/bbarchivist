@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
-import os
-import binascii
-import glob
-from . import bbconstants
+import os  # path work
+import binascii  # to hex and back again
+import glob  # filename matching
+from . import bbconstants  # versions/constants
 
 
 def ghetto_convert(intsize):

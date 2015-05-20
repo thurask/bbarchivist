@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-import argparse
-import sys
-import os
-from . import lazyloader
-from . import bbconstants
-from . import utilities
+import argparse  # parse arguments
+import sys  # load arguments
+import os  # path work
+from . import lazyloader  # main program
+from . import bbconstants  # constants/versions
+from . import utilities  # input validation
 
 
 def main():

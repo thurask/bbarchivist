@@ -4,12 +4,12 @@ import os  # filesystem read
 import shutil  # directory read/write
 import time  # time for downloader
 import math  # rounding of floats
-from . import bbconstants
-from . import utilities
-from . import barutils
-from . import networkutils
-from . import loadergen
-from . import hashwrapper
+from . import bbconstants  # versions/constants
+from . import utilities  # input validation
+from . import barutils  # file/folder work
+from . import networkutils  # download/lookup
+from . import loadergen  # cap, in Python
+from . import hashwrapper  # hashes, GPG
 
 
 def do_magic(osversion, radioversion=None, softwareversion=None,

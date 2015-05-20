@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-import argparse
-import sys
-from . import autolookup
-from . import bbconstants
-from . import utilities
+import argparse  # parse arguments
+import sys  # load arguments
+from . import autolookup  # main program
+from . import bbconstants  # versions/constants
+from . import utilities  # input validation
 
 
 def main():

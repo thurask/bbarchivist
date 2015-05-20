@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-from . import networkutils
-from . import utilities
-from . import bbconstants
+from . import networkutils  # lookup, if sw not specified
+from . import utilities  # increment version, if radio not specified
+from . import bbconstants  # versions/constants
 
 
 def do_magic(osversion, radioversion=None, softwareversion=None):

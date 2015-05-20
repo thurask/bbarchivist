@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-import argparse
-import sys
-import os
-from . import carrierchecker
-from . import bbconstants
-from . import utilities
+import argparse  # parse arguments
+import sys  # load arguments
+import os  # folder operations
+from . import carrierchecker  # main program
+from . import bbconstants  # constants/versions
+from . import utilities  # input validation
 
 
 def main():

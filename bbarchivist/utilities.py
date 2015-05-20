@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
-import os
-import argparse
-import platform
-import shutil
+import os  # path work
+import argparse  # argument parser for filters
+import platform  # platform info
+import shutil  # "which" command
 
 
 def filesize_parser(num):
