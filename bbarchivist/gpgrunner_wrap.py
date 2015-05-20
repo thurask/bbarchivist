@@ -4,6 +4,7 @@ import argparse
 import sys
 import os
 import configparser
+import getpass
 from . import hashwrapper
 from . import bbconstants
 
@@ -42,7 +43,7 @@ def main():
     password = config.get('gpgrunner', 'pass', fallback=None)
     if key is None or password is None:
         key = input("PGP KEY (0x12345678): ")
-        password = input("PGP PASSPHRASE: ")
+        password = getpass.getpass(prompt="PGP PASSPHRASE: ")
         config['gpgrunner'] = {}
         config['gpgrunner']['key'] = key
         config['gpgrunner']['pass'] = password

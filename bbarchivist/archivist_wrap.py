@@ -4,6 +4,7 @@ import sys  # arguments
 import argparse  # argument parsing
 import os
 import configparser
+import getpass
 from . import archivist
 from . import bbconstants
 from . import utilities
@@ -259,7 +260,7 @@ def main():
                 cont = utilities.str2bool(input("CONTINUE (Y/N)?: "))
                 if cont:
                     gpgkey = input("PGP KEY (0x12345678): ")
-                    gpgpass = input("PGP PASSPHRASE: ")
+                    gpgpass = getpass.getpass(prompt="PGP PASSPHRASE: ")
                     config['gpgrunner'] = {}
                     config['gpgrunner']['key'] = gpgkey
                     config['gpgrunner']['pass'] = gpgpass
