@@ -20,7 +20,7 @@ class Downloader(threading.Thread):
     http://pipe-devnull.com/2012/09/13/queued-threaded-http-downloader-in-python.html
     """
 
-    def __init__(self, dlqueue, output_directory):
+    def __init__(self, dlqueue, output_directory, lazy=False):
         """
         Initiate downloader thread.
         :param queue: What to download.
@@ -32,6 +32,7 @@ class Downloader(threading.Thread):
         threading.Thread.__init__(self, name=binascii.hexlify(os.urandom(8)))
         self.queue = dlqueue
         self.output_directory = output_directory
+        self.lazy = lazy
 
     def run(self):
         """
@@ -41,11 +42,11 @@ class Downloader(threading.Thread):
             # gets the url from the queue
             url = self.queue.get()
             # download the file
-            self.download(url)
+            self.download(url, self.lazy)
             # send a signal to the queue that the job is done
             self.queue.task_done()
 
-    def download(self, url):
+    def download(self, url, lazy=False):
         """
         Download file from given URL.
 
@@ -57,9 +58,17 @@ class Downloader(threading.Thread):
         req = requests.get(url, stream=True)
         fsize = req.headers['content-length']
         if req.status_code != 404:  # 200 OK
-            print("Downloading:",
-                  local_filename,
-                  "[" + utilities.filesize_parser(fsize) + "]")
+            if not lazy:
+                print("Downloading:",
+                      local_filename,
+                      "[" + utilities.filesize_parser(fsize) + "]")
+            else:
+                if int(fsize) > 90000000:
+                    print("Downloading OS",
+                          "[" + utilities.filesize_parser(fsize) + "]")
+                else:
+                    print("Downloading radio",
+                          "[" + utilities.filesize_parser(fsize) + "]")
             fname = self.output_directory + "/" + os.path.basename(url)
             with open(fname, "wb") as file:
                 for chunk in req.iter_content(chunk_size=1024):
@@ -68,12 +77,21 @@ class Downloader(threading.Thread):
                         file.flush()
             t_elapsed = time.clock() - t_start
             t_elapsed_proper = math.ceil(t_elapsed * 100) / 100
-            print(
-                "Downloaded:  " +
-                local_filename +
-                " in " +
-                str(t_elapsed_proper) +
-                " seconds")
+            if not lazy:
+                print("Downloaded:  " +
+                      local_filename +
+                      " in " +
+                      str(t_elapsed_proper) +
+                      " seconds")
+            else:
+                if int(fsize) > 90000000:
+                    print("Downloaded OS in " +
+                          str(t_elapsed_proper) +
+                          " seconds")
+                else:
+                    print("Downloaded radio in " +
+                          str(t_elapsed_proper) +
+                          " seconds")
 
 
 class DownloadManager():
@@ -83,7 +101,8 @@ class DownloadManager():
     http://pipe-devnull.com/2012/09/13/queued-threaded-http-downloader-in-python.html
     """
 
-    def __init__(self, download_dict, output_directory, thread_count=5):
+    def __init__(self, download_dict, output_directory,
+                 thread_count=5, lazy=False):
         """
         Initiate download manager.
 
@@ -98,7 +117,8 @@ class DownloadManager():
         """
         self.thread_count = thread_count
         self.download_dict = download_dict
-        self.output_directory = output_directory\
+        self.output_directory = output_directory
+        self.lazy = lazy
 
     # Start the downloader threads, fill the queue with the URLs and
     # then feed the threads URLs via the queue
@@ -110,7 +130,7 @@ class DownloadManager():
         dlqueue = queue.Queue()
         # Create i thread pool and give them a queue
         for thr in range(self.thread_count):
-            thr = Downloader(dlqueue, self.output_directory)
+            thr = Downloader(dlqueue, self.output_directory, self.lazy)
             thr.setDaemon(True)
             thr.start()
         # Load the queue from the download dict

@@ -115,7 +115,10 @@ def do_magic(device, osversion, radioversion=None,
 
     print("\nDOWNLOADING...")
     dldict = dict(osurl=osurl, radiourl=radiourl)
-    download_manager = networkutils.DownloadManager(dldict, localdir, 3)
+    download_manager = networkutils.DownloadManager(dldict,
+                                                    localdir,
+                                                    3,
+                                                    lazy=True)
     download_manager.begin_downloads()
 
     print("\nEXTRACTING...")
