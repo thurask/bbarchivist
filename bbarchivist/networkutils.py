@@ -28,6 +28,9 @@ class Downloader(threading.Thread):
 
         :param output_directory: Where to output.
         :type output_directory: str
+
+        :param lazy: Whether or not to have simple output. False by default.
+        :type lazy: bool
         """
         threading.Thread.__init__(self, name=binascii.hexlify(os.urandom(8)))
         self.queue = dlqueue
@@ -52,6 +55,9 @@ class Downloader(threading.Thread):
 
         :param url: URL to download from.
         :type url: str
+
+        :param lazy: Whether or not to have simple output. False by default.
+        :type lazy: bool
         """
         t_start = time.clock()
         local_filename = url.split('/')[-1]
@@ -114,6 +120,9 @@ class DownloadManager():
 
         :param thread_count: Number of threads. 5 by default.
         :type thread_count: int
+
+        :param lazy: Whether or not to have simple output. False by default.
+        :type lazy: bool
         """
         self.thread_count = thread_count
         self.download_dict = download_dict
