@@ -1,6 +1,5 @@
 README
 ======
-    
 .. image:: https://img.shields.io/pypi/dd/bbarchivist.svg
     :target: https://pypi.python.org/pypi/bbarchivist
     :alt: Downloads/day
@@ -24,6 +23,10 @@ README
 .. image:: https://img.shields.io/github/stars/thurask/bbarchivist.svg
     :target: https://github.com/thurask/bbarchivist
     :alt: GitHub stars
+    
+.. image:: http://www.quantifiedcode.com/api/v1/project/b4f0ae406aea484587534740c91800cb/badge.svg
+    :target: http://www.quantifiedcode.com/app/project/b4f0ae406aea484587534740c91800cb
+    :alt: QuantifiedCode
 
 A Python 3 package to download bars and turn them into autoloaders.
 Includes support scripts.
