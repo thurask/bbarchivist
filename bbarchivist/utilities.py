@@ -14,11 +14,11 @@ def filesize_parser(num):
     :type num: float
     """
     num = float(num)
-    for x in ['bytes', 'KB', 'MB', 'GB']:
+    for x in ['b', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB']:
         if num < 1024.0:
-            return "%3.1f%s" % (num, x)
+            return "{:3.1f}{}".format(num, x)
         num /= 1024.0
-    return "%3.1f%s" % (num, 'TB')
+    return "{:3.1f}{}".format(num, 'YB')
 
 
 def file_exists(file):
@@ -143,7 +143,7 @@ def win_seven_zip(talkative=False):
         listdir = os.listdir(os.getcwd())
         filecount = 0
         for i in listdir:
-            if i == "7za.exe" or i == "7za64.exe":
+            if i in ["7za.exe", "7za64.exe"]:
                 filecount += 1
         if filecount == 2:
             if talkative:
