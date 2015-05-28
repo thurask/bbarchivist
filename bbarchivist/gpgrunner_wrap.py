@@ -54,5 +54,3 @@ def main():
                           workfolder,
                           key,
                           password)
-    if len(sys.argv) == 1:
-        smeg = input("Press Enter to exit")  # @UnusedVariable

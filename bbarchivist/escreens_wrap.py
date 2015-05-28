@@ -57,4 +57,6 @@ def main():
             uptime,
             duration)
         print(key)
-        smeg = input("Press Enter to exit")  # @UnusedVariable
+        smeg = input("Press Enter to exit")
+        if smeg or not smeg:
+            raise SystemExit

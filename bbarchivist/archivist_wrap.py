@@ -312,4 +312,6 @@ def main():
                            False, bbconstants.CAPLOCATION, True,
                            True, True, True, "7z", False,
                            False, None, None, False)
-    smeg = input("Press Enter to exit")  # @UnusedVariable
+    smeg = input("Press Enter to exit")
+    if smeg or not smeg:
+        raise SystemExit

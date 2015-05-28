@@ -51,4 +51,6 @@ def main():
             osversion,
             recurse,
             True)
-        smeg = input("Press Enter to exit")  # @UnusedVariable
+        smeg = input("Press Enter to exit")
+        if smeg or not smeg:
+            raise SystemExit
