@@ -41,7 +41,7 @@ def do_magic(device, osversion, radioversion=None,
         softwareversion = networkutils.software_release_lookup(osversion, serv)
         if softwareversion == "SR not in system":
             print("SOFTWARE RELEASE NOT FOUND")
-            cont = utilities.str2bool(input("INPUT MANUALLY? Y/N "))
+            cont = utilities.str2bool(input("INPUT MANUALLY? Y/N: "))
             if cont:
                 softwareversion = input("SOFTWARE RELEASE: ")
             else:
@@ -61,6 +61,7 @@ def do_magic(device, osversion, radioversion=None,
     print("DEVICE:", devicelist[device])
 
     baseurl = networkutils.create_base_url(softwareversion)
+    splitos = osversion.split(".")
 
     if device == 0:
         osurl = baseurl + "/winchester.factory_sfi.desktop-"
@@ -73,7 +74,7 @@ def do_magic(device, osversion, radioversion=None,
         radiourl = baseurl + "/qc8960-"
         radiourl += radioversion + "-nto+armle-v7+signed.bar"
     elif device == 2:
-        osurl = baseurl + "/qc8960.factory_sfi.desktop-"
+        osurl = baseurl + "/qc8960.verizon_sfi.desktop-"
         osurl += osversion + "-nto+armle-v7+signed.bar"
         radiourl = baseurl + "/qc8960.omadm-"
         radiourl += radioversion + "-nto+armle-v7+signed.bar"
@@ -88,15 +89,21 @@ def do_magic(device, osversion, radioversion=None,
         radiourl = baseurl + "/qc8960.wtr5-"
         radiourl += radioversion + "-nto+armle-v7+signed.bar"
     elif device == 5:
-        osurl = baseurl + "/qc8960.factory_sfi_hybrid_qc8x30.desktop-"
+        osurl = baseurl + "/qc8960.factory_sfi.desktop-"
         osurl += osversion + "-nto+armle-v7+signed.bar"
         radiourl = baseurl + "/qc8930.wtr5-"
         radiourl += radioversion + "-nto+armle-v7+signed.bar"
+        if int(splitos[1]) >= 3 and int(splitos[2]) >= 1:  # 10.3.1.xxxx+
+            osurl = osurl.replace("qc8960.factory_sfi",
+                                  "qc8960.factory_sfi_hybrid_qc8x30")
     elif device == 6:
-        osurl = baseurl + "/qc8960.factory_sfi_hybrid_qc8974.desktop-"
+        osurl = baseurl + "/qc8974.factory_sfi.desktop-"
         osurl += osversion + "-nto+armle-v7+signed.bar"
         radiourl = baseurl + "/qc8974.wtr2-"
         radiourl += radioversion + "-nto+armle-v7+signed.bar"
+        if int(splitos[1]) >= 3 and int(splitos[2]) >= 1:  # 10.3.1.xxxx+
+            osurl = osurl.replace("qc8974.factory_sfi",
+                                  "qc8960.factory_sfi_hybrid_qc8974")
     else:
         return
 
@@ -106,12 +113,35 @@ def do_magic(device, osversion, radioversion=None,
         print("\nSOFTWARE RELEASE", softwareversion, "EXISTS")
     else:
         print("\nSOFTWARE RELEASE", softwareversion, "NOT FOUND")
-        cont = utilities.str2bool(input("CONTINUE? Y/N "))
+        cont = utilities.str2bool(input("CONTINUE? Y/N: "))
         if cont:
             pass
         else:
             print("\nEXITING...")
-            raise SystemExit  # bye bye
+            raise SystemExit
+
+    # Check availability of specific OS
+    osav = networkutils.availability(osurl)
+    if not osav:
+        print(osversion, "NOT AVAILABLE FOR", devicelist[device])
+        cont = utilities.str2bool(input("CONTINUE? Y/N: "))
+        if cont:
+            pass
+        else:
+            print("\nEXITING...")
+            raise SystemExit
+
+    # Check availability of specific radio
+    radav = networkutils.availability(radiourl)
+    if not radav:
+        print("RADIO VERSION NOT FOUND")
+        cont = utilities.str2bool(input("INPUT MANUALLY? Y/N: "))
+        if cont:
+            rad2 = input("RADIO VERSION: ")
+            radiourl = radiourl.replace(radioversion, rad2)
+        else:
+            print("\nEXITING...")
+            raise SystemExit
 
     print("\nDOWNLOADING...")
     dldict = dict(osurl=osurl, radiourl=radiourl)
