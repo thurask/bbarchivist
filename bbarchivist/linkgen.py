@@ -84,11 +84,14 @@ def do_magic(osversion, radioversion=None, softwareversion=None):
                  "PASSPORT: " + baseurl + "/qc8974.wtr2-" + radioversion +
                  "-nto+armle-v7+signed.bar"]
 
+    avlty = networkutils.availability(baseurl)
+
     with open(softwareversion + ".txt", "w") as target:
         target.write("OS VERSION: " + osversion + "\n")
         target.write("RADIO VERSION: " + radioversion + "\n")
         target.write("SOFTWARE RELEASE: " + softwareversion + "\n")
-        target.write("\n!!EXISTENCE NOT GUARANTEED!!\n")
+        if not avlty:
+            target.write("\n!!EXISTENCE NOT GUARANTEED!!\n")
         target.write("\nDEBRICK URLS:\n")
         for i in osurls:
             target.write(i + "\n")
