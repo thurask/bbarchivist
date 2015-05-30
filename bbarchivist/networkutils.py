@@ -324,6 +324,7 @@ def available_bundle_lookup(mcc, mnc, device):
     root = xml.etree.ElementTree.fromstring(req.text)
     package = root.find('./data/content')
     bundlelist = []
+    adder = bundlelist.append
     for child in package:
-        bundlelist.append(child.attrib["version"])
+        adder(child.attrib["version"])
     return bundlelist
