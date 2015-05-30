@@ -3,153 +3,91 @@
 import os  # filesystem read
 import requests  # downloading
 import time  # time for downloader
-import queue  # downloader multithreading
-import threading  # downloader multithreading
-import binascii  # downloader thread naming
 import math  # rounding of floats
 import xml.etree.ElementTree  # XML parsing
 import re  # regexes
 import hashlib  # base url creation
 from . import utilities  # parse filesize
+import concurrent.futures  # multiprocessing/threading
 
 
-class Downloader(threading.Thread):
+def download(url, output_directory=None, lazy=False):
     """
-    Downloads files attached to supplied threads from DownloadManager.
-    Based on:
-    http://pipe-devnull.com/2012/09/13/queued-threaded-http-downloader-in-python.html
+    Download file from given URL.
+
+    :param url: URL to download from.
+    :type url: str
+
+    :param output_directory: Download folder. Default is local.
+    :type output_directory: str
+
+    :param lazy: Whether or not to have simple output. False by default.
+    :type lazy: bool
     """
-
-    def __init__(self, dlqueue, output_directory, lazy=False):
-        """
-        Initiate downloader thread.
-        :param queue: What to download.
-        :type queue: dict
-
-        :param output_directory: Where to output.
-        :type output_directory: str
-
-        :param lazy: Whether or not to have simple output. False by default.
-        :type lazy: bool
-        """
-        threading.Thread.__init__(self, name=binascii.hexlify(os.urandom(8)))
-        self.queue = dlqueue
-        self.output_directory = output_directory
-        self.lazy = lazy
-
-    def run(self):
-        """
-        Download files from queue.
-        """
-        while True:
-            # gets the url from the queue
-            url = self.queue.get()
-            # download the file
-            self.download(url, self.lazy)
-            # send a signal to the queue that the job is done
-            self.queue.task_done()
-
-    def download(self, url, lazy=False):
-        """
-        Download file from given URL.
-
-        :param url: URL to download from.
-        :type url: str
-
-        :param lazy: Whether or not to have simple output. False by default.
-        :type lazy: bool
-        """
-        t_start = time.clock()
-        local_filename = url.split('/')[-1]
-        req = requests.get(url, stream=True)
-        fsize = req.headers['content-length']
-        if req.status_code != 404:  # 200 OK
-            if not lazy:
-                print("Downloading:",
-                      local_filename,
+    t_start = time.clock()
+    if output_directory is None:
+        output_directory = os.getcwd()
+    local_filename = url.split('/')[-1]
+    req = requests.get(url, stream=True)
+    fsize = req.headers['content-length']
+    if req.status_code != 404:  # 200 OK
+        if not lazy:
+            print("Downloading:",
+                  local_filename,
+                  "[" + utilities.filesize_parser(fsize) + "]")
+        else:
+            if int(fsize) > 90000000:
+                print("Downloading OS",
                       "[" + utilities.filesize_parser(fsize) + "]")
             else:
-                if int(fsize) > 90000000:
-                    print("Downloading OS",
-                          "[" + utilities.filesize_parser(fsize) + "]")
-                else:
-                    print("Downloading radio",
-                          "[" + utilities.filesize_parser(fsize) + "]")
-            fname = self.output_directory + "/" + os.path.basename(url)
-            with open(fname, "wb") as file:
-                for chunk in req.iter_content(chunk_size=1024):
-                    if chunk:  # filter out keep-alive new chunks
-                        file.write(chunk)
-                        file.flush()
-            t_elapsed = time.clock() - t_start
-            t_elapsed_proper = math.ceil(t_elapsed * 100) / 100
-            if not lazy:
-                print("Downloaded:  " +
-                      local_filename +
-                      " in " +
+                print("Downloading radio",
+                      "[" + utilities.filesize_parser(fsize) + "]")
+        fname = output_directory + "/" + os.path.basename(url)
+        with open(fname, "wb") as file:
+            for chunk in req.iter_content(chunk_size=1024):
+                if chunk:  # filter out keep-alive new chunks
+                    file.write(chunk)
+                    file.flush()
+        t_elapsed = time.clock() - t_start
+        t_elapsed_proper = math.ceil(t_elapsed * 100) / 100
+        if not lazy:
+            print("Downloaded:  " +
+                  local_filename +
+                  " in " +
+                  str(t_elapsed_proper) +
+                  " seconds")
+        else:
+            if int(fsize) > 90000000:
+                print("Downloaded OS in " +
                       str(t_elapsed_proper) +
                       " seconds")
             else:
-                if int(fsize) > 90000000:
-                    print("Downloaded OS in " +
-                          str(t_elapsed_proper) +
-                          " seconds")
-                else:
-                    print("Downloaded radio in " +
-                          str(t_elapsed_proper) +
-                          " seconds")
+                print("Downloaded radio in " +
+                      str(t_elapsed_proper) +
+                      " seconds")
 
 
-class DownloadManager():
+def download_bootstrap(urls, outdir=None, lazy=False, workers=5):
     """
-    Class that handles queued downloads.
-    Based on:
-    http://pipe-devnull.com/2012/09/13/queued-threaded-http-downloader-in-python.html
+    Run downloaders for each file in given URl iterable.
+
+    :param urls: URLs to download.
+    :type urls: list
+
+    :param outdir: Download folder. Default is handled in :func:`download`.
+    :type outdir: str
+
+    :param lazy: Whether or not to have simple output. False by default.
+    :type lazy: bool
+
+    :param workers: Number of worker processes. Default is 5.
+    :type workers: int
     """
-
-    def __init__(self, download_dict, output_directory,
-                 thread_count=5, lazy=False):
-        """
-        Initiate download manager.
-
-        :param download_dict: Dictionary of download URLs.
-        :type download_dict: dict
-
-        :param output_directory: Where to output.
-        :type output_directory: str
-
-        :param thread_count: Number of threads. 5 by default.
-        :type thread_count: int
-
-        :param lazy: Whether or not to have simple output. False by default.
-        :type lazy: bool
-        """
-        self.thread_count = thread_count
-        self.download_dict = download_dict
-        self.output_directory = output_directory
-        self.lazy = lazy
-
-    # Start the downloader threads, fill the queue with the URLs and
-    # then feed the threads URLs via the queue
-
-    def begin_downloads(self):
-        """
-        Start :class:`Downloader` threads for queued downloads.
-        """
-        dlqueue = queue.Queue()
-        # Create i thread pool and give them a queue
-        for thr in range(self.thread_count):
-            thr = Downloader(dlqueue, self.output_directory, self.lazy)
-            thr.setDaemon(True)
-            thr.start()
-        # Load the queue from the download dict
-        for linkname in self.download_dict:
-            # print uri
-            dlqueue.put(self.download_dict[linkname])
-
-        # Wait for the queue to finish
-        dlqueue.join()
-        return
+    if len(urls) < workers:
+        workers = len(urls)
+    with concurrent.futures.ProcessPoolExecutor(max_workers=workers) as xec:
+        for url in urls:
+            xec.submit(download, url=url, output_directory=outdir, lazy=lazy)
 
 
 def create_base_url(softwareversion):

@@ -184,14 +184,6 @@ def do_magic(osversion, radioversion=None, softwareversion=None,
                  baseurl + "/qc8974.wtr2-" + radioversion +
                  "-nto+armle-v7+signed.bar"]
 
-    # Add URLs to dict, programmatically
-    osdict = {}
-    radiodict = {}
-    for i in osurls:
-        osdict[str(i)] = i
-    for i in radiourls:
-        radiodict[str(i)] = i
-
     # Check availability of software release
     print("\nCHECKING SOFTWARE RELEASE AVAILABILITY...")
     avail = networkutils.availability(baseurl)
@@ -243,10 +235,7 @@ def do_magic(osversion, radioversion=None, softwareversion=None,
     # Download files
     if download:
         print("\nBEGIN DOWNLOADING...")
-        download_manager = networkutils.DownloadManager(radiodict, localdir, 5)
-        download_manager.begin_downloads()
-        download_manager.download_dict = osdict
-        download_manager.begin_downloads()
+        networkutils.download_bootstrap(osurls+radiourls, localdir)
 
     # Extract bar files
     if extract:

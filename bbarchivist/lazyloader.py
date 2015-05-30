@@ -144,12 +144,11 @@ def do_magic(device, osversion, radioversion=None,
             raise SystemExit
 
     print("\nDOWNLOADING...")
-    dldict = dict(osurl=osurl, radiourl=radiourl)
-    download_manager = networkutils.DownloadManager(dldict,
-                                                    localdir,
-                                                    3,
-                                                    lazy=True)
-    download_manager.begin_downloads()
+    dllist = [osurl, radiourl]
+    networkutils.download_bootstrap(dllist,
+                                    outdir=localdir,
+                                    lazy=True,
+                                    workers=2)
 
     print("\nEXTRACTING...")
     barutils.extract_bars(localdir)

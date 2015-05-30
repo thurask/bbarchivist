@@ -95,9 +95,6 @@ def do_magic(mcc, mnc, device,
                 bardir = os.path.join(directory, swv + "-" + family)
             if not os.path.exists(bardir):
                 os.makedirs(bardir)
-            filedict = {}
-            for i in files:
-                filedict[str(i)] = i
             if blitz:
                 baseurl = networkutils.create_base_url(swv)
                 coreurls = [baseurl + "/winchester.factory_sfi-" +
@@ -109,7 +106,7 @@ def do_magic(mcc, mnc, device,
                             baseurl + "/qc8960.factory_sfi_hybrid_qc8974-" +
                             osv + "-nto+armle-v7+signed.bar"]
                 for i in coreurls:
-                    filedict[str(i)] = i
+                    files.append(i)
                 # List of radio urls
                 radiourls = [baseurl + "/m5730-" + radv +
                              "-nto+armle-v7+signed.bar",
@@ -124,10 +121,9 @@ def do_magic(mcc, mnc, device,
                              baseurl + "/qc8974.wtr2-" + radv +
                              "-nto+armle-v7+signed.bar"]
                 for i in radiourls:
-                    filedict[str(i)] = i
+                    files.append(i)
             print("\nDOWNLOADING...")
-            download_manager = networkutils.DownloadManager(filedict, bardir)
-            download_manager.begin_downloads()
+            networkutils.download_bootstrap(files, outdir=bardir)
             if blitz:
                 print("\nCREATING BLITZ...")
                 barutils.create_blitz(bardir, swv)
