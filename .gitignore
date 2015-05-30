@@ -14,4 +14,4 @@ bbarchivist/__pycache__
 *.sig
 *.txt
 *.asc
-docs/bbarchivist/_build
+docs/_build
