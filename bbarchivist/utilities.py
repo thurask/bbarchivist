@@ -284,3 +284,13 @@ def version_incrementer(version, increment=3):
     splitos[3] += int(increment)
     splitos[3] = str(splitos[3])
     return ".".join(splitos)
+
+
+def barname_stripper(name):
+    """
+    Strip fluff from bar filename.
+
+    :param name: Bar filename, must contain '-nto+armle-v7+signed.bar'.
+    :type name: str
+    """
+    return name.replace("-nto+armle-v7+signed.bar", "")

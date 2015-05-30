@@ -2,8 +2,6 @@
 
 import os  # filesystem read
 import requests  # downloading
-import time  # time for downloader
-import math  # rounding of floats
 import xml.etree.ElementTree  # XML parsing
 import re  # regexes
 import hashlib  # base url creation
@@ -24,10 +22,10 @@ def download(url, output_directory=None, lazy=False):
     :param lazy: Whether or not to have simple output. False by default.
     :type lazy: bool
     """
-    t_start = time.clock()
     if output_directory is None:
         output_directory = os.getcwd()
     local_filename = url.split('/')[-1]
+    local_filename = utilities.barname_stripper(local_filename)
     req = requests.get(url, stream=True)
     fsize = req.headers['content-length']
     if req.status_code != 404:  # 200 OK
@@ -48,23 +46,6 @@ def download(url, output_directory=None, lazy=False):
                 if chunk:  # filter out keep-alive new chunks
                     file.write(chunk)
                     file.flush()
-        t_elapsed = time.clock() - t_start
-        t_elapsed_proper = math.ceil(t_elapsed * 100) / 100
-        if not lazy:
-            print("Downloaded:  " +
-                  local_filename +
-                  " in " +
-                  str(t_elapsed_proper) +
-                  " seconds")
-        else:
-            if int(fsize) > 90000000:
-                print("Downloaded OS in " +
-                      str(t_elapsed_proper) +
-                      " seconds")
-            else:
-                print("Downloaded radio in " +
-                      str(t_elapsed_proper) +
-                      " seconds")
 
 
 def download_bootstrap(urls, outdir=None, lazy=False, workers=5):

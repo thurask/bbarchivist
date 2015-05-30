@@ -144,8 +144,10 @@ def remove_empty_folders(a_folder):
             try:
                 if len(subdirs) == 0 and len(files) == 0:
                     os.rmdir(curdir)
-            except Exception:
+            except OSError:
                 continue
+            except NotImplementedError:
+                break
             break
 
 
@@ -164,8 +166,9 @@ def create_blitz(a_folder, swver):
                          zipfile.ZIP_DEFLATED,
                          allowZip64=True) as zfile:
         for root, dirs, files in os.walk(a_folder):  # @UnusedVariable
+            del dirs
             for file in files:
-                print("ZIPPING:", file)
+                print("ZIPPING:", utilities.barname_stripper(file))
                 zfile.write(os.path.join(root, file),
                             os.path.basename(os.path.join(root, file)))
 
