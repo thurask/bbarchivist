@@ -157,17 +157,23 @@ def do_magic(osversion, radioversion=None, softwareversion=None,
         szexe = ""
 
     baseurl = networkutils.create_base_url(softwareversion)
+    splitos = osversion.split(".")
 
     # List of OS urls
     osurls = [baseurl + "/winchester.factory_sfi.desktop-" +
               osversion + "-nto+armle-v7+signed.bar",
               baseurl + "/qc8960.factory_sfi.desktop-" +
               osversion + "-nto+armle-v7+signed.bar",
-              baseurl + "/qc8960.factory_sfi_hybrid_qc8x30.desktop-" +
+              baseurl + "/qc8960.factory_sfi.desktop-" +
               osversion + "-nto+armle-v7+signed.bar",
-              baseurl + "/qc8960.factory_sfi_hybrid_qc8974.desktop-" +
+              baseurl + "/qc8974.factory_sfi.desktop-" +
               osversion + "-nto+armle-v7+signed.bar"]
-
+    if int(splitos[1]) >= 3 and int(splitos[2]) >= 1:  # 10.3.1.xxxx+
+            osurls[2] = osurls[2].replace("qc8960.factory_sfi",
+                                          "qc8960.factory_sfi_hybrid_qc8x30")
+            osurls[3] = osurls[3].replace("qc8974.factory_sfi",
+                                          "qc8960.factory_sfi_hybrid_qc8974")
+    osurls = list(set(osurls))
     # List of radio urls
     radiourls = [baseurl + "/m5730-" + radioversion +
                  "-nto+armle-v7+signed.bar",
@@ -197,6 +203,20 @@ def do_magic(osversion, radioversion=None, softwareversion=None,
         else:
             print("\nEXITING...")
             raise SystemExit  # bye bye
+
+    for url in radiourls:
+        radav = networkutils.availability(url)
+        if radav:
+            break
+    else:
+        print("RADIO VERSION NOT FOUND")
+        cont = utilities.str2bool(input("INPUT MANUALLY? Y/N: "))
+        if cont:
+            rad2 = input("RADIO VERSION: ")
+            radiourls = [url.replace(radioversion, rad2) for url in radiourls]
+        else:
+            print("\nEXITING...")
+            raise SystemExit
 
     # Make dirs
     if not os.path.exists(localdir):
@@ -235,7 +255,7 @@ def do_magic(osversion, radioversion=None, softwareversion=None,
     # Download files
     if download:
         print("\nBEGIN DOWNLOADING...")
-        networkutils.download_bootstrap(osurls+radiourls, localdir)
+        networkutils.download_bootstrap(radiourls+osurls, localdir, workers=3)
 
     # Extract bar files
     if extract:
