@@ -158,6 +158,7 @@ def do_magic(osversion, radioversion=None, softwareversion=None,
 
     baseurl = networkutils.create_base_url(softwareversion)
     splitos = osversion.split(".")
+    splitos = [int(i) for i in splitos]
 
     # List of OS urls
     osurls = [baseurl + "/winchester.factory_sfi.desktop-" +
@@ -168,11 +169,11 @@ def do_magic(osversion, radioversion=None, softwareversion=None,
               osversion + "-nto+armle-v7+signed.bar",
               baseurl + "/qc8974.factory_sfi.desktop-" +
               osversion + "-nto+armle-v7+signed.bar"]
-    if int(splitos[1]) >= 3 and int(splitos[2]) >= 1:  # 10.3.1.xxxx+
-            osurls[2] = osurls[2].replace("qc8960.factory_sfi",
-                                          "qc8960.factory_sfi_hybrid_qc8x30")
-            osurls[3] = osurls[3].replace("qc8974.factory_sfi",
-                                          "qc8960.factory_sfi_hybrid_qc8974")
+    if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):  # 10.3.1+
+        osurls[2] = osurls[2].replace("qc8960.factory_sfi",
+                                      "qc8960.factory_sfi_hybrid_qc8x30")
+        osurls[3] = osurls[3].replace("qc8974.factory_sfi",
+                                      "qc8960.factory_sfi_hybrid_qc8974")
     osurls = list(set(osurls))
     # List of radio urls
     radiourls = [baseurl + "/m5730-" + radioversion +

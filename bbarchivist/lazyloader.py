@@ -62,6 +62,7 @@ def do_magic(device, osversion, radioversion=None,
 
     baseurl = networkutils.create_base_url(softwareversion)
     splitos = osversion.split(".")
+    splitos = [int(i) for i in splitos]
 
     if device == 0:
         osurl = baseurl + "/winchester.factory_sfi.desktop-"
@@ -93,7 +94,7 @@ def do_magic(device, osversion, radioversion=None,
         osurl += osversion + "-nto+armle-v7+signed.bar"
         radiourl = baseurl + "/qc8930.wtr5-"
         radiourl += radioversion + "-nto+armle-v7+signed.bar"
-        if int(splitos[1]) >= 3 and int(splitos[2]) >= 1:  # 10.3.1.xxxx+
+        if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):
             osurl = osurl.replace("qc8960.factory_sfi",
                                   "qc8960.factory_sfi_hybrid_qc8x30")
     elif device == 6:
@@ -101,7 +102,7 @@ def do_magic(device, osversion, radioversion=None,
         osurl += osversion + "-nto+armle-v7+signed.bar"
         radiourl = baseurl + "/qc8974.wtr2-"
         radiourl += radioversion + "-nto+armle-v7+signed.bar"
-        if int(splitos[1]) >= 3 and int(splitos[2]) >= 1:  # 10.3.1.xxxx+
+        if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):
             osurl = osurl.replace("qc8974.factory_sfi",
                                   "qc8960.factory_sfi_hybrid_qc8974")
     else:
