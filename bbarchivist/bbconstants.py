@@ -45,7 +45,8 @@ DEVICELIST = ["STL100-1",
               "STJ100-2",
               "SQW100-1",
               "SQW100-2",
-              "SQW100-3"]
+              "SQW100-3",
+              "SQW100-4"]
 #: Device hardware IDs, mapped 1:1 to device list.
 HWIDLIST = ["4002607",
             "8700240A",
@@ -80,7 +81,8 @@ HWIDLIST = ["4002607",
             "5002E07",
             "87002C0A",
             "85002C0A",
-            "84002C0A"]
+            "84002C0A",
+            "8F002C0A"]
 #: Device models.
 MODELLIST = ["Z10",
              "P9982",

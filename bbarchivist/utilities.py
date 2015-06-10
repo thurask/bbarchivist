@@ -241,7 +241,7 @@ def return_model(index):
         return 7  # Leap
     elif 29 <= index <= 30:
         return 8  # Z3
-    elif 31 <= index <= 33:
+    elif 31 <= index <= 34:
         return 9  # Passport
 
 
@@ -263,7 +263,7 @@ def return_family(index):
         return 3
     elif 29 <= index <= 30:  # Z3
         return 4
-    elif 31 <= index <= 33:  # Passport
+    elif 31 <= index <= 34:  # Passport
         return 5
 
 
