@@ -90,16 +90,14 @@ def is_amd64():
     """
     Returns true if script is running on an AMD64 system.
     """
-    amd64 = platform.machine().endswith("64")
-    return amd64
+    return platform.machine().endswith("64")
 
 
 def is_windows():
     """
     Returns true if script is running on Windows.
     """
-    windows = platform.system() == "Windows"
-    return windows
+    return platform.system() == "Windows"
 
 
 def get_seven_zip(talkative=False):
@@ -113,8 +111,7 @@ def get_seven_zip(talkative=False):
     :type talkative: bool
     """
     if is_windows():
-        smeg = win_seven_zip(talkative)
-        return smeg
+        return win_seven_zip(talkative)
     else:
         return "7za"
 
@@ -189,11 +186,7 @@ def prep_seven_zip():
     Returns False if not found, True if found.
     """
     if is_windows():
-        smeg = get_seven_zip(True)
-        if smeg == "error":
-            return False
-        else:
-            return True
+        return get_seven_zip(True) != "error"
     else:
         try:
             path = shutil.which("7za")
