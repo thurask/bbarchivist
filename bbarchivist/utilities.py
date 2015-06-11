@@ -42,7 +42,7 @@ def positive_integer(inputint):
     """
     if int(inputint) <= 0:
         raise argparse.ArgumentError("{0} is too low.".format(str(inputint)))
-    return str(inputint)
+    return int(inputint)
 
 
 def escreens_pin(pin):
