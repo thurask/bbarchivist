@@ -74,7 +74,7 @@ def verifier(workingdir, blocksize=16 * 1024 * 1024,
         for file in os.listdir(workingdir):
             if os.path.isdir(os.path.join(workingdir, file)):
                 pass  # exclude folders
-            elif file.endswith(".cksum"):
+            elif file.endswith((".cksum", ".asc")):
                 pass  # exclude already generated files
             else:
                 print("HASHING:", str(file))
@@ -235,6 +235,18 @@ def verifier(workingdir, blocksize=16 * 1024 * 1024,
                             target.truncate()
                     else:
                         os.remove(targetname)
+                    # reset hashes
+                    hashoutput_crc32 = "CRC32\n"
+                    hashoutput_adler32 = "ADLER32\n"
+                    hashoutput_sha1 = "SHA1\n"
+                    hashoutput_sha224 = "SHA224\n"
+                    hashoutput_sha256 = "SHA256\n"
+                    hashoutput_sha384 = "SHA384\n"
+                    hashoutput_sha512 = "SHA512\n"
+                    hashoutput_md5 = "MD5\n"
+                    hashoutput_md4 = "MD4\n"
+                    hashoutput_ripemd160 = "RIPEMD160\n"
+                    hashoutput_whirlpool = "WHIRLPOOL\n"
         if not splitfiles:
             with open(os.path.join(workingdir, 'all.cksum'), 'w') as target:
                 if adler32:
