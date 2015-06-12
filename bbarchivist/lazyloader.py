@@ -34,6 +34,7 @@ def do_magic(device, osversion, radioversion=None,
     :param autoloader: Whether to run loaders. Default is false. Windows-only.
     :type autoloader: bool
     """
+    swchecked = False  # if we checked sw release already
     if radioversion is None:
         radioversion = utilities.version_incrementer(osversion, 1)
     if softwareversion is None:
@@ -44,9 +45,12 @@ def do_magic(device, osversion, radioversion=None,
             cont = utilities.str2bool(input("INPUT MANUALLY? Y/N: "))
             if cont:
                 softwareversion = input("SOFTWARE RELEASE: ")
+                swchecked = False
             else:
                 print("\nEXITING...")
                 raise SystemExit  # bye bye
+        else:
+            swchecked = True
     devicelist = ["STL100-1",
                   "STL100-2/3/P9982",
                   "STL100-4",
@@ -109,17 +113,20 @@ def do_magic(device, osversion, radioversion=None,
         return
 
     # Check availability of software release
-    avlty = networkutils.availability(baseurl)
-    if avlty:
-        print("\nSOFTWARE RELEASE", softwareversion, "EXISTS")
-    else:
-        print("\nSOFTWARE RELEASE", softwareversion, "NOT FOUND")
-        cont = utilities.str2bool(input("CONTINUE? Y/N: "))
-        if cont:
-            pass
+    if not swchecked:
+        avlty = networkutils.availability(baseurl)
+        if avlty:
+            print("\nSOFTWARE RELEASE", softwareversion, "EXISTS")
         else:
-            print("\nEXITING...")
-            raise SystemExit
+            print("\nSOFTWARE RELEASE", softwareversion, "NOT FOUND")
+            cont = utilities.str2bool(input("CONTINUE? Y/N: "))
+            if cont:
+                pass
+            else:
+                print("\nEXITING...")
+                raise SystemExit
+    else:
+        print("\nSOFTWARE RELEASE", softwareversion, "EXISTS")
 
     # Check availability of specific OS
     osav = networkutils.availability(osurl)

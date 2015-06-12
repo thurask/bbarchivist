@@ -113,7 +113,11 @@ def main():
         localdir = os.getcwd()
         osversion = input("OS VERSION: ")
         radioversion = input("RADIO VERSION (PRESS ENTER TO GUESS): ")
+        if not radioversion:
+            radioversion = None
         softwareversion = input("SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
+        if not softwareversion:
+            softwareversion = None
         while True:
             try:
                 device = int(input(
