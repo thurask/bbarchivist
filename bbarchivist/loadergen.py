@@ -1,7 +1,7 @@
 import os  # path work
 import glob  # filename matching
-from . import pseudocap  # implement cap
-from . import bbconstants  # versions/constants
+from bbarchivist import pseudocap  # implement cap
+from bbarchivist import bbconstants  # versions/constants
 
 
 def generate_loaders(

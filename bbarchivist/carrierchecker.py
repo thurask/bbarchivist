@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
-from . import bbconstants  # versions/constants
-from . import networkutils  # check function
-from . import utilities  # index lookup
-from . import barutils  # file/folder operations
+from bbarchivist import bbconstants  # versions/constants
+from bbarchivist import networkutils  # check function
+from bbarchivist import utilities  # index lookup
+from bbarchivist import barutils  # file/folder operations
 import os  # file/path operations
 import shutil  # folder removal
 

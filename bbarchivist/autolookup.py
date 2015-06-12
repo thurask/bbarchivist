@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-from . import bbconstants  # versions/constants
-from . import networkutils  # lookup
-from . import utilities  # incrementer
+from bbarchivist import bbconstants  # versions/constants
+from bbarchivist import networkutils  # lookup
+from bbarchivist import utilities  # incrementer
 import time  # get datestamp for lookup
 import os  # path work
 

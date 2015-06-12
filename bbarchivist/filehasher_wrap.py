@@ -3,9 +3,9 @@
 import argparse  # parse arguments
 import sys  # load arguments
 import os  # path operations
-from . import hashwrapper  # main program
-from . import bbconstants  # constants/versions
-from . import utilities  # input validation
+from bbarchivist import hashwrapper  # main program
+from bbarchivist import bbconstants  # constants/versions
+from bbarchivist import utilities  # input validation
 
 
 def main():

@@ -2,8 +2,8 @@
 
 import argparse  # parse arguments
 import sys  # load arguments
-from . import linkgen  # main function
-from . import bbconstants  # versions/constants
+from bbarchivist import linkgen  # main function
+from bbarchivist import bbconstants  # versions/constants
 
 
 def main():

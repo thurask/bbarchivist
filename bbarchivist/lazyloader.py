@@ -4,11 +4,11 @@ import os  # path work
 import glob  # filename matching
 import shutil  # folder removal
 import subprocess  # autoloader running
-from . import utilities  # input validation
-from . import barutils  # file operations
-from . import bbconstants  # constants/versions
-from . import networkutils  # download/lookup
-from . import loadergen  # cap wrapper
+from bbarchivist import utilities  # input validation
+from bbarchivist import barutils  # file operations
+from bbarchivist import bbconstants  # constants/versions
+from bbarchivist import networkutils  # download/lookup
+from bbarchivist import loadergen  # cap wrapper
 
 
 def do_magic(device, osversion, radioversion=None,

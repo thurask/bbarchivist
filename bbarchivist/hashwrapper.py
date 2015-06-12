@@ -2,7 +2,7 @@
 
 import os  # path work
 import gnupg  # interface b/w Python, GPG
-from . import filehashtools  # hash/checksum functions
+from bbarchivist import filehashtools  # hash/checksum functions
 
 
 def verifier(workingdir, blocksize=16 * 1024 * 1024,

@@ -5,9 +5,9 @@ import argparse  # parse arguments
 import os  # filesystem utils
 import configparser  # read ini file
 import getpass  # invisible password
-from . import archivist  # main program
-from . import bbconstants  # versions/constants
-from . import utilities  # input validation
+from bbarchivist import archivist  # main program
+from bbarchivist import bbconstants  # versions/constants
+from bbarchivist import utilities  # input validation
 
 
 def main():

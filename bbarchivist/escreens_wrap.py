@@ -2,9 +2,9 @@
 
 import argparse  # parse arguments
 import sys  # load arguments
-from . import escreens  # main program
-from . import bbconstants  # constants/versions
-from . import utilities  # input validation
+from bbarchivist import escreens  # main program
+from bbarchivist import bbconstants  # constants/versions
+from bbarchivist import utilities  # input validation
 
 
 def main():

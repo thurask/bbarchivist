@@ -2,9 +2,9 @@
 
 import argparse  # parse arguments
 import sys  # load arguments
-from . import autolookup  # main program
-from . import bbconstants  # versions/constants
-from . import utilities  # input validation
+from bbarchivist import autolookup  # main program
+from bbarchivist import bbconstants  # versions/constants
+from bbarchivist import utilities  # input validation
 
 
 def main():

@@ -8,7 +8,7 @@ import zipfile  # zip extract, zip compresssion
 import tarfile  # txz/tbz/tgz compression
 import sys  # version info
 import shutil  # folder operations
-from . import utilities  # platform determination
+from bbarchivist import utilities  # platform determination
 
 
 def extract_bars(filepath):

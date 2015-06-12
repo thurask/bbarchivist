@@ -5,8 +5,8 @@ import sys  # load arguments
 import os  # path operations
 import configparser  # INI reading
 import getpass  # invisible passwords (cf. sudo)
-from . import hashwrapper  # main program
-from . import bbconstants  # constants/versions
+from bbarchivist import hashwrapper  # main program
+from bbarchivist import bbconstants  # constants/versions
 
 
 def main():

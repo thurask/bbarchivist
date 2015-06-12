@@ -5,7 +5,7 @@ import requests  # downloading
 import xml.etree.ElementTree  # XML parsing
 import re  # regexes
 import hashlib  # base url creation
-from . import utilities  # parse filesize
+from bbarchivist import utilities  # parse filesize
 import concurrent.futures  # multiprocessing/threading
 
 

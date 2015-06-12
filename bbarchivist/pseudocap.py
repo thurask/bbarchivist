@@ -3,7 +3,7 @@
 import os  # path work
 import binascii  # to hex and back again
 import glob  # filename matching
-from . import bbconstants  # versions/constants
+from bbarchivist import bbconstants  # versions/constants
 
 
 def ghetto_convert(intsize):
