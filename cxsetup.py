@@ -28,7 +28,8 @@ executables = [
     Executable('lazyloader_wrap.py',
                base=base,
                appendScriptToExe=True,
-               appendScriptToLibrary=True)
+               appendScriptToLibrary=True,
+               targetName="lazyloader.exe")
 ]
 
 setup(name='lazyloader',
