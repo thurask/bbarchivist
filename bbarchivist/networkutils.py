@@ -7,6 +7,22 @@ import re  # regexes
 import hashlib  # base url creation
 from bbarchivist import utilities  # parse filesize
 import concurrent.futures  # multiprocessing/threading
+import glob  # pem file lookup
+
+
+def grab_pem():
+    """
+    Work with either local cacerts or system cacerts. Since cx_freeze is dumb.
+    """
+    try:
+        pemfile = glob.glob(
+                    os.path.join(
+                        os.getcwd(),
+                        "cacert.pem"))[0]
+    except IndexError:
+        return requests.certs.where()  # no local cacerts
+    else:
+        return pemfile  # local cacerts
 
 
 def download(url, output_directory=None, lazy=False):
@@ -26,6 +42,7 @@ def download(url, output_directory=None, lazy=False):
         output_directory = os.getcwd()
     local_filename = url.split('/')[-1]
     local_filename = utilities.barname_stripper(local_filename)
+    os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
     req = requests.get(url, stream=True)
     fsize = req.headers['content-length']
     if req.status_code != 404:  # 200 OK
@@ -66,7 +83,7 @@ def download_bootstrap(urls, outdir=None, lazy=False, workers=5):
     """
     if len(urls) < workers:
         workers = len(urls)
-    with concurrent.futures.ProcessPoolExecutor(max_workers=workers) as xec:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as xec:
         for url in urls:
             xec.submit(download, url=url, output_directory=outdir, lazy=lazy)
 
@@ -95,6 +112,7 @@ def availability(url):
     :param url: URL to check.
     :type url: str
     """
+    os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
     try:
         avlty = requests.head(str(url))
     except requests.ConnectionError:
@@ -123,6 +141,7 @@ def carrier_checker(mcc, mnc):
     url += str(mnc)
     url += "&devicevendorid=-1&pin=0"
     user_agent = {'User-agent': 'AppWorld/5.1.0.60'}
+    os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
     req = requests.get(url, headers=user_agent)
     root = xml.etree.ElementTree.fromstring(req.text)
     for child in root:
@@ -207,6 +226,7 @@ def carrier_update_request(mcc, mnc, device,
     query += "</resultPackageSetCriteria>"
     query += "</updateDetailRequest>"
     header = {"Content-Type": "text/xml;charset=UTF-8"}
+    os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
     req = requests.post(url, headers=header, data=query)
     root = xml.etree.ElementTree.fromstring(req.text)
     sw_exists = root.find('./data/content/softwareReleaseMetadata')
@@ -273,6 +293,7 @@ def software_release_lookup(osver, server):
     query += '</software></clientProperties>'
     query += '</srVersionLookupRequest>'
     header = {"Content-Type": "text/xml;charset=UTF-8"}
+    os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
     req = requests.post(server, headers=header, data=query)
     root = xml.etree.ElementTree.fromstring(req.text)
     packages = root.findall('./data/content/')
@@ -320,7 +341,8 @@ def available_bundle_lookup(mcc, mnc, device):
     query += '</bundleVersionFilter></updateDirectives>'
     query += '</availableBundlesRequest>'
     header = {"Content-Type": "text/xml;charset=UTF-8"}
-    req = requests.post(server, headers=header, data=query, verify=True)
+    os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
+    req = requests.post(server, headers=header, data=query)
     root = xml.etree.ElementTree.fromstring(req.text)
     package = root.find('./data/content')
     bundlelist = []
