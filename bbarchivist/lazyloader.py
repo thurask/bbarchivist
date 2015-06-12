@@ -141,8 +141,12 @@ def do_magic(device, osversion, radioversion=None,
             rad2 = input("RADIO VERSION: ")
             radiourl = radiourl.replace(radioversion, rad2)
         else:
-            print("\nEXITING...")
-            raise SystemExit
+            going = utilities.str2bool("KEEP GOING? Y/N: ")
+            if going:
+                continue
+            else:
+                print("\nEXITING...")
+                raise SystemExit
 
     print("\nDOWNLOADING...")
     dllist = [osurl, radiourl]

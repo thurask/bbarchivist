@@ -216,8 +216,12 @@ def do_magic(osversion, radioversion=None, softwareversion=None,
             rad2 = input("RADIO VERSION: ")
             radiourls = [url.replace(radioversion, rad2) for url in radiourls]
         else:
-            print("\nEXITING...")
-            raise SystemExit
+            going = utilities.str2bool("KEEP GOING? Y/N: ")
+            if going:
+                continue
+            else:
+                print("\nEXITING...")
+                raise SystemExit
 
     # Make dirs
     if not os.path.exists(localdir):
