@@ -143,18 +143,18 @@ def do_magic(device, osversion, radioversion=None,
         else:
             going = utilities.str2bool("KEEP GOING? Y/N: ")
             if going:
-                continue
+                pass
             else:
                 print("\nEXITING...")
                 raise SystemExit
 
     print("\nDOWNLOADING...")
-    dllist = [osurl, radiourl]
-    networkutils.download_bootstrap(dllist,
-                                    outdir=localdir,
-                                    lazy=True,
-                                    workers=2)
-
+#    dllist = [osurl, radiourl]
+#    networkutils.download_bootstrap(dllist,
+#                                    outdir=localdir,
+#                                    lazy=True,
+#                                    workers=2)
+#
     print("\nEXTRACTING...")
     barutils.extract_bars(localdir)
 
@@ -197,14 +197,14 @@ def do_magic(device, osversion, radioversion=None,
                     os.remove(bardest_radio)
 
     loadergen.generate_lazy_loader(osversion, device,
-                                   cap=bbconstants.CAPLOCATION,
+                                   cap=utilities.grab_cap(),
                                    localdir=localdir)
 
     print("\nREMOVING .signed FILES...")
-    for file in os.listdir(localdir):
-        if file.endswith(".signed"):
-            print("REMOVING: " + file)
-            os.remove(file)
+#    for file in os.listdir(localdir):
+#        if file.endswith(".signed"):
+#            print("REMOVING: " + file)
+#            os.remove(file)
 
     print("\nMOVING LOADERS...")
     for files in os.listdir(localdir):

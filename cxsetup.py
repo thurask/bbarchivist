@@ -2,7 +2,7 @@ from cx_Freeze import setup, Executable
 from os import chdir
 from os.path import join, abspath, dirname
 from requests import certs
-from bbarchivist.bbconstants import VERSION, CAPLOCATION
+from bbarchivist.bbconstants import VERSION, CAPLOCATION, CAPVERSION
 
 # Dependencies are automatically detected, but it might need
 # fine tuning.
@@ -10,32 +10,15 @@ localdir = dirname(abspath(__file__))
 localdir = join(localdir, "bbarchivist")
 buildOptions = dict(packages=["requests",
                               "bbarchivist"],
-                    includes=[
-    join(localdir, "lazyloader_wrap.py"),
-    join(localdir, "lazyloader.py"),
-    join(localdir, "bbconstants.py"),
-    join(localdir, "utilities.py"),
-    join(localdir, "barutils.py"),
-    join(localdir, "networkutils.py"),
-    join(localdir, "loadergen.py"),
-    join(localdir, "pseudocap.py")
-],
-    include_files=[CAPLOCATION,
-                   (certs.where(), 'cacert.pem')],
+                    includes=[],
+                    include_files=[
+                   (certs.where(), 'cacert.pem'),
+                   (CAPLOCATION, "cap-" + CAPVERSION + ".dat")
+                   ],
     excludes=[],
     include_msvcr=[True],
     build_exe="lazyloader",
-    zip_includes=[
-    join(localdir, "lazyloader_wrap.py"),
-    join(localdir, "lazyloader.py"),
-    join(localdir, "bbconstants.py"),
-    join(localdir, "utilities.py"),
-    join(localdir, "barutils.py"),
-    join(localdir, "networkutils.py"),
-    join(localdir, "loadergen.py"),
-    join(localdir, "pseudocap.py"),
-    (certs.where(), 'cacert.pem')
-])
+    zip_includes=[])
 
 base = 'Console'
 

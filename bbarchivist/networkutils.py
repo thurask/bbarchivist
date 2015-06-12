@@ -22,7 +22,7 @@ def grab_pem():
     except IndexError:
         return requests.certs.where()  # no local cacerts
     else:
-        return pemfile  # local cacerts
+        return os.path.abspath(pemfile)  # local cacerts
 
 
 def download(url, output_directory=None, lazy=False):

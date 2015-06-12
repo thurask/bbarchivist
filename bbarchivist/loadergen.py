@@ -1,7 +1,7 @@
 import os  # path work
 import glob  # filename matching
 from bbarchivist import pseudocap  # implement cap
-from bbarchivist import bbconstants  # versions/constants
+from bbarchivist import utilities  # cap location
 
 
 def generate_loaders(
@@ -28,7 +28,7 @@ def generate_loaders(
     """
     # default parsing
     if cap is None:
-        cap = bbconstants.CAPLOCATION
+        cap = utilities.grab_cap()
     if localdir is None:
         localdir = os.getcwd()
 
@@ -388,7 +388,7 @@ def generate_lazy_loader(
     """
     # default parsing
     if cap is None:
-        cap = bbconstants.CAPLOCATION
+        cap = utilities.grab_cap()
     if localdir is None:
         localdir = os.getcwd()
     print("\nCREATING LOADER...")

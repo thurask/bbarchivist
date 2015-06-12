@@ -85,10 +85,8 @@ def make_offset(cap, firstfile, secondfile="", thirdfile="",
     trailermax = trailermax * 2
     trailer = "0" * trailermax  # 00 repeated between 1 and 6 times
     trailers = binascii.unhexlify(bytes(trailer, 'ascii'))
-
-    capfile = str(glob.glob(cap)[0])
+    capfile = str(cap)
     capsize = os.path.getsize(capfile)  # size of cap.exe, in bytes
-
     first = str(glob.glob(firstfile)[0])
     firstsize = os.path.getsize(first)  # required
     if filecount >= 2:
@@ -103,7 +101,6 @@ def make_offset(cap, firstfile, secondfile="", thirdfile="",
     if filecount >= 5:
         fifth = str(glob.glob(fifthfile)[0])
         fifthsize = os.path.getsize(fifth)
-
     # start of first file; length of cap + length of offset
     firstoffset = len(separator) + len(password) + 64 + capsize
     firststart = ghetto_convert(firstoffset)
@@ -122,7 +119,6 @@ def make_offset(cap, firstfile, secondfile="", thirdfile="",
     if filecount == 6:
         sixthoffset = fifthoffset + fifthsize  # start of sixth file
         sixthstart = ghetto_convert(sixthoffset)
-
     with open(os.path.join(folder, "offset.hex"), "w+b") as file:
         file.write(separator)
         file.write(password)

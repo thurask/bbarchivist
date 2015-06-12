@@ -4,6 +4,23 @@ import os  # path work
 import argparse  # argument parser for filters
 import platform  # platform info
 import shutil  # "which" command
+import glob  # cap grabbing
+from bbarchivist import bbconstants  # cap location, version
+
+
+def grab_cap():
+    """
+    Work with either local cap or system cap. Since cx_freeze is dumb.
+    """
+    try:
+        capfile = glob.glob(
+                    os.path.join(
+                        os.getcwd(),
+                        os.path.basename(bbconstants.CAPLOCATION)))[0]
+    except IndexError:
+        return bbconstants.CAPLOCATION  # no local cacerts
+    else:
+        return os.path.abspath(capfile)  # local cacerts
 
 
 def filesize_parser(num):

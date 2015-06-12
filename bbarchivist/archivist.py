@@ -129,7 +129,7 @@ def do_magic(osversion, radioversion=None, softwareversion=None,
                 print("\nEXITING...")
                 raise SystemExit  # bye bye
     if cappath is None:
-        cappath = bbconstants.CAPLOCATION
+        cappath = utilities.grab_cap()
     if localdir is None:
         localdir = os.getcwd()
     print("~~~ARCHIVIST VERSION", bbconstants.VERSION + "~~~")
@@ -218,7 +218,7 @@ def do_magic(osversion, radioversion=None, softwareversion=None,
         else:
             going = utilities.str2bool("KEEP GOING? Y/N: ")
             if going:
-                continue
+                pass
             else:
                 print("\nEXITING...")
                 raise SystemExit
