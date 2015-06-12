@@ -60,3 +60,6 @@ def main():
         smeg = input("Press Enter to exit")
         if smeg or not smeg:
             raise SystemExit
+
+if __name__ == "__main__":
+    main()

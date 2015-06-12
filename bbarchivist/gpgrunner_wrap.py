@@ -54,3 +54,6 @@ def main():
                           workfolder,
                           key,
                           password)
+
+if __name__ == "__main__":
+    main()
