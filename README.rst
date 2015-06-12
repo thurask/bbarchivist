@@ -43,6 +43,15 @@ This can be used either as importing the bbarchivist module, or the scripts from
 Requirements
 ------------
 
+Just Lazyloader
+~~~~~~~~~~~~~~~
+
+As of version 1.7.1 (12 June 2015), lazyloader is also provided by itself on `GitHub <https://github.com/thurask/bbarchivist/releases>`__.
+
+To use, just download the archive attached to the latest release, unpack somewhere and double click the executable.
+
+Lazyloader is still included within the pip package.
+
 Universal
 ~~~~~~~~~
 
