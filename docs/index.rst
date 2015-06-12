@@ -13,7 +13,9 @@ Contents:
 
    readme
 
-   bbarchivist
+   api
+   
+   wrappers
    
 Indices and tables
 ==================
