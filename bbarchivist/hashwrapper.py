@@ -311,7 +311,7 @@ def gpgrunner(workingdir, keyid=None, passphrase=None, selective=False):
             if os.path.isdir(os.path.join(workingdir, file)):
                 pass  # exclude folders
             else:
-                if not file.endswith(".cksum", ".asc"):
+                if not file.endswith((".cksum", ".asc")):
                     print("VERIFYING:", str(file))
                     if selective:
                         if file.endswith(
