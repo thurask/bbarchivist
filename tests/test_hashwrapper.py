@@ -22,7 +22,8 @@ def teardown_module(module):
     os.remove(os.path.join(os.getcwd(), "tempfile.txt"))
     os.remove(os.path.join(os.getcwd(), "tempfile.txt.cksum"))
     if not nognupg:
-        os.remove(os.path.join(os.getcwd(), "tempfile.txt.asc"))
+        if os.path.exists("tempfile.txt.asc"):
+            os.remove(os.path.join(os.getcwd(), "tempfile.txt.asc"))
     os.chdir("..")
     rmtree("temp")
 
@@ -31,14 +32,16 @@ class TestClassHashwrapper:
 
     def test_verifier(self):
         bh.verifier(os.getcwd())
-        stocklines = ["MD5",
-                      "822E1187FDE7C8D55AFF8CC688701650 tempfile.txt ",
-                      "",
-                      "SHA1",
-                      "71DC7CE8F27C11B792BE3F169ECF985865E276D0 tempfile.txt ", #@IgnorePep8
-                      ""]
+        stocklines = ["MD5\n",
+                      "822E1187FDE7C8D55AFF8CC688701650 tempfile.txt \n",
+                      "\n",
+                      "SHA1\n",
+                      "71DC7CE8F27C11B792BE3F169ECF985865E276D0 tempfile.txt \n", #@IgnorePep8
+                      "\n"]
         with open("tempfile.txt.cksum", "r") as checksumfile:
-            assert checksumfile.read() == "\n".join(stocklines)
+            content = checksumfile.readlines()
+            for idx, value in enumerate(content):
+                assert stocklines[idx] == value
 
     def test_gpgrunner(self):
         if "/home/travis/build/thurask/bbarchivist" in os.getcwd():

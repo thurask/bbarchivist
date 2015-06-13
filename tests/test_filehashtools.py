@@ -22,7 +22,8 @@ def setup_module(module):
 def teardown_module(module):
     os.remove(os.path.join(os.getcwd(), "tempfile.txt"))
     if not nognupg:
-        os.remove(os.path.join(os.getcwd(), "tempfile.txt.asc"))
+        if os.path.exists("tempfile.txt.asc"):
+            os.remove(os.path.join(os.getcwd(), "tempfile.txt.asc"))
     os.chdir("..")
     rmtree("temp")
 
