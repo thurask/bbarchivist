@@ -12,18 +12,18 @@ from bbarchivist import filehashtools as bf
 
 
 def setup_module(module):
-        os.mkdir("temp")
-        os.chdir("temp")
-        with open("tempfile.txt", "w") as targetfile:
-            targetfile.write("Jackdaws love my big sphinx of quartz")
+    os.mkdir("temp")
+    os.chdir("temp")
+    with open("tempfile.txt", "w") as targetfile:
+        targetfile.write("Jackdaws love my big sphinx of quartz")
 
 
 def teardown_module(module):
-        os.remove(os.path.join(os.getcwd(), "tempfile.txt"))
-        if not nognupg:
-            os.remove(os.path.join(os.getcwd(), "tempfile.txt.asc"))
-        os.chdir("..")
-        rmtree("temp")
+    os.remove(os.path.join(os.getcwd(), "tempfile.txt"))
+    if not nognupg:
+        os.remove(os.path.join(os.getcwd(), "tempfile.txt.asc"))
+    os.chdir("..")
+    rmtree("temp")
 
 
 class TestClassFilehashtools:
