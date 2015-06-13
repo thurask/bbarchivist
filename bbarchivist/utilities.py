@@ -6,6 +6,10 @@ import platform  # platform info
 import shutil  # "which" command
 import glob  # cap grabbing
 from bbarchivist import bbconstants  # cap location, version
+try:
+    from shutil import which
+except ImportError:
+    import shutilwhich
 
 
 def grab_cap():
@@ -211,12 +215,10 @@ def prep_seven_zip():
             path = shutil.which("7za")
         except ImportError:  # less than 3.3
             try:
-                from shutilwhich import which
+                import shutilwhich
             except ImportError:
                 print("PLEASE INSTALL SHUTILWHICH WITH PIP")
                 return False
-            else:
-                path = which("7za")
         else:
             if path is None:
                 print("NO 7ZIP")

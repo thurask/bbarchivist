@@ -17,13 +17,10 @@ def setup_module(module):
     os.chdir("temp")
     with open("cap-3.11.0.22.dat", "w") as targetfile:
         targetfile.write("Jackdaws love my big sphinx of quartz")
-    copyfile("cap-3.11.0.22.dat", "7za.exe")
-    copyfile("cap-3.11.0.22.dat", "7za64.exe")
 
 
 def teardown_module(module):
     os.remove("cap-3.11.0.22.dat")
-    os.remove("7za.exe")
     os.chdir("..")
     rmtree("temp")
 
@@ -76,6 +73,8 @@ class TestClassUtilities:
         if system != "Windows":
             pass
         else:
+            copyfile("cap-3.11.0.22.dat", "7za.exe")
+            copyfile("cap-3.11.0.22.dat", "7za64.exe")
             with mock.patch('winreg.OpenKey', mock.MagicMock(return_value=OSError)): #@IgnorePep8
                 with mock.patch('platform.machine', mock.MagicMock(return_value="AMD69")): #@IgnorePep8
                     assert bu.win_seven_zip() == "7za.exe"
@@ -83,6 +82,7 @@ class TestClassUtilities:
                     assert bu.win_seven_zip() == "7za64.exe"
                     os.remove("7za64.exe")
                     assert bu.win_seven_zip() == "error"
+                    os.remove("7za.exe")
             with mock.patch('winreg.QueryValueEx', mock.MagicMock(return_value="C:\\Program Files\\7-Zip\\")): #@IgnorePep8
                 assert bu.win_seven_zip() == "C:\\Program Files\\7-Zip\\7z.exe"
 
@@ -95,14 +95,10 @@ class TestClassUtilities:
             assert bu.get_core_count() == "123"
 
     def test_prep_seven_zip(self):
-        if version_info[1] < 3:
-            prog = "shutilwhich.which"
-        else:
-            prog = "shutil.which"
         with mock.patch('platform.system', mock.MagicMock(return_value="Wandows")): #@IgnorePep8
-            with mock.patch(prog, mock.MagicMock(return_value="/usr/bin/7za")): #@IgnorePep8
+            with mock.patch("shutil.which", mock.MagicMock(return_value="/usr/bin/7za")): #@IgnorePep8
                 assert bu.prep_seven_zip() == True
-            with mock.patch(prog, mock.MagicMock(return_value=None)): #@IgnorePep8
+            with mock.patch("shutil.which", mock.MagicMock(return_value=None)): #@IgnorePep8
                 assert bu.prep_seven_zip() == False
 
     def test_return_model(self):
