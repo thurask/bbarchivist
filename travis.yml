@@ -1,0 +1,12 @@
+language: python
+python:
+    - "3.2"
+    - "3.3"
+    - "3.4"
+    - "nightly"
+install:
+    - pip install .
+    - pip install requests python-gnupg
+    - if [[ $TRAVIS_PYTHON_VERSION == 3.2 ]]; then pip install shutilwhich; fi
+script:
+    - py.test
