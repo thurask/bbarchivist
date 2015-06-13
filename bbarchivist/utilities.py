@@ -46,7 +46,8 @@ def file_exists(file):
     :type file: str
     """
     if not os.path.exists(file):
-        raise argparse.ArgumentError("{0} does not exist.".format(file))
+        raise argparse.ArgumentError(argument=None,
+                                     message="{0} not found.".format(file))
     return file
 
 
@@ -58,7 +59,8 @@ def positive_integer(inputint):
     :type inputint: int
     """
     if int(inputint) <= 0:
-        raise argparse.ArgumentError("{0} is too low.".format(str(inputint)))
+        raise argparse.ArgumentError(argument=None,
+                                     message="{0} is not >0.".format(str(inputint))) #@IgnorePep8
     return int(inputint)
 
 
