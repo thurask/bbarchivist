@@ -18,7 +18,7 @@ def crc32hash(filepath, blocksize=16 * 1024 * 1024):
     with open(filepath, 'rb') as file:
         for chunk in iter(lambda: file.read(blocksize), b''):
             seed = zlib.crc32(chunk, seed)
-    final = format(seed & 0xFFFFFFFF, "x")
+    final = format(seed & 0xFFFFFFFF, "08x")
     return final
 
 
@@ -41,7 +41,7 @@ def adler32hash(filepath, blocksize=16 * 1024 * 1024):
             asum = zlib.adler32(data, asum)
             if asum < 0:
                 asum += 2 ** 32
-    final = format(asum & 0xFFFFFFFF, "x")
+    final = format(asum & 0xFFFFFFFF, "08x")
     return final
 
 
