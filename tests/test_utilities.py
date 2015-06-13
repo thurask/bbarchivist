@@ -12,7 +12,8 @@ from platform import system
 
 
 def setup_module(module):
-    os.mkdir("temp")
+    if not os.path.exists("temp"):
+        os.mkdir("temp")
     os.chdir("temp")
     with open("cap-3.11.0.22.dat", "w") as targetfile:
         targetfile.write("Jackdaws love my big sphinx of quartz")

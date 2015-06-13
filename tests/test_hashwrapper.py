@@ -11,7 +11,8 @@ from bbarchivist import hashwrapper as bh
 
 
 def setup_module(module):
-    os.mkdir("temp")
+    if not os.path.exists("temp"):
+        os.mkdir("temp")
     os.chdir("temp")
     with open("tempfile.txt", "w") as targetfile:
         targetfile.write("Jackdaws love my big sphinx of quartz")
