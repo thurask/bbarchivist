@@ -41,7 +41,9 @@ class TestClassHashwrapper:
             assert checksumfile.read() == "\n".join(stocklines)
 
     def test_gpgrunner(self):
-        if nognupg:
+        if "/home/travis/build/thurask/bbarchivist" in os.getcwd():
+            pass
+        elif nognupg:
             pass
         else:
             config = configparser.ConfigParser()
