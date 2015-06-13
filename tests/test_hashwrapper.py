@@ -32,15 +32,20 @@ class TestClassHashwrapper:
 
     def test_verifier(self):
         bh.verifier(os.getcwd())
-        stocklines = ["MD5\n",
-                      "822E1187FDE7C8D55AFF8CC688701650 tempfile.txt \n",
-                      "\n",
-                      "SHA1\n",
-                      "71DC7CE8F27C11B792BE3F169ECF985865E276D0 tempfile.txt \n", #@IgnorePep8
-                      "\n"]
+        stocklines = ["MD5",
+                      "822E1187FDE7C8D55AFF8CC688701650 tempfile.txt",
+                      "",
+                      "SHA1",
+                      "71DC7CE8F27C11B792BE3F169ECF985865E276D0 tempfile.txt", #@IgnorePep8
+                      ""]
+        for item in stocklines:
+            item = item.strip('\r\n')
+            item = item.strip()
         with open("tempfile.txt.cksum", "r") as checksumfile:
             content = checksumfile.readlines()
             for idx, value in enumerate(content):
+                value = value.strip('\r\n')
+                value = value.strip()
                 assert stocklines[idx] == value
 
     def test_gpgrunner(self):
