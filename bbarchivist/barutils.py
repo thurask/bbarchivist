@@ -34,18 +34,6 @@ def extract_bars(filepath):
                 return
 
 
-def reset(tarinfo):
-    """
-    Filter for TAR compression.
-
-    :param tarinfo: TarInfo instance to use.
-    :type tarinfo: TarInfo
-    """
-    tarinfo.uid = tarinfo.gid = 0
-    tarinfo.uname = tarinfo.gname = "root"
-    return tarinfo
-
-
 def compress(filepath, method="7z", szexe="7za.exe"):
     """
     Compress all autoloader files in a given folder, with a given method.
@@ -96,7 +84,7 @@ def compress(filepath, method="7z", szexe="7za.exe"):
                                   'w:gz',
                                   compresslevel=strength) as gzfile:
                     starttime = time.clock()
-                    gzfile.add(file, filter=reset)
+                    gzfile.add(file, filter=None)
                     endtime = time.clock() - starttime
                     endtime_proper = math.ceil(endtime * 100) / 100
                     print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
@@ -104,7 +92,7 @@ def compress(filepath, method="7z", szexe="7za.exe"):
                 with tarfile.open(fileloc + '.tar.xz',
                                   'w:xz') as xzfile:
                     starttime = time.clock()
-                    xzfile.add(file, filter=reset)
+                    xzfile.add(file, filter=None)
                     endtime = time.clock() - starttime
                     endtime_proper = math.ceil(endtime * 100) / 100
                     print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
@@ -113,7 +101,7 @@ def compress(filepath, method="7z", szexe="7za.exe"):
                                   'w:bz2',
                                   compresslevel=strength) as bzfile:
                     starttime = time.clock()
-                    bzfile.add(file, filter=reset)
+                    bzfile.add(file, filter=None)
                     endtime = time.clock() - starttime
                     endtime_proper = math.ceil(endtime * 100) / 100
                     print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
