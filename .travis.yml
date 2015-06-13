@@ -6,7 +6,7 @@ python:
     - "nightly"
 install:
     - pip install .
-    - pip install requests python-gnupg
+    - pip install requests python-gnupg mock pytest
     - if [[ $TRAVIS_PYTHON_VERSION == 3.2 ]]; then pip install shutilwhich; fi
 script:
     - py.test
