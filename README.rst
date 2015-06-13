@@ -8,9 +8,9 @@ README
     :target: https://pypi.python.org/pypi/bbarchivist
     :alt: Pypi version
     
-.. image:: https://img.shields.io/github/tag/thurask/bbarchivist.svg?label=source
-    :target: https://github.com/thurask/bbarchivist
-    :alt: GitHub version
+.. image:: https://travis-ci.org/thurask/bbarchivist.svg?branch=master
+    :target: https://travis-ci.org/thurask/bbarchivist
+    :alt: Travis CI
 
 .. image:: https://img.shields.io/github/issues/thurask/bbarchivist.svg
     :target: https://github.com/thurask/bbarchivist
@@ -533,4 +533,6 @@ Credits/Software Used
 -  Python-GnuPG: `Vinay Sajip et al. <https://pythonhosted.org/python-gnupg/index.html#acknowledgements>`__
 -  PyDev: `Brainwy Software Ltda. <http://pydev.org>`__
 -  Momentics: `BlackBerry Ltd. <https://developer.blackberry.com/native/downloads/>`__
--  Feedback, testing: Users Like You
+-  Source testing: `Travis CI <https://travis-ci.org>`__
+-  Source analysis: `QuantifiedCode <http://quantifiedcode.com>`__
+-  Feedback, bug reports, feature requests: Users Like You
