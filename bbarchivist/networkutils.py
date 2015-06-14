@@ -114,7 +114,7 @@ def availability(url):
     """
     os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
     try:
-        avlty = requests.head(str(url))
+        avlty = requests.get(str(url))
     except requests.ConnectionError:
         return False
     else:
