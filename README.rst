@@ -119,6 +119,14 @@ Same as Linux, but you'll have to either install p7zip from source, or
 install it with something like `Homebrew <http://brew.sh>`__ or
 `MacPorts <https://www.macports.org>`__.
 
+Testing
+~~~~~~~
+
+If you want to run the unit tests yourself, you'll also need mock, pytest
+and httmock installed via pip.
+
+Testing of GnuPG-related functions requires setting up GnuPG in the first place.
+
 What It Does
 ------------
 
