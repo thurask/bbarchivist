@@ -34,7 +34,7 @@ executables = [
 
 setup(name='lazyloader',
       version=VERSION,
-      description='A REALLY lazy autoloader maker',
+      description='Lazyloader' + VERSION,
       options=dict(
           build_exe=buildOptions),
       executables=executables)
