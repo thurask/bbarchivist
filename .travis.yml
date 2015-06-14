@@ -5,7 +5,7 @@ python:
     - "3.4"
 install:
     - pip install .
-    - pip install requests python-gnupg mock pytest
+    - pip install requests python-gnupg mock pytest httmock
     - if [[ $TRAVIS_PYTHON_VERSION == 3.2 ]]; then pip install shutilwhich; fi
 script:
     - py.test
