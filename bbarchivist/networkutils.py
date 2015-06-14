@@ -8,6 +8,7 @@ import hashlib  # base url creation
 from bbarchivist import utilities  # parse filesize
 import concurrent.futures  # multiprocessing/threading
 import glob  # pem file lookup
+from contextlib import closing  # requests stream headers
 
 
 def grab_pem():
@@ -114,15 +115,14 @@ def availability(url):
     """
     os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
     try:
-        avlty = requests.get(str(url))
-    except requests.ConnectionError:
-        return False
-    else:
-        status = int(avlty.status_code)
+        with closing(requests.get(str(url), stream=True)) as avlty:
+            status = int(avlty.status_code)
         if (status == 200) or (300 < status <= 308):
             return True
         else:
             return False
+    except requests.ConnectionError:
+        return False
 
 
 def carrier_checker(mcc, mnc):
