@@ -1,5 +1,6 @@
 import bbarchivist.barutils as bb
 import os
+from subprocess import call
 from shutil import rmtree, copyfile
 from sys import version_info
 from tarfile import is_tarfile
@@ -23,7 +24,7 @@ def teardown_module(module):
     rmtree("bigloaders", ignore_errors=True)
     rmtree("smallloaders", ignore_errors=True)
     rmtree("bigzipped", ignore_errors=True)
-    rmtree("bigzipped", ignore_errors=True)
+    rmtree("smallzipped", ignore_errors=True)
     os.chdir("..")
     rmtree("temp")
 
@@ -54,6 +55,20 @@ class TestClassBarutils:
                 shahash2.update(data)
         newhash = shahash2.hexdigest()
         assert orighash == newhash
+
+    def test_compress_sz(self):
+        try:
+            from bbarchivist.utilities import prep_seven_zip, get_seven_zip
+            exists = prep_seven_zip()
+            if exists:
+                szexe = get_seven_zip(False)
+                bb.compress(os.getcwd(), "7z", szexe=szexe)
+                retcode = call(szexe + " t " + "Z10_BIGLOADER.7z")
+                assert retcode == 0  # return 0 if OK, not 0 if not
+            else:
+                pass
+        except Exception:
+            assert False
 
     def test_compress_zip(self):
         bb.compress(os.getcwd(), "zip")
@@ -97,6 +112,8 @@ class TestClassBarutils:
             os.remove("Z10_BIGLOADER.tar.bz2")
         if os.path.exists("Z10_BIGLOADER.tar.xz"):
             os.remove("Z10_BIGLOADER.tar.xz")
+        if os.path.exists("Z10_BIGLOADER.7z"):
+            os.remove("Z10_BIGLOADER.7z")
         if os.path.exists("Blitz-testing.zip"):
             os.remove("Blitz-testing.zip")
         with open("Z30_SMALLLOADER.exe", "w") as targetfile:

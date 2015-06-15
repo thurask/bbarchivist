@@ -34,7 +34,133 @@ def extract_bars(filepath):
                 return
 
 
-def compress(filepath, method="7z", szexe="7za.exe"):
+def sz_compress(filepath, filename, szexe=None, strength=5):
+    """
+    Pack a file into a LZMA2 7z file.
+
+    :param filepath: Basename of file, no extension.
+    :type filepath: str
+
+    :param filename: Name of file to pack.
+    :type filename: str
+
+    :param szexe: Path to 7z executable.
+    :type szexe: str
+
+    :param strength: Compression strength. 5 is normal, 9 is ultra.
+    :type strength: int
+    """
+    starttime = time.clock()
+    rawname = os.path.dirname(filepath)
+    subprocess.call(
+        szexe +
+        " a -mx" +
+        str(strength) +
+        " -m0=lzma2 -mmt" +
+        utilities.get_core_count() +
+        " " +
+        filepath +
+        '.7z' +
+        " " +
+        os.path.join(
+            rawname,
+            filename),
+        shell=True)
+    endtime = time.clock() - starttime
+    endtime_proper = math.ceil(endtime * 100) / 100
+    print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
+
+
+def tgz_compress(filepath, filename, strength=5):
+    """
+    Pack a file into a gzip tarfile.
+
+    :param filepath: Basename of file, no extension.
+    :type filepath: str
+
+    :param filename: Name of file to pack.
+    :type filename: str
+
+    :param strength: Compression strength. 5 is normal, 9 is ultra.
+    :type strength: int
+    """
+    with tarfile.open(filepath + '.tar.gz',
+                                 'w:gz',
+                                 compresslevel=strength) as gzfile:
+                    starttime = time.clock()
+                    gzfile.add(filename, filter=None)
+                    endtime = time.clock() - starttime
+                    endtime_proper = math.ceil(endtime * 100) / 100
+                    print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
+
+
+def tbz_compress(filepath, filename, strength=5):
+    """
+    Pack a file into a bzip2 tarfile.
+
+    :param filepath: Basename of file, no extension.
+    :type filepath: str
+
+    :param filename: Name of file to pack.
+    :type filename: str
+
+    :param strength: Compression strength. 5 is normal, 9 is ultra.
+    :type strength: int
+    """
+    with tarfile.open(filepath + '.tar.bz2',
+                                 'w:bz2',
+                                 compresslevel=strength) as bzfile:
+                    starttime = time.clock()
+                    bzfile.add(filename, filter=None)
+                    endtime = time.clock() - starttime
+                    endtime_proper = math.ceil(endtime * 100) / 100
+                    print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
+
+
+def txz_compress(filepath, filename, strength=5):
+    """
+    Pack a file into a LZMA tarfile.
+
+    :param filepath: Basename of file, no extension.
+    :type filepath: str
+
+    :param filename: Name of file to pack.
+    :type filename: str
+
+    :param strength: Compression strength. 5 is normal, 9 is ultra.
+    :type strength: int
+    """
+    with tarfile.open(filepath + '.tar.xz',
+                                 'w:xz') as xzfile:
+                    starttime = time.clock()
+                    xzfile.add(filename, filter=None)
+                    endtime = time.clock() - starttime
+                    endtime_proper = math.ceil(endtime * 100) / 100
+                    print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
+
+
+def zip_compress(filepath, filename):
+    """
+    Pack a file into a DEFLATE zipfile.
+
+    :param filepath: Basename of file, no extension.
+    :type filepath: str
+
+    :param filename: Name of file to pack.
+    :type filename: str
+    """
+    with zipfile.ZipFile(filepath + '.zip',
+                                    'w',
+                                    zipfile.ZIP_DEFLATED,
+                                    allowZip64=True) as zfile:
+                    starttime = time.clock()
+                    zfile.write(filename)
+                    endtime = time.clock() - starttime
+                    endtime_proper = math.ceil(endtime * 100) / 100
+                    print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
+
+
+def compress(filepath, method="7z", szexe=None):
     """
     Compress all autoloader files in a given folder, with a given method.
 
@@ -47,6 +173,12 @@ def compress(filepath, method="7z", szexe="7za.exe"):
     :param szexe: Path to 7z executable, if needed.
     :type szexe: str
     """
+    if method == "7z" and szexe is None:
+        ifexists = utilities.prep_seven_zip()  # see if 7z exists
+        if not ifexists:
+            method = "zip"  # fallback
+        else:
+            szexe = utilities.get_seven_zip(False)
     majver = sys.version_info[1]
     if majver < 3 and method == "txz":  # 3.2 and under
         method = "zip"  # fallback
@@ -61,60 +193,15 @@ def compress(filepath, method="7z", szexe="7za.exe"):
             else:
                 strength = 5  # normal compression
             if method == "7z":
-                starttime = time.clock()
-                subprocess.call(
-                    szexe +
-                    " a -mx" +
-                    str(strength) +
-                    " -m0=lzma2 -mmt" +
-                    utilities.get_core_count() +
-                    " " +
-                    fileloc +
-                    '.7z' +
-                    " " +
-                    os.path.join(
-                        filepath,
-                        file),
-                    shell=True)
-                endtime = time.clock() - starttime
-                endtime_proper = math.ceil(endtime * 100) / 100
-                print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
+                sz_compress(fileloc, file, szexe, strength)
             elif method == "tgz":
-                with tarfile.open(fileloc + '.tar.gz',
-                                  'w:gz',
-                                  compresslevel=strength) as gzfile:
-                    starttime = time.clock()
-                    gzfile.add(file, filter=None)
-                    endtime = time.clock() - starttime
-                    endtime_proper = math.ceil(endtime * 100) / 100
-                    print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
+                tgz_compress(fileloc, file, strength)
             elif method == "txz":
-                with tarfile.open(fileloc + '.tar.xz',
-                                  'w:xz') as xzfile:
-                    starttime = time.clock()
-                    xzfile.add(file, filter=None)
-                    endtime = time.clock() - starttime
-                    endtime_proper = math.ceil(endtime * 100) / 100
-                    print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
+                txz_compress(fileloc, file, strength)
             elif method == "tbz":
-                with tarfile.open(fileloc + '.tar.bz2',
-                                  'w:bz2',
-                                  compresslevel=strength) as bzfile:
-                    starttime = time.clock()
-                    bzfile.add(file, filter=None)
-                    endtime = time.clock() - starttime
-                    endtime_proper = math.ceil(endtime * 100) / 100
-                    print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
+                tbz_compress(fileloc, file, strength)
             elif method == "zip":
-                with zipfile.ZipFile(fileloc + '.zip',
-                                     'w',
-                                     zipfile.ZIP_DEFLATED,
-                                     allowZip64=True) as zfile:
-                    starttime = time.clock()
-                    zfile.write(file)
-                    endtime = time.clock() - starttime
-                    endtime_proper = math.ceil(endtime * 100) / 100
-                    print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
+                zip_compress(fileloc, file)
             else:
                 print("INVALID METHOD")
                 raise SystemExit
