@@ -12,7 +12,8 @@ from bbarchivist import loadergen  # cap wrapper
 
 
 def do_magic(device, osversion, radioversion=None,
-             softwareversion=None, localdir=None, autoloader=False):
+             softwareversion=None, localdir=None, autoloader=False,
+             download=True):
     """
     Wrap the tools necessary to make one autoloader.
 
@@ -33,6 +34,9 @@ def do_magic(device, osversion, radioversion=None,
 
     :param autoloader: Whether to run loaders. Default is false. Windows-only.
     :type autoloader: bool
+
+    :param download: Whether to download files. Default is true.
+    :type download: bool
     """
     swchecked = False  # if we checked sw release already
     if radioversion is None:
@@ -64,103 +68,104 @@ def do_magic(device, osversion, radioversion=None,
     print("SOFTWARE VERSION:", softwareversion)
     print("DEVICE:", devicelist[device])
 
-    baseurl = networkutils.create_base_url(softwareversion)
-    splitos = osversion.split(".")
-    splitos = [int(i) for i in splitos]
+    if download:
+        baseurl = networkutils.create_base_url(softwareversion)
+        splitos = osversion.split(".")
+        splitos = [int(i) for i in splitos]
 
-    if device == 0:
-        osurl = baseurl + "/winchester.factory_sfi.desktop-"
-        osurl += osversion + "-nto+armle-v7+signed.bar"
-        radiourl = baseurl + "/m5730-"
-        radiourl += radioversion + "-nto+armle-v7+signed.bar"
-    elif device == 1:
-        osurl = baseurl + "/qc8960.factory_sfi.desktop-"
-        osurl += osversion + "-nto+armle-v7+signed.bar"
-        radiourl = baseurl + "/qc8960-"
-        radiourl += radioversion + "-nto+armle-v7+signed.bar"
-    elif device == 2:
-        osurl = baseurl + "/qc8960.verizon_sfi.desktop-"
-        osurl += osversion + "-nto+armle-v7+signed.bar"
-        radiourl = baseurl + "/qc8960.omadm-"
-        radiourl += radioversion + "-nto+armle-v7+signed.bar"
-    elif device == 3:
-        osurl = baseurl + "/qc8960.factory_sfi.desktop-"
-        osurl += osversion + "-nto+armle-v7+signed.bar"
-        radiourl = baseurl + "/qc8960.wtr-"
-        radiourl += radioversion + "-nto+armle-v7+signed.bar"
-    elif device == 4:
-        osurl = baseurl + "/qc8960.factory_sfi.desktop-"
-        osurl += osversion + "-nto+armle-v7+signed.bar"
-        radiourl = baseurl + "/qc8960.wtr5-"
-        radiourl += radioversion + "-nto+armle-v7+signed.bar"
-    elif device == 5:
-        osurl = baseurl + "/qc8960.factory_sfi.desktop-"
-        osurl += osversion + "-nto+armle-v7+signed.bar"
-        radiourl = baseurl + "/qc8930.wtr5-"
-        radiourl += radioversion + "-nto+armle-v7+signed.bar"
-        if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):
-            osurl = osurl.replace("qc8960.factory_sfi",
-                                  "qc8960.factory_sfi_hybrid_qc8x30")
-    elif device == 6:
-        osurl = baseurl + "/qc8974.factory_sfi.desktop-"
-        osurl += osversion + "-nto+armle-v7+signed.bar"
-        radiourl = baseurl + "/qc8974.wtr2-"
-        radiourl += radioversion + "-nto+armle-v7+signed.bar"
-        if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):
-            osurl = osurl.replace("qc8974.factory_sfi",
-                                  "qc8960.factory_sfi_hybrid_qc8974")
-    else:
-        return
-
-    # Check availability of software release
-    if not swchecked:
-        avlty = networkutils.availability(baseurl)
-        if avlty:
-            print("\nSOFTWARE RELEASE", softwareversion, "EXISTS")
+        if device == 0:
+            osurl = baseurl + "/winchester.factory_sfi.desktop-"
+            osurl += osversion + "-nto+armle-v7+signed.bar"
+            radiourl = baseurl + "/m5730-"
+            radiourl += radioversion + "-nto+armle-v7+signed.bar"
+        elif device == 1:
+            osurl = baseurl + "/qc8960.factory_sfi.desktop-"
+            osurl += osversion + "-nto+armle-v7+signed.bar"
+            radiourl = baseurl + "/qc8960-"
+            radiourl += radioversion + "-nto+armle-v7+signed.bar"
+        elif device == 2:
+            osurl = baseurl + "/qc8960.verizon_sfi.desktop-"
+            osurl += osversion + "-nto+armle-v7+signed.bar"
+            radiourl = baseurl + "/qc8960.omadm-"
+            radiourl += radioversion + "-nto+armle-v7+signed.bar"
+        elif device == 3:
+            osurl = baseurl + "/qc8960.factory_sfi.desktop-"
+            osurl += osversion + "-nto+armle-v7+signed.bar"
+            radiourl = baseurl + "/qc8960.wtr-"
+            radiourl += radioversion + "-nto+armle-v7+signed.bar"
+        elif device == 4:
+            osurl = baseurl + "/qc8960.factory_sfi.desktop-"
+            osurl += osversion + "-nto+armle-v7+signed.bar"
+            radiourl = baseurl + "/qc8960.wtr5-"
+            radiourl += radioversion + "-nto+armle-v7+signed.bar"
+        elif device == 5:
+            osurl = baseurl + "/qc8960.factory_sfi.desktop-"
+            osurl += osversion + "-nto+armle-v7+signed.bar"
+            radiourl = baseurl + "/qc8930.wtr5-"
+            radiourl += radioversion + "-nto+armle-v7+signed.bar"
+            if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):
+                osurl = osurl.replace("qc8960.factory_sfi",
+                                      "qc8960.factory_sfi_hybrid_qc8x30")
+        elif device == 6:
+            osurl = baseurl + "/qc8974.factory_sfi.desktop-"
+            osurl += osversion + "-nto+armle-v7+signed.bar"
+            radiourl = baseurl + "/qc8974.wtr2-"
+            radiourl += radioversion + "-nto+armle-v7+signed.bar"
+            if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):
+                osurl = osurl.replace("qc8974.factory_sfi",
+                                      "qc8960.factory_sfi_hybrid_qc8974")
         else:
-            print("\nSOFTWARE RELEASE", softwareversion, "NOT FOUND")
+            return
+
+        # Check availability of software release
+        if not swchecked:
+            avlty = networkutils.availability(baseurl)
+            if avlty:
+                print("\nSOFTWARE RELEASE", softwareversion, "EXISTS")
+            else:
+                print("\nSOFTWARE RELEASE", softwareversion, "NOT FOUND")
+                cont = utilities.str2bool(input("CONTINUE? Y/N: "))
+                if cont:
+                    pass
+                else:
+                    print("\nEXITING...")
+                    raise SystemExit
+        else:
+            print("\nSOFTWARE RELEASE", softwareversion, "EXISTS")
+
+        # Check availability of specific OS
+        osav = networkutils.availability(osurl)
+        if not osav:
+            print(osversion, "NOT AVAILABLE FOR", devicelist[device])
             cont = utilities.str2bool(input("CONTINUE? Y/N: "))
             if cont:
                 pass
             else:
                 print("\nEXITING...")
                 raise SystemExit
-    else:
-        print("\nSOFTWARE RELEASE", softwareversion, "EXISTS")
 
-    # Check availability of specific OS
-    osav = networkutils.availability(osurl)
-    if not osav:
-        print(osversion, "NOT AVAILABLE FOR", devicelist[device])
-        cont = utilities.str2bool(input("CONTINUE? Y/N: "))
-        if cont:
-            pass
-        else:
-            print("\nEXITING...")
-            raise SystemExit
-
-    # Check availability of specific radio
-    radav = networkutils.availability(radiourl)
-    if not radav:
-        print("RADIO VERSION NOT FOUND")
-        cont = utilities.str2bool(input("INPUT MANUALLY? Y/N: "))
-        if cont:
-            rad2 = input("RADIO VERSION: ")
-            radiourl = radiourl.replace(radioversion, rad2)
-        else:
-            going = utilities.str2bool("KEEP GOING? Y/N: ")
-            if going:
-                pass
+        # Check availability of specific radio
+        radav = networkutils.availability(radiourl)
+        if not radav:
+            print("RADIO VERSION NOT FOUND")
+            cont = utilities.str2bool(input("INPUT MANUALLY? Y/N: "))
+            if cont:
+                rad2 = input("RADIO VERSION: ")
+                radiourl = radiourl.replace(radioversion, rad2)
             else:
-                print("\nEXITING...")
-                raise SystemExit
+                going = utilities.str2bool("KEEP GOING? Y/N: ")
+                if going:
+                    pass
+                else:
+                    print("\nEXITING...")
+                    raise SystemExit
 
-    print("\nDOWNLOADING...")
-    dllist = [osurl, radiourl]
-    networkutils.download_bootstrap(dllist,
-                                    outdir=localdir,
-                                    lazy=True,
-                                    workers=2)
+        print("\nDOWNLOADING...")
+        dllist = [osurl, radiourl]
+        networkutils.download_bootstrap(dllist,
+                                        outdir=localdir,
+                                        lazy=True,
+                                        workers=2)
 
     print("\nEXTRACTING...")
     barutils.extract_bars(localdir)

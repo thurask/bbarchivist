@@ -97,6 +97,13 @@ def main():
             help="Working folder",
             default=None,
             metavar="DIR")
+        parser.add_argument(
+            "-n",
+            "--no-download",
+            dest="download",
+            help="Don't download files",
+            action="store_false",
+            default=True)
         args = parser.parse_args(sys.argv[1:])
         if args.folder is None:
             args.folder = os.getcwd()
@@ -108,7 +115,8 @@ def main():
             args.radio,
             args.swrelease,
             args.folder,
-            args.autoloader)
+            args.autoloader,
+            args.download)
     else:
         localdir = os.getcwd()
         osversion = input("OS VERSION: ")
@@ -139,7 +147,8 @@ def main():
             radioversion,
             softwareversion,
             localdir,
-            autoloader)
+            autoloader,
+            True)
         smeg = input("Press Enter to exit")
         if smeg or not smeg:
             raise SystemExit
