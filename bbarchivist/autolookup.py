@@ -51,7 +51,7 @@ def do_magic(osversion, loop=False, log=False):
                 b2av = "B2"
             else:
                 b2av = "  "
-            prel = results['pd']
+            prel = results['p']
             if prel != "SR not in system" and prel is not None:
                 pav = "PD"
                 baseurl = networkutils.create_base_url(prel)
