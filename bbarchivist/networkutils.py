@@ -322,11 +322,8 @@ def sr_lookup_bootstrap(osv):
                    "a2": None,
                    "b1": None,
                    "b2": None}
-        results['a1'] = xec.submit(software_release_lookup, osv, SERVERS['a1']).result() #@IgnorePep8
-        results['a2'] = xec.submit(software_release_lookup, osv, SERVERS['a2']).result() #@IgnorePep8
-        results['b1'] = xec.submit(software_release_lookup, osv, SERVERS['b1']).result() #@IgnorePep8
-        results['b2'] = xec.submit(software_release_lookup, osv, SERVERS['b2']).result() #@IgnorePep8
-        results['pd'] = xec.submit(software_release_lookup, osv, SERVERS['p']).result() #@IgnorePep8
+        for key in results:
+            results[key] = xec.submit(software_release_lookup, osv, SERVERS[key]).result() #@IgnorePep8
         return results
 
 
