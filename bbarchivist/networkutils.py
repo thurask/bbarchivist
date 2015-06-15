@@ -316,7 +316,7 @@ def sr_lookup_bootstrap(osv):
     :param osv: OS to check.
     :type osv: str
     """
-    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as xec:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as xec:
         results = {"pd": None,
                    "a1": None,
                    "a2": None,
