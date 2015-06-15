@@ -86,7 +86,7 @@ def download_bootstrap(urls, outdir=None, lazy=False, workers=5):
         workers = len(urls)
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as xec:
         for url in urls:
-            xec.submit(download, url=url, output_directory=outdir, lazy=lazy)
+            xec.submit(download, url, outdir, lazy)
 
 
 def create_base_url(softwareversion):
@@ -317,14 +317,17 @@ def sr_lookup_bootstrap(osv):
     :type osv: str
     """
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as xec:
-        results = {"p": None,
-                   "a1": None,
-                   "a2": None,
-                   "b1": None,
-                   "b2": None}
-        for key in results:
-            results[key] = xec.submit(software_release_lookup, osv, SERVERS[key]).result() #@IgnorePep8
-        return results
+        try:
+            results = {"p": None,
+                       "a1": None,
+                       "a2": None,
+                       "b1": None,
+                       "b2": None}
+            for key in results:
+                results[key] = xec.submit(software_release_lookup, osv, SERVERS[key]).result() #@IgnorePep8
+            return results
+        except KeyboardInterrupt:
+            xec.shutdown(wait=False)
 
 
 def available_bundle_lookup(mcc, mnc, device):

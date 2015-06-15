@@ -31,6 +31,8 @@ def do_magic(osversion, loop=False, log=False):
             swrelease = ""
             print("NOW SCANNING:", osversion, end="\r"),
             results = networkutils.sr_lookup_bootstrap(osversion)
+            if results is None:
+                raise KeyboardInterrupt
             a1rel = results['a1']
             if a1rel != "SR not in system" and a1rel is not None:
                 a1av = "A1"
