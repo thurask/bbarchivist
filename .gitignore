@@ -12,7 +12,6 @@ bbarchivist/__pycache__
 *.7z
 *.cksum
 *.sig
-*.txt
 *.asc
 docs/_build
 .settings/

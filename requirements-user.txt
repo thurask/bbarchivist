@@ -1,0 +1,3 @@
+requests>0.0
+python-gnupg>0.0
+shutilwhich>0.0
