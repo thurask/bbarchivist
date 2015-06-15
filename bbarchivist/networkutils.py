@@ -295,7 +295,7 @@ def software_release_lookup(osver, server):
     header = {"Content-Type": "text/xml;charset=UTF-8"}
     os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
     try:
-        req = requests.post(server, headers=header, data=query)
+        req = requests.post(server, headers=header, data=query, timeout=1)
     except requests.exceptions.Timeout:
         return "SR not in system"
     root = xml.etree.ElementTree.fromstring(req.text)
