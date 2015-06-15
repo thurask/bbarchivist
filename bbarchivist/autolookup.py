@@ -30,26 +30,28 @@ def do_magic(osversion, loop=False, log=False):
         while True:
             swrelease = ""
             print("NOW SCANNING:", osversion, end="\r"),
-            a1rel = networkutils.software_release_lookup(osversion,
-                                                         bbconstants.SERVERS["a1"])  # @IgnorePep8
+            results = networkutils.sr_lookup_bootstrap(osversion)
+            a1rel = results['a1']
             if a1rel != "SR not in system" and a1rel is not None:
                 a1av = "A1"
             else:
                 a1av = "  "
-            b1rel = networkutils.software_release_lookup(osversion,
-                                                         bbconstants.SERVERS["b1"])  # @IgnorePep8
+            a2rel = results['a2']
+            if a2rel != "SR not in system" and a2rel is not None:
+                a2av = "A2"
+            else:
+                a2av = "  "
+            b1rel = results['b1']
             if b1rel != "SR not in system" and b1rel is not None:
                 b1av = "B1"
             else:
                 b1av = "  "
-            b2rel = networkutils.software_release_lookup(osversion,
-                                                         bbconstants.SERVERS["b2"])  # @IgnorePep8
+            b2rel = results['b2']
             if b2rel != "SR not in system" and b2rel is not None:
                 b2av = "B2"
             else:
                 b2av = "  "
-            prel = networkutils.software_release_lookup(osversion,
-                                                        bbconstants.SERVERS["p"])  # @IgnorePep8
+            prel = results['pd']
             if prel != "SR not in system" and prel is not None:
                 pav = "PD"
                 baseurl = networkutils.create_base_url(prel)
@@ -70,13 +72,14 @@ def do_magic(osversion, loop=False, log=False):
             else:
                 swrelease = ""
             if swrelease != "":
-                out = "OS {} - SR {} - [{}|{}|{}|{}] - {}".format(osversion,
-                                                                  swrelease,
-                                                                  pav,
-                                                                  a1av,
-                                                                  b1av,
-                                                                  b2av,
-                                                                  available)
+                out = "OS {} - SR {} - [{}|{}|{}|{}|{}] - {}".format(osversion,
+                                                                     swrelease,
+                                                                     pav,
+                                                                     a1av,
+                                                                     a2av,
+                                                                     b1av,
+                                                                     b2av,
+                                                                     available)
                 if log:
                     with open(record, "a") as rec:
                         rec.write(out+"\n")

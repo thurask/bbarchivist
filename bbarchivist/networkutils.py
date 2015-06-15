@@ -6,9 +6,9 @@ import xml.etree.ElementTree  # XML parsing
 import re  # regexes
 import hashlib  # base url creation
 from bbarchivist import utilities  # parse filesize
+from bbarchivist.bbconstants import SERVERS  # lookup bootstrap
 import concurrent.futures  # multiprocessing/threading
 import glob  # pem file lookup
-from contextlib import closing  # requests stream headers
 
 
 def grab_pem():
@@ -115,8 +115,8 @@ def availability(url):
     """
     os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
     try:
-        with closing(requests.get(str(url), stream=True)) as avlty:
-            status = int(avlty.status_code)
+        avlty = requests.head(url)
+        status = int(avlty.status_code)
         if (status == 200) or (300 < status <= 308):
             return True
         else:
@@ -294,7 +294,10 @@ def software_release_lookup(osver, server):
     query += '</srVersionLookupRequest>'
     header = {"Content-Type": "text/xml;charset=UTF-8"}
     os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
-    req = requests.post(server, headers=header, data=query)
+    try:
+        req = requests.post(server, headers=header, data=query)
+    except requests.exceptions.Timeout:
+        return "SR not in system"
     root = xml.etree.ElementTree.fromstring(req.text)
     packages = root.findall('./data/content/')
     for package in packages:
@@ -304,6 +307,27 @@ def software_release_lookup(osver, server):
                 return package.text
             else:
                 return "SR not in system"
+
+
+def sr_lookup_bootstrap(osv):
+    """
+    Run lookups for each server for given OS.
+
+    :param osv: OS to check.
+    :type osv: str
+    """
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as xec:
+        results = {"pd": None,
+                   "a1": None,
+                   "a2": None,
+                   "b1": None,
+                   "b2": None}
+        results['a1'] = xec.submit(software_release_lookup, osv, SERVERS['a1']).result() #@IgnorePep8
+        results['a2'] = xec.submit(software_release_lookup, osv, SERVERS['a2']).result() #@IgnorePep8
+        results['b1'] = xec.submit(software_release_lookup, osv, SERVERS['b1']).result() #@IgnorePep8
+        results['b2'] = xec.submit(software_release_lookup, osv, SERVERS['b2']).result() #@IgnorePep8
+        results['pd'] = xec.submit(software_release_lookup, osv, SERVERS['p']).result() #@IgnorePep8
+        return results
 
 
 def available_bundle_lookup(mcc, mnc, device):
