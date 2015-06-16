@@ -273,7 +273,7 @@ Help
 
     usage: bb-lazyloader [-h] [-v]
                      (--stl100-1 | --stl100-x | --stl100-4 | --q10 | --z30 | --z3 | --passport)
-                     [--run-loader] [-f DIR]
+                     [--run-loader] [-f DIR] [-n]
                      os [radio] [swrelease]
 
    Create one autoloader for personal use.
@@ -288,6 +288,7 @@ Help
      -v, --version         show program's version number and exit
      --run-loader          Run autoloader after creation
      -f DIR, --folder DIR  Working folder
+     -n, --no-download     Don't download files
    
    devices:
      Device to load (one required)
