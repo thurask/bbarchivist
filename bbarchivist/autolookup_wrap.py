@@ -37,12 +37,19 @@ def main():
             help="Output to file",
             action="store_true",
             default=False)
+        parser.add_argument(
+            "-a", "--autogen",
+            dest="autogen",
+            help="Generate links for availables",
+            action="store_true",
+            default=False)
         args = parser.parse_args(sys.argv[1:])
         parser.set_defaults()
         autolookup.do_magic(
             args.os,
             args.recurse,
-            args.log)
+            args.log,
+            args.autogen)
     else:
         osversion = input("OS VERSION: ")
         recurse = utilities.str2bool(input("LOOP?: "))
@@ -50,7 +57,8 @@ def main():
         autolookup.do_magic(
             osversion,
             recurse,
-            True)
+            True,
+            False)
         smeg = input("Press Enter to exit")
         if smeg or not smeg:
             raise SystemExit

@@ -446,7 +446,7 @@ Help
 
     > bb-autolookup -h
     
-    usage: bb-autolookup [-h] [-v] [-l] [-o] os
+    usage: bb-autolookup [-h] [-v] [-l] [-o] [-a] os
 
     Get software release for one/many OS versions.
     
@@ -458,6 +458,7 @@ Help
       -v, --version  show program's version number and exit
       -l, --loop     Loop lookup, CTRL-C to quit
       -o, --output   Output to file
+      -a, --autogen  Generate links for availables
     
     http://github.com/thurask/bbarchivist
         

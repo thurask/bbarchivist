@@ -3,11 +3,12 @@
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import networkutils  # lookup
 from bbarchivist import utilities  # incrementer
+from bbarchivist import linkgen  # link generator
 import time  # get datestamp for lookup
 import os  # path work
 
 
-def do_magic(osversion, loop=False, log=False):
+def do_magic(osversion, loop=False, log=False, autogen=False):
     """
     Lookup a software release from an OS. Can iterate.
 
@@ -17,8 +18,11 @@ def do_magic(osversion, loop=False, log=False):
     :param loop: Whether or not to automatically lookup. Default is false.
     :type loop: bool
 
-    :param log: Whether to log. Default is False
+    :param log: Whether to log. Default is false.
     :type log: bool
+
+    :param autogen: Whether to create text links. Default is false.
+    :type autogen: bool
     """
     print("~~~AUTOLOOKUP VERSION", bbconstants.VERSION + "~~~")
     print("")
@@ -61,6 +65,8 @@ def do_magic(osversion, loop=False, log=False):
                 avail = networkutils.availability(baseurl)
                 if avail:
                     available = "Available"
+                    if autogen:
+                        linkgen.do_magic(osversion, utilities.version_incrementer(osversion, 1), prel) #@IgnorePep8
                 else:
                     available = "Unavailable"
             else:
