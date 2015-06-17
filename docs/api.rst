@@ -48,6 +48,14 @@ Pseudocap module
     :members:
     :undoc-members:
     :show-inheritance:
+    
+Textgenerator module
+--------------------
+
+.. automodule:: bbarchivist.textgenerator
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 Utilities module
 ----------------

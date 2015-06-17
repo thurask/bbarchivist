@@ -4,6 +4,7 @@ from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import networkutils  # check function
 from bbarchivist import utilities  # index lookup
 from bbarchivist import barutils  # file/folder operations
+from bbarchivist import textgenerator  # text work
 import os  # file/path operations
 import shutil  # folder removal
 
@@ -79,15 +80,24 @@ def do_magic(mcc, mnc, device,
         print("RADIO VERSION:", radv)
         if export:
             print("\nEXPORTING...")
-            with open(swv + "-" + family + ".txt", "w") as target:
-                target.write("OS: " + osv + "\n")
-                target.write("RADIO: " + swv + "\n")
-                target.write("SOFTWARE: " + radv + "\n")
-                target.write("DEVICE TYPE: " + family.upper() + "\n")
-                target.write("\nFILES\n")
-                for i in files:
-                    target.write(i + "\n")
-            print("\nFINISHED!!!")
+            if len(files) > 0:
+                if not upgrade:
+                    newfiles = networkutils.carrier_update_request(mcc, mnc, hwid, True, False) #@IgnorePep8
+                    newfiles = newfiles[3]
+                else:
+                    newfiles = files
+                osurls, coreurls, radiourls = textgenerator.url_generator(osv, radv, swv) #@IgnorePep8
+                finalfiles = []
+                stoppers = ["8960", "8930", "8974", "m5730", "winchester"]
+                for link in newfiles:
+                    if all(word not in link for word in stoppers):
+                        finalfiles.append(link)
+                textgenerator.write_links(swv, osv, radv,
+                                          osurls, coreurls, radiourls,
+                                          True, True, newfiles)
+                print("\nFINISHED!!!")
+            else:
+                print("CANNOT EXPORT, NO SOFTWARE RELEASE")
         if download:
             if blitz:
                 bardir = os.path.join(directory, swv + "-BLITZ")
