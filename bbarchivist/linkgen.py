@@ -35,7 +35,7 @@ def do_magic(osversion, radioversion=None, softwareversion=None):
     baseurl = networkutils.create_base_url(softwareversion)
 
     # List of debrick urls
-    osurls, radiourls, coreurls = textgenerator.url_generator(osversion, radioversion, softwareversion) #@IgnorePep8
+    osurls, coreurls, radiourls = textgenerator.url_generator(osversion, radioversion, softwareversion) #@IgnorePep8
 
     avlty = networkutils.availability(baseurl)
     textgenerator.write_links(softwareversion, osversion, radioversion,
