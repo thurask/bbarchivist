@@ -94,7 +94,7 @@ def do_magic(mcc, mnc, device,
                         finalfiles.append(link)
                 textgenerator.write_links(swv, osv, radv,
                                           osurls, coreurls, radiourls,
-                                          True, True, newfiles)
+                                          True, True, finalfiles)
                 print("\nFINISHED!!!")
             else:
                 print("CANNOT EXPORT, NO SOFTWARE RELEASE")
