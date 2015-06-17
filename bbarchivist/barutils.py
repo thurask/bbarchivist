@@ -34,6 +34,21 @@ def extract_bars(filepath):
                 return
 
 
+def bar_tester(filepath):
+    """
+    Use zipfile in order to test a bar for errors.
+
+    :param filepath: Path to bar file
+    :type filepath: str
+    """
+    with zipfile.ZipFile(filepath, "r") as zfile:
+        brokens = zfile.testzip()
+        if brokens is not None:
+            return filepath
+        else:
+            return None
+
+
 def sz_compress(filepath, filename, szexe=None, strength=5):
     """
     Pack a file into a LZMA2 7z file.

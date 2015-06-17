@@ -77,6 +77,12 @@ class TestClassBarutils:
                      compression=ZIP_DEFLATED) as zfile:
             assert zfile.testzip() == None
 
+    def test_check_zip(self):
+        copyfile("Z10_BIGLOADER.zip", "Z10_BIGLOADER.bar")
+        assert bb.bar_tester("Z10_BIGLOADER.bar") == None
+        if os.path.exists("Z10_BIGLOADER.bar"):
+            os.remove("Z10_BIGLOADER.bar")
+
     def test_compress_gzip(self):
         bb.compress(os.getcwd(), "tgz")
         assert is_tarfile("Z10_BIGLOADER.tar.gz")
