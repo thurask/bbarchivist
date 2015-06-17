@@ -49,7 +49,7 @@ class TestClassHashwrapper:
                 assert stocklines[idx] == value
 
     def test_gpgrunner(self):
-        if os.getenv("travis", "false") == "true":
+        if os.getenv("TRAVIS", "false") == "true":
             pass
         elif nognupg:
             pass
