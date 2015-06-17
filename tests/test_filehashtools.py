@@ -73,7 +73,7 @@ class TestClassFilehashtools:
             assert bf.whirlpoolhash("tempfile.txt") == "9835d12f3cb3ea3934635e4a7cc918e489379ed69d894ebc2c09bbf99fe72567bfd26c919ad666e170752abfc4b8c37b376f5102f9e5de59af2b65efc2e01293" #@IgnorePep8
 
     def test_gpgfile(self):
-        if "/home/travis/build/thurask/bbarchivist" in os.getcwd():
+        if os.getenv("TRAVIS", "false") == "true":
             pass
         elif nognupg:
             pass
