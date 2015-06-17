@@ -344,7 +344,7 @@ def generate_loaders(
             pseudocap.make_autoloader(
                 "Passport_" +
                 osversion +
-                "_SQW100-1-2-3.exe",
+                "_SQW100-1-2-3-4.exe",
                 cap=cap,
                 firstfile=os_8974,
                 secondfile=radio_8974,
@@ -359,7 +359,7 @@ def generate_loaders(
                 pseudocap.make_autoloader(
                     "Passport_" +
                     radioversion +
-                    "_SQW100-1-2-3.exe",
+                    "_SQW100-1-2-3-4.exe",
                     cap=cap,
                     firstfile=radio_8974,
                     folder=localdir)
@@ -416,7 +416,7 @@ def generate_lazy_loader(
     elif device == 5:
         loadername = "Z3_" + osversion + "_STJ100-1-2.exe"
     elif device == 6:
-        loadername = "Passport_" + osversion + "_SQW100-1-2-3.exe"
+        loadername = "Passport_" + osversion + "_SQW100-1-2-3-4.exe"
     else:
         print("Invalid device")
         return
