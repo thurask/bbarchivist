@@ -166,6 +166,33 @@ def do_magic(device, osversion, radioversion=None,
                                         outdir=localdir,
                                         lazy=True,
                                         workers=2)
+    brokenlist = []
+    print("\nTESTING...")
+    for file in os.listdir(localdir):
+        if file.endswith(".bar"):
+            print("TESTING:", file)
+            thepath = os.path.abspath(os.path.join(localdir, file))
+            brokens = barutils.bar_tester(thepath)
+            if brokens is not None:
+                os.remove(brokens)
+                for url in dllist:
+                    if brokens in url:
+                        brokenlist.append(url)
+    if len(brokenlist) > 0:
+        print("\nREDOWNLOADING BROKEN FILES...")
+        networkutils.download_bootstrap(brokenlist,
+                                        outdir=localdir,
+                                        lazy=True,
+                                        workers=len(brokenlist))
+        for file in os.listdir(localdir):
+            if file.endswith(".bar"):
+                thepath = os.path.abspath(os.path.join(localdir, file))
+                brokens = barutils.bar_tester(thepath)
+                if brokens is not None:
+                    print(file, "STILL BROKEN")
+                    raise SystemExit
+    else:
+        print("\nALL FILES DOWNLOADED OK")
 
     print("\nEXTRACTING...")
     barutils.extract_bars(localdir)

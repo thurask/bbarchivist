@@ -124,6 +124,38 @@ def do_magic(mcc, mnc, device,
                     files.append(i)
             print("\nDOWNLOADING...")
             networkutils.download_bootstrap(files, outdir=bardir)
+            # integrity check
+            brokenlist = []
+            print("\nTESTING...")
+            for file in os.listdir(bardir):
+                if file.endswith(".bar"):
+                    print("TESTING:", file)
+                    thepath = os.path.abspath(os.path.join(bardir, file))
+                    brokens = barutils.bar_tester(thepath)
+                    if brokens is not None:
+                        os.remove(brokens)
+                        for url in files:
+                            if brokens in url:
+                                brokenlist.append(url)
+            if len(brokenlist) > 0:
+                if len(brokenlist) > 5:
+                    workers = 5
+                else:
+                    workers = len(brokenlist)
+                print("\nREDOWNLOADING BROKEN FILES...")
+                networkutils.download_bootstrap(brokenlist,
+                                                outdir=bardir,
+                                                lazy=False,
+                                                workers=workers)
+                for file in os.listdir(bardir):
+                    if file.endswith(".bar"):
+                        thepath = os.path.abspath(os.path.join(bardir, file))
+                        brokens = barutils.bar_tester(thepath)
+                        if brokens is not None:
+                            print(file, "STILL BROKEN")
+                            raise SystemExit
+            else:
+                print("\nALL FILES DOWNLOADED OK")
             if blitz:
                 print("\nCREATING BLITZ...")
                 barutils.create_blitz(bardir, swv)
