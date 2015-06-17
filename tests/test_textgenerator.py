@@ -21,6 +21,7 @@ class TestClassTextGenerator:
         with open("10.3.3000.txt", 'rb') as file:
             while True:
                 data = file.read(1024)
+                data.replace(b'\r\n', b'\n')
                 if not data:
                     break
                 shahash.update(data)
