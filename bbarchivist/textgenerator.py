@@ -1,4 +1,6 @@
-from bbarchivist.networkutils import create_base_url
+from bbarchivist.networkutils import create_base_url, get_content_length
+from bbarchivist.utilities import filesize_parser
+import re
 
 
 def write_links(softwareversion, osversion, radioversion,
@@ -35,6 +37,7 @@ def write_links(softwareversion, osversion, radioversion,
     :type softwareversion: list
     """
     thename = softwareversion
+    theregex = re.compile("(?P<url>https?://[^\s]+)")
     if appendbars:
         thename += "plusapps"
     with open(thename + ".txt", "w") as target:
@@ -45,13 +48,16 @@ def write_links(softwareversion, osversion, radioversion,
             target.write("\n!!EXISTENCE NOT GUARANTEED!!\n")
         target.write("\nDEBRICK URLS:\n")
         for i in osurls:
-            target.write(i + "\n")
+            thesize = get_content_length(re.search(theregex, i).group("url"))
+            target.write(i + " [" + filesize_parser(thesize) + "] \n")
         target.write("\nCORE URLS:\n")
         for i in coreurls:
-            target.write(i + "\n")
+            thesize = get_content_length(re.search(theregex, i).group("url"))
+            target.write(i + " [" + filesize_parser(thesize) + "] \n")
         target.write("\nRADIO URLS:\n")
         for i in radiourls:
-            target.write(i + "\n")
+            thesize = get_content_length(re.search(theregex, i).group("url"))
+            target.write(i + " [" + filesize_parser(thesize) + "] \n")
         if appendbars:
             target.write("\nAPP URLS:\n")
             for i in appurls:
