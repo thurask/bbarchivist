@@ -66,6 +66,13 @@ def main():
             action="store_false",
             default=True)
         negategroup.add_argument(
+            "-ni",
+            "--no-integrity",
+            dest="integrity",
+            help="Don't test bar files after download",
+            action="store_false",
+            default=True)
+        negategroup.add_argument(
             "-nx",
             "--no-extract",
             dest="extract",
@@ -242,6 +249,8 @@ def main():
             args.folder = os.getcwd()
         if args.cappath is None:
             args.cappath = bbconstants.CAPLOCATION
+        if args.download is False:
+            args.integrity = False
         majver = sys.version_info[1]
         if majver <= 2:  # 3.2 and under
             if args.compmethod == "txz":
@@ -291,7 +300,8 @@ def main():
                            args.cappath, args.download,
                            args.extract, args.loaders,
                            args.signed, args.compmethod,
-                           args.gpg, gpgkey, gpgpass, args.onefile)
+                           args.gpg, gpgkey, gpgpass, args.onefile,
+                           args.integrity)
     else:
         localdir = os.getcwd()
         osversion = input("OS VERSION: ")
@@ -311,7 +321,7 @@ def main():
                            False, False, True, False, False,
                            False, bbconstants.CAPLOCATION, True,
                            True, True, True, "7z", False,
-                           False, None, None, False)
+                           False, None, None, False, True)
     smeg = input("Press Enter to exit")
     if smeg or not smeg:
         raise SystemExit

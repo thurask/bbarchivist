@@ -21,7 +21,7 @@ def do_magic(osversion, radioversion=None, softwareversion=None,
              cappath=None, download=True, extract=True,
              loaders=True, signed=True, compmethod="7z",
              gpg=False, gpgkey=None, gpgpass=None,
-             onefile=False):
+             onefile=False, integrity=True):
     """
     Wrap around multi-autoloader creation code.
     Some combination of creating, downloading, hashing,
@@ -113,6 +113,9 @@ def do_magic(osversion, radioversion=None, softwareversion=None,
 
     :param onefile: Whether to use one checksum file. False by default.
     :type onefile: bool
+
+    :param integrity: Whether to test downloaded bar files. True by default.
+    :type integrity: bool
     """
     starttime = time.clock()
     swchecked = False  # if we checked sw release already
@@ -136,6 +139,8 @@ def do_magic(osversion, radioversion=None, softwareversion=None,
         cappath = utilities.grab_cap()
     if localdir is None:
         localdir = os.getcwd()
+    if not download:
+        integrity = False
     print("~~~ARCHIVIST VERSION", bbconstants.VERSION + "~~~")
     print("OS VERSION:", osversion)
     print("RADIO VERSION:", radioversion)
@@ -275,7 +280,7 @@ def do_magic(osversion, radioversion=None, softwareversion=None,
         barutils.extract_bars(localdir)
 
     # Test bar files
-    if download:
+    if integrity:
         brokenlist = []
         print("\nTESTING...")
         for file in os.listdir(localdir):
