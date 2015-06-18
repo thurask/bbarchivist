@@ -34,12 +34,15 @@ def filesize_parser(num):
     :param num: Number to parse.
     :type num: float
     """
-    num = float(num)
-    for x in ['b', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB']:
-        if num < 1024.0:
-            return "{:3.1f}{}".format(num, x)
-        num /= 1024.0
-    return "{:3.1f}{}".format(num, 'YB')
+    if num is None:
+        return "N/A"
+    else:
+        num = float(num)
+        for x in ['b', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB']:
+            if num < 1024.0:
+                return "{:3.1f}{}".format(num, x)
+            num /= 1024.0
+        return "{:3.1f}{}".format(num, 'YB')
 
 
 def file_exists(file):

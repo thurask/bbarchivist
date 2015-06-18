@@ -37,7 +37,7 @@ def write_links(softwareversion, osversion, radioversion,
     :type softwareversion: list
     """
     thename = softwareversion
-    theregex = re.compile("(?P<url>https?://[^\s]+)")
+    rgx = re.compile("(?P<url>https?://[^\s]+)")
     if appendbars:
         thename += "plusapps"
     with open(thename + ".txt", "w") as target:
@@ -48,15 +48,24 @@ def write_links(softwareversion, osversion, radioversion,
             target.write("\n!!EXISTENCE NOT GUARANTEED!!\n")
         target.write("\nDEBRICK URLS:\n")
         for i in osurls:
-            thesize = get_content_length(re.search(theregex, i).group("url"))
+            if avlty:
+                thesize = get_content_length(re.search(rgx, i).group("url"))
+            else:
+                thesize = None
             target.write(i + " [" + filesize_parser(thesize) + "] \n")
         target.write("\nCORE URLS:\n")
         for i in coreurls:
-            thesize = get_content_length(re.search(theregex, i).group("url"))
+            if avlty:
+                thesize = get_content_length(re.search(rgx, i).group("url"))
+            else:
+                thesize = None
             target.write(i + " [" + filesize_parser(thesize) + "] \n")
         target.write("\nRADIO URLS:\n")
         for i in radiourls:
-            thesize = get_content_length(re.search(theregex, i).group("url"))
+            if avlty:
+                thesize = get_content_length(re.search(rgx, i).group("url"))
+            else:
+                thesize = None
             target.write(i + " [" + filesize_parser(thesize) + "] \n")
         if appendbars:
             target.write("\nAPP URLS:\n")
