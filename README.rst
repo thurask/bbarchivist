@@ -202,11 +202,11 @@ Help
 
     > bb-archivist -h
 
-    usage: bb-archivist [-h] [-v] [-f DIR] [-c PATH] [-no] [-nx] [-nl] [-nr] [-ns]
-                    [-nc] [-nd] [-nv] [--crc32] [--adler32] [--md4] [--sha224]
-                    [--sha384] [--sha512] [--ripemd160] [--whirlpool]
-                    [--no-sha1] [--no-sha256] [--no-md5] [-a] [-o] [-g]
-                    [--7z | --tgz | --tbz | --txz | --zip]
+    usage: bb-archivist [-h] [-v] [-f DIR] [-c PATH] [-no] [-ni] [-nx] [-nl] [-nr]
+                    [-ns] [-nc] [-nd] [-nv] [--crc32] [--adler32] [--md4]
+                    [--sha224] [--sha384] [--sha512] [--ripemd160]
+                    [--whirlpool] [--no-sha1] [--no-sha256] [--no-md5] [-a]
+                    [-o] [-g] [--7z | --tgz | --tbz | --txz | --zip]
                     os [radio] [swrelease]
 
    Download bar files, create autoloaders.
@@ -227,6 +227,7 @@ Help
      Disable program functionality
    
      -no, --no-download    Don't download files
+     -ni, --no-integrity   Don't test bar files after download
      -nx, --no-extract     Don't extract bar files
      -nl, --no-loaders     Don't create autoloaders
      -nr, --no-radios      Don't make radio autoloaders
