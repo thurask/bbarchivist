@@ -20,7 +20,8 @@ def setup_module(module):
 
 
 def teardown_module(module):
-    os.remove("testfile.bar")
+    if os.path.exists("testfile.bar"):
+        os.remove("testfile.bar")
     rmtree("bigloaders", ignore_errors=True)
     rmtree("smallloaders", ignore_errors=True)
     rmtree("bigzipped", ignore_errors=True)

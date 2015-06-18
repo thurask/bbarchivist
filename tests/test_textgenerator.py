@@ -1,4 +1,19 @@
 import bbarchivist.textgenerator as bt
+from shutil import rmtree
+import os
+
+
+def setup_module(module):
+    if not os.path.exists("temp"):
+        os.mkdir("temp")
+    os.chdir("temp")
+
+
+def teardown_module(module):
+    if os.path.exists("10.3.3000.txt"):
+        os.remove("10.3.3000.txt")
+    os.chdir("..")
+    rmtree("temp")
 
 
 class TestClassTextGenerator:
