@@ -24,6 +24,17 @@ class TestClassNetworkutils:
         assert bn.grab_pem() == os.path.abspath("cacert.pem")
         os.remove("cacert.pem")
 
+    def test_get_content_length(self):
+        theurl = "http://cdn.fs.sl.blackberry.com/fs/qnx/production/7d1bb9fefe23b1c3123f748ff9e0f80cc78f006c" #@IgnorePep8
+
+        def cl_good_mock(url, request):
+            headers = {'content-length': '525600'}
+            return httmock.response(status_code=200,
+                                    headers=headers)
+
+        with httmock.HTTMock(cl_good_mock):
+            assert bn.get_content_length(theurl) == 525600
+
     def test_download(self):
         @httmock.urlmatch(netloc=r'(.*\.)?google\.com$')
         def download_mock(url, request):

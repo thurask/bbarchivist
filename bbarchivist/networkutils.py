@@ -26,6 +26,22 @@ def grab_pem():
         return os.path.abspath(pemfile)  # local cacerts
 
 
+def get_content_length(url):
+    """
+    Get content-length header from some URL.
+
+    :param url: The URL to check.
+    :type url: str
+    """
+    os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
+    try:
+        heads = requests.head(url)
+        fsize = heads.headers['content-length']
+        return int(fsize)
+    except requests.ConnectionError:
+        return 0
+
+
 def download(url, output_directory=None, lazy=False):
     """
     Download file from given URL.
