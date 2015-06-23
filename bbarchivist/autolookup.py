@@ -98,8 +98,11 @@ def do_magic(osversion, loop=False, log=False, autogen=False, increment=3):
             if not loop:
                 raise KeyboardInterrupt  # hack, but whateva, I do what I want
             else:
-                osversion = utilities.version_incrementer(osversion, increment)
-                swrelease = ""
-                continue
+                if int(osversion.split(".")[3]) > 9996:
+                    raise KeyboardInterrupt
+                else:
+                    osversion = utilities.version_incrementer(osversion, increment) #@IgnorePep8
+                    swrelease = ""
+                    continue
     except KeyboardInterrupt:
         raise SystemExit
