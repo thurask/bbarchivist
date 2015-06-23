@@ -447,22 +447,24 @@ Help
 
     > bb-autolookup -h
     
-    usage: bb-autolookup [-h] [-v] [-l] [-o] [-a] os
+    usage: bb-autolookup [-h] [-v] [-l] [-o] [-a] [-i INT] os
 
     Get software release for one/many OS versions.
     
     positional arguments:
-      os             OS version, 10.x.y.zzzz
+      os                    OS version, 10.x.y.zzzz
     
     optional arguments:
-      -h, --help     show this help message and exit
-      -v, --version  show program's version number and exit
-      -l, --loop     Loop lookup, CTRL-C to quit
-      -o, --output   Output to file
-      -a, --autogen  Generate links for availables
+      -h, --help            show this help message and exit
+      -v, --version         show program's version number and exit
+      -l, --loop            Loop lookup, CTRL-C to quit
+      -o, --output          Output to file
+      -a, --autogen         Generate links for availables
+      -i INT, --increment INT
+                            Loop increment, default = 3
     
     http://github.com/thurask/bbarchivist
-        
+
 Example
 ~~~~~~~
 

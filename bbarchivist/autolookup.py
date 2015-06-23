@@ -8,7 +8,7 @@ import time  # get datestamp for lookup
 import os  # path work
 
 
-def do_magic(osversion, loop=False, log=False, autogen=False):
+def do_magic(osversion, loop=False, log=False, autogen=False, increment=3):
     """
     Lookup a software release from an OS. Can iterate.
 
@@ -23,6 +23,9 @@ def do_magic(osversion, loop=False, log=False, autogen=False):
 
     :param autogen: Whether to create text links. Default is false.
     :type autogen: bool
+
+    :param increment: Lookup increment. Default is 3.
+    :type increment: int
     """
     print("~~~AUTOLOOKUP VERSION", bbconstants.VERSION + "~~~")
     print("")
@@ -95,7 +98,7 @@ def do_magic(osversion, loop=False, log=False, autogen=False):
             if not loop:
                 raise KeyboardInterrupt  # hack, but whateva, I do what I want
             else:
-                osversion = utilities.version_incrementer(osversion, 3)
+                osversion = utilities.version_incrementer(osversion, increment)
                 swrelease = ""
                 continue
     except KeyboardInterrupt:

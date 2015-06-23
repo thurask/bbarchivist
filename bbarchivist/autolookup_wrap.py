@@ -43,13 +43,21 @@ def main():
             help="Generate links for availables",
             action="store_true",
             default=False)
+        parser.add_argument(
+            "-i", "--increment",
+            dest="increment",
+            help="Loop increment, default = 3",
+            default=3,
+            type=utilities.positive_integer,
+            metavar="INT")
         args = parser.parse_args(sys.argv[1:])
         parser.set_defaults()
         autolookup.do_magic(
             args.os,
             args.recurse,
             args.log,
-            args.autogen)
+            args.autogen,
+            args.increment)
     else:
         osversion = input("OS VERSION: ")
         recurse = utilities.str2bool(input("LOOP?: "))
@@ -58,7 +66,8 @@ def main():
             osversion,
             recurse,
             True,
-            False)
+            False,
+            3)
         smeg = input("Press Enter to exit")
         if smeg or not smeg:
             raise SystemExit
