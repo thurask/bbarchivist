@@ -544,6 +544,7 @@ Credits/Software Used
 -  Python: `The Python Software Foundation <https://www.python.org>`__
 -  Requests: `Kenneth Reitz et al. <http://docs.python-requests.org/en/latest/dev/authors/>`__
 -  Python-GnuPG: `Vinay Sajip et al. <https://pythonhosted.org/python-gnupg/index.html#acknowledgements>`__
+-  easygui: `easygui dev team <https://pythonhosted.org/easygui/support.html>`__
 -  PyDev: `Brainwy Software Ltda. <http://pydev.org>`__
 -  Momentics: `BlackBerry Ltd. <https://developer.blackberry.com/native/downloads/>`__
 -  Source testing: `Travis CI <https://travis-ci.org>`__

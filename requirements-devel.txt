@@ -1,6 +1,7 @@
 requests>0.0
 python-gnupg>0.0
 shutilwhich>0.0
+easygui>0.0
 mock>0.0
 pytest>0.0
 httmock>0.0

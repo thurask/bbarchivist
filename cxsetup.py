@@ -9,13 +9,22 @@ from bbarchivist.bbconstants import VERSION, CAPLOCATION, CAPVERSION
 localdir = dirname(abspath(__file__))
 localdir = join(localdir, "bbarchivist")
 buildOptions = dict(packages=["requests",
-                              "bbarchivist"],
+                              "bbarchivist",
+                              "easygui"],
                     includes=[],
                     include_files=[
                    (certs.where(), 'cacert.pem'),
                    (CAPLOCATION, "cap-" + CAPVERSION + ".dat")
                    ],
-    excludes=[],
+    excludes=["rsa",
+              "pywin32",
+              "pytz",
+              "Pillow",
+              "ecdsa",
+              "amqp",
+              "pydoc",
+              "pyasn1",
+              "distutils"],
     include_msvcr=[True],
     build_exe="lazyloader",
     zip_includes=[])
@@ -25,7 +34,7 @@ base = 'Console'
 chdir(localdir)
 
 executables = [
-    Executable('lazyloader_wrap.py',
+    Executable('lazyloader_gui.py',
                base=base,
                appendScriptToExe=True,
                appendScriptToLibrary=True,
@@ -34,7 +43,7 @@ executables = [
 
 setup(name='lazyloader',
       version=VERSION,
-      description='Lazyloader' + VERSION,
+      description='Lazyloader ' + VERSION,
       options=dict(
           build_exe=buildOptions),
       executables=executables)
