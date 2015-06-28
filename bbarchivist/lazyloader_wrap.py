@@ -129,7 +129,7 @@ def main():
         while True:
             try:
                 device = int(input(
-                """SELECTED DEVICE (0=STL100-1; 1=STL100-2/3/P9983; 2=STL100-4; 3=Q10/Q5/P9983;
+                """SELECTED DEVICE (0=STL100-1; 1=STL100-2/3/P9982; 2=STL100-4; 3=Q10/Q5/P9983;
 4=Z30/CLASSIC/LEAP; 5=Z3; 6=PASSPORT): """))
             except ValueError:
                 continue
