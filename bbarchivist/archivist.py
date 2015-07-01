@@ -228,7 +228,7 @@ def do_magic(osversion, radioversion=None, softwareversion=None,
             rad2 = input("RADIO VERSION: ")
             radiourls = [url.replace(radioversion, rad2) for url in radiourls]
         else:
-            going = utilities.str2bool("KEEP GOING? Y/N: ")
+            going = utilities.str2bool(input("KEEP GOING? Y/N: "))
             if going:
                 pass
             else:
