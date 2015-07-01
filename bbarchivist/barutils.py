@@ -74,12 +74,15 @@ def sz_compress(filepath, filename, szexe=None, strength=5):
         " -m0=lzma2 -mmt" +
         utilities.get_core_count() +
         " " +
+        '"' +
         filepath +
-        '.7z' +
+        '.7z"' +
         " " +
+        '"' +
         os.path.join(
             rawname,
-            filename),
+            filename) +
+        '"',
         shell=True)
     endtime = time.clock() - starttime
     endtime_proper = math.ceil(endtime * 100) / 100
