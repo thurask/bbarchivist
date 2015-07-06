@@ -617,7 +617,7 @@ def do_magic(osversion, radioversion=None, softwareversion=None,
                     for url in radiourls+osurls:
                         if brokens in url:
                             brokenlist.append(url)
-        if len(brokenlist) > 0:
+        if brokenlist:
             print("\nREDOWNLOADING BROKEN FILES...")
             if len(brokenlist) > 5:
                 workers = 5

@@ -208,7 +208,7 @@ def do_magic(mcc, mnc, device,
         print("RADIO VERSION:", radv)
         if export:
             print("\nEXPORTING...")
-            if len(files) > 0:
+            if files:
                 if not upgrade:
                     newfiles = networkutils.carrier_update_request(mcc, mnc, hwid, True, False) #@IgnorePep8
                     newfiles = newfiles[3]
@@ -275,7 +275,7 @@ def do_magic(mcc, mnc, device,
                         for url in files:
                             if brokens in url:
                                 brokenlist.append(url)
-            if len(brokenlist) > 0:
+            if brokenlist:
                 if len(brokenlist) > 5:
                     workers = 5
                 else:

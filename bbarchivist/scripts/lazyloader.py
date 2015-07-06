@@ -338,7 +338,7 @@ def do_magic(device, osversion, radioversion=None,
                 for url in dllist:
                     if brokens in url:
                         brokenlist.append(url)
-    if len(brokenlist) > 0:
+    if brokenlist:
         print("\nREDOWNLOADING BROKEN FILES...")
         networkutils.download_bootstrap(brokenlist,
                                         outdir=localdir,
@@ -436,12 +436,12 @@ def do_magic(device, osversion, radioversion=None,
         elif device == 6:
             loaderfile = str(glob.glob("Passport*")[0])
         else:
-            return
-        if len(loaderfile) > 0:
+            loaderfile = None
+        if loaderfile is not None:
             subprocess.call(loaderfile)
             print("\nFINISHED!!!")
         else:
             print("Error!")
-            return
+            raise SystemExit
     else:
         print("\nFINISHED!!!")
