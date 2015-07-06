@@ -190,3 +190,13 @@ class TestClassNetworkutils:
                                                                         "10.3.1.2708"] #@IgnorePep8
         with httmock.HTTMock(bl_little_mock):
             assert bn.available_bundle_lookup(302, 220, "6002E0A") == ["10.3.1.2726"] #@IgnorePep8
+            
+    def test_ptcrb_scraper(self):
+        thebody = "\nECO\nSep 2, 2014 \r\n\r\n\t\t\t\t    \n\n\nCER-59665-001 - Rev2-x05-05\nOS Version: 10.3.0.1052 Radio Version: 10.3.0.1053 SW Release Version: 10.3.0.675\nInitial\nAug 18, 2014 \r\n\r\n\t\t\t\t    \n\n\n\n\n\xa0\n\n\n\n\n\n\n\xa0\n\n\nHome \xa0\xa0\xa0\xa0|\xa0\xa0\xa0\xa0 Contact Us\n\n\n\n\n'"
+        
+        def ps_good_mock(url, request):
+            return {'status_code': 200, 'content': thebody}
+        
+        with httmock.HTTMock(ps_good_mock):
+            results = bn.ptcrb_scraper("RGY181LW")
+            assert "10.3.0.1052" in results[0]
