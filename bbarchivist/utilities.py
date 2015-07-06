@@ -232,58 +232,6 @@ def prep_seven_zip():
                 return True
 
 
-def return_model(index):
-    """
-    Return device model from selected HWID/variant index.
-    Lists found in bbconstants module.
-
-    :param index: The index to look up.
-    :type index: int
-    """
-    if 0 <= index <= 3:
-        return 0  # Z10
-    elif 4 <= index <= 5:
-        return 1  # P9982
-    elif 6 <= index <= 10:
-        return 2  # Q10
-    elif 11 <= index <= 13:
-        return 3  # Q5
-    elif 14 <= index <= 15:
-        return 4  # P9983
-    elif 16 <= index <= 21:
-        return 5  # Z30
-    elif 22 <= index <= 26:
-        return 6  # Classic
-    elif 27 <= index <= 28:
-        return 7  # Leap
-    elif 29 <= index <= 30:
-        return 8  # Z3
-    elif 31 <= index <= 34:
-        return 9  # Passport
-
-
-def return_family(index):
-    """
-    Return device family from selected HWID.
-    Lists found in bbconstants module.
-
-    :param index: The index to look up.
-    :type index: int
-    """
-    if index == 0:  # STL100-1
-        return 0
-    elif 1 <= index <= 5:  # STL100-2/3/4, P9982
-        return 1
-    elif 6 <= index <= 15:  # Q10, Q5, P9983
-        return 2
-    elif 16 <= index <= 28:  # Z30, Classic, Leap
-        return 3
-    elif 29 <= index <= 30:  # Z3
-        return 4
-    elif 31 <= index <= 34:  # Passport
-        return 5
-
-
 def version_incrementer(version, increment=3):
     """
     Increment version by given number. For repeated lookups.

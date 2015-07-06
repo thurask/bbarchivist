@@ -2,11 +2,11 @@
 
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import networkutils  # check function
-from bbarchivist import utilities  # index lookup
 from bbarchivist import barutils  # file/folder operations
 from bbarchivist import textgenerator  # text work
 import os  # file/path operations
 import shutil  # folder removal
+import json  # db work
 
 
 def do_magic(mcc, mnc, device,
@@ -47,15 +47,18 @@ def do_magic(mcc, mnc, device,
     """
     if directory is None:
         directory = os.getcwd()
-    try:
-        devindex = bbconstants.DEVICELIST.index(device.upper())
-    except ValueError as exc:
-        print(str(exc).upper())
+    with open(bbconstants.JSONFILE) as thefile:
+        data = json.load(thefile)
+    data = data['devices']
+    for key in data:
+        if key['name'] == device:
+            model = key['device']
+            family = key['family']
+            hwid = key['hwid']
+            break
+    else:
         print("INVALID DEVICE!")
         raise SystemExit
-    model = bbconstants.MODELLIST[utilities.return_model(devindex)]
-    family = bbconstants.FAMILYLIST[utilities.return_family(devindex)]
-    hwid = bbconstants.HWIDLIST[devindex]
     version = bbconstants.VERSION
     print("~~~CARRIERCHECKER VERSION", version + "~~~")
     country, carrier = networkutils.carrier_checker(mcc, mnc)
@@ -63,7 +66,7 @@ def do_magic(mcc, mnc, device,
     print("CARRIER:", carrier.upper())
     print("DEVICE:", model.upper())
     print("VARIANT:", device.upper())
-    print("HARDWARE ID:", hwid)
+    print("HARDWARE ID:", hwid.upper())
     print("\nCHECKING CARRIER...")
     if bundles:
         releases = networkutils.available_bundle_lookup(mcc, mnc, hwid)

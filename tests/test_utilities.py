@@ -101,44 +101,6 @@ class TestClassUtilities:
             with mock.patch("shutil.which", mock.MagicMock(return_value=None)): #@IgnorePep8
                 assert bu.prep_seven_zip() == False
 
-    def test_return_model(self):
-        for idx in range(0, 34):
-            if 0 <= idx <= 3:
-                assert bu.return_model(idx) == 0
-            elif 4 <= idx <= 5:
-                assert bu.return_model(idx) == 1
-            elif 6 <= idx <= 10:
-                assert bu.return_model(idx) == 2
-            elif 11 <= idx <= 13:
-                assert bu.return_model(idx) == 3
-            elif 14 <= idx <= 15:
-                assert bu.return_model(idx) == 4
-            elif 16 <= idx <= 21:
-                assert bu.return_model(idx) == 5
-            elif 22 <= idx <= 26:
-                assert bu.return_model(idx) == 6
-            elif 27 <= idx <= 28:
-                assert bu.return_model(idx) == 7
-            elif 29 <= idx <= 30:
-                assert bu.return_model(idx) == 8
-            elif 31 <= idx <= 34:
-                assert bu.return_model(idx) == 9
-
-    def test_return_family(self):
-        for idx in range(0, 34):
-            if idx == 0:
-                assert bu.return_family(idx) == 0
-            elif 1 <= idx <= 5:
-                assert bu.return_family(idx) == 1
-            elif 6 <= idx <= 15:
-                assert bu.return_family(idx) == 2
-            elif 16 <= idx <= 28:
-                assert bu.return_family(idx) == 3
-            elif 29 <= idx <= 30:
-                assert bu.return_family(idx) == 4
-            elif 31 <= idx <= 34:
-                assert bu.return_family(idx) == 5
-
     def test_version_incrementer(self):
         assert bu.version_incrementer("10.3.2.2000", 1000) == "10.3.2.3000"
         assert bu.version_incrementer("10.3.2.9999", 3) == "10.3.2.3"

@@ -1,2 +1,3 @@
 include README.rst
 include bbarchivist/cap-3.11.0.22.dat
+include bbarchivist/bbconstants.json

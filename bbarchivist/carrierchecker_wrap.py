@@ -100,15 +100,16 @@ def main():
             export = False
             blitz = False
         else:
-            download = utilities.str2bool(input("DOWNLOAD?: "))
-            upgrade = utilities.str2bool(input("UPGRADE BARS?: "))
             export = utilities.str2bool(input("EXPORT TO FILE?: "))
+            download = utilities.str2bool(input("DOWNLOAD?: "))
             if download:
+                upgrade = utilities.str2bool(input("UPGRADE BARS?: "))
                 if upgrade:
                     blitz = utilities.str2bool(input("CREATE BLITZ?: "))
                 else:
                     blitz = False
             else:
+                upgrade = False
                 blitz = False
         directory = os.getcwd()
         print(" ")
