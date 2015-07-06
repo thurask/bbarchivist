@@ -3,7 +3,7 @@
 import argparse  # parse arguments
 import sys  # load arguments
 import os  # path operations
-from bbarchivist import hashwrapper  # main program
+from bbarchivist import filehashtools  # main program
 from bbarchivist import bbconstants  # constants/versions
 from bbarchivist import utilities  # input validation
 
@@ -12,7 +12,7 @@ def main():
     """
     Parse arguments from argparse/questionnaire.
 
-    Invoke :func:`bbarchivist.hashwrapper.verifier` with those arguments.
+    Invoke :func:`bbarchivist.filehashtools.verifier` with those arguments.
     """
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(
@@ -138,20 +138,20 @@ Default: SHA-1, SHA-256, MD5""",
             args.md4 = True
             args.ripemd160 = True
             args.whirlpool = True
-        hashwrapper.verifier(args.folder,
-                             args.blocksize,
-                             args.crc32,
-                             args.adler32,
-                             args.sha1,
-                             args.sha224,
-                             args.sha256,
-                             args.sha384,
-                             args.sha512,
-                             args.md5,
-                             args.md4,
-                             args.ripemd160,
-                             args.whirlpool,
-                             not args.onefile)
+        filehashtools.verifier(args.folder,
+                               args.blocksize,
+                               args.crc32,
+                               args.adler32,
+                               args.sha1,
+                               args.sha224,
+                               args.sha256,
+                               args.sha384,
+                               args.sha512,
+                               args.md5,
+                               args.md4,
+                               args.ripemd160,
+                               args.whirlpool,
+                               not args.onefile)
     else:
         folder = os.getcwd()
         blocksize = 16777216
@@ -168,7 +168,7 @@ Default: SHA-1, SHA-256, MD5""",
         whirlpool = utilities.str2bool(input("WHIRLPOOL?: "))
         onefile = utilities.str2bool(input("USE ONE CHECKSUM FILE?: "))
         print(" ")
-        hashwrapper.verifier(
+        filehashtools.verifier(
             folder,
             blocksize,
             crc32,

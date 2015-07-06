@@ -5,7 +5,7 @@ import sys  # load arguments
 import os  # path operations
 import configparser  # INI reading
 import getpass  # invisible passwords (cf. sudo)
-from bbarchivist import hashwrapper  # main program
+from bbarchivist import filehashtools  # main program
 from bbarchivist import bbconstants  # constants/versions
 
 
@@ -13,7 +13,7 @@ def main():
     """
     Parse arguments from argparse/questionnaire.
 
-    Invoke :func:`bbarchivist.hashwrapper.gpgrunner` with those arguments.
+    Invoke :func:`bbarchivist.filehashtools.gpgrunner` with those arguments.
     """
     parser = argparse.ArgumentParser(
         prog="bb-gpgrunner",
@@ -50,7 +50,7 @@ def main():
         with open(conffile, "w") as configfile:
             config.write(configfile)
     print(" ")
-    hashwrapper.gpgrunner(
+    filehashtools.gpgrunner(
                           workfolder,
                           key,
                           password)
