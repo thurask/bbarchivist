@@ -415,6 +415,8 @@ def ptcrb_scraper(ptcrbid):
             cleanitem = cleanitem.replace("\n", "")
             cleanitem = re.sub("\s?\((.*)$", "", cleanitem)
             cleanitem = cleanitem.replace(". ", ".")
+            cleanitem = cleanitem.replace(" Version:", ":")
+            cleanitem = cleanitem.replace(":1", ": 1")
             cleanitem = cleanitem.strip()
             cleanlist.append(cleanitem)
     return cleanlist

@@ -52,6 +52,7 @@ def do_magic(device):
     with open(JSONFILE) as thefile:
         data = load(thefile)
     data = data['devices']
+    device = device.upper()
     for key in data:
         if device in (key['name'], key['hwid'], key['fccid'], key['ptcrbid']):
             if key['ptcrbid']:
@@ -65,7 +66,7 @@ def do_magic(device):
     print("~~~CERTCHECKER VERSION", VERSION + "~~~")
     print("DEVICE:", device.upper())
     print("VARIANT:", name.upper())
-    print("\nCHECKING CERTIFICATION...")
+    print("\nCHECKING CERTIFICATIONS...")
     certlist = networkutils.ptcrb_scraper(ptcrbid)
     for cert in certlist:
         print(cert)
