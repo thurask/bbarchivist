@@ -2,7 +2,17 @@
 
 import hmac  # escreens is a hmac, news at 11
 import hashlib  # to get sha1
-from bbarchivist import bbconstants  # constants/versions
+
+#: Somehow, values for lifetimes for escreens.
+LIFETIMES = {
+    1: "",
+    3: "Hello my baby, hello my honey, hello my rag time gal",
+    7: "He was a boy, and she was a girl, can I make it any more obvious?",
+    15: "So am I, still waiting, for this world to stop hating?",
+    30: "I love myself today, not like yesterday. I'm cool, I'm calm, I'm gonna be okay" # @IgnorePep8
+}
+#: Escreens magic HMAC secret.
+SECRET = 'Up the time stream without a TARDIS'
 
 
 def calculate_escreens(pin, app, uptime, duration=30):
@@ -22,8 +32,10 @@ def calculate_escreens(pin, app, uptime, duration=30):
     :type duration: str
     """
     duration = int(duration)
-    data = pin.lower() + app + uptime + bbconstants.LIFETIMES[duration]
-    newhmac = hmac.new(bbconstants.SECRET.encode(),
+    if duration not in [1, 3, 6, 15, 30]:
+        duration = 1
+    data = pin.lower() + app + uptime + LIFETIMES[duration]
+    newhmac = hmac.new(SECRET.encode(),
                        data.encode(),
                        digestmod=hashlib.sha1)
     key = newhmac.hexdigest()[:8]
