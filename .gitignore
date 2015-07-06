@@ -19,3 +19,4 @@ bbarchivist/lazyloader
 bbarchivist/scripts/__pycache__
 bbarchivist/scripts/lazyloader
 bbarchivist/tests/__pycache__
+venv/
