@@ -5,15 +5,15 @@
 		"family":"Z10OMAP",
 		"name":"STL100-1",
 		"hwid":"4002607",
-		"fccid":"",
-		"ptcrbid":""
+		"fccid":"RFG81UW",
+		"ptcrbid":"21737"
 	},
 	{
 		"device":"Z10",
 		"family":"Z10QCOM-P9982",
 		"name":"STL100-2",
 		"hwid":"8700240A",
-		"fccid":"",
+		"fccid":"RFH121LW",
 		"ptcrbid":""
 	},
 	{
@@ -21,15 +21,23 @@
 		"family":"Z10QCOM-P9982",
 		"name":"STL100-3",
 		"hwid":"8500240A",
-		"fccid":"",
-		"ptcrbid":""
+		"fccid":"RFF91LW",
+		"ptcrbid":"21730"
+	},
+	{
+		"device":"Z10",
+		"family":"Z10QCOM-P9982",
+		"name":"STL100-3",
+		"hwid":"8500240A",
+		"fccid":"RFK121LW",
+		"ptcrbid":"21990"
 	},
 	{
 		"device":"Z10",
 		"family":"Z10QCOM-P9982",
 		"name":"STL100-4",
 		"hwid":"8400240A",
-		"fccid":"",
+		"fccid":"RFA91LW",
 		"ptcrbid":""
 	},
 	{
@@ -37,7 +45,7 @@
 		"family":"Z10QCOM-P9982",
 		"name":"STK100-1",
 		"hwid":"A500240A",
-		"fccid":"",
+		"fccid":"RGE111LW",
 		"ptcrbid":""
 	},
 	{
@@ -45,7 +53,7 @@
 		"family":"Z10QCOM-P9982",
 		"name":"STK100-2",
 		"hwid":"A600240A",
-		"fccid":"",
+		"fccid":"RGF111LW",
 		"ptcrbid":""
 	},
 	{
@@ -53,15 +61,15 @@
 		"family":"Q10-Q5-P9983",
 		"name":"SQN100-1",
 		"hwid":"8400270A",
-		"fccid":"",
-		"ptcrbid":""
+		"fccid":"RFL111LW",
+		"ptcrbid":"22692"
 	},
 	{
 		"device":"Q10",
 		"family":"Q10-Q5-P9983",
 		"name":"SQN100-2",
 		"hwid":"8500270A",
-		"fccid":"",
+		"fccid":"RFM121LW",
 		"ptcrbid":""
 	},
 	{
@@ -69,15 +77,15 @@
 		"family":"Q10-Q5-P9983",
 		"name":"SQN100-3",
 		"hwid":"8600270A",
-		"fccid":"",
-		"ptcrbid":""
+		"fccid":"RFN81UW",
+		"ptcrbid":"22693"
 	},
 	{
 		"device":"Q10",
 		"family":"Q10-Q5-P9983",
 		"name":"SQN100-4",
 		"hwid":"8C00270A",
-		"fccid":"",
+		"fccid":"RFQ111LW",
 		"ptcrbid":""
 	},
 	{
@@ -85,31 +93,31 @@
 		"family":"Q10-Q5-P9983",
 		"name":"SQN100-5",
 		"hwid":"8700270A",
-		"fccid":"",
-		"ptcrbid":""
+		"fccid":"RFP121LW",
+		"ptcrbid":"22291"
 	},
 	{
 		"device":"Q5",
 		"family":"Q10-Q5-P9983",
 		"name":"SQR100-1",
 		"hwid":"84002A0A",
-		"fccid":"",
-		"ptcrbid":""
+		"fccid":"RFR101LW",
+		"ptcrbid":"23178"
 	},
 	{
 		"device":"Q5",
 		"family":"Q10-Q5-P9983",
 		"name":"SQR100-2",
 		"hwid":"85002A0A",
-		"fccid":"",
-		"ptcrbid":""
+		"fccid":"RFS121LW",
+		"ptcrbid":"24132"
 	},
 	{
 		"device":"Q5",
 		"family":"Q10-Q5-P9983",
 		"name":"SQR100-3",
 		"hwid":"86002A0A",
-		"fccid":"",
+		"fccid":"RFT81UW",
 		"ptcrbid":""
 	},
 	{
@@ -117,7 +125,7 @@
 		"family":"Q10-Q5-P9983",
 		"name":"SQK100-1",
 		"hwid":"8F00270A",
-		"fccid":"",
+		"fccid":"RHB121LW",
 		"ptcrbid":""
 	},
 	{
@@ -125,7 +133,7 @@
 		"family":"Q10-Q5-P9983",
 		"name":"SQK100-2",
 		"hwid":"8E00270A",
-		"fccid":"",
+		"fccid":"RHA111LW",
 		"ptcrbid":""
 	},
 	{
@@ -133,15 +141,15 @@
 		"family":"Z30-CLASSIC-LEAP",
 		"name":"STA100-1",
 		"hwid":"8C00240A",
-		"fccid":"",
-		"ptcrbid":""
+		"fccid":"RFV121LW",
+		"ptcrbid":"23752"
 	},
 	{
 		"device":"Z30",
 		"family":"Z30-CLASSIC-LEAP",
 		"name":"STA100-2",
 		"hwid":"8D00240A",
-		"fccid":"",
+		"fccid":"RFW121LW",
 		"ptcrbid":""
 	},
 	{
@@ -149,7 +157,7 @@
 		"family":"Z30-CLASSIC-LEAP",
 		"name":"STA100-3",
 		"hwid":"8E00240A",
-		"fccid":"",
+		"fccid":"RFX101LW",
 		"ptcrbid":""
 	},
 	{
@@ -157,7 +165,7 @@
 		"family":"Z30-CLASSIC-LEAP",
 		"name":"STA100-4",
 		"hwid":"8F00240A",
-		"fccid":"",
+		"fccid":"RGB141LW",
 		"ptcrbid":""
 	},
 	{
@@ -165,15 +173,15 @@
 		"family":"Z30-CLASSIC-LEAP",
 		"name":"STA100-5",
 		"hwid":"9500240A",
-		"fccid":"",
-		"ptcrbid":""
+		"fccid":"RFY111LW",
+		"ptcrbid":"24057"
 	},
 	{
 		"device":"Z30",
 		"family":"Z30-CLASSIC-LEAP",
 		"name":"STA100-6",
 		"hwid":"B500240A",
-		"fccid":"",
+		"fccid":"RGU131LW",
 		"ptcrbid":""
 	},
 	{
@@ -181,7 +189,7 @@
 		"family":"Z30-CLASSIC-LEAP",
 		"name":"SQC100-1",
 		"hwid":"9600270A",
-		"fccid":"",
+		"fccid":"RHH151LW",
 		"ptcrbid":""
 	},
 	{
@@ -189,15 +197,15 @@
 		"family":"Z30-CLASSIC-LEAP",
 		"name":"SQC100-2",
 		"hwid":"9400270A",
-		"fccid":"",
-		"ptcrbid":""
+		"fccid":"RHE151LW",
+		"ptcrbid":"28812"
 	},
 	{
 		"device":"CLASSIC",
 		"family":"Z30-CLASSIC-LEAP",
 		"name":"SQC100-3",
 		"hwid":"9500270A",
-		"fccid":"",
+		"fccid":"RHF141LW",
 		"ptcrbid":""
 	},
 	{
@@ -205,15 +213,15 @@
 		"family":"Z30-CLASSIC-LEAP",
 		"name":"SQC100-4",
 		"hwid":"9700270A",
-		"fccid":"",
-		"ptcrbid":""
+		"fccid":"RHG161LW",
+		"ptcrbid":"26628"
 	},
 	{
 		"device":"CLASSIC",
 		"family":"Z30-CLASSIC-LEAP",
 		"name":"SQC100-5",
 		"hwid":"9C00270A",
-		"fccid":"",
+		"fccid":"RHF142LW",
 		"ptcrbid":""
 	},
 	{
@@ -221,7 +229,7 @@
 		"family":"Z30-CLASSIC-LEAP",
 		"name":"STR100-1",
 		"hwid":"7002E0A",
-		"fccid":"",
+		"fccid":"RHD161LW",
 		"ptcrbid":""
 	},
 	{
@@ -229,8 +237,8 @@
 		"family":"Z30-CLASSIC-LEAP",
 		"name":"STR100-2",
 		"hwid":"6002E0A",
-		"fccid":"",
-		"ptcrbid":""
+		"fccid":"RHC161LW",
+		"ptcrbid":"28740"
 	},
 	{
 		"device":"Z3",
@@ -245,16 +253,16 @@
 		"family":"Z3",
 		"name":"STJ100-2",
 		"hwid":"5002E07",
-		"fccid":"",
-		"ptcrbid":""
+		"fccid":"RHJ81UW",
+		"ptcrbid":"28162"
 	},
 	{
 		"device":"PASSPORT",
 		"family":"PASSPORT",
 		"name":"SQW100-1",
 		"hwid":"87002C0A",
-		"fccid":"",
-		"ptcrbid":""
+		"fccid":"RGY181LW",
+		"ptcrbid":"25955"
 	},
 	{
 		"device":"PASSPORT",
@@ -269,15 +277,15 @@
 		"family":"PASSPORT",
 		"name":"SQW100-3",
 		"hwid":"84002C0A",
-		"fccid":"",
-		"ptcrbid":""
+		"fccid":"RGV161LW",
+		"ptcrbid":"28153"
 	},
 	{
 		"device":"PASSPORT",
 		"family":"PASSPORT",
 		"name":"SQW100-4",
 		"hwid":"8F0020CA",
-		"fccid":"",
+		"fccid":"RHR191LW",
 		"ptcrbid":""
 	}
 	]
