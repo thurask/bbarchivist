@@ -21,6 +21,7 @@ def setup_module(module):
 
 def teardown_module(module):
     os.remove(os.path.join(os.getcwd(), "tempfile.txt"))
+    os.remove(os.path.join(os.getcwd(), "tempfile.txt.cksum"))
     if not nognupg:
         if os.path.exists("tempfile.txt.asc"):
             os.remove(os.path.join(os.getcwd(), "tempfile.txt.asc"))
@@ -95,3 +96,39 @@ class TestClassFilehashtools:
         app = "10.3.2.500"
         uptime = "69696969"
         assert bf.calculate_escreens(pin, app, uptime) == "E23F8E7F"
+
+    def test_verifier(self):
+        bf.verifier(os.getcwd())
+        stocklines = ["MD5",
+                      "822E1187FDE7C8D55AFF8CC688701650 tempfile.txt",
+                      "",
+                      "SHA1",
+                      "71DC7CE8F27C11B792BE3F169ECF985865E276D0 tempfile.txt", #@IgnorePep8
+                      ""]
+        for item in stocklines:
+            item = item.strip('\r\n')
+            item = item.strip()
+        with open("tempfile.txt.cksum", "r") as checksumfile:
+            content = checksumfile.readlines()
+            for idx, value in enumerate(content):
+                value = value.strip('\r\n')
+                value = value.strip()
+                assert stocklines[idx] == value
+
+    def test_gpgrunner(self):
+        if os.getenv("TRAVIS", "false") == "true":
+            pass
+        elif nognupg:
+            pass
+        else:
+            config = configparser.ConfigParser()
+            homepath = os.path.expanduser("~")
+            conffile = os.path.join(homepath, "bbarchivist.ini")
+            config.read(conffile)
+            gpgkey = config.get('gpgrunner', 'key', fallback=None)
+            gpgpass = config.get('gpgrunner', 'pass', fallback=None)
+            gpginst = gnupg.GPG()
+            bf.gpgrunner(os.getcwd(), gpgkey, gpgpass)
+            with open("tempfile.txt.asc", "rb") as sig:
+                verified = gpginst.verify_file(sig, 'tempfile.txt')
+                assert verified
