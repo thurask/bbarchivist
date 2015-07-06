@@ -1,114 +1,66 @@
-bbarchivist Command Wrappers Documentation
-==========================================
+bbarchivist Scripts Documentation
+=================================
 
-Archivist module
+Archivist script
 ----------------
 
-.. automodule:: bbarchivist.archivist
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-Archivist wrapper
------------------
-
-.. automodule:: bbarchivist.archivist_wrap
+.. automodule:: bbarchivist.scripts.archivist
     :members:
     :undoc-members:
     :show-inheritance:
    
-Autolookup module
+Autolookup script
 -----------------
 
-.. automodule:: bbarchivist.autolookup
+.. automodule:: bbarchivist.scripts.autolookup
     :members:
     :undoc-members:
     :show-inheritance:
 
-Autolookup wrapper
-------------------
-
-.. automodule:: bbarchivist.autolookup_wrap
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-Carrierchecker module
+Carrierchecker script
 ---------------------
 
-.. automodule:: bbarchivist.carrierchecker
+.. automodule:: bbarchivist.scripts.carrierchecker
     :members:
     :undoc-members:
     :show-inheritance:
 
-Carrierchecker wrapper
-----------------------
-
-.. automodule:: bbarchivist.carrierchecker_wrap
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-Escreens module
+Escreens script
 ---------------
 
-.. automodule:: bbarchivist.escreens
+.. automodule:: bbarchivist.scripts.escreens
     :members:
     :undoc-members:
     :show-inheritance:
 
-Escreens wrapper
+Filehasher script
+-----------------
+
+.. automodule:: bbarchivist.scripts.filehasher
+    :members:
+    :undoc-members:
+    :show-inheritance:
+   
+GPGRunner script
 ----------------
 
-.. automodule:: bbarchivist.escreens_wrap
+.. automodule:: bbarchivist.scripts.gpgrunner
     :members:
     :undoc-members:
     :show-inheritance:
 
-Hashwrapper wrapper
--------------------
+Lazyloader script
+-----------------
 
-.. automodule:: bbarchivist.filehasher_wrap
+.. automodule:: bbarchivist.scripts.lazyloader
     :members:
     :undoc-members:
     :show-inheritance:
    
-GPGRunner wrapper
------------------
-
-.. automodule:: bbarchivist.gpgrunner_wrap
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-Lazyloader module
------------------
-
-.. automodule:: bbarchivist.lazyloader
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-Lazyloader wrapper
-------------------
-
-.. automodule:: bbarchivist.lazyloader_wrap
-    :members:
-    :undoc-members:
-    :show-inheritance:
-   
-Linkgen module
+Linkgen script
 --------------
 
-.. automodule:: bbarchivist.linkgen
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-Linkgen wrapper
----------------
-
-.. automodule:: bbarchivist.linkgen_wrap
+.. automodule:: bbarchivist.scripts.linkgen
     :members:
     :undoc-members:
     :show-inheritance:

@@ -7,7 +7,7 @@ from bbarchivist.bbconstants import VERSION, CAPLOCATION, CAPVERSION
 # Dependencies are automatically detected, but it might need
 # fine tuning.
 localdir = dirname(abspath(__file__))
-localdir = join(localdir, "bbarchivist")
+localdir = join(localdir, "bbarchivist\scripts")
 buildOptions = dict(packages=["requests",
                               "bbarchivist",
                               "easygui"],

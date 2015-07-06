@@ -11,7 +11,7 @@ def main():
     """
     Parse arguments from argparse/questionnaire.
 
-    Invoke :func:`bbarchivist.escreens.calculate_escreens` with arguments.
+    Invoke :func:`bbarchivist.filehashtools.calculate_escreens` with arguments.
     """
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(

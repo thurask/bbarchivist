@@ -17,7 +17,7 @@ def main():
     """
     Parse arguments from argparse/questionnaire.
 
-    Invoke :func:`bbarchivist.lazyloader.do_magic` with those arguments.
+    Invoke :func:`bbarchivist.scripts.lazyloader.do_magic` with those arguments.
     """
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(

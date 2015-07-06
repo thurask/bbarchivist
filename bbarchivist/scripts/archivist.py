@@ -13,14 +13,14 @@ from bbarchivist import utilities  # input validation
 from bbarchivist import barutils  # file/folder work
 from bbarchivist import networkutils  # download/lookup
 from bbarchivist import loadergen  # cap, in Python
-from bbarchivist import hashwrapper  # hashes, GPG
+from bbarchivist import filehashtools  # hashes, GPG
 
 
 def main():
     """
     Parse arguments from argparse/questionnaire.
 
-    Invoke :func:`bbarchivist.archivist.do_magic` with those arguments.
+    Invoke :func:`bbarchivist.scripts.archivist.do_magic` with those arguments.
     """
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(
@@ -715,7 +715,7 @@ def do_magic(osversion, radioversion=None, softwareversion=None,
             "\n")
         blocksize = 32 * 1024 * 1024
         if compressed:
-            hashwrapper.verifier(
+            filehashtools.verifier(
                 zipdir_os,
                 blocksize,
                 crc32,
@@ -731,7 +731,7 @@ def do_magic(osversion, radioversion=None, softwareversion=None,
                 whirlpool,
                 not onefile)
             if radios:
-                hashwrapper.verifier(
+                filehashtools.verifier(
                     zipdir_radio,
                     blocksize,
                     crc32,
@@ -747,7 +747,7 @@ def do_magic(osversion, radioversion=None, softwareversion=None,
                     whirlpool,
                     not onefile)
         if not deleted:
-            hashwrapper.verifier(
+            filehashtools.verifier(
                 loaderdir_os,
                 blocksize,
                 crc32,
@@ -763,7 +763,7 @@ def do_magic(osversion, radioversion=None, softwareversion=None,
                 whirlpool,
                 not onefile)
             if radios:
-                hashwrapper.verifier(
+                filehashtools.verifier(
                     loaderdir_radio,
                     blocksize,
                     crc32,
@@ -783,25 +783,25 @@ def do_magic(osversion, radioversion=None, softwareversion=None,
             print("\nVERIFYING LOADERS...")
             print("KEY:", gpgkey)
             if compressed:
-                hashwrapper.gpgrunner(
+                filehashtools.gpgrunner(
                     zipdir_os,
                     gpgkey,
                     gpgpass,
                     True)
                 if radios:
-                    hashwrapper.gpgrunner(
+                    filehashtools.gpgrunner(
                         zipdir_radio,
                         gpgkey,
                         gpgpass,
                         True)
             if not deleted:
-                hashwrapper.gpgrunner(
+                filehashtools.gpgrunner(
                     loaderdir_os,
                     gpgkey,
                     gpgpass,
                     True)
                 if radios:
-                    hashwrapper.gpgrunner(
+                    filehashtools.gpgrunner(
                         loaderdir_radio,
                         gpgkey,
                         gpgpass,

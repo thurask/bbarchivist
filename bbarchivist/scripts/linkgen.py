@@ -12,7 +12,7 @@ def main():
     """
     Parse arguments from argparse/questionnaire.
 
-    Invoke :func:`bbarchivist.linkgen.do_magic` with those arguments.
+    Invoke :func:`bbarchivist.scripts.linkgen.do_magic` with those arguments.
     """
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(

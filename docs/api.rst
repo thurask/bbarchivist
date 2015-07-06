@@ -17,14 +17,6 @@ Filehashtools module
     :undoc-members:
     :show-inheritance:
 
-Hashwrapper module
-------------------
-
-.. automodule:: bbarchivist.hashwrapper
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Loadergen module
 ----------------
 

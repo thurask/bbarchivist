@@ -1,4 +1,4 @@
-from bbarchivist import lazyloader
+from bbarchivist.scripts import lazyloader
 from bbarchivist.utilities import is_windows
 import easygui as eg
 from os import getcwd

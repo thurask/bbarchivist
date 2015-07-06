@@ -5,7 +5,7 @@ import sys  # load arguments
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import networkutils  # lookup
 from bbarchivist import utilities  # incrementer
-from bbarchivist import linkgen  # link generator
+from bbarchivist.scripts import linkgen  # link generator
 import time  # get datestamp for lookup
 import os  # path work
 
@@ -14,7 +14,7 @@ def main():
     """
     Parse arguments from argparse/questionnaire.
 
-    Invoke :func:`bbarchivist.autolookup.do_magic` with those arguments.
+    Invoke :func:`bbarchivist.scripts.autolookup.do_magic` with those arguments.
     """
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(
