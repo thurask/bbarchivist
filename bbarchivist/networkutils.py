@@ -407,16 +407,30 @@ def ptcrb_scraper(ptcrbid):
     req = requests.get(baseurl)
     soup = BeautifulSoup(req.content, 'html.parser')
     text = soup.get_text()
-    prelimlist = re.findall("OS Version.+\\n", text)
+    text = text.replace("\r\n", " ")
+    prelimlist = re.findall("OS Version.+[^\\n]", text)
     cleanlist = []
     for item in prelimlist:
-        if not item.endswith("\r\n"):
+        if not item.endswith("\r\n"):  # they should hire QC people...
             cleanitem = item
+            cleanitem = cleanitem.replace("<td>", "")
+            cleanitem = cleanitem.replace("</td>", "")
             cleanitem = cleanitem.replace("\n", "")
             cleanitem = re.sub("\s?\((.*)$", "", cleanitem)
+            cleanitem = re.sub("\sSV.*$", "", cleanitem)
             cleanitem = cleanitem.replace(". ", ".")
+            cleanitem = cleanitem.replace(";", "")
+            cleanitem = cleanitem.replace("Verison", "Version")
+            if item.count("OS") > 1:
+                templist = item.split("OS")
+                templist[0] = "OS"
+                cleanitem = "".join([templist[0], templist[1]])
             cleanitem = cleanitem.replace(" Version:", ":")
+            cleanitem = cleanitem.replace("Version ", " ")
             cleanitem = cleanitem.replace(":1", ": 1")
+            cleanitem = cleanitem.replace(", ", " ")
+            cleanitem = cleanitem.replace("Software", "SW")
+            cleanitem = cleanitem.replace("  ", " ")
             cleanitem = cleanitem.strip()
             cleanlist.append(cleanitem)
     return cleanlist
