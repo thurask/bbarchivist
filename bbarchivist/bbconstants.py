@@ -1,7 +1,7 @@
 import os.path  # for producing cap location constant
 
 #: App version.
-VERSION = "1.8.1"
+VERSION = "1.9.0"
 #: Version of cap.exe bundled with app.
 CAPVERSION = "3.11.0.22"
 #: Where cap.exe is. Should be in site-packages.
