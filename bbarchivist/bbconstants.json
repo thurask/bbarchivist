@@ -94,7 +94,7 @@
 		"name":"SQN100-5",
 		"hwid":"8700270A",
 		"fccid":"RFP121LW",
-		"ptcrbid":"22291"
+		"ptcrbid":"22921"
 	},
 	{
 		"device":"Q5",
@@ -198,7 +198,7 @@
 		"name":"SQC100-2",
 		"hwid":"9400270A",
 		"fccid":"RHE151LW",
-		"ptcrbid":"28812"
+		"ptcrbid":"28112"
 	},
 	{
 		"device":"CLASSIC",
