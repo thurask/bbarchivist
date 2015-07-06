@@ -6,7 +6,9 @@ import xml.etree.ElementTree  # XML parsing
 import re  # regexes
 import hashlib  # base url creation
 from bbarchivist import utilities  # parse filesize
-from bbarchivist.bbconstants import SERVERS  # lookup bootstrap
+from bbarchivist.bbconstants import SERVERS, JSONFILE  # lookup servers, JSON
+from bs4 import BeautifulSoup  # scraping
+from json import load
 import concurrent.futures  # multiprocessing/threading
 import glob  # pem file lookup
 
@@ -390,3 +392,29 @@ def available_bundle_lookup(mcc, mnc, device):
     for child in package:
         adder(child.attrib["version"])
     return bundlelist
+
+
+def ptcrb_scraper(ptcrbid):
+    """
+    Get the PTCRB results for a given device.
+
+    :param ptcrbid: Numerical ID from PTCRB (end of URL).
+    :type ptcrbid: str
+    """
+    baseurl = "https://ptcrb.com/vendor/complete/view_complete_request_guest.cfm?modelid=" #@IgnorePep8
+    baseurl += ptcrbid
+    os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
+    req = requests.get(baseurl)
+    soup = BeautifulSoup(req.content, 'html.parser')
+    text = soup.get_text()
+    prelimlist = re.findall("OS Version.+\\n", text)
+    cleanlist = []
+    for item in prelimlist:
+        if not item.endswith("\r\n"):
+            cleanitem = item
+            cleanitem = cleanitem.replace("\n", "")
+            cleanitem = re.sub("\s?\((.*)$", "", cleanitem)
+            cleanitem = cleanitem.replace(". ", ".")
+            cleanitem = cleanitem.strip()
+            cleanlist.append(cleanitem)
+    return cleanlist
