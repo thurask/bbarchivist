@@ -75,7 +75,8 @@ but not 40.
 
 It also requires the
 `requests <http://docs.python-requests.org/en/latest/user/install/>`__
-library installed somehow. Installation with pip does this
+and `Beautiful Soup 4 <http://www.crummy.com/software/BeautifulSoup/#Download>`__
+libraries installed somehow. Installation with pip does this
 automatically, or use your package manager's version.
 
 PGP support requires the
@@ -191,6 +192,12 @@ Autolookup
 
 1. Ask for OS version, whether to loop (if not specified)
 2. Return lookup/availability for given OS (if lookup is valid)
+
+Certchecker
+~~~~~~~~~~~
+
+1. Ask for hardware/FCC ID or model number (if not specified)
+2. Return certified OS versions for that device
 
 Command Line Arguments
 ----------------------
@@ -465,6 +472,26 @@ Help
     
     http://github.com/thurask/bbarchivist
 
+    
+----------------------------------------
+
+::
+
+    > bb-certchecker -h
+    
+    usage: bb-cchecker [-h] [-v] device
+
+    Checks a carrier for an OS version, can download.
+    
+    positional arguments:
+      device         FCCID/HWID/model number
+    
+    optional arguments:
+      -h, --help     show this help message and exit
+      -v, --version  show program's version number and exit
+    
+    http://github.com/thurask/bbarchivist
+
 Example
 ~~~~~~~
 
@@ -530,6 +557,12 @@ More importantly, MAKE SURE TO HAVE GnuPG SET UP BEFOREHAND!
 would start a lookup loop from OS 10.3.1.2726, outputting results to screen and to a log file.
 Location is in your home directory.
 
+::
+
+    > bb-certchecker STA100-5
+    
+would print a list of all of the OSs that were ever certified for the Z30 STA100-5.
+
 License
 -------
 
@@ -543,6 +576,7 @@ Credits/Software Used
 -  bbarchivist: `Thurask <https://twitter.com/thuraski>`__
 -  Python: `The Python Software Foundation <https://www.python.org>`__
 -  Requests: `Kenneth Reitz et al. <http://docs.python-requests.org/en/latest/dev/authors/>`__
+-  Beautiful Soup: `Leonard Richardson et al. <http://www.crummy.com/software/BeautifulSoup/>`__
 -  Python-GnuPG: `Vinay Sajip et al. <https://pythonhosted.org/python-gnupg/index.html#acknowledgements>`__
 -  easygui: `easygui dev team <https://pythonhosted.org/easygui/support.html>`__
 -  PyDev: `Brainwy Software Ltda. <http://pydev.org>`__

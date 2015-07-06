@@ -25,6 +25,14 @@ Carrierchecker script
     :undoc-members:
     :show-inheritance:
 
+Certchecker script
+------------------
+
+.. automodule:: bbarchivist.scripts.certchecker
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Escreens script
 ---------------
 

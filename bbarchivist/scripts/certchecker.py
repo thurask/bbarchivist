@@ -15,8 +15,8 @@ def main():
     """
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(
-            prog="bb-cchecker",
-            description="Checks a carrier for an OS version, can download.",
+            prog="bb-certchecker",
+            description="Checks certifications for a given device.",
             epilog="http://github.com/thurask/bbarchivist")
         parser.add_argument(
             "-v",
@@ -66,7 +66,7 @@ def do_magic(device):
     print("~~~CERTCHECKER VERSION", VERSION + "~~~")
     print("DEVICE:", device.upper())
     print("VARIANT:", name.upper())
-    print("\nCHECKING CERTIFICATIONS...")
+    print("\nCHECKING CERTIFICATIONS...\n")
     certlist = networkutils.ptcrb_scraper(ptcrbid)
     for cert in certlist:
         print(cert)
