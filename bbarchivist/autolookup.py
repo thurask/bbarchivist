@@ -1,11 +1,82 @@
 #!/usr/bin/env python3
 
+import argparse  # parse arguments
+import sys  # load arguments
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import networkutils  # lookup
 from bbarchivist import utilities  # incrementer
 from bbarchivist import linkgen  # link generator
 import time  # get datestamp for lookup
 import os  # path work
+
+
+def main():
+    """
+    Parse arguments from argparse/questionnaire.
+
+    Invoke :func:`bbarchivist.autolookup.do_magic` with those arguments.
+    """
+    if len(sys.argv) > 1:
+        parser = argparse.ArgumentParser(
+            prog="bb-autolookup",
+            description="Get software release for one/many OS versions.",
+            epilog="http://github.com/thurask/bbarchivist")
+        parser.add_argument(
+            "-v",
+            "--version",
+            action="version",
+            version="%(prog)s " +
+            bbconstants.VERSION)
+        parser.add_argument("os", help="OS version, 10.x.y.zzzz")
+        parser.add_argument(
+            "-l", "--loop",
+            dest="recurse",
+            help="Loop lookup, CTRL-C to quit",
+            action="store_true",
+            default=False)
+        parser.add_argument(
+            "-o", "--output",
+            dest="log",
+            help="Output to file",
+            action="store_true",
+            default=False)
+        parser.add_argument(
+            "-a", "--autogen",
+            dest="autogen",
+            help="Generate links for availables",
+            action="store_true",
+            default=False)
+        parser.add_argument(
+            "-i", "--increment",
+            dest="increment",
+            help="Loop increment, default = 3",
+            default=3,
+            type=utilities.positive_integer,
+            metavar="INT")
+        args = parser.parse_args(sys.argv[1:])
+        parser.set_defaults()
+        do_magic(
+            args.os,
+            args.recurse,
+            args.log,
+            args.autogen,
+            args.increment)
+    else:
+        osversion = input("OS VERSION: ")
+        recurse = utilities.str2bool(input("LOOP?: "))
+        print(" ")
+        do_magic(
+            osversion,
+            recurse,
+            True,
+            False,
+            3)
+        smeg = input("Press Enter to exit")
+        if smeg or not smeg:
+            raise SystemExit
+
+if __name__ == "__main__":
+    main()
 
 
 def do_magic(osversion, loop=False, log=False, autogen=False, increment=3):

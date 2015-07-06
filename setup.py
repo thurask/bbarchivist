@@ -12,7 +12,8 @@ def readme():
 
 
 cond_requires = ['requests',
-                 'python-gnupg']
+                 'python-gnupg',
+                 'beautifulsoup4']
 if version_info[1] < 3:  # 3.2 and under
     cond_requires.append('shutilwhich')
 setup(name='bbarchivist',
@@ -54,12 +55,12 @@ setup(name='bbarchivist',
       include_package_data=True,
       install_requires=cond_requires,
       entry_points={
-        'console_scripts': ['bb-archivist=bbarchivist.archivist_wrap:main',
+        'console_scripts': ['bb-archivist=bbarchivist.archivist:main',
                             'bb-lazyloader=bbarchivist.lazyloader_wrap:main',
-                            'bb-cchecker=bbarchivist.carrierchecker_wrap:main',
-                            'bb-filehasher=bbarchivist.filehasher_wrap:main',
-                            'bb-escreens=bbarchivist.escreens_wrap:main',
-                            'bb-linkgen=bbarchivist.linkgen_wrap:main',
-                            'bb-gpgrunner=bbarchivist.gpgrunner_wrap:main',
-                            'bb-autolookup=bbarchivist.autolookup_wrap:main'],
+                            'bb-cchecker=bbarchivist.carrierchecker:main',
+                            'bb-filehasher=bbarchivist.filehasher:main',
+                            'bb-escreens=bbarchivist.escreens:main',
+                            'bb-linkgen=bbarchivist.linkgen:main',
+                            'bb-gpgrunner=bbarchivist.gpgrunner:main',
+                            'bb-autolookup=bbarchivist.autolookup:main'],
         })

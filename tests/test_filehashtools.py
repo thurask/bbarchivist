@@ -89,3 +89,9 @@ class TestClassFilehashtools:
             with open("tempfile.txt.asc", "rb") as sig:
                 verified = gpginst.verify_file(sig, 'tempfile.txt')
                 assert verified
+
+    def test_escreens(self):
+        pin = "acdcacdc"
+        app = "10.3.2.500"
+        uptime = "69696969"
+        assert bf.calculate_escreens(pin, app, uptime) == "E23F8E7F"

@@ -1,42 +1,65 @@
 #!/usr/bin/env python3
 
-import hmac  # escreens is a hmac, news at 11
-import hashlib  # to get sha1
-
-#: Somehow, values for lifetimes for escreens.
-LIFETIMES = {
-    1: "",
-    3: "Hello my baby, hello my honey, hello my rag time gal",
-    7: "He was a boy, and she was a girl, can I make it any more obvious?",
-    15: "So am I, still waiting, for this world to stop hating?",
-    30: "I love myself today, not like yesterday. I'm cool, I'm calm, I'm gonna be okay" # @IgnorePep8
-}
-#: Escreens magic HMAC secret.
-SECRET = 'Up the time stream without a TARDIS'
+import argparse  # parse arguments
+import sys  # load arguments
+from bbarchivist import filehashtools  # main program
+from bbarchivist import bbconstants  # constants/versions
+from bbarchivist import utilities  # input validation
 
 
-def calculate_escreens(pin, app, uptime, duration=30):
+def main():
     """
-    Calculate key for the Engineering Screens based on input.
+    Parse arguments from argparse/questionnaire.
 
-    :param pin: PIN to check. 8 character hexadecimal, lowercase.
-    :type pin: str
-
-    :param app: App version. 10.x.y.zzzz.
-    :type app: str
-
-    :param uptime: Uptime in ms.
-    :type uptime: str
-
-    :param duration: 1, 3, 6, 15, 30 (days).
-    :type duration: str
+    Invoke :func:`bbarchivist.escreens.calculate_escreens` with arguments.
     """
-    duration = int(duration)
-    if duration not in [1, 3, 6, 15, 30]:
-        duration = 1
-    data = pin.lower() + app + uptime + LIFETIMES[duration]
-    newhmac = hmac.new(SECRET.encode(),
-                       data.encode(),
-                       digestmod=hashlib.sha1)
-    key = newhmac.hexdigest()[:8]
-    return key.upper()
+    if len(sys.argv) > 1:
+        parser = argparse.ArgumentParser(
+            prog="bb-escreens",
+            description="Calculates escreens codes.",
+            epilog="http://github.com/thurask/bbarchivist")
+        parser.add_argument(
+            "-v",
+            "--version",
+            action="version",
+            version="%(prog)s " +
+            bbconstants.VERSION)
+        parser.add_argument("pin",
+                            help="PIN, 8 characters",
+                            type=utilities.escreens_pin)
+        parser.add_argument("app",
+                            help="OS version, 10.x.y.zzzz")
+        parser.add_argument("uptime",
+                            help="Uptime, in ms",
+                            type=utilities.positive_integer)
+        parser.add_argument("duration",
+                            help="1/3/6/15/30 days",
+                            type=utilities.escreens_duration)
+        args = parser.parse_args(sys.argv[1:])
+        key = filehashtools.calculate_escreens(
+            args.pin,
+            args.app,
+            args.uptime,
+            args.duration)
+        print(key)
+    else:
+        pin = input("PIN: ")
+        app = input("APP VERSION: ")
+        uptime = int(input("UPTIME: "))
+        duration = int(input("1/3/6/15/30 DAYS: "))
+        pin = utilities.escreens_pin(pin)
+        uptime = str(utilities.positive_integer(uptime))
+        duration = utilities.escreens_duration(duration)
+        print(" ")
+        key = filehashtools.calculate_escreens(
+            pin.lower(),
+            app,
+            uptime,
+            duration)
+        print(key)
+        smeg = input("Press Enter to exit")
+        if smeg or not smeg:
+            raise SystemExit
+
+if __name__ == "__main__":
+    main()
