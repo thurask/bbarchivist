@@ -479,7 +479,7 @@ Help
 
     > bb-certchecker -h
     
-    usage: bb-cchecker [-h] [-v] device
+    usage: bb-certchecker [-h] [-v] device
 
     Checks a carrier for an OS version, can download.
     
