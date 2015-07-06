@@ -7,7 +7,6 @@ __pycache__
 dist/
 *.egg-info
 build/
-bbarchivist/__pycache__
 *.bar
 *.7z
 *.cksum
@@ -15,5 +14,8 @@ bbarchivist/__pycache__
 *.asc
 docs/_build
 .settings/
+bbarchivist/__pycache__
 bbarchivist/lazyloader
-tests/__pycache__
+bbarchivist/scripts/__pycache__
+bbarchivist/scripts/lazyloader
+bbarchivist/tests/__pycache__
