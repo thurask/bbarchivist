@@ -170,17 +170,19 @@ def do_magic(mcc, mnc, device,
     :param bundles: Whether or not to check software bundles. Default is false.
     :type bundles: bool
     """
+    device = device.upper()
     if directory is None:
         directory = os.getcwd()
     with open(bbconstants.JSONFILE) as thefile:
         data = json.load(thefile)
     data = data['devices']
     for key in data:
-        if key['name'] == device:
-            model = key['device']
-            family = key['family']
-            hwid = key['hwid']
-            break
+        if 'secret' not in key:
+            if key['name'] == device:
+                model = key['device']
+                family = key['family']
+                hwid = key['hwid']
+                break
     else:
         print("INVALID DEVICE!")
         raise SystemExit

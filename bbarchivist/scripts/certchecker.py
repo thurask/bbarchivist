@@ -54,7 +54,7 @@ def do_magic(device):
     data = data['devices']
     device = device.upper()
     for key in data:
-        if device in (key['name'], key['hwid'], key['fccid'], key['ptcrbid']):
+        if device in (key['hwid'], key['fccid'], key['ptcrbid']) or (device in key['name'] and 'secret' not in key): #@IgnorePep8
             if key['ptcrbid']:
                 device = key['device']
                 name = key['name']
