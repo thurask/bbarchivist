@@ -185,6 +185,14 @@
 		"ptcrbid":""
 	},
 	{
+		"device":"Z30",
+		"family":"Z30-CLASSIC-LEAP",
+		"name":"STA100-9",
+		"hwid":"AD00240A",
+		"fccid":"",
+		"ptcrbid":""
+	},
+	{
 		"device":"CLASSIC",
 		"family":"Z30-CLASSIC-LEAP",
 		"name":"SQC100-1",
@@ -287,6 +295,146 @@
 		"hwid":"8F0020CA",
 		"fccid":"RHR191LW",
 		"ptcrbid":""
+	},
+	{
+		"device":"Q3",
+		"family":"KOPI/CAFE",
+		"name":"SQC100-1",
+		"hwid":"87002A07",
+		"fccid":"RGP71UW",
+		"ptcrbid":"",
+		"secret":"True"
+	},
+	{
+		"device":"Q3",
+		"family":"KOPI/CAFE",
+		"name":"SQC100-2",
+		"hwid":"8C002A07",
+		"fccid":"RGN81UW",
+		"ptcrbid":"",
+		"secret":"True"
+	},
+	{
+		"device":"Z5",
+		"family":"KOPI/CAFE",
+		"name":"STB100-1",
+		"hwid":"9700240A",
+		"fccid":"RGH111LW",
+		"ptcrbid":"",
+		"secret":"True"
+	},
+	{
+		"device":"Z5",
+		"family":"KOPI/CAFE",
+		"name":"STB100-2",
+		"hwid":"9600240A",
+		"fccid":"RGJ121LW",
+		"ptcrbid":"",
+		"secret":"True"
+	},
+	{
+		"device":"Z5",
+		"family":"KOPI/CAFE",
+		"name":"STB100-3",
+		"hwid":"A700240A",
+		"fccid":"RGL121LW",
+		"ptcrbid":"",
+		"secret":"True"
+	},
+	{
+		"device":"Z5",
+		"family":"KOPI/CAFE",
+		"name":"STB100-4",
+		"hwid":"AC00240A",
+		"fccid":"RGM121LW",
+		"ptcrbid":"",
+		"secret":"True"
+	},
+	{
+		"device":"Z5",
+		"family":"KOPI/CAFE",
+		"name":"STB100-5",
+		"hwid":"9C00240A",
+		"fccid":"RGK111LW",
+		"ptcrbid":"",
+		"secret":"True"
+	},
+	{
+		"device":"Z20",
+		"family":"MANITOBA",
+		"name":"STM100-1",
+		"hwid":"5002E0A",
+		"fccid":"",
+		"ptcrbid":"",
+		"secret":"True"
+	},
+	{
+		"device":"Z20",
+		"family":"MANITOBA",
+		"name":"STM100-2",
+		"hwid":"4002E0A",
+		"fccid":"RHC161LW",
+		"ptcrbid":"",
+		"secret":"True"
+	},
+	{
+		"device":"DEVALPHA",
+		"family":"DEV",
+		"name":"PRO100-2",
+		"hwid":"4002307",
+		"fccid":"",
+		"ptcrbid":"",
+		"secret":"True"
+	},
+	{
+		"device":"DEVALPHAB",
+		"family":"DEV",
+		"name":"STL100-1",
+		"hwid":"4002607",
+		"fccid":"RFG82UW",
+		"ptcrbid":"",
+		"secret":"True"
+	},
+	{
+		"device":"DEVALPHAC",
+		"family":"DEV",
+		"name":"SQN100-3",
+		"hwid":"8D00270A",
+		"fccid":"RFN82UW",
+		"ptcrbid":"",
+		"secret":"True"
+	},
+	{
+		"device":"PLAYBOOK WIFI",
+		"family":"PLAYBOOK",
+		"name":"PBWIFI",
+		"hwid":"6001A06",
+		"fccid":"RDJ21WW",
+		"ptcrbid":""
+	},
+	{
+		"device":"PLAYBOOK VZW",
+		"family":"PLAYBOOK",
+		"name":"PBVZW",
+		"hwid":"C001A06",
+		"fccid":"REF31LW",
+		"ptcrbid":""
+	},
+	{
+		"device":"PLAYBOOK HSPA+",
+		"family":"PLAYBOOK",
+		"name":"PBHSPA",
+		"hwid":"E001A06",
+		"fccid":"REH51UW",
+		"ptcrbid":"21167"
+	},
+	{
+		"device":"PLAYBOOK LTE",
+		"family":"PLAYBOOK",
+		"name":"PBLTE",
+		"hwid":"D001A06",
+		"fccid":"REG51LW",
+		"ptcrbid":"21212"
 	}
 	]
 }

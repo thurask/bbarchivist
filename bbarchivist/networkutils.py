@@ -408,7 +408,7 @@ def ptcrb_scraper(ptcrbid):
     soup = BeautifulSoup(req.content, 'html.parser')
     text = soup.get_text()
     text = text.replace("\r\n", " ")
-    prelimlist = re.findall("OS Version.+[^\\n]", text)
+    prelimlist = re.findall("OS Version.+[^\\n]", text, re.IGNORECASE)
     cleanlist = []
     for item in prelimlist:
         if not item.endswith("\r\n"):  # they should hire QC people...
@@ -420,6 +420,7 @@ def ptcrb_scraper(ptcrbid):
             cleanitem = re.sub("\sSV.*$", "", cleanitem)
             cleanitem = cleanitem.replace(". ", ".")
             cleanitem = cleanitem.replace(";", "")
+            cleanitem = cleanitem.replace("version", "Version")
             cleanitem = cleanitem.replace("Verison", "Version")
             if item.count("OS") > 1:
                 templist = item.split("OS")
@@ -431,6 +432,7 @@ def ptcrb_scraper(ptcrbid):
             cleanitem = cleanitem.replace(", ", " ")
             cleanitem = cleanitem.replace("Software", "SW")
             cleanitem = cleanitem.replace("  ", " ")
+            cleanitem = cleanitem.replace("OS ", "OS: ")
             cleanitem = cleanitem.strip()
             cleanlist.append(cleanitem)
     return cleanlist
