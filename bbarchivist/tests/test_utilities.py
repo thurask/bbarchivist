@@ -41,6 +41,14 @@ class TestClassUtilities:
             bu.positive_integer(-34)
             assert "is too low" in str(argexc.value)
 
+    def test_valid_carrier(self):
+        assert bu.valid_carrier("302") == "302"
+        with pytest.raises(ArgumentError) as argexc:
+            bu.valid_carrier("1048576")
+            assert "invalid code" in str(argexc.value)
+            bu.valid_carrier("BANANA")
+            assert "integer" in str(argexc.value)
+
     def test_escreens_pin(self):
         assert bu.escreens_pin("ACDCACDC") == "acdcacdc"
 

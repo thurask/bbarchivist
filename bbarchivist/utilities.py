@@ -63,12 +63,30 @@ def positive_integer(inputint):
     Check if number > 0. Used for parsing integer inputs from command line.
 
     :param inputint: Integer to check.
-    :type inputint: int
+    :type inputint: str
     """
     if int(inputint) <= 0:
         raise argparse.ArgumentError(argument=None,
-                                     message="{0} is not >0.".format(str(inputint))) #@IgnorePep8
+                                     message="{0} is not >=0.".format(str(inputint))) #@IgnorePep8
     return int(inputint)
+
+
+def valid_carrier(thecode):
+    """
+    Check if MCC/MNC is valid (i.e. 1-3 chars)
+
+    :param thecode: MCC/MNC to check.
+    :type thecode: str
+    """
+    if not str(thecode).isdecimal():
+        raise argparse.ArgumentError(argument=None,
+                                         message="{0} is not an integer.".format(str(thecode))) #@IgnorePep8
+    else:
+        if len(str(thecode)) > 3 or len(str(thecode)) == 0:
+            raise argparse.ArgumentError(argument=None,
+                                             message="{0} is an invalid code.".format(str(thecode))) #@IgnorePep8
+        else:
+            return thecode
 
 
 def escreens_pin(pin):
