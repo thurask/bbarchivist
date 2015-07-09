@@ -20,11 +20,13 @@ def setup_module(module):
 
 
 def teardown_module(module):
-    os.remove(os.path.join(os.getcwd(), "tempfile.txt"))
-    os.remove(os.path.join(os.getcwd(), "tempfile.txt.cksum"))
+    if os.path.exists("tempfile.txt"):
+        os.remove("tempfile.txt")
+    if os.path.exists("tempfile.txt.cksum"):
+        os.remove("tempfile.txt.cksum")
     if not nognupg:
         if os.path.exists("tempfile.txt.asc"):
-            os.remove(os.path.join(os.getcwd(), "tempfile.txt.asc"))
+            os.remove("tempfile.txt.asc")
     os.chdir("..")
     rmtree("temp")
 

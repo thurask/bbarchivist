@@ -16,7 +16,8 @@ def teardown_module(module):
     for file in os.listdir():
             if file.endswith(".signed"):
                 os.remove(file)
-    os.remove("capfile")
+    if os.path.exists("capfile"):
+        os.remove("capfile")
     os.chdir("..")
     rmtree("temp")
 

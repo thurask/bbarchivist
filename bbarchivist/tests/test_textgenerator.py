@@ -17,20 +17,34 @@ def teardown_module(module):
 
 
 class TestClassTextGenerator:
-
-    def test_url_generator(self):
+    @classmethod
+    def setup_class(cls):
         deb, cor, rad = bt.url_generator("10.1.1000", "10.2.2000", "10.3.3000")
-        assert len(deb) == 5
-        assert deb[0].find("winchester") != -1
-        assert len(cor) == 5
-        assert cor[4].find("factory_sfi_hybrid_qc8974") != -1
-        assert len(rad) == 7
-        assert rad[-1].find("wtr2") != -1
+        cls.deb = deb
+        cls.cor = cor
+        cls.rad = rad
+
+    def test_url_generator_debrick_length(self):
+        assert len(self.deb) == 5
+
+    def test_url_generator_debrick_find(self):
+        assert self.deb[0].find("winchester") != -1
+
+    def test_url_generator_core_length(self):
+        assert len(self.cor) == 5
+
+    def test_url_generator_core_find(self):
+        assert self.cor[4].find("factory_sfi_hybrid_qc8974") != -1
+
+    def test_url_generator_radio_length(self):
+        assert len(self.rad) == 7
+
+    def test_url_generator_radio_find(self):
+        assert self.rad[-1].find("wtr2") != -1
 
     def test_write_links(self):
-        deb, cor, rad = bt.url_generator("10.1.1000", "10.2.2000", "10.3.3000")
         bt.write_links("10.3.3000", "10.1.1000", "10.2.2000",
-                       deb, cor, rad, True, False, None)
+                       self.deb, self.cor, self.rad, True, False, None)
         with open("10.3.3000.txt", 'r') as file:
             data = file.read()
             assert len(data) == 2917

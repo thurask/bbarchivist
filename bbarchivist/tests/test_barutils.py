@@ -1,5 +1,6 @@
 import bbarchivist.barutils as bb
 import os
+from bbarchivist.utilities import prep_seven_zip, get_seven_zip
 from subprocess import call
 from shutil import rmtree, copyfile
 from sys import version_info
@@ -16,6 +17,8 @@ def setup_module(module):
         targetfile.write("Jackdaws love my big sphinx of quartz")
     with open("Z10_BIGLOADER.exe", "w") as targetfile:
         targetfile.write("0"*95000000)
+    if os.path.exists("a_temp_folder"):
+        rmtree("a_temp_folder")
     os.mkdir("a_temp_folder")
 
 
@@ -27,7 +30,7 @@ def teardown_module(module):
     rmtree("bigzipped", ignore_errors=True)
     rmtree("smallzipped", ignore_errors=True)
     os.chdir("..")
-    rmtree("temp")
+    rmtree("temp", ignore_errors=True)
 
 
 class TestClassBarutils:
@@ -59,7 +62,6 @@ class TestClassBarutils:
 
     def test_compress_sz(self):
         try:
-            from bbarchivist.utilities import prep_seven_zip, get_seven_zip
             exists = prep_seven_zip()
             if exists:
                 szexe = get_seven_zip(False)
@@ -70,6 +72,8 @@ class TestClassBarutils:
                 pass
         except Exception:
             assert False
+        if os.path.exists("Z10_BIGLOADER.7z"):
+            os.remove("Z10_BIGLOADER.7z")
 
     def test_compress_zip(self):
         bb.compress(os.getcwd(), "zip")
@@ -83,14 +87,20 @@ class TestClassBarutils:
         assert bb.bar_tester("Z10_BIGLOADER.bar") == None
         if os.path.exists("Z10_BIGLOADER.bar"):
             os.remove("Z10_BIGLOADER.bar")
+        if os.path.exists("Z10_BIGLOADER.zip"):
+            os.remove("Z10_BIGLOADER.zip")
 
     def test_compress_gzip(self):
         bb.compress(os.getcwd(), "tgz")
         assert is_tarfile("Z10_BIGLOADER.tar.gz")
+        if os.path.exists("Z10_BIGLOADER.tar.gz"):
+            os.remove("Z10_BIGLOADER.tar.gz")
 
     def test_compress_bz2(self):
         bb.compress(os.getcwd(), "tbz")
         assert is_tarfile("Z10_BIGLOADER.tar.bz2")
+        if os.path.exists("Z10_BIGLOADER.tar.bz2"):
+            os.remove("Z10_BIGLOADER.tar.bz2")
 
     def test_compress_lzma(self):
         if version_info[1] < 3:
@@ -98,6 +108,8 @@ class TestClassBarutils:
         else:
             bb.compress(os.getcwd(), "txz")
             assert is_tarfile("Z10_BIGLOADER.tar.xz")
+            if os.path.exists("Z10_BIGLOADER.tar.xz"):
+                os.remove("Z10_BIGLOADER.tar.xz")
 
     def test_remove_empty_folders(self):
         bb.remove_empty_folders(os.getcwd())
@@ -109,22 +121,18 @@ class TestClassBarutils:
                      mode="r",
                      compression=ZIP_DEFLATED) as zfile:
             assert zfile.testzip() == None
-
-    def test_move_loaders(self):
-        if os.path.exists("Z10_BIGLOADER.zip"):
-            os.remove("Z10_BIGLOADER.zip")
-        if os.path.exists("Z10_BIGLOADER.tar.gz"):
-            os.remove("Z10_BIGLOADER.tar.gz")
-        if os.path.exists("Z10_BIGLOADER.tar.bz2"):
-            os.remove("Z10_BIGLOADER.tar.bz2")
-        if os.path.exists("Z10_BIGLOADER.tar.xz"):
-            os.remove("Z10_BIGLOADER.tar.xz")
-        if os.path.exists("Z10_BIGLOADER.7z"):
-            os.remove("Z10_BIGLOADER.7z")
         if os.path.exists("Blitz-testing.zip"):
             os.remove("Blitz-testing.zip")
+
+
+class TestClassBarutilsLoaderMover():
+    @classmethod
+    def setup_class(self):
         with open("Z30_SMALLLOADER.exe", "w") as targetfile:
             targetfile.write("0"*95000)
+        if not os.path.exists("Z10_BIGLOADER.exe"):
+            with open("Z10_BIGLOADER.exe", "w") as targetfile:
+                targetfile.write("0"*95000000)
         copyfile("Z10_BIGLOADER.exe", "Q10_BIGZIPPED.zip")
         copyfile("Z30_SMALLLOADER.exe", "Z3_SMALLZIPPED.zip")
         os.mkdir("bigloaders")
@@ -132,7 +140,15 @@ class TestClassBarutils:
         os.mkdir("bigzipped")
         os.mkdir("smallzipped")
         bb.move_loaders(os.getcwd(), "bigloaders", "smallloaders", "bigzipped", "smallzipped") #@IgnorePep8
-        assert os.listdir("bigloaders")[0] == "Z10_BIGLOADER.exe"
-        assert os.listdir("smallloaders")[0] == "Z30_SMALLLOADER.exe"
-        assert os.listdir("bigzipped")[0] == "Q10_BIGZIPPED.zip"
+
+    def test_move_loaders_smallzip(self):
         assert os.listdir("smallzipped")[0] == "Z3_SMALLZIPPED.zip"
+
+    def test_move_loaders_bigzip(self):
+        assert os.listdir("bigzipped")[0] == "Q10_BIGZIPPED.zip"
+
+    def test_move_loaders_smallexe(self):
+        assert os.listdir("smallloaders")[0] == "Z30_SMALLLOADER.exe"
+
+    def test_move_loaders_bigexe(self):
+        assert os.listdir("bigloaders")[0] == "Z10_BIGLOADER.exe"
