@@ -14,8 +14,7 @@ def main():
     """
     Parse arguments from argparse/questionnaire.
 
-    Invoke :func:`bbarchivist.scripts.autolookup.do_magic` with those arguments.
-    """
+    Invoke :func:`bbarchivist.scripts.autolookup.do_magic` with those arguments.""" #@IgnorePep8
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(
             prog="bb-autolookup",

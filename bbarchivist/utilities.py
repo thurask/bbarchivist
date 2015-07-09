@@ -100,11 +100,13 @@ def escreens_pin(pin):
         try:
             int(pin, 16)  # hexadecimal-ness
         except ValueError:
-            raise argparse.ArgumentError("Invalid PIN.")
+            raise argparse.ArgumentError(argument=None,
+                                         message="Invalid PIN.")
         else:
             return pin.lower()
     else:
-        raise argparse.ArgumentError("Invalid PIN.")
+        raise argparse.ArgumentError(argument=None,
+                                     message="Invalid PIN.")
 
 
 def escreens_duration(duration):
@@ -117,7 +119,8 @@ def escreens_duration(duration):
     if int(duration) in (1, 3, 6, 15, 30):
         return int(duration)
     else:
-        raise argparse.ArgumentError("Invalid duration.")
+        raise argparse.ArgumentError(argument=None,
+                                     message="Invalid duration.")
 
 
 def str2bool(input_check):
