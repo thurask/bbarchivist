@@ -127,7 +127,7 @@ class TestClassBarutils:
 
 class TestClassBarutilsLoaderMover():
     @classmethod
-    def setup_class(self):
+    def setup_class(cls):
         with open("Z30_SMALLLOADER.exe", "w") as targetfile:
             targetfile.write("0"*95000)
         if not os.path.exists("Z10_BIGLOADER.exe"):
