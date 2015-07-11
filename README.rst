@@ -281,35 +281,36 @@ Help
 
     usage: bb-lazyloader [-h] [-v]
                      (--stl100-1 | --stl100-x | --stl100-4 | --q10 | --z30 | --z3 | --passport)
-                     [--run-loader] [-f DIR] [-n]
+                     [--run-loader] [-g] [-f DIR] [-n]
                      os [radio] [swrelease]
 
-   Create one autoloader for personal use.
-   
-   positional arguments:
-     os                    OS version, 10.x.y.zzzz
-     radio                 Radio version, 10.x.y.zzzz
-     swrelease             Software version, 10.x.y.zzzz
-   
-   optional arguments:
-     -h, --help            show this help message and exit
-     -v, --version         show program's version number and exit
-     --run-loader          Run autoloader after creation
-     -f DIR, --folder DIR  Working folder
-     -n, --no-download     Don't download files
-   
-   devices:
-     Device to load (one required)
-   
-     --stl100-1            STL100-1
-     --stl100-x            STL100-2/3, P'9982
-     --stl100-4            STL100-4
-     --q10                 Q10, Q5, P'9983
-     --z30                 Z30, Classic, Leap
-     --z3                  Z3
-     --passport            Passport
-   
-   http://github.com/thurask/bbarchivist
+    Create one autoloader for personal use.
+    
+    positional arguments:
+      os                    OS version, 10.x.y.zzzz
+      radio                 Radio version, 10.x.y.zzzz
+      swrelease             Software version, 10.x.y.zzzz
+    
+    optional arguments:
+      -h, --help            show this help message and exit
+      -v, --version         show program's version number and exit
+      --run-loader          Run autoloader after creation
+      -g, --gui             Use GUI
+      -f DIR, --folder DIR  Working folder
+      -n, --no-download     Don't download files
+    
+    devices:
+      Device to load (one required)
+    
+      --stl100-1            STL100-1
+      --stl100-x            STL100-2/3, P'9982
+      --stl100-4            STL100-4
+      --q10                 Q10, Q5, P'9983
+      --z30                 Z30, Classic, Leap
+      --z3                  Z3
+      --passport            Passport
+    
+    http://github.com/thurask/bbarchivist
 
 ----------------------------------------
 
