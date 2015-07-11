@@ -6,9 +6,8 @@ import xml.etree.ElementTree  # XML parsing
 import re  # regexes
 import hashlib  # base url creation
 from bbarchivist import utilities  # parse filesize
-from bbarchivist.bbconstants import SERVERS, JSONFILE  # lookup servers, JSON
+from bbarchivist.bbconstants import SERVERS  # lookup servers
 from bs4 import BeautifulSoup  # scraping
-from json import load
 import concurrent.futures  # multiprocessing/threading
 import glob  # pem file lookup
 

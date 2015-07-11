@@ -7,11 +7,11 @@ import argparse  # parse arguments
 import sys  # load arguments
 
 
-def main():
+def grab_args():
     """
     Parse arguments from argparse/questionnaire.
 
-    Invoke :func:`bbarchivist.scripts.certchecker.do_magic` with those arguments.
+    Invoke :func:`certchecker.certchecker_main` with arguments.
     """
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(
@@ -27,22 +27,17 @@ def main():
         parser.add_argument("device", help="FCCID/HWID/model number")
         parser.set_defaults()
         args = parser.parse_args(sys.argv[1:])
-        do_magic(
-            args.device)
+        certchecker_main(args.device)
     else:
         device = input("DEVICE (SXX100-#/FCCID/HWID): ")
         print(" ")
-        do_magic(
-            device)
+        certchecker_main(device)
         smeg = input("Press Enter to exit")
         if smeg or not smeg:
             raise SystemExit
 
-if __name__ == "__main__":
-    main()
 
-
-def do_magic(device):
+def certchecker_main(device):
     """
     Wrap around :mod:`bbarchivist.networkutils` certification checking.
 
@@ -70,3 +65,6 @@ def do_magic(device):
     certlist = networkutils.ptcrb_scraper(ptcrbid)
     for cert in certlist:
         print(cert)
+
+if __name__ == "__main__":
+    grab_args()

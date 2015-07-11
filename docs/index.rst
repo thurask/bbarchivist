@@ -15,8 +15,6 @@ Contents:
 
    api
    
-   wrappers
-   
 Indices and tables
 ==================
 

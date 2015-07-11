@@ -8,7 +8,7 @@ from bbarchivist import bbconstants  # constants/versions
 from bbarchivist import utilities  # input validation
 
 
-def main():
+def filehasher_main():
     """
     Parse arguments from argparse/questionnaire.
 
@@ -188,4 +188,4 @@ Default: SHA-1, SHA-256, MD5""",
             raise SystemExit
 
 if __name__ == "__main__":
-    main()
+    filehasher_main()

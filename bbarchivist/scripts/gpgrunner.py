@@ -9,7 +9,7 @@ from bbarchivist import filehashtools  # main program
 from bbarchivist import bbconstants  # constants/versions
 
 
-def main():
+def gpgrunner_main():
     """
     Parse arguments from argparse/questionnaire.
 
@@ -56,4 +56,4 @@ def main():
                           password)
 
 if __name__ == "__main__":
-    main()
+    gpgrunner_main()

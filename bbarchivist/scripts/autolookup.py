@@ -5,16 +5,16 @@ import sys  # load arguments
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import networkutils  # lookup
 from bbarchivist import utilities  # incrementer
-from bbarchivist.scripts import linkgen  # link generator
+from . import linkgen  # link generator @UnresolvedImport
 import time  # get datestamp for lookup
 import os  # path work
 
 
-def main():
+def grab_args():
     """
     Parse arguments from argparse/questionnaire.
 
-    Invoke :func:`bbarchivist.scripts.autolookup.do_magic` with those arguments.""" #@IgnorePep8
+    Invoke :func:`autolookup.autolookup_main` with those arguments.""" #@IgnorePep8
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(
             prog="bb-autolookup",
@@ -74,11 +74,8 @@ def main():
         if smeg or not smeg:
             raise SystemExit
 
-if __name__ == "__main__":
-    main()
 
-
-def do_magic(osversion, loop=False, log=False, autogen=False, increment=3):
+def autolookup_main(osversion, loop=False, log=False, autogen=False, increment=3):
     """
     Lookup a software release from an OS. Can iterate.
 
@@ -139,7 +136,7 @@ def do_magic(osversion, loop=False, log=False, autogen=False, increment=3):
                 if avail:
                     available = "Available"
                     if autogen:
-                        linkgen.do_magic(osversion, utilities.version_incrementer(osversion, 1), prel) #@IgnorePep8
+                        linkgen.autolookup_main(osversion, utilities.version_incrementer(osversion, 1), prel) #@IgnorePep8
                 else:
                     available = "Unavailable"
             else:
@@ -176,3 +173,6 @@ def do_magic(osversion, loop=False, log=False, autogen=False, increment=3):
                     continue
     except KeyboardInterrupt:
         raise SystemExit
+
+if __name__ == "__main__":
+    grab_args()

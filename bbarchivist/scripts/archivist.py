@@ -16,11 +16,11 @@ from bbarchivist import loadergen  # cap, in Python
 from bbarchivist import filehashtools  # hashes, GPG
 
 
-def main():
+def grab_args():
     """
     Parse arguments from argparse/questionnaire.
 
-    Invoke :func:`bbarchivist.scripts.archivist.do_magic` with those arguments.
+    Invoke :func:`archivist.archivist_main` with those arguments.
     """
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(
@@ -296,18 +296,18 @@ def main():
         else:
             gpgkey = None
             gpgpass = None
-        do_magic(args.os, args.radio, args.swrelease,
-                 args.folder, args.radloaders,
-                 args.compress, args.delete, args.verify,
-                 args.crc32, args.adler32, args.sha1,
-                 args.sha224, args.sha256,
-                 args.sha384, args.sha512, args.md5,
-                 args.md4, args.ripemd160, args.whirlpool,
-                 args.cappath, args.download,
-                 args.extract, args.loaders,
-                 args.signed, args.compmethod,
-                 args.gpg, gpgkey, gpgpass, args.onefile,
-                 args.integrity)
+        archivist_main(args.os, args.radio, args.swrelease,
+                       args.folder, args.radloaders,
+                       args.compress, args.delete, args.verify,
+                       args.crc32, args.adler32, args.sha1,
+                       args.sha224, args.sha256,
+                       args.sha384, args.sha512, args.md5,
+                       args.md4, args.ripemd160, args.whirlpool,
+                       args.cappath, args.download,
+                       args.extract, args.loaders,
+                       args.signed, args.compmethod,
+                       args.gpg, gpgkey, gpgpass, args.onefile,
+                       args.integrity)
     else:
         localdir = os.getcwd()
         osversion = input("OS VERSION: ")
@@ -321,31 +321,28 @@ def main():
             deleted = False
         hashed = utilities.str2bool(input("GENERATE HASHES? Y/N: "))
         print(" ")
-        do_magic(osversion, radioversion, softwareversion,
-                 localdir, radios, compressed, deleted, hashed,
-                 False, False, True, False, False,
-                 False, False, True, False, False,
-                 False, bbconstants.CAPLOCATION, True,
-                 True, True, True, "7z", False,
-                 False, None, None, False, True)
+        archivist_main(osversion, radioversion, softwareversion,
+                       localdir, radios, compressed, deleted, hashed,
+                       False, False, True, False, False,
+                       False, False, True, False, False,
+                       False, bbconstants.CAPLOCATION, True,
+                       True, True, True, "7z", False,
+                       False, None, None, False, True)
     smeg = input("Press Enter to exit")
     if smeg or not smeg:
         raise SystemExit
 
-if __name__ == "__main__":
-    main()
 
-
-def do_magic(osversion, radioversion=None, softwareversion=None,
-             localdir=None, radios=True, compressed=True, deleted=True,
-             hashed=True, crc32=False, adler32=False,
-             sha1=True, sha224=False, sha256=False,
-             sha384=False, sha512=False, md5=True,
-             md4=False, ripemd160=False, whirlpool=False,
-             cappath=None, download=True, extract=True,
-             loaders=True, signed=True, compmethod="7z",
-             gpg=False, gpgkey=None, gpgpass=None,
-             onefile=False, integrity=True):
+def archivist_main(osversion, radioversion=None, softwareversion=None,
+                   localdir=None, radios=True, compressed=True, deleted=True,
+                   hashed=True, crc32=False, adler32=False,
+                   sha1=True, sha224=False, sha256=False,
+                   sha384=False, sha512=False, md5=True,
+                   md4=False, ripemd160=False, whirlpool=False,
+                   cappath=None, download=True, extract=True,
+                   loaders=True, signed=True, compmethod="7z",
+                   gpg=False, gpgkey=None, gpgpass=None,
+                   onefile=False, integrity=True):
     """
     Wrap around multi-autoloader creation code.
     Some combination of creating, downloading, hashing,
@@ -825,3 +822,6 @@ def do_magic(osversion, radioversion=None, softwareversion=None,
     endtime = time.clock() - starttime
     endtime_proper = math.ceil(endtime * 100) / 100
     print("\nCompleted in " + str(endtime_proper) + " seconds\n")
+
+if __name__ == "__main__":
+    grab_args()

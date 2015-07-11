@@ -7,7 +7,7 @@ from bbarchivist import bbconstants  # constants/versions
 from bbarchivist import utilities  # input validation
 
 
-def main():
+def escreens_main():
     """
     Parse arguments from argparse/questionnaire.
 
@@ -62,4 +62,4 @@ def main():
             raise SystemExit
 
 if __name__ == "__main__":
-    main()
+    escreens_main()

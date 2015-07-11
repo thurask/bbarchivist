@@ -8,11 +8,11 @@ from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import textgenerator  # actually writing
 
 
-def main():
+def grab_args():
     """
     Parse arguments from argparse/questionnaire.
 
-    Invoke :func:`bbarchivist.scripts.linkgen.do_magic` with those arguments.
+    Invoke :func:`linkgen.linkgen_main` with those arguments.
     """
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(
@@ -40,7 +40,7 @@ def main():
                             default=None)
         parser.set_defaults()
         args = parser.parse_args(sys.argv[1:])
-        do_magic(
+        linkgen_main(
             args.os,
             args.radio,
             args.swrelease)
@@ -53,7 +53,7 @@ def main():
             radioversion = None
         if not softwareversion:
             softwareversion = None
-        do_magic(
+        linkgen_main(
             osversion,
             radioversion,
             softwareversion)
@@ -62,7 +62,7 @@ def main():
             raise SystemExit
 
 
-def do_magic(osversion, radioversion=None, softwareversion=None):
+def linkgen_main(osversion, radioversion=None, softwareversion=None):
     """
     Generate debrick/core/radio links for given OS, radio, software release.
 
@@ -99,4 +99,4 @@ def do_magic(osversion, radioversion=None, softwareversion=None):
                               avlty, False, None)
 
 if __name__ == "__main__":
-    main()
+    grab_args()

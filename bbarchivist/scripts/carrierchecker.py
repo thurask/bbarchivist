@@ -12,11 +12,11 @@ import shutil  # folder removal
 import json  # db work
 
 
-def main():
+def grab_args():
     """
     Parse arguments from argparse/questionnaire.
 
-    Invoke :func:`bbarchivist.scripts.carrierchecker.do_magic` with those arguments.""" #@IgnorePep8
+    Invoke :func:`carrierchecker.carrierchecker_main` with those arguments."""
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(
             prog="bb-cchecker",
@@ -86,7 +86,7 @@ def main():
             args.folder = os.getcwd()
         if args.blitz:
             args.upgrade = True  # blitz takes precedence
-        do_magic(
+        carrierchecker_main(
             args.mcc,
             args.mnc,
             args.device,
@@ -126,7 +126,7 @@ def main():
                 blitz = False
         directory = os.getcwd()
         print(" ")
-        do_magic(
+        carrierchecker_main(
             mcc,
             mnc,
             device,
@@ -139,16 +139,13 @@ def main():
         if smeg or not smeg:
             raise SystemExit
 
-if __name__ == "__main__":
-    main()
 
-
-def do_magic(mcc, mnc, device,
-             download=False, upgrade=False,
-             directory=None,
-             export=False,
-             blitz=False,
-             bundles=False):
+def carrierchecker_main(mcc, mnc, device,
+                        download=False, upgrade=False,
+                        directory=None,
+                        export=False,
+                        blitz=False,
+                        bundles=False):
     """
     Wrap around :mod:`bbarchivist.networkutils` carrier checking.
 
@@ -310,3 +307,6 @@ def do_magic(mcc, mnc, device,
                 barutils.create_blitz(bardir, swv)
                 shutil.rmtree(bardir)
             print("\nFINISHED!!!")
+
+if __name__ == "__main__":
+    grab_args()

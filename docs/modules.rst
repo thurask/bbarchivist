@@ -5,5 +5,3 @@ bbarchivist
    :maxdepth: 4
 
    api
-   
-   wrappers

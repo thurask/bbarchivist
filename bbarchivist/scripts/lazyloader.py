@@ -11,13 +11,77 @@ from bbarchivist import barutils  # file operations
 from bbarchivist import bbconstants  # constants/versions
 from bbarchivist import networkutils  # download/lookup
 from bbarchivist import loadergen  # cap wrapper
+import easygui as eg  # gui
 
 
-def main():
+def start_gui(osv=None, radv=None, swv=None, dev=None, aut=None,
+              fol=None, dow=None):
+    """
+    Either passes straight through to the main function,
+    or uses the GUI to prompt for variables.
+
+    :param osv: OS version.
+    :type osv: str
+
+    :param radv: Radio version.
+    :type radv: str
+
+    :param swv: Software version.
+    :type swv: str
+
+    :param dev: Device index, as an integer.
+    :type dev: int
+
+    :param aut: Run autoloader or not. Windows only.
+    :type aut: bool
+
+    :param fol: Folder to download to.
+    :type fol: str
+
+    :param dow: Download files or not.
+    :type dow: bool
+    """
+    if not osv:
+        osentry = eg.enterbox(msg="OS version")
+    else:
+        osentry = osv
+    if not radv:
+        radentry = eg.enterbox(msg="Radio version, click Cancel to guess")
+    else:
+        radentry = radv
+    if not swv:
+        swentry = eg.enterbox(msg="Software version, click Cancel to guess")
+    else:
+        swentry = swv
+    choicelist = ["STL100-1", "STL100-2/3/P9982", "STL100-4", "Q10/Q5/P9983",
+                  "Z30/CLASSIC/LEAP", "Z3", "PASSPORT"]
+    if not dev:
+        deventry = eg.choicebox(msg="Device", choices=choicelist)
+        for idx, device in enumerate(choicelist):
+            if device == deventry:
+                devint = idx
+    else:
+        devint = dev
+    if utilities.is_windows():
+        if not aut:
+            autoentry = eg.boolbox(msg="Run autoloader?")
+        else:
+            autoentry = aut
+    else:
+        autoentry = False
+    if not fol:
+        fol = os.getcwd()
+    if not dow:
+        dow = True
+    lazyloader_main(devint, osentry, radentry, swentry,
+                    fol, autoentry, dow)
+
+
+def grab_args():
     """
     Parse arguments from argparse/questionnaire.
 
-    Invoke :func:`bbarchivist.scripts.lazyloader.do_magic` with those arguments.
+    Invoke :func:`lazyloader.lazyloader_main` with arguments.
     """
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(
@@ -96,6 +160,13 @@ def main():
             action="store_true",
             default=False)
         parser.add_argument(
+            "-g",
+            "--gui",
+            dest="gui",
+            help="Use GUI",
+            default=False,
+            action="store_true")
+        parser.add_argument(
             "-f",
             "--folder",
             dest="folder",
@@ -114,14 +185,22 @@ def main():
             args.folder = os.getcwd()
         if not utilities.is_windows():
             args.autoloader = False
-        do_magic(
-            args.device,
-            args.os,
-            args.radio,
-            args.swrelease,
-            args.folder,
-            args.autoloader,
-            args.download)
+        if args.gui or getattr(sys, 'frozen', False):
+            start_gui(args.os,
+                      args.radio,
+                      args.swrelease,
+                      args.device,
+                      args.autoloader,
+                      args.folder,
+                      args.download)
+        else:
+            lazyloader_main(args.device,
+                            args.os,
+                            args.radio,
+                            args.swrelease,
+                            args.folder,
+                            args.autoloader,
+                            args.download)
     else:
         localdir = os.getcwd()
         osversion = input("OS VERSION: ")
@@ -155,7 +234,7 @@ def main():
         else:
             autoloader = False
         print(" ")
-        do_magic(
+        lazyloader_main(
             device,
             osversion,
             radioversion,
@@ -167,13 +246,10 @@ def main():
         if smeg or not smeg:
             raise SystemExit
 
-if __name__ == "__main__":
-    main()
 
-
-def do_magic(device, osversion, radioversion=None,
-             softwareversion=None, localdir=None, autoloader=False,
-             download=True):
+def lazyloader_main(device, osversion, radioversion=None,
+                    softwareversion=None, localdir=None, autoloader=False,
+                    download=True):
     """
     Wrap the tools necessary to make one autoloader.
 
@@ -445,3 +521,6 @@ def do_magic(device, osversion, radioversion=None,
             raise SystemExit
     else:
         print("\nFINISHED!!!")
+
+if __name__ == "__main__":
+    grab_args()
