@@ -13,7 +13,11 @@ Contents:
 
    readme
 
-   api
+   bbarchivist
+   
+   bbarchivist.scripts
+   
+   bbarchivist.tests
    
 Indices and tables
 ==================
