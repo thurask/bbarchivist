@@ -38,6 +38,7 @@ def main():
                             help="Software version, 10.x.y.zzzz",
                             nargs="?",
                             default=None)
+        parser.set_defaults()
         args = parser.parse_args(sys.argv[1:])
         do_magic(
             args.os,
@@ -48,6 +49,10 @@ def main():
         radioversion = input("RADIO VERSION: ")
         softwareversion = input("SOFTWARE RELEASE: ")
         print(" ")
+        if not radioversion:
+            radioversion = None
+        if not softwareversion:
+            softwareversion = None
         do_magic(
             osversion,
             radioversion,
@@ -55,9 +60,6 @@ def main():
         smeg = input("Press Enter to exit")
         if smeg or not smeg:
             raise SystemExit
-
-if __name__ == "__main__":
-    main()
 
 
 def do_magic(osversion, radioversion=None, softwareversion=None):
@@ -95,3 +97,6 @@ def do_magic(osversion, radioversion=None, softwareversion=None):
     textgenerator.write_links(softwareversion, osversion, radioversion,
                               osurls, coreurls, radiourls,
                               avlty, False, None)
+
+if __name__ == "__main__":
+    main()
