@@ -10,6 +10,15 @@
 	},
 	{
 		"device":"Z10",
+		"family":"Z10OMAP",
+		"name":"STL100-1",
+		"hwid":"7002607",
+		"fccid":"",
+		"ptcrbid":"",
+		"secret":""
+	}
+	{
+		"device":"Z10",
 		"family":"Z10QCOM-P9982",
 		"name":"STL100-2",
 		"hwid":"8700240A",
@@ -277,7 +286,7 @@
 		"family":"PASSPORT",
 		"name":"SQW100-2",
 		"hwid":"85002C0A",
-		"fccid":"",
+		"fccid":"RGW141LW",
 		"ptcrbid":""
 	},
 	{
@@ -378,7 +387,7 @@
 		"secret":"True"
 	},
 	{
-		"device":"DEVALPHA",
+		"device":"DEV ALPHA",
 		"family":"DEV",
 		"name":"PRO100-2",
 		"hwid":"4002307",
@@ -387,7 +396,7 @@
 		"secret":"True"
 	},
 	{
-		"device":"DEVALPHAB",
+		"device":"DEV ALPHA B",
 		"family":"DEV",
 		"name":"STL100-1",
 		"hwid":"4002607",
@@ -396,11 +405,101 @@
 		"secret":"True"
 	},
 	{
-		"device":"DEVALPHAC",
+		"device":"DEV ALPHA C",
 		"family":"DEV",
 		"name":"SQN100-3",
 		"hwid":"8D00270A",
 		"fccid":"RFN82UW",
+		"ptcrbid":"",
+		"secret":"True"
+	},
+	{
+		"device":"ONTARIO",
+		"family":"ONTARIO",
+		"name":"STO100-1",
+		"hwid":"AE00240A",
+		"fccid":"RGQ161LW",
+		"ptcrbid":"",
+		"secret":"True"
+	},
+	{
+		"device":"ONTARIO",
+		"family":"ONTARIO",
+		"name":"STO100-2",
+		"hwid":"AF00240A",
+		"fccid":"RGR161LW",
+		"ptcrbid":"",
+		"secret":"True"
+	},
+	{
+		"device":"ONTARIO",
+		"family":"ONTARIO",
+		"name":"STO100-3",
+		"hwid":"B400240A",
+		"fccid":"RGT141LW",
+		"ptcrbid":"",
+		"secret":"True"
+	},
+	{
+		"device":"ONTARIO",
+		"family":"ONTARIO",
+		"name":"STO100-4",
+		"hwid":"B600240A",
+		"fccid":"RGD121LW",
+		"ptcrbid":"",
+		"secret":"True"
+	},
+	{
+		"device":"ONTARIO",
+		"family":"ONTARIO",
+		"name":"STO100-5",
+		"hwid":"BC00240A",
+		"fccid":"",
+		"ptcrbid":"",
+		"secret":"True"
+	},
+	{
+		"device":"",
+		"family":"UNRELEASED",
+		"name":"STV100-1",
+		"hwid":"",
+		"fccid":"RHK211LW",
+		"ptcrbid":"",
+		"secret":"True"
+	},
+	{
+		"device":"",
+		"family":"UNRELEASED",
+		"name":"STV100-2",
+		"hwid":"",
+		"fccid":"",
+		"ptcrbid":"",
+		"secret":"True"
+	},
+	{
+		"device":"",
+		"family":"UNRELEASED",
+		"name":"STV100-3",
+		"hwid":"",
+		"fccid":"RHL211LW",
+		"ptcrbid":"",
+		"secret":"True"
+	},
+	{
+		"device":"",
+		"family":"UNRELEASED",
+		"name":"STV100-4",
+		"hwid":"",
+		"fccid":"RHM181LW",
+		"ptcrbid":"",
+		"secret":"True"
+	},
+	{
+		"device":"",
+		"family":"UNRELEASED",
+		"name":"SQE100-1",
+		"hwid":"",
+		"fccid":"RHS191LW",
 		"ptcrbid":"",
 		"secret":"True"
 	},
@@ -435,6 +534,24 @@
 		"hwid":"D001A06",
 		"fccid":"REG51LW",
 		"ptcrbid":"21212"
+	},
+	{
+		"device":"PLAYBOOK ???",
+		"family":"PLAYBOOK",
+		"name":"PB???",
+		"hwid":"4001A0B",
+		"fccid":"",
+		"ptcrbid":"",
+		"secret":""
+	},
+	{
+		"device":"BLACKFOREST?",
+		"family":"PLAYBOOK",
+		"name":"PBBLACKFOREST",
+		"hwid":"4002706",
+		"fccid":"",
+		"ptcrbid":"",
+		"secret":""
 	}
 	]
 }
