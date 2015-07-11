@@ -13,7 +13,8 @@ def readme():
 
 cond_requires = ['requests',
                  'python-gnupg',
-                 'beautifulsoup4']
+                 'beautifulsoup4',
+                 'easygui']
 if version_info[1] < 3:  # 3.2 and under
     cond_requires.append('shutilwhich')
 setup(name='bbarchivist',

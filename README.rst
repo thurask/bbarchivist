@@ -280,9 +280,9 @@ Help
     > bb-lazyloader -h
 
     usage: bb-lazyloader [-h] [-v]
-                     (--stl100-1 | --stl100-x | --stl100-4 | --q10 | --z30 | --z3 | --passport)
-                     [--run-loader] [-g] [-f DIR] [-n]
-                     os [radio] [swrelease]
+                     [--stl100-1 | --stl100-x | --stl100-4 | --q10 | --z30 | --z3 | --passport]
+                     [--run-loader] [-g | -ng] [-f DIR] [-n]
+                     [os] [radio] [swrelease]
 
     Create one autoloader for personal use.
     
@@ -296,6 +296,7 @@ Help
       -v, --version         show program's version number and exit
       --run-loader          Run autoloader after creation
       -g, --gui             Use GUI
+      -ng, --no-gui         Don't use GUI
       -f DIR, --folder DIR  Working folder
       -n, --no-download     Don't download files
     

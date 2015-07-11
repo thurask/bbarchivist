@@ -55,7 +55,7 @@ def start_gui(osv=None, radv=None, swv=None, dev=None, aut=None,
         swentry = swv
     choicelist = ["STL100-1", "STL100-2/3/P9982", "STL100-4", "Q10/Q5/P9983",
                   "Z30/CLASSIC/LEAP", "Z3", "PASSPORT"]
-    if not dev:
+    if dev is None:
         deventry = eg.choicebox(msg="Device", choices=choicelist)
         for idx, device in enumerate(choicelist):
             if device == deventry:
@@ -83,7 +83,7 @@ def grab_args():
 
     Invoke :func:`lazyloader.lazyloader_main` with arguments.
     """
-    if len(sys.argv) > 1:
+    if len(sys.argv) > 1 or getattr(sys, 'frozen', False):
         parser = argparse.ArgumentParser(
             prog="bb-lazyloader",
             description="Create one autoloader for personal use.",
@@ -96,7 +96,9 @@ def grab_args():
             bbconstants.VERSION)
         parser.add_argument(
                             "os",
-                            help="OS version, 10.x.y.zzzz")
+                            help="OS version, 10.x.y.zzzz",
+                            nargs="?",
+                            default=None)
         parser.add_argument(
                             "radio",
                             help="Radio version, 10.x.y.zzzz",
@@ -110,7 +112,7 @@ def grab_args():
         devgroup = parser.add_argument_group(
             "devices",
             "Device to load (one required)")
-        compgroup = devgroup.add_mutually_exclusive_group(required=True)
+        compgroup = devgroup.add_mutually_exclusive_group()
         compgroup.add_argument(
             "--stl100-1",
             dest="device",
@@ -159,13 +161,21 @@ def grab_args():
             help="Run autoloader after creation",
             action="store_true",
             default=False)
-        parser.add_argument(
+        guigroup = parser.add_mutually_exclusive_group()
+        guigroup.add_argument(
             "-g",
             "--gui",
             dest="gui",
             help="Use GUI",
             default=False,
             action="store_true")
+        guigroup.add_argument(
+            "-ng",
+            "--no-gui",
+            dest="gui",
+            help="Don't use GUI",
+            default=False,
+            action="store_false")
         parser.add_argument(
             "-f",
             "--folder",
@@ -180,12 +190,17 @@ def grab_args():
             help="Don't download files",
             action="store_false",
             default=True)
+        if getattr(sys, 'frozen', False):
+            mu = True
+        else:
+            mu = False
+        parser.set_defaults(device=None, gui=mu)
         args = parser.parse_args(sys.argv[1:])
         if args.folder is None:
             args.folder = os.getcwd()
         if not utilities.is_windows():
             args.autoloader = False
-        if args.gui or getattr(sys, 'frozen', False):
+        if args.gui:
             start_gui(args.os,
                       args.radio,
                       args.swrelease,
@@ -194,13 +209,20 @@ def grab_args():
                       args.folder,
                       args.download)
         else:
-            lazyloader_main(args.device,
-                            args.os,
-                            args.radio,
-                            args.swrelease,
-                            args.folder,
-                            args.autoloader,
-                            args.download)
+            if not args.os:
+                raise argparse.ArgumentError(argument=None,
+                                             message="No OS specified!")
+            if args.device is None:
+                raise argparse.ArgumentError(argument=None,
+                                             message="No device specified!")
+            else:
+                lazyloader_main(args.device,
+                                args.os,
+                                args.radio,
+                                args.swrelease,
+                                args.folder,
+                                args.autoloader,
+                                args.download)
     else:
         localdir = os.getcwd()
         osversion = input("OS VERSION: ")

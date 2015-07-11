@@ -10,7 +10,8 @@ localdir = dirname(abspath(__file__))
 localdir = join(localdir, "bbarchivist\scripts")
 buildOptions = dict(packages=["requests",
                               "bbarchivist",
-                              "easygui"],
+                              "easygui",
+                              "bs4"],
                     includes=[],
                     include_files=[
                    (certs.where(), 'cacert.pem'),
@@ -24,7 +25,11 @@ buildOptions = dict(packages=["requests",
               "amqp",
               "pydoc",
               "pyasn1",
-              "distutils"],
+              "distutils",
+              "PyQt5",
+              "numpy",
+              "matplotlib",
+              "PIL"],
     include_msvcr=[True],
     build_exe="lazyloader",
     zip_includes=[])
@@ -34,7 +39,7 @@ base = 'Console'
 chdir(localdir)
 
 executables = [
-    Executable('lazyloader_gui.py',
+    Executable('lazyloader.py',
                base=base,
                appendScriptToExe=True,
                appendScriptToLibrary=True,
