@@ -70,6 +70,8 @@ def cap_main():
         args.cappath = bbconstants.CAPLOCATION
     if args.folder is None:
         args.folder = getcwd()
+    if not args.filename.endswith(".exe"):
+        args.filename += ".exe"
     pseudocap.make_autoloader(args.filename,
                               args.cappath,
                               args.first,

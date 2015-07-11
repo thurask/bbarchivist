@@ -199,6 +199,12 @@ Certchecker
 1. Ask for hardware/FCC ID or model number (if not specified)
 2. Return certified OS versions for that device
 
+Pseudocap
+~~~~~~~~~
+
+1. Take in filename, signed file locations
+2. Produce an autoloader from those
+
 Command Line Arguments
 ----------------------
 
@@ -270,8 +276,6 @@ Help
      --zip                 Compress with zip, DEFLATE
    
    http://github.com/thurask/bbarchivist
-
-
 
 ----------------------------------------
 
@@ -448,8 +452,7 @@ Help
 	  -v, --version  show program's version number and exit
 
 	http://github.com/thurask/bbarchivist
-
-    
+  
 ----------------------------------------
 
 ::
@@ -473,8 +476,7 @@ Help
                             Loop increment, default = 3
     
     http://github.com/thurask/bbarchivist
-
-    
+   
 ----------------------------------------
 
 ::
@@ -491,6 +493,35 @@ Help
     optional arguments:
       -h, --help     show this help message and exit
       -v, --version  show program's version number and exit
+    
+    http://github.com/thurask/bbarchivist
+
+----------------------------------------
+
+::
+
+    > bb-pseudocap -h
+    
+    usage: bb-pseudocap [-h] [-v] [-c PATH] [-f DIR]
+                    filename first [second] [third] [fourth] [fifth] [sixth]
+
+    cap.exe, implemented in Python
+    
+    positional arguments:
+      filename              Filename
+    
+    optional arguments:
+      -h, --help            show this help message and exit
+      -v, --version         show program's version number and exit
+      -c PATH, --cap PATH   Path to cap.exe
+      -f DIR, --folder DIR  Working folder
+    
+      first                 First file
+      second                Second file, optional
+      third                 Third file, optional
+      fourth                Fourth file, optional
+      fifth                 Fifth file, optional
+      sixth                 Sixth file, optional
     
     http://github.com/thurask/bbarchivist
 
@@ -564,6 +595,13 @@ Location is in your home directory.
     > bb-certchecker STA100-5
     
 would print a list of all of the OSs that were ever certified for the Z30 STA100-5.
+
+::
+
+    > bb-pseudocap Autoload-10.3.2.2339-SQN100-X.exe QC8960_10.3.2.2339.signed QC8960.WTR_10.3.2340.signed
+    
+would create an autoloader with the name Autoloader-10.3.2.2339-SQN100-X.exe, from those two signed files,
+in the current folder.
 
 License
 -------
