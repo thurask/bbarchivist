@@ -64,5 +64,6 @@ setup(name='bbarchivist',
                             'bb-escreens=bbarchivist.scripts.escreens:escreens_main', #@IgnorePep8
                             'bb-linkgen=bbarchivist.scripts.linkgen:grab_args', #@IgnorePep8
                             'bb-gpgrunner=bbarchivist.scripts.gpgrunner:gpgrunner_main', #@IgnorePep8
-                            'bb-autolookup=bbarchivist.scripts.autolookup:grab_args'] #@IgnorePep8
+                            'bb-autolookup=bbarchivist.scripts.autolookup:grab_args', #@IgnorePep8
+                            'bb-pseudocap=bbarchivist.scripts.cap:cap_main'] #@IgnorePep8
         })
