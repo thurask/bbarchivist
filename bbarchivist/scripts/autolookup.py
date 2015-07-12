@@ -5,6 +5,7 @@ import sys  # load arguments
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import networkutils  # lookup
 from bbarchivist import utilities  # incrementer
+from bbarchivist import sqlutils  # sql db work
 from . import linkgen  # link generator @UnresolvedImport
 import time  # get datestamp for lookup
 import os  # path work
@@ -52,30 +53,39 @@ def grab_args():
             default=3,
             type=utilities.positive_integer,
             metavar="INT")
+        parser.add_argument(
+            "-s", "--sql",
+            dest="sql",
+            help="Add valid links to database",
+            action="store_true",
+            default=False)
         args = parser.parse_args(sys.argv[1:])
         parser.set_defaults()
-        do_magic(
+        autolookup_main(
             args.os,
             args.recurse,
             args.log,
             args.autogen,
-            args.increment)
+            args.increment,
+            args.sql)
     else:
         osversion = input("OS VERSION: ")
         recurse = utilities.str2bool(input("LOOP?: "))
         print(" ")
-        do_magic(
+        autolookup_main(
             osversion,
             recurse,
             True,
             False,
-            3)
+            3,
+            False)
         smeg = input("Press Enter to exit")
         if smeg or not smeg:
             raise SystemExit
 
 
-def autolookup_main(osversion, loop=False, log=False, autogen=False, increment=3):
+def autolookup_main(osversion, loop=False, log=False,
+                    autogen=False, inc=3, sql=False):
     """
     Lookup a software release from an OS. Can iterate.
 
@@ -91,8 +101,11 @@ def autolookup_main(osversion, loop=False, log=False, autogen=False, increment=3
     :param autogen: Whether to create text links. Default is false.
     :type autogen: bool
 
-    :param increment: Lookup increment. Default is 3.
-    :type increment: int
+    :param inc: Lookup inc. Default is 3.
+    :type inc: int
+
+    :param sql: Whether to add valid lookups to a database. Default is false.
+    :type sql: bool
     """
     print("~~~AUTOLOOKUP VERSION", bbconstants.VERSION + "~~~")
     print("")
@@ -136,7 +149,10 @@ def autolookup_main(osversion, loop=False, log=False, autogen=False, increment=3
                 if avail:
                     available = "Available"
                     if autogen:
-                        linkgen.autolookup_main(osversion, utilities.version_incrementer(osversion, 1), prel) #@IgnorePep8
+                        linkgen.linkgen_main(osversion, utilities.version_incrementer(osversion, 1), prel) #@IgnorePep8
+                    if sql:
+                        sqlutils.prepare_sw_db()
+                        sqlutils.insert_sw_release(osversion, prel)
                 else:
                     available = "Unavailable"
             else:
@@ -168,7 +184,7 @@ def autolookup_main(osversion, loop=False, log=False, autogen=False, increment=3
                 if int(osversion.split(".")[3]) > 9996:
                     raise KeyboardInterrupt
                 else:
-                    osversion = utilities.version_incrementer(osversion, increment) #@IgnorePep8
+                    osversion = utilities.version_incrementer(osversion, inc) #@IgnorePep8
                     swrelease = ""
                     continue
     except KeyboardInterrupt:

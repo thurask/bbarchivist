@@ -205,6 +205,11 @@ Pseudocap
 1. Take in filename, signed file locations
 2. Produce an autoloader from those
 
+SQLExport
+~~~~~~~~~
+
+1. Convert ~\bbarchivist.db into ~\swrelease.csv, that's it
+
 Command Line Arguments
 ----------------------
 
@@ -459,7 +464,7 @@ Help
 
     > bb-autolookup -h
     
-    usage: bb-autolookup [-h] [-v] [-l] [-o] [-a] [-i INT] os
+    usage: bb-autolookup [-h] [-v] [-l] [-o] [-a] [-i INT] [-s] os
 
     Get software release for one/many OS versions.
     
@@ -474,6 +479,7 @@ Help
       -a, --autogen         Generate links for availables
       -i INT, --increment INT
                             Loop increment, default = 3
+      -s, --sql             Add valid links to database
     
     http://github.com/thurask/bbarchivist
    
@@ -522,6 +528,22 @@ Help
       fourth                Fourth file, optional
       fifth                 Fifth file, optional
       sixth                 Sixth file, optional
+    
+    http://github.com/thurask/bbarchivist
+
+----------------------------------------
+
+::
+
+    > bb-sqlexport -h
+    
+    usage: bb-sqlexport [-h] [-v]
+
+    Export SQL database to CSV
+    
+    optional arguments:
+      -h, --help     show this help message and exit
+      -v, --version  show program's version number and exit
     
     http://github.com/thurask/bbarchivist
 
@@ -602,6 +624,12 @@ would print a list of all of the OSs that were ever certified for the Z30 STA100
     
 would create an autoloader with the name Autoloader-10.3.2.2339-SQN100-X.exe, from those two signed files,
 in the current folder.
+
+::
+
+    > bb-sqlexport
+
+does one thing and one thing only. You're free to guess.
 
 License
 -------

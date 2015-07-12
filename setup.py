@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 from bbarchivist import bbconstants
 from sys import version_info
 
@@ -51,7 +51,7 @@ setup(name='bbarchivist',
         "Programming Language :: Python :: 3 :: Only",
         "Topic :: Utilities"
       ],
-      packages=['bbarchivist'],
+      packages=find_packages(),
       zip_safe=False,
       include_package_data=True,
       install_requires=cond_requires,
@@ -65,5 +65,6 @@ setup(name='bbarchivist',
                             'bb-linkgen=bbarchivist.scripts.linkgen:grab_args', #@IgnorePep8
                             'bb-gpgrunner=bbarchivist.scripts.gpgrunner:gpgrunner_main', #@IgnorePep8
                             'bb-autolookup=bbarchivist.scripts.autolookup:grab_args', #@IgnorePep8
-                            'bb-pseudocap=bbarchivist.scripts.cap:cap_main'] #@IgnorePep8
+                            'bb-pseudocap=bbarchivist.scripts.cap:cap_main',
+                            'bb-sqlexport=bbarchivist.scripts.sqlexport:sqlexport_main'] #@IgnorePep8
         })
