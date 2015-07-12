@@ -5,6 +5,7 @@ import csv
 import os
 from bbarchivist.utilities import file_exists
 
+
 def prepare_sw_db():
     """
     Create SQLite DB if not already existing.
