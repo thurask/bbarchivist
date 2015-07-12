@@ -80,4 +80,4 @@ class TestClassSQLUtils:
                 for idx, row in enumerate(csvr):
                     if idx == 2:
                         arow = row
-                assert arow == ["120.OSVERSION", "130.SWVERSION"]
+                assert arow[0].strip() == "120.OSVERSION"
