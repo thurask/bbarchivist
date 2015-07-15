@@ -86,6 +86,11 @@ def grab_args():
             args.folder = os.getcwd()
         if args.blitz:
             args.upgrade = True  # blitz takes precedence
+        if args.bundles:
+            args.download = False
+            args.upgrade = False
+            args.export = False
+            args.blitz = False
         carrierchecker_main(
             args.mcc,
             args.mnc,
