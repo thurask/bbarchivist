@@ -67,7 +67,7 @@ def sz_compress(filepath, filename, szexe=None, strength=5):
     """
     starttime = time.clock()
     rawname = os.path.dirname(filepath)
-    subprocess.call(
+    excode = subprocess.call(
         szexe +
         " a -mx" +
         str(strength) +
@@ -87,6 +87,38 @@ def sz_compress(filepath, filename, szexe=None, strength=5):
     endtime = time.clock() - starttime
     endtime_proper = math.ceil(endtime * 100) / 100
     print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
+    if excode == 0:
+        print("NO ERRORS")
+    elif excode == 1:
+        print("COMPLETED WITH WARNINGS")
+    elif excode == 2:
+        print("FATAL ERROR")
+    elif excode == 7:
+        print("COMMAND LINE ERROR")
+    elif excode == 8:
+        print("OUT OF MEMORY ERROR")
+
+
+def sz_verify(filepath, szexe=None):
+    """
+    Verify that a .7z file is valid and working.
+
+    :param filepath: Filename.
+    :type filepath: str
+
+    :param szexe: Path to 7z executable.
+    :type szexe: str
+    """
+    excode = subprocess.call(
+        szexe +
+        " t '" +
+        filepath +
+        "'",
+        shell=True)
+    if excode == 0:
+        return True
+    else:
+        return False
 
 
 def tgz_compress(filepath, filename, strength=5):
@@ -112,6 +144,24 @@ def tgz_compress(filepath, filename, strength=5):
                     print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
 
 
+def tgz_verify(filepath):
+    """
+    Verify that a tar.gz file is valid and working.
+
+    :param filepath: Filename.
+    :type filepath: str
+    """
+    if tarfile.is_tarfile(filepath):
+        with tarfile.open(filepath, "r:gz") as thefile:
+                mems = thefile.getmembers()
+        if len(mems) == 0:
+            return False
+        else:
+            return True
+    else:
+        return False
+
+
 def tbz_compress(filepath, filename, strength=5):
     """
     Pack a file into a bzip2 tarfile.
@@ -133,6 +183,24 @@ def tbz_compress(filepath, filename, strength=5):
                     endtime = time.clock() - starttime
                     endtime_proper = math.ceil(endtime * 100) / 100
                     print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
+
+
+def tbz_verify(filepath):
+    """
+    Verify that a tar.bz2 file is valid and working.
+
+    :param filepath: Filename.
+    :type filepath: str
+    """
+    if tarfile.is_tarfile(filepath):
+        with tarfile.open(filepath, "r:bz2") as thefile:
+                mems = thefile.getmembers()
+        if len(mems) == 0:
+            return False
+        else:
+            return True
+    else:
+        return False
 
 
 def txz_compress(filepath, filename, strength=5):
@@ -157,6 +225,24 @@ def txz_compress(filepath, filename, strength=5):
                     print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
 
 
+def txz_verify(filepath):
+    """
+    Verify that a tar.xz file is valid and working.
+
+    :param filepath: Filename.
+    :type filepath: str
+    """
+    if tarfile.is_tarfile(filepath):
+        with tarfile.open(filepath, "r:xz") as thefile:
+                mems = thefile.getmembers()
+        if len(mems) == 0:
+            return False
+        else:
+            return True
+    else:
+        return False
+
+
 def zip_compress(filepath, filename):
     """
     Pack a file into a DEFLATE zipfile.
@@ -176,6 +262,23 @@ def zip_compress(filepath, filename):
                     endtime = time.clock() - starttime
                     endtime_proper = math.ceil(endtime * 100) / 100
                     print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
+
+
+def zip_verify(filepath):
+    """
+    Verify that a .zip file is valid and working.
+
+    :param filepath: Filename.
+    :type filepath: str
+    """
+    if zipfile.is_zipfile(filepath):
+        bt = bar_tester(filepath)
+        if bt is None:
+            return True
+        else:
+            return False
+    else:
+        return False
 
 
 def compress(filepath, method="7z", szexe=None):

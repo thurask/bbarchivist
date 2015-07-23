@@ -1,10 +1,8 @@
 import bbarchivist.barutils as bb
 import os
 from bbarchivist.utilities import prep_seven_zip, get_seven_zip
-from subprocess import call
 from shutil import rmtree, copyfile
 from sys import version_info
-from tarfile import is_tarfile
 from hashlib import sha512
 from zipfile import ZipFile, ZIP_DEFLATED
 
@@ -66,25 +64,22 @@ class TestClassBarutils:
             if exists:
                 szexe = get_seven_zip(False)
                 bb.compress(os.getcwd(), "7z", szexe=szexe)
-                retcode = call(szexe + " t " + "Z10_BIGLOADER.7z")
-                assert retcode == 0  # return 0 if OK, not 0 if not
+                assert bb.sz_verify("Z10_BIGLOADER.7z", szexe) == 0
             else:
                 pass
         except Exception:
             assert False
-        if os.path.exists("Z10_BIGLOADER.7z"):
-            os.remove("Z10_BIGLOADER.7z")
+        finally:
+            if os.path.exists("Z10_BIGLOADER.7z"):
+                os.remove("Z10_BIGLOADER.7z")
 
     def test_compress_zip(self):
         bb.compress(os.getcwd(), "zip")
-        with ZipFile("Z10_BIGLOADER.zip",
-                     mode="r",
-                     compression=ZIP_DEFLATED) as zfile:
-            assert zfile.testzip() == None
+        assert bb.zip_verify("Z10_BIGLOADER.ZIP") == True
 
     def test_check_zip(self):
         copyfile("Z10_BIGLOADER.zip", "Z10_BIGLOADER.bar")
-        assert bb.bar_tester("Z10_BIGLOADER.bar") == None
+        assert bb.zip_verify("Z10_BIGLOADER.bar") == True
         if os.path.exists("Z10_BIGLOADER.bar"):
             os.remove("Z10_BIGLOADER.bar")
         if os.path.exists("Z10_BIGLOADER.zip"):
@@ -92,13 +87,13 @@ class TestClassBarutils:
 
     def test_compress_gzip(self):
         bb.compress(os.getcwd(), "tgz")
-        assert is_tarfile("Z10_BIGLOADER.tar.gz")
+        assert bb.tgz_verify("Z10_BIGLOADER.tar.gz") == True
         if os.path.exists("Z10_BIGLOADER.tar.gz"):
             os.remove("Z10_BIGLOADER.tar.gz")
 
     def test_compress_bz2(self):
         bb.compress(os.getcwd(), "tbz")
-        assert is_tarfile("Z10_BIGLOADER.tar.bz2")
+        assert bb.tbz_verify("Z10_BIGLOADER.tar.bz2") == True
         if os.path.exists("Z10_BIGLOADER.tar.bz2"):
             os.remove("Z10_BIGLOADER.tar.bz2")
 
@@ -107,7 +102,7 @@ class TestClassBarutils:
             pass
         else:
             bb.compress(os.getcwd(), "txz")
-            assert is_tarfile("Z10_BIGLOADER.tar.xz")
+            assert bb.txz_verify("Z10_BIGLOADER.tar.xz") == True
             if os.path.exists("Z10_BIGLOADER.tar.xz"):
                 os.remove("Z10_BIGLOADER.tar.xz")
 
@@ -117,10 +112,7 @@ class TestClassBarutils:
 
     def test_create_blitz(self):
         bb.create_blitz(os.getcwd(), "testing")
-        with ZipFile("Blitz-testing.zip",
-                     mode="r",
-                     compression=ZIP_DEFLATED) as zfile:
-            assert zfile.testzip() == None
+        assert bb.zip_verify("Blitz-testing.zip") == True
         if os.path.exists("Blitz-testing.zip"):
             os.remove("Blitz-testing.zip")
 
