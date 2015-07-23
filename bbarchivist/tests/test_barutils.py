@@ -75,7 +75,7 @@ class TestClassBarutils:
 
     def test_compress_zip(self):
         bb.compress(os.getcwd(), "zip")
-        assert bb.zip_verify("Z10_BIGLOADER.ZIP") == True
+        assert bb.zip_verify("Z10_BIGLOADER.zip") == True
 
     def test_check_zip(self):
         copyfile("Z10_BIGLOADER.zip", "Z10_BIGLOADER.bar")
