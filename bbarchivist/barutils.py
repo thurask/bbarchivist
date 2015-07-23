@@ -8,6 +8,8 @@ import zipfile  # zip extract, zip compresssion
 import tarfile  # txz/tbz/tgz compression
 import sys  # version info
 import shutil  # folder operations
+import base64  # encoding for hashes
+import hashlib   # get hashes
 from bbarchivist import utilities  # platform determination
 
 
@@ -32,6 +34,57 @@ def extract_bars(filepath):
                 print(str(exc))
                 print("DID IT DOWNLOAD PROPERLY?")
                 return
+
+
+def retrieve_sha512(filename):
+    """
+    Get the premade, Base64 encoded SHA512 hash of a signed file in a bar.
+
+    :param filename: Bar file to check.
+    :type filename: str
+    """
+    try:
+        zfile = zipfile.ZipFile(filename, 'r')
+        names = zfile.namelist()
+        for name in names:
+            if name.endswith("MANIFEST.MF"):
+                manifest = name
+        manf = zfile.read(manifest).splitlines()
+        alist = []
+        for idx, line in enumerate(manf):
+            if line.endswith(b"signed"):
+                alist.append(manf[idx])
+                alist.append(manf[idx+1])
+        assetname = alist[0].split(b": ")[1]
+        assethash = alist[1].split(b": ")[1]
+        return (assetname, assethash)
+    except Exception as exc:
+        print("EXTRACTION FAILURE")
+        print(str(exc))
+        print("DID IT DOWNLOAD PROPERLY?")
+
+
+def verify_sha512(filename, inithash):
+    """
+    Compare the original hash value with the current.
+
+    :param filename: Signed file to check.
+    :type filename: str
+
+    :param inithash: Original SHA512 hash, as bytestring.
+    :type inithash: bytes
+    """
+    sha512 = hashlib.sha512()
+    with open(filename, 'rb') as file:
+        while True:
+            data = file.read(16*1024*1024)
+            if not data:
+                break
+            sha512.update(data)
+    rawdigest = sha512.digest()  # must be bytestring, not hexadecimalized str
+    b64h = base64.b64encode(rawdigest, altchars=b"-_")  # replace some chars
+    b64h = b64h.strip(b"==")  # remove padding
+    return b64h == inithash
 
 
 def bar_tester(filepath):
@@ -154,7 +207,7 @@ def tgz_verify(filepath):
     if tarfile.is_tarfile(filepath):
         with tarfile.open(filepath, "r:gz") as thefile:
                 mems = thefile.getmembers()
-        if len(mems) == 0:
+        if not mems:
             return False
         else:
             return True
@@ -326,6 +379,47 @@ def compress(filepath, method="7z", szexe=None):
             else:
                 print("INVALID METHOD")
                 raise SystemExit
+
+
+def verify(filepath, szexe=None):
+    """
+    Verify all archive files in a given folder.
+
+    :param filepath: Working directory. Required.
+    :type filepath: str
+
+    :param szexe: Path to 7z executable, if needed.
+    :type szexe: str
+    """
+    if szexe is None:
+        ifexists = utilities.prep_seven_zip()  # see if 7z exists
+        if ifexists:
+            szexe = utilities.get_seven_zip(False)
+    majver = sys.version_info[1]
+    for file in os.listdir(filepath):
+        if file.startswith(("Q10", "Z10", "Z30", "Z3", "Passport")):
+            if file.endswith(".zip"):
+                zv = zip_verify(file)
+                if not zv:
+                    print("{0} IS BROKEN!".format((file)))
+            if majver >= 3:
+                if file.endswith(".tar.xz"):
+                    xv = txz_verify(file)
+                    if not xv:
+                        print("{0} IS BROKEN!".format((file)))
+            if file.endswith(".tar.bz2"):
+                bv = tbz_verify(file)
+                if not bv:
+                    print("{0} IS BROKEN!".format((file)))
+            if file.endswith(".tar.gz"):
+                gv = tgz_verify(file)
+                if not gv:
+                    print("{0} IS BROKEN!".format((file)))
+            if szexe is not None:
+                if file.endswith(".7z"):
+                    sv = sz_verify(file, szexe)
+                    if not sv:
+                        print("{0} IS BROKEN!".format((file)))
 
 
 def remove_empty_folders(a_folder):
