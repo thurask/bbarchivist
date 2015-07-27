@@ -80,6 +80,12 @@ def grab_args():
             help="Create blitz package",
             action="store_true",
             default=False)
+        parser.add_argument(
+            "-s", "--software-release",
+            dest="forced",
+            help="Force SW release (check bundles first!)",
+            default=None,
+            metavar="SWRELEASE")
         parser.set_defaults(upgrade=False)
         args = parser.parse_args(sys.argv[1:])
         if args.folder is None:
@@ -100,7 +106,8 @@ def grab_args():
             args.folder,
             args.export,
             args.blitz,
-            args.bundles)
+            args.bundles,
+            args.forced)
     else:
         while True:
             mcc = int(input("MCC: "))
@@ -139,7 +146,8 @@ def grab_args():
             upgrade,
             directory,
             export,
-            blitz)
+            blitz,
+            None)
         smeg = input("Press Enter to exit")
         if smeg or not smeg:
             raise SystemExit
@@ -150,7 +158,8 @@ def carrierchecker_main(mcc, mnc, device,
                         directory=None,
                         export=False,
                         blitz=False,
-                        bundles=False):
+                        bundles=False,
+                        forced=None):
     """
     Wrap around :mod:`bbarchivist.networkutils` carrier checking.
 
@@ -180,6 +189,9 @@ def carrierchecker_main(mcc, mnc, device,
 
     :param bundles: Whether or not to check software bundles. Default is false.
     :type bundles: bool
+
+    :param forced: Force a software release. None to go for latest.
+    :type forced: str
     """
     device = device.upper()
     if directory is None:
@@ -215,7 +227,8 @@ def carrierchecker_main(mcc, mnc, device,
         swv, osv, radv, files = networkutils.carrier_update_request(mcc, mnc,
                                                                     hwid,
                                                                     upgrade,
-                                                                    blitz)
+                                                                    blitz,
+                                                                    forced)
         print("SOFTWARE RELEASE:", swv)
         print("OS VERSION:", osv)
         print("RADIO VERSION:", radv)
@@ -223,7 +236,7 @@ def carrierchecker_main(mcc, mnc, device,
             print("\nEXPORTING...")
             if files:
                 if not upgrade:
-                    newfiles = networkutils.carrier_update_request(mcc, mnc, hwid, True, False) #@IgnorePep8
+                    newfiles = networkutils.carrier_update_request(mcc, mnc, hwid, True, False, forced) #@IgnorePep8
                     newfiles = newfiles[3]
                 else:
                     newfiles = files

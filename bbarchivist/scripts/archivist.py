@@ -691,6 +691,10 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     else:
         pass
 
+    if integrity:
+        print("\nTESTING...")
+        barutils.verify(localdir, szexe)
+
     # Move zipped/unzipped loaders
     print("\nMOVING...")
     barutils.move_loaders(localdir,

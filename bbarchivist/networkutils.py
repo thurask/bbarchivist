@@ -184,7 +184,8 @@ def return_npc(mcc, mnc):
 
 def carrier_update_request(mcc, mnc, device,
                            upgrade=False,
-                           blitz=False):
+                           blitz=False,
+                           forced=None):
     """
     Query BlackBerry servers, check which update is out for a carrier.
 
@@ -202,11 +203,16 @@ def carrier_update_request(mcc, mnc, device,
 
     :param blitz: Whether or not to create a blitz package. False by default.
     :type blitz: bool
+
+    :param forced: Force a software release.
+    :type forced: str
     """
     if upgrade:
         upg = "upgrade"
     else:
         upg = "repair"
+    if forced is None:
+        forced = "latest"
     url = "https://cs.sl.blackberry.com/cse/updateDetails/2.2/"
     npc = return_npc(mcc, mnc)
     query = '<?xml version="1.0" encoding="UTF-8"?>'
@@ -236,7 +242,9 @@ def carrier_update_request(mcc, mnc, device,
     query += "</updateDirectives>"
     query += "<pollType>manual</pollType>"
     query += "<resultPackageSetCriteria>"
-    query += '<softwareRelease softwareReleaseVersion="latest" />'
+    query += '<softwareRelease softwareReleaseVersion="'
+    query += forced
+    query += '" />'
     query += "<releaseIndependent>"
     query += '<packageType operation="include">application</packageType>'
     query += "</releaseIndependent>"

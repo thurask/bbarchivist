@@ -329,8 +329,9 @@ Help
     > bb-cchecker -h
 
     usage: bb-cchecker [-h] [-v] [-a] [-d] [-e] [-u | -r] [-f DIR] [-b]
-                       mcc mnc device
-    
+                   [-s SWRELEASE]
+                   mcc mnc device
+
     Checks a carrier for an OS version, can download.
     
     positional arguments:
@@ -347,6 +348,8 @@ Help
       -e, --export          Export links to files
       -f DIR, --folder DIR  Working folder
       -b, --blitz           Create blitz package
+      -s SWRELEASE, --software-release SWRELEASE
+                            Force SW release (check bundles first!)
     
     bartypes:
       File types
