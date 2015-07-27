@@ -460,8 +460,6 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
         cappath = utilities.grab_cap()
     if localdir is None:
         localdir = os.getcwd()
-    if not download:
-        integrity = False
     print("~~~ARCHIVIST VERSION", bbconstants.VERSION + "~~~")
     print("OS VERSION:", osversion)
     print("RADIO VERSION:", radioversion)
@@ -504,7 +502,10 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
                                       "qc8960.factory_sfi_hybrid_qc8x30")
         osurls[3] = osurls[3].replace("qc8974.factory_sfi",
                                       "qc8960.factory_sfi_hybrid_qc8974")
-    osurls = list(set(osurls))
+    if not networkutils.availability(osurls[1]):
+        osurls[1] = osurls[1].replace("qc8960.factory_sfi",
+                                      "qc8960.verizon_sfi")  # verizon fallback
+    osurls = list(set(osurls))  # pop duplicates
     # List of radio urls
     radiourls = [baseurl + "/m5730-" + radioversion +
                  "-nto+armle-v7+signed.bar",
@@ -595,11 +596,6 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
         print("\nBEGIN DOWNLOADING...")
         networkutils.download_bootstrap(radiourls+osurls, localdir, workers=3)
 
-    # Extract bar files
-    if extract:
-        print("\nEXTRACTING...")
-        barutils.extract_bars(localdir)
-
     # Test bar files
     if integrity:
         brokenlist = []
@@ -633,6 +629,24 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
                         raise SystemExit
         else:
             print("\nALL FILES DOWNLOADED OK")
+
+    # Extract bar files
+    if extract:
+        print("\nEXTRACTING...")
+        barutils.extract_bars(localdir)
+
+    # Test signed files
+    if integrity:
+        print("\nTESTING...")
+        for file in os.listdir(localdir):
+            if file.endswith(".bar"):
+                print("TESTING:", file)
+                signname, signhash = barutils.retrieve_sha512(file)
+                sha512ver = barutils.verify_sha512(signname, signhash)
+                if not sha512ver:
+                    print("{0} IS BROKEN".format((file)))
+                    raise SystemExit
+        print("\nALL FILES EXTRACTED OK")
 
     # Move bar files
     print("\nMOVING .bar FILES...")

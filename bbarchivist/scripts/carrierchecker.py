@@ -310,7 +310,13 @@ def carrierchecker_main(mcc, mnc, device,
             if blitz:
                 print("\nCREATING BLITZ...")
                 barutils.create_blitz(bardir, swv)
-                shutil.rmtree(bardir)
+                print("\nTESTING BLITZ...")
+                zv = barutils.zip_verify("Blitz-" + swv + '.zip')
+                if not zv:
+                    print("BLITZ FILE IS BROKEN")
+                    raise SystemExit
+                else:
+                    shutil.rmtree(bardir)
             print("\nFINISHED!!!")
 
 if __name__ == "__main__":

@@ -455,6 +455,17 @@ def lazyloader_main(device, osversion, radioversion=None,
     print("\nEXTRACTING...")
     barutils.extract_bars(localdir)
 
+    print("\nTESTING...")
+    for file in os.listdir(localdir):
+        if file.endswith(".bar"):
+            print("TESTING:", file)
+            signname, signhash = barutils.retrieve_sha512(file)
+            sha512ver = barutils.verify_sha512(signname, signhash)
+            if not sha512ver:
+                print("{0} IS BROKEN".format((file)))
+                raise SystemExit
+    print("\nALL FILES EXTRACTED OK")
+
     # Make dirs
     if not os.path.exists(localdir):
         os.makedirs(localdir)
