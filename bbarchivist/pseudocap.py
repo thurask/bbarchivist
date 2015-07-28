@@ -70,7 +70,7 @@ def make_offset(cap, firstfile, secondfile="", thirdfile="",
         if i:
             filecount += 1
     # immutable things
-    separator = binascii.unhexlify(bytes("6ADF5D144E4B4D4E474F46464D4E532B170A0D1E0C14532B372A2D3E2C34522F3C534F514F514F514F534E464D514E4947514E51474F70709CD5C5979CD5C5979CD5C597", 'ascii'))  # @IgnorePep8
+    separator = binascii.unhexlify(bytes("6ADF5D144E4B4C474E4F48474749530B170A0D1E0C14532D3E253A2D3D333E3B3A522F3C534E464D514E4947514E514E4F7070709CD5C5979CD5C5979CD5C597", 'ascii'))  # @IgnorePep8
     password = binascii.unhexlify(bytes("0" * 160, 'ascii'))
     singlepad = binascii.unhexlify(bytes("0" * 2, 'ascii'))
     doublepad = binascii.unhexlify(bytes("0" * 4, 'ascii'))
@@ -153,6 +153,19 @@ def make_offset(cap, firstfile, secondfile="", thirdfile="",
         file.write(singlepad)
         file.write(doublepad)
         file.write(trailers)
+    with open(os.path.join(folder, "offset.hex"), "rb") as file:
+        thelength = len(file.read())
+    if thelength % 4 != 0:
+        with open(os.path.join(folder, "offset.hex"), "rb+") as file:
+            if thelength % 4 == 1:
+                file.seek(-1, os.SEEK_END)
+                file.truncate()
+            elif thelength % 4 == 2:
+                file.seek(-2, os.SEEK_END)
+                file.truncate()
+            elif thelength % 4 == 3:
+                file.seek(-3, os.SEEK_END)
+                file.truncate()
 
 
 def make_autoloader(filename, cap, firstfile, secondfile="", thirdfile="",

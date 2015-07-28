@@ -37,7 +37,7 @@ class TestClassPseudocap:
     def test_make_offset_len(self):
         with open("offset.hex", "rb") as targetfile:
             data = targetfile.read()
-        assert len(data) == 213
+        assert len(data) == 208
 
     def test_make_offset_hash(self):
         shahash = sha512()
@@ -45,7 +45,7 @@ class TestClassPseudocap:
             data = targetfile.read()
             shahash.update(data)
         thehash = shahash.hexdigest()
-        assert thehash == '0a10007b5645456af5d230bc1cd896328920954285e9fc480531f14fdc098d9514699ab5b8000bcfd158c0953c230835936a8461e2059f29ab1e01de6eff3653' #@IgnorePep8
+        assert thehash == '8001a4814bff60f755d8e86a250fee517e983e54cdfc64964b2120f8ce0444ea786c441f0707f1a8a3ccda612281f6ee226264059833abcf8c910883564e8d32' #@IgnorePep8
 
     def test_make_autoloader_hash(self):
         shahash = sha512()
@@ -56,4 +56,4 @@ class TestClassPseudocap:
                     break
                 shahash.update(data)
         thehash = shahash.hexdigest()
-        assert thehash == '0998665125e62d6d9e2a1d9ba0a6a4eb58355c6e908605b759fc47cdee7594feb7600a4cb2f61e9604cff53cc984d54f9b7b2e2a9e3056f6f6a1812c3aafebff' #@IgnorePep8
+        assert thehash == 'f4f6ac62387a665471898b14b4934c594b5877ac4170a1d204264ca8ed9be8709b6c5fd66c75c975ab76e26fbf512a02918d723e34c579d523c3b2bfbd11d6e4' #@IgnorePep8

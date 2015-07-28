@@ -37,7 +37,7 @@ class TestClassLoadergen:
         thehash = shahash.hexdigest()
         os.remove("desktop.signed")
         os.remove("radio.signed")
-        assert thehash == '616124e8991b5c0559f0246c4ff31bf6a96194f4d0fc10b796bf642549907beb34b5198a3792d17ecb30dc9a1a02b4015091ffa399efe260563c3a3884f7a73a' #@IgnorePep8
+        assert thehash == '71edeced963cd8cf1a7b99c8be9dc93df670471a02eef5da5e40ad4822be1e321c8e1495369dc685b943ac07287bb4b8245636c7b28c861cfd9238e0d42288a2' #@IgnorePep8
 
     def test_generate_loaders(self):
         with open("qc8960.factory_sfi.desktop.signed", "w") as targetfile:
@@ -63,5 +63,5 @@ class TestClassLoadergen:
                         if not data:
                             break
                         shahash.update(data)
-                    assert shahash.hexdigest() in ("17645875c314827c4d60c722819accab7e05f1e70108707459631ab8bf64d5c0b1dfa199d05d8ff41f78e69178e2133af6daac9ab11c1c6a5097cca6395ab947",#@IgnorePep8
-                                                   "616124e8991b5c0559f0246c4ff31bf6a96194f4d0fc10b796bf642549907beb34b5198a3792d17ecb30dc9a1a02b4015091ffa399efe260563c3a3884f7a73a") #@IgnorePep8
+                    assert shahash.hexdigest() in ("3143a5bdfffbab199fe071d720b374d8678e5a2baafaeaf375f747c578a314cdf10059ccfac51fbe992d6d473106c2ba18bb8a80026269b046c3e299c33adaf3",#@IgnorePep8
+                                                   "71edeced963cd8cf1a7b99c8be9dc93df670471a02eef5da5e40ad4822be1e321c8e1495369dc685b943ac07287bb4b8245636c7b28c861cfd9238e0d42288a2") #@IgnorePep8
