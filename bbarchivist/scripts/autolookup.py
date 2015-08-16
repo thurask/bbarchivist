@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 
 import argparse  # parse arguments
 import sys  # load arguments
@@ -6,7 +6,7 @@ from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import networkutils  # lookup
 from bbarchivist import utilities  # incrementer
 from bbarchivist import sqlutils  # sql db work
-from . import linkgen  # link generator @UnresolvedImport
+from bbarchivist.scripts import linkgen  # link generator @UnresolvedImport
 import time  # get datestamp for lookup
 import os  # path work
 
@@ -47,6 +47,12 @@ def grab_args():
             action="store_true",
             default=False)
         parser.add_argument(
+            "-q", "--quiet",
+            dest="quiet",
+            help="Only print if available",
+            action="store_true",
+            default=False)
+        parser.add_argument(
             "-i", "--increment",
             dest="increment",
             help="Loop increment, default = 3",
@@ -67,7 +73,8 @@ def grab_args():
             args.log,
             args.autogen,
             args.increment,
-            args.sql)
+            args.sql,
+            args.quiet)
     else:
         osversion = input("OS VERSION: ")
         recurse = utilities.str2bool(input("LOOP?: "))
@@ -78,6 +85,7 @@ def grab_args():
             True,
             False,
             3,
+            False,
             False)
         smeg = input("Press Enter to exit")
         if smeg or not smeg:
@@ -85,7 +93,8 @@ def grab_args():
 
 
 def autolookup_main(osversion, loop=False, log=False,
-                    autogen=False, inc=3, sql=False):
+                    autogen=False, inc=3, sql=False,
+                    quiet=False):
     """
     Lookup a software release from an OS. Can iterate.
 
@@ -106,6 +115,9 @@ def autolookup_main(osversion, loop=False, log=False,
 
     :param sql: Whether to add valid lookups to a database. Default is false.
     :type sql: bool
+
+    :param quiet: Whether to only output if the release exists. Default is false.
+    :type quiet: bool
     """
     print("~~~AUTOLOOKUP VERSION", bbconstants.VERSION + "~~~")
     print("")
@@ -174,10 +186,17 @@ def autolookup_main(osversion, loop=False, log=False,
                                                                      b1av,
                                                                      b2av,
                                                                      available)
-                if log:
-                    with open(record, "a") as rec:
-                        rec.write(out+"\n")
-                print(out)
+                if not quiet:
+                    if log:
+                        with open(record, "a") as rec:
+                            rec.write(out+"\n")
+                    print(out)
+                else:
+                    if available == "Available":
+                        if log:
+                            with open(record, "a") as rec:
+                                rec.write(out+"\n")
+                        print(out)
             if not loop:
                 raise KeyboardInterrupt  # hack, but whateva, I do what I want
             else:
