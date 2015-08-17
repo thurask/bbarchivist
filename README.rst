@@ -431,18 +431,20 @@ Help
 
     > bb-linkgen -h
     
-    usage: bb-linkgen [-h] [-v] os [radio] [swrelease]
+    usage: bb-linkgen [-h] [-v] [-r [SW]] os [radio] [swrelease]
 
-   Generate links from OS/radio/software.
-   
-   positional arguments:
-     os             OS version, 10.x.y.zzzz
-     radio          Radio version, 10.x.y.zzzz
-     swrelease      Software version, 10.x.y.zzzz
-   
-   optional arguments:
-     -h, --help     show this help message and exit
-     -v, --version  show program's version number and exit
+	Generate links from OS/radio/software.
+
+	positional arguments:
+	  os                    OS version, 10.x.y.zzzz
+	  radio                 Radio version, 10.x.y.zzzz
+	  swrelease             Software version, 10.x.y.zzzz
+
+	optional arguments:
+	  -h, --help            show this help message and exit
+	  -v, --version         show program's version number and exit
+	  -r [SW], --radiosw [SW]
+							Radio software version, if not same as OS
    
    http://github.com/thurask/bbarchivist
     
