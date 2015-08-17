@@ -87,11 +87,14 @@ class TestClassFilehashtools:
             config.read(conffile)
             gpgkey = config.get('gpgrunner', 'key', fallback=None)
             gpgpass = config.get('gpgrunner', 'pass', fallback=None)
-            gpginst = gnupg.GPG()
-            bf.gpgfile("tempfile.txt", gpginst, gpgkey, gpgpass)
-            with open("tempfile.txt.asc", "rb") as sig:
-                verified = gpginst.verify_file(sig, 'tempfile.txt')
-                assert verified
+            if gpgkey is None or gpgpass is None:
+                pass
+            else:
+                gpginst = gnupg.GPG()
+                bf.gpgfile("tempfile.txt", gpginst, gpgkey, gpgpass)
+                with open("tempfile.txt.asc", "rb") as sig:
+                    verified = gpginst.verify_file(sig, 'tempfile.txt')
+                    assert verified
 
     def test_escreens(self):
         pin = "acdcacdc"
@@ -129,8 +132,11 @@ class TestClassFilehashtools:
             config.read(conffile)
             gpgkey = config.get('gpgrunner', 'key', fallback=None)
             gpgpass = config.get('gpgrunner', 'pass', fallback=None)
-            gpginst = gnupg.GPG()
-            bf.gpgrunner(os.getcwd(), gpgkey, gpgpass)
-            with open("tempfile.txt.asc", "rb") as sig:
-                verified = gpginst.verify_file(sig, 'tempfile.txt')
-                assert verified
+            if gpgkey is None or gpgpass is None:
+                pass
+            else:
+                gpginst = gnupg.GPG()
+                bf.gpgrunner(os.getcwd(), gpgkey, gpgpass)
+                with open("tempfile.txt.asc", "rb") as sig:
+                    verified = gpginst.verify_file(sig, 'tempfile.txt')
+                    assert verified

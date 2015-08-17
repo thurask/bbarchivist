@@ -88,7 +88,7 @@ def valid_carrier(mcc_mnc):
         raise argparse.ArgumentError(argument=None,
                                          message="{0} is not an integer.".format(str(mcc_mnc))) #@IgnorePep8
     else:
-        if len(str(mcc_mnc)) > 3 or len(str(thecode)) == 0:
+        if len(str(mcc_mnc)) > 3 or len(str(mcc_mnc)) == 0:
             raise argparse.ArgumentError(argument=None,
                                              message="{0} is an invalid code.".format(str(mcc_mnc))) #@IgnorePep8
         else:
