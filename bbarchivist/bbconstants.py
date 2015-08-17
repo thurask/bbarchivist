@@ -9,7 +9,7 @@ __copyright__ = "2015 Thurask"
 import os.path  # for producing cap location constant
 
 #: App version.
-VERSION = "2.0.1"
+VERSION = "2.0.2"
 #: Version of cap.exe bundled with app.
 CAPVERSION = "3.11.0.22"
 #: Where cap.exe is. Should be in site-packages.
