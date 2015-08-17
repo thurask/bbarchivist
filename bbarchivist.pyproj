@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{f5f97f8a-6b1c-49f4-8f86-b02bc5a79d47}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile>bbarchivist\scripts\autolookup.py</StartupFile>
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId />
+    <InterpreterVersion />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+    <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include=".gitattributes" />
+    <Content Include=".gitignore" />
+    <Content Include=".travis.yml" />
+    <Content Include="bbarchivist\bbconstants.json" />
+    <Content Include="bbarchivist\cap-3.11.0.22.dat" />
+    <Content Include="docgen.bat" />
+    <Content Include="exebuilder.bat" />
+    <Content Include="install.bat" />
+    <Content Include="MANIFEST.in" />
+    <Content Include="pytest.ini" />
+    <Content Include="README.rst" />
+    <Content Include="requirements-devel.txt" />
+    <Content Include="requirements-user.txt" />
+    <Content Include="upload.bat" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="bbarchivist\barutils.py" />
+    <Compile Include="bbarchivist\bbconstants.py" />
+    <Compile Include="bbarchivist\filehashtools.py" />
+    <Compile Include="bbarchivist\loadergen.py" />
+    <Compile Include="bbarchivist\networkutils.py" />
+    <Compile Include="bbarchivist\pseudocap.py" />
+    <Compile Include="bbarchivist\scripts\archivist.py" />
+    <Compile Include="bbarchivist\scripts\autolookup.py" />
+    <Compile Include="bbarchivist\scripts\cap.py" />
+    <Compile Include="bbarchivist\scripts\carrierchecker.py" />
+    <Compile Include="bbarchivist\scripts\certchecker.py" />
+    <Compile Include="bbarchivist\scripts\escreens.py" />
+    <Compile Include="bbarchivist\scripts\filehasher.py" />
+    <Compile Include="bbarchivist\scripts\gpgrunner.py" />
+    <Compile Include="bbarchivist\scripts\lazyloader.py" />
+    <Compile Include="bbarchivist\scripts\linkgen.py" />
+    <Compile Include="bbarchivist\scripts\sqlexport.py" />
+    <Compile Include="bbarchivist\scripts\__init__.py" />
+    <Compile Include="bbarchivist\sqlutils.py" />
+    <Compile Include="bbarchivist\tests\test_barutils.py" />
+    <Compile Include="bbarchivist\tests\test_filehashtools.py" />
+    <Compile Include="bbarchivist\tests\test_loadergen.py" />
+    <Compile Include="bbarchivist\tests\test_networkutils.py" />
+    <Compile Include="bbarchivist\tests\test_pseudocap.py" />
+    <Compile Include="bbarchivist\tests\test_sqlutils.py" />
+    <Compile Include="bbarchivist\tests\test_textgenerator.py" />
+    <Compile Include="bbarchivist\tests\test_utilities.py" />
+    <Compile Include="bbarchivist\tests\__init__.py" />
+    <Compile Include="bbarchivist\textgenerator.py" />
+    <Compile Include="bbarchivist\utilities.py" />
+    <Compile Include="bbarchivist\__init__.py" />
+    <Compile Include="cxsetup.py" />
+    <Compile Include="docs\conf.py" />
+    <Compile Include="setup.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bbarchivist" />
+    <Folder Include="bbarchivist\scripts" />
+    <Folder Include="bbarchivist\tests" />
+    <Folder Include="docs" />
+  </ItemGroup>
+  <Import Project="$(PtvsTargetsFile)" Condition="Exists($(PtvsTargetsFile))" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="!Exists($(PtvsTargetsFile))" />
+</Project>
