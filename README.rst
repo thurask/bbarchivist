@@ -224,22 +224,24 @@ Help
                     [-ns] [-nc] [-nd] [-nv] [--crc32] [--adler32] [--md4]
                     [--sha224] [--sha384] [--sha512] [--ripemd160]
                     [--whirlpool] [--no-sha1] [--no-sha256] [--no-md5] [-a]
-                    [-o] [-g] [--7z | --tgz | --tbz | --txz | --zip]
+                    [-o] [-g] [-r [SW]] [--7z | --tgz | --tbz | --txz | --zip]
                     os [radio] [swrelease]
 
-   Download bar files, create autoloaders.
-   
-   positional arguments:
-     os                    OS version, 10.x.y.zzzz
-     radio                 Radio version, 10.x.y.zzzz
-     swrelease             Software version, 10.x.y.zzzz
-   
-   optional arguments:
-     -h, --help            show this help message and exit
-     -v, --version         show program's version number and exit
-     -f DIR, --folder DIR  Working folder
-     -c PATH, --cap PATH   Path to cap.exe
-     -g, --gpg             Enable GPG signing. Set up GnuPG.
+	Download bar files, create autoloaders.
+
+	positional arguments:
+	  os                    OS version, 10.x.y.zzzz
+	  radio                 Radio version, 10.x.y.zzzz
+	  swrelease             Software version, 10.x.y.zzzz
+
+	optional arguments:
+	  -h, --help            show this help message and exit
+	  -v, --version         show program's version number and exit
+	  -f DIR, --folder DIR  Working folder
+	  -c PATH, --cap PATH   Path to cap.exe
+	  -g, --gpg             Enable GPG signing. Set up GnuPG.
+	  -r [SW], --radiosw [SW]
+							Radio software version, if not same as OS
    
    negators:
      Disable program functionality
@@ -290,24 +292,26 @@ Help
 
     usage: bb-lazyloader [-h] [-v]
                      [--stl100-1 | --stl100-x | --stl100-4 | --q10 | --z30 | --z3 | --passport]
-                     [--run-loader] [-g | -ng] [-f DIR] [-n]
+                     [--run-loader] [-g | -ng] [-f DIR] [-n] [-r [SW]]
                      [os] [radio] [swrelease]
 
-    Create one autoloader for personal use.
-    
-    positional arguments:
-      os                    OS version, 10.x.y.zzzz
-      radio                 Radio version, 10.x.y.zzzz
-      swrelease             Software version, 10.x.y.zzzz
-    
-    optional arguments:
-      -h, --help            show this help message and exit
-      -v, --version         show program's version number and exit
-      --run-loader          Run autoloader after creation
-      -g, --gui             Use GUI
-      -ng, --no-gui         Don't use GUI
-      -f DIR, --folder DIR  Working folder
-      -n, --no-download     Don't download files
+	Create one autoloader for personal use.
+
+	positional arguments:
+	  os                    OS version, 10.x.y.zzzz
+	  radio                 Radio version, 10.x.y.zzzz
+	  swrelease             Software version, 10.x.y.zzzz
+
+	optional arguments:
+	  -h, --help            show this help message and exit
+	  -v, --version         show program's version number and exit
+	  --run-loader          Run autoloader after creation
+	  -g, --gui             Use GUI
+	  -ng, --no-gui         Don't use GUI
+	  -f DIR, --folder DIR  Working folder
+	  -n, --no-download     Don't download files
+	  -r [SW], --radiosw [SW]
+							Radio software version, if not same as OS
     
     devices:
       Device to load (one required)
@@ -603,7 +607,7 @@ Make sure to have bbarchivist.ini in ~ or \Users\<your username> like so:
 
     [gpgrunner]
     key = 0xACDCACDC
-    pass = correct horse battery staple
+    pass = NONE (leave it as NONE or delete the line, unless you want your password saved)
     
 If not, it'll ask you while running the script and make the file.
 More importantly, MAKE SURE TO HAVE GnuPG SET UP BEFOREHAND!
@@ -650,8 +654,7 @@ Credits/Software Used
 -  Beautiful Soup: `Leonard Richardson et al. <http://www.crummy.com/software/BeautifulSoup/>`__
 -  Python-GnuPG: `Vinay Sajip et al. <https://pythonhosted.org/python-gnupg/index.html#acknowledgements>`__
 -  easygui: `easygui dev team <https://pythonhosted.org/easygui/support.html>`__
--  PyDev: `Brainwy Software Ltda. <http://pydev.org>`__
--  Momentics: `BlackBerry Ltd. <https://developer.blackberry.com/native/downloads/>`__
--  Source testing: `Travis CI <https://travis-ci.org>`__
--  Source analysis: `QuantifiedCode <http://quantifiedcode.com>`__
+-  Visual Studio Community 2015: `Microsoft <https://www.visualstudio.com>`__
+-  Python Tools for Visual Studio: `Microsoft <http://microsoft.github.io/PTVS/>`__
+-  Integration: `Travis CI <https://travis-ci.org>`__
 -  Feedback, bug reports, feature requests: Users Like You

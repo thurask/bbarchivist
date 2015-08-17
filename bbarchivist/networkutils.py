@@ -1,4 +1,10 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
+
+"""This module is used for network connections; APIs, downloading, related tools."""
+
+__author__ = "Thurask"
+__license__ = "Do whatever"
+__copyright__ = "2015 Thurask"
 
 import os  # filesystem read
 import requests  # downloading

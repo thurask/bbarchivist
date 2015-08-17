@@ -1,4 +1,10 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
+
+"""This module is used to generate file hashes/checksums and PGP signatures."""
+
+__author__ = "Thurask"
+__license__ = "Do whatever"
+__copyright__ = "2015 Thurask"
 
 import zlib  # crc32/adler32
 import hashlib  # all other hashes
@@ -243,6 +249,7 @@ def whirlpoolhash(filepath, blocksize=16 * 1024 * 1024):
 def gpgfile(filepath, gpginst, keyid=None, passphrase=None):
     """
     Make ASCII-armored signature files with a given private key.
+    Takes an instance of gnupg.GPG().
 
     :param filepath: File you wish to verify.
     :type filepath: str
@@ -309,7 +316,7 @@ def verifier(workingdir, blocksize=16 * 1024 * 1024,
              splitfiles=True):
     """
     For all files in a directory, perform various hash/checksum functions.
-    Functions based on boolean arguments, writing the output to a .cksum file.
+    Take booleans to define hashes, write the output to a/individual .cksum file(s).
 
     :param workingdir: Path containing files you wish to verify.
     :type workingdir: str

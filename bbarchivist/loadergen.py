@@ -1,4 +1,13 @@
-﻿import os  # path work
+﻿#!/usr/bin/env python3
+
+"""This module is used for creation of autoloaders. 
+A higher level interface for :mod:`bbarchivist.pseudocap`."""
+
+__author__ = "Thurask"
+__license__ = "Do whatever"
+__copyright__ = "2015 Thurask"
+
+import os  # path work
 import glob  # filename matching
 from bbarchivist import pseudocap  # implement cap
 from bbarchivist import utilities  # cap location
@@ -8,8 +17,7 @@ def generate_loaders(
         osversion, radioversion, radios=True,
         cap=None, localdir=None, altradio=False):
     """
-    Create and properly label autoloaders.
-    Leverages Python implementation of cap.exe.
+    Create and label autoloaders for :mod:`bbarchivist.scripts.archivist`.
 
     :param osversion: OS version, 10.x.y.zzzz.
     :type osversion: str
@@ -367,6 +375,7 @@ def generate_lazy_loader(
         osversion, device,
         cap=None, localdir=None, altradio=None):
     """
+    Create and label autoloaders for :mod:`bbarchivist.scripts.lazyloader`.
     :func:`generate_loaders`, but for making one OS/radio loader.
 
     :param osversion: OS version, 10.x.y.zzzz.

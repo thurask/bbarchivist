@@ -1,3 +1,11 @@
+﻿#!/usr/bin/env python3
+
+"""This module is used to define constants for the program."""
+
+__author__ = "Thurask"
+__license__ = "Do whatever"
+__copyright__ = "2015 Thurask"
+
 import os.path  # for producing cap location constant
 
 #: App version.

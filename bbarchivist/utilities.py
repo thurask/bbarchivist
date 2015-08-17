@@ -1,4 +1,10 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
+
+"""This module is used for miscellaneous utilities."""
+
+__author__ = "Thurask"
+__license__ = "Do whatever"
+__copyright__ = "2015 Thurask"
 
 import os  # path work
 import argparse  # argument parser for filters
@@ -14,7 +20,7 @@ except ImportError:
 
 def grab_cap():
     """
-    Work with either local cap or system cap. Since cx_freeze is dumb.
+    Figure out where cap is, local or system-supplied.
     """
     try:
         capfile = glob.glob(
@@ -27,27 +33,27 @@ def grab_cap():
         return os.path.abspath(capfile)  # local cacerts
 
 
-def filesize_parser(num):
+def filesize_parser(file_size):
     """
-    Raw byte filesize to human-readable string.
+    Raw byte file size to human-readable string.
 
-    :param num: Number to parse.
-    :type num: float
+    :param file_size: Number to parse.
+    :type file_size: float
     """
-    if num is None:
+    if file_size is None:
         return "N/A"
     else:
-        num = float(num)
-        for x in ['b', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB']:
-            if num < 1024.0:
-                return "{:3.1f}{}".format(num, x)
-            num /= 1024.0
-        return "{:3.1f}{}".format(num, 'YB')
+        file_size = float(file_size)
+        for x in ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB']:
+            if file_size < 1024.0:
+                return "{:3.1f}{}".format(file_size, x)
+            file_size /= 1024.0
+        return "{:3.1f}{}".format(file_size, 'YB')
 
 
 def file_exists(file):
     """
-    Check if file exists. Used for parsing file inputs from command line.
+    Check if file exists, raise argparse error if it doesn't.
 
     :param file: Path to a file, including extension.
     :type file: str
@@ -58,40 +64,40 @@ def file_exists(file):
     return file
 
 
-def positive_integer(inputint):
+def positive_integer(input_int):
     """
-    Check if number > 0. Used for parsing integer inputs from command line.
+    Check if number > 0, raise argparse error if it isn't.
 
-    :param inputint: Integer to check.
-    :type inputint: str
+    :param input_int: Integer to check.
+    :type input_int: str
     """
-    if int(inputint) <= 0:
+    if int(input_int) <= 0:
         raise argparse.ArgumentError(argument=None,
-                                     message="{0} is not >=0.".format(str(inputint))) #@IgnorePep8
-    return int(inputint)
+                                     message="{0} is not >=0.".format(str(input_int))) #@IgnorePep8
+    return int(input_int)
 
 
-def valid_carrier(thecode):
+def valid_carrier(mcc_mnc):
     """
-    Check if MCC/MNC is valid (i.e. 1-3 chars)
+    Check if MCC/MNC is valid (1-3 chars), raise argparse error if it isn't.
 
-    :param thecode: MCC/MNC to check.
-    :type thecode: str
+    :param mcc_mnc: MCC/MNC to check.
+    :type mcc_mnc: str
     """
-    if not str(thecode).isdecimal():
+    if not str(mcc_mnc).isdecimal():
         raise argparse.ArgumentError(argument=None,
-                                         message="{0} is not an integer.".format(str(thecode))) #@IgnorePep8
+                                         message="{0} is not an integer.".format(str(mcc_mnc))) #@IgnorePep8
     else:
-        if len(str(thecode)) > 3 or len(str(thecode)) == 0:
+        if len(str(mcc_mnc)) > 3 or len(str(thecode)) == 0:
             raise argparse.ArgumentError(argument=None,
-                                             message="{0} is an invalid code.".format(str(thecode))) #@IgnorePep8
+                                             message="{0} is an invalid code.".format(str(mcc_mnc))) #@IgnorePep8
         else:
-            return thecode
+            return mcc_mnc
 
 
 def escreens_pin(pin):
     """
-    Check if given PIN is valid (8 character hexadecimal)
+    Check if given PIN is valid (8 character hexadecimal, raise argparse error if it isn't.
 
     :param pin: PIN to check.
     :type pin: str
@@ -111,7 +117,7 @@ def escreens_pin(pin):
 
 def escreens_duration(duration):
     """
-    Check if escreens duration is valid.
+    Check if Engineering Screens duration is valid.
 
     :param duration: Duration to check.
     :type duration: int
@@ -125,7 +131,7 @@ def escreens_duration(duration):
 
 def str2bool(input_check):
     """
-    Parse bool from string input.
+    Return Boolean interpretation of string input.
 
     :param input_check: String to check if it means True or False.
     :type input_check: str
@@ -135,14 +141,14 @@ def str2bool(input_check):
 
 def is_amd64():
     """
-    Returns true if script is running on an AMD64 system.
+    Check if script is running on an AMD64 system.
     """
     return platform.machine().endswith("64")
 
 
 def is_windows():
     """
-    Returns true if script is running on Windows.
+    Check if script is running on Windows.
     """
     return platform.system() == "Windows"
 
@@ -165,9 +171,9 @@ def get_seven_zip(talkative=False):
 
 def win_seven_zip(talkative=False):
     """
-    For Windows, checks where 7-Zip is.
-    Consults registry first for any installed instances of 7-Zip.
-    If it's not there, it falls back onto the supplied executables.
+    For Windows, check where 7-Zip is ("where", pretty much).
+    Consult registry first for any installed instances of 7-Zip.
+    If it's not there, fall back onto the supplied executables.
     If *those* aren't there, return "error".
 
     :param talkative: Whether to output to screen. False by default.
@@ -209,7 +215,6 @@ def win_seven_zip(talkative=False):
 def get_core_count():
     """
     Find out how many CPU cores this system has.
-    Good for multicore compression.
     """
     try:
         cores = str(os.cpu_count())  # thank you Python 3.4
@@ -228,9 +233,8 @@ def get_core_count():
 def prep_seven_zip():
     """
     Check for presence of 7-Zip.
-    On POSIX, checks for p7zip.
-    On Windows, checks for 7-Zip.
-    Returns False if not found, True if found.
+    On POSIX, check for p7zip.
+    On Windows, check for 7-Zip.
     """
     if is_windows():
         return get_seven_zip(True) != "error"

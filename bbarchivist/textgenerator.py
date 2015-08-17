@@ -1,3 +1,11 @@
+﻿#!/usr/bin/env python3
+
+"""This module is used for generation of URLs and related text files."""
+
+__author__ = "Thurask"
+__license__ = "Do whatever"
+__copyright__ = "2015 Thurask"
+
 from bbarchivist.networkutils import create_base_url, get_content_length
 from bbarchivist.utilities import filesize_parser
 import re
@@ -7,7 +15,7 @@ def write_links(softwareversion, osversion, radioversion,
                 osurls, coreurls, radiourls, avlty=False,
                 appendbars=False, appurls=None):
     """
-    Write lookup links to file. Checks for availability, can include app bars.
+    Write lookup links to file. Check for availability, can include app bars.
 
     :param softwareversion: Software release version.
     :type softwareversion: str

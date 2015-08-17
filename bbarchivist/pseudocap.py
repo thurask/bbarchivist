@@ -1,4 +1,10 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
+
+"""This module is the Python-ized implementation of cap.exe"""
+
+__author__ = "Thurask"
+__license__ = "Do whatever"
+__copyright__ = "2015 Thurask"
 
 import os  # path work
 import binascii  # to hex and back again
@@ -172,8 +178,7 @@ def make_autoloader(filename, cap, firstfile, secondfile="", thirdfile="",
                     fourthfile="", fifthfile="", sixthfile="",
                     folder=None):
     """
-    Python implementation of cap.exe.
-    Writes cap.exe, magic offset, signed files to a .exe file.
+    Write cap.exe, magic offset, signed files to a .exe file.
     :func:`make_offset` is used to create the offset.
 
     :param filename: Name of autoloader.
