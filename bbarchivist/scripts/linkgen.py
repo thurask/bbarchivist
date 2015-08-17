@@ -42,6 +42,7 @@ def grab_args():
                             "-r",
                             "--radiosw",
                             dest="altsw",
+                            metavar="SW",
                             help="Radio software version, if not same as OS",
                             nargs="?",
                             default=None)
