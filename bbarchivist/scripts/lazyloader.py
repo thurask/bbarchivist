@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 
 import argparse  # parse arguments
 import sys  # load arguments
@@ -15,7 +15,7 @@ import easygui as eg  # gui
 
 
 def start_gui(osv=None, radv=None, swv=None, dev=None, aut=None,
-              fol=None, dow=None):
+              fol=None, dow=None, alt=None):
     """
     Either passes straight through to the main function,
     or uses the GUI to prompt for variables.
@@ -40,6 +40,9 @@ def start_gui(osv=None, radv=None, swv=None, dev=None, aut=None,
 
     :param dow: Download files or not.
     :type dow: bool
+
+    :param alt: Alternate software release, for alternate radio.
+    :type alt: str
     """
     if not osv:
         osentry = eg.enterbox(msg="OS version")
@@ -74,7 +77,7 @@ def start_gui(osv=None, radv=None, swv=None, dev=None, aut=None,
     if not dow:
         dow = True
     lazyloader_main(devint, osentry, radentry, swentry,
-                    fol, autoentry, dow)
+                    fol, autoentry, dow, alt)
 
 
 def grab_args():
@@ -190,6 +193,14 @@ def grab_args():
             help="Don't download files",
             action="store_false",
             default=True)
+        parser.add_argument(
+            "-r",
+            "--radiosw",
+            dest="altsw",
+            metavar="SW",
+            help="Radio software version, if not same as OS",
+            nargs="?",
+            default=None)
         if getattr(sys, 'frozen', False):
             mu = True
         else:
@@ -207,7 +218,8 @@ def grab_args():
                       args.device,
                       args.autoloader,
                       args.folder,
-                      args.download)
+                      args.download,
+                      args.altsw)
         else:
             if not args.os:
                 raise argparse.ArgumentError(argument=None,
@@ -222,7 +234,8 @@ def grab_args():
                                 args.swrelease,
                                 args.folder,
                                 args.autoloader,
-                                args.download)
+                                args.download,
+                                args.altsw)
     else:
         localdir = os.getcwd()
         osversion = input("OS VERSION: ")
@@ -263,7 +276,8 @@ def grab_args():
             softwareversion,
             localdir,
             autoloader,
-            True)
+            True,
+            None)
         smeg = input("Press Enter to exit")
         if smeg or not smeg:
             raise SystemExit
@@ -271,7 +285,7 @@ def grab_args():
 
 def lazyloader_main(device, osversion, radioversion=None,
                     softwareversion=None, localdir=None, autoloader=False,
-                    download=True):
+                    download=True, altsw=None):
     """
     Wrap the tools necessary to make one autoloader.
 
@@ -295,6 +309,9 @@ def lazyloader_main(device, osversion, radioversion=None,
 
     :param download: Whether to download files. Default is true.
     :type download: bool
+
+    :param altsw: Radio software release, if not the same as OS.
+    :type altsw: str
     """
     swchecked = False  # if we checked sw release already
     if radioversion is None:
@@ -328,6 +345,8 @@ def lazyloader_main(device, osversion, radioversion=None,
 
     if download:
         baseurl = networkutils.create_base_url(softwareversion)
+        if altsw:
+            alturl = networkutils.create_base_url(altsw)
         splitos = osversion.split(".")
         splitos = [int(i) for i in splitos]
 
@@ -375,13 +394,16 @@ def lazyloader_main(device, osversion, radioversion=None,
         else:
             return
 
+        if altsw:
+            radiourl = radiourl.replace(baseurl, alturl)
+
         # Check availability of software release
         if not swchecked:
             avlty = networkutils.availability(baseurl)
             if avlty:
-                print("\nSOFTWARE RELEASE", softwareversion, "EXISTS")
+                print("SOFTWARE RELEASE", softwareversion, "EXISTS")
             else:
-                print("\nSOFTWARE RELEASE", softwareversion, "NOT FOUND")
+                print("SOFTWARE RELEASE", softwareversion, "NOT FOUND")
                 cont = utilities.str2bool(input("CONTINUE? Y/N: "))
                 if cont:
                     pass
@@ -389,7 +411,21 @@ def lazyloader_main(device, osversion, radioversion=None,
                     print("\nEXITING...")
                     raise SystemExit
         else:
-            print("\nSOFTWARE RELEASE", softwareversion, "EXISTS")
+            print("SOFTWARE RELEASE", softwareversion, "EXISTS")
+
+        if altsw:
+            print("\nCHECKING RADIO SOFTWARE RELEASE...")
+            altavlty = networkutils.availability(alturl)
+            if altavlty:
+                print("SOFTWARE RELEASE", altsw, "EXISTS")
+            else:
+                print("SOFTWARE RELEASE", altsw, "NOT FOUND")
+                cont = utilities.str2bool(input("CONTINUE? Y/N: "))
+                if cont:
+                    pass
+                else:
+                    print("\nEXITING...")
+                    raise SystemExit
 
         # Check availability of specific OS
         osav = networkutils.availability(osurl)
@@ -504,9 +540,14 @@ def lazyloader_main(device, osversion, radioversion=None,
                 except shutil.Error:
                     os.remove(bardest_radio)
 
+    print("\nGENERATING LOADER...")
+    if altsw:
+        altradio = True
+    else:
+        altradio = False
     loadergen.generate_lazy_loader(osversion, device,
                                    cap=utilities.grab_cap(),
-                                   localdir=localdir)
+                                   localdir=localdir, altradio=radioversion)
 
     print("\nREMOVING .signed FILES...")
     for file in os.listdir(localdir):

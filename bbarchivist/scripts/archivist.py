@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 
 import os  # filesystem read
 import shutil  # directory read/write
@@ -217,6 +217,14 @@ def grab_args():
             help="Enable GPG signing. Set up GnuPG.",
             action="store_true",
             default=False)
+        parser.add_argument(
+            "-r",
+            "--radiosw",
+            dest="altsw",
+            metavar="SW",
+            help="Radio software version, if not same as OS",
+            nargs="?",
+            default=None)
         comps = parser.add_argument_group("compressors", "Compression methods")
         compgroup = comps.add_mutually_exclusive_group()
         compgroup.add_argument(
@@ -280,6 +288,8 @@ def grab_args():
             config.read(conffile)
             gpgkey = config.get('gpgrunner', 'key', fallback=None)
             gpgpass = config.get('gpgrunner', 'pass', fallback=None)
+            if gpgpass == "NONE":
+                gpgpass = None
             if gpgkey is None or gpgpass is None:
                 print("NO PGP KEY FOUND")
                 cont = utilities.str2bool(input("CONTINUE (Y/N)?: "))
@@ -288,7 +298,7 @@ def grab_args():
                     gpgpass = getpass.getpass(prompt="PGP PASSPHRASE: ")
                     config['gpgrunner'] = {}
                     config['gpgrunner']['key'] = gpgkey
-                    config['gpgrunner']['pass'] = gpgpass
+                    config['gpgrunner']['pass'] = "NONE"
                     with open(conffile, "w") as configfile:
                         config.write(configfile)
                 else:
@@ -307,7 +317,7 @@ def grab_args():
                        args.extract, args.loaders,
                        args.signed, args.compmethod,
                        args.gpg, gpgkey, gpgpass, args.onefile,
-                       args.integrity)
+                       args.integrity, args.altsw)
     else:
         localdir = os.getcwd()
         osversion = input("OS VERSION: ")
@@ -327,7 +337,7 @@ def grab_args():
                        False, False, True, False, False,
                        False, bbconstants.CAPLOCATION, True,
                        True, True, True, "7z", False,
-                       False, None, None, False, True)
+                       False, None, None, False, True, None)
     smeg = input("Press Enter to exit")
     if smeg or not smeg:
         raise SystemExit
@@ -342,7 +352,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
                    cappath=None, download=True, extract=True,
                    loaders=True, signed=True, compmethod="7z",
                    gpg=False, gpgkey=None, gpgpass=None,
-                   onefile=False, integrity=True):
+                   onefile=False, integrity=True, altsw=None):
     """
     Wrap around multi-autoloader creation code.
     Some combination of creating, downloading, hashing,
@@ -437,6 +447,9 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
 
     :param integrity: Whether to test downloaded bar files. True by default.
     :type integrity: bool
+
+    :param altsw: Radio software release, if not the same as OS.
+    :type altsw: str
     """
     starttime = time.clock()
     swchecked = False  # if we checked sw release already
@@ -485,6 +498,8 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
         szexe = ""
 
     baseurl = networkutils.create_base_url(softwareversion)
+    if altsw:
+        alturl = networkutils.create_base_url(altsw)
     splitos = osversion.split(".")
     splitos = [int(i) for i in splitos]
 
@@ -522,14 +537,21 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
                  baseurl + "/qc8974.wtr2-" + radioversion +
                  "-nto+armle-v7+signed.bar"]
 
+    if altsw:
+        radiourls2 = []
+        for rad in radiourls:
+            radiourls2.append(rad.replace(baseurl, alturl))
+        radiourls = radiourls2
+        del radiourls2
+
     # Check availability of software release
     print("\nCHECKING SOFTWARE RELEASE AVAILABILITY...")
     if not swchecked:
         avlty = networkutils.availability(baseurl)
         if avlty:
-            print("\nSOFTWARE RELEASE", softwareversion, "EXISTS")
+            print("SOFTWARE RELEASE", softwareversion, "EXISTS")
         else:
-            print("\nSOFTWARE RELEASE", softwareversion, "NOT FOUND")
+            print("SOFTWARE RELEASE", softwareversion, "NOT FOUND")
             cont = utilities.str2bool(input("CONTINUE? Y/N: "))
             if cont:
                 pass
@@ -537,7 +559,21 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
                 print("\nEXITING...")
                 raise SystemExit
     else:
-        print("\nSOFTWARE RELEASE", softwareversion, "EXISTS")
+        print("SOFTWARE RELEASE", softwareversion, "EXISTS")
+
+    if altsw:
+        print("\nCHECKING RADIO SOFTWARE RELEASE...")
+        altavlty = networkutils.availability(alturl)
+        if altavlty:
+            print("SOFTWARE RELEASE", altsw, "EXISTS")
+        else:
+            print("SOFTWARE RELEASE", altsw, "NOT FOUND")
+            cont = utilities.str2bool(input("CONTINUE? Y/N: "))
+            if cont:
+                pass
+            else:
+                print("\nEXITING...")
+                raise SystemExit
 
     for url in radiourls:
         radav = networkutils.availability(url)
@@ -670,11 +706,16 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     # Create loaders
     if loaders:
         print("\nGENERATING LOADERS...")
+        if altsw:
+            altradio = True
+        else:
+            altradio = False
         loadergen.generate_loaders(osversion,
                                    radioversion,
                                    radios,
                                    cappath,
-                                   localdir)
+                                   localdir,
+                                   altradio)
 
     # Remove .signed files
     if signed:
