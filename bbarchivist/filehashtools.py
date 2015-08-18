@@ -667,33 +667,36 @@ def verifier_config_loader():
         with open(conffile, "w") as configfile:
             config.write(configfile)
     hashini = config['hashmodes']
-    resultdict['crc32'] = hashini.getboolean('crc32', fallback=False)
-    resultdict['adler32'] = hashini.getboolean('adler32', fallback=False)
-    resultdict['sha1'] = hashini.getboolean('sha1', fallback=True)
-    resultdict['sha224'] = hashini.getboolean('sha224', fallback=False)
-    resultdict['sha256'] = hashini.getboolean('sha256', fallback=True)
-    resultdict['sha384'] = hashini.getboolean('sha384', fallback=False)
-    resultdict['sha512'] = hashini.getboolean('sha512', fallback=False)
-    resultdict['md5'] = hashini.getboolean('md5', fallback=True)
-    resultdict['md4'] = hashini.getboolean('md4', fallback=False)
-    resultdict['ripemd160'] = hashini.getboolean('ripemd160', fallback=False)
-    resultdict['whirlpool'] = hashini.getboolean('whirlpool', fallback=False)
-    resultdict['onefile'] = hashini.getboolean('onefile', fallback=False)
-    resultdict['blocksize'] = hashini.getint('blocksize', fallback=16777216)
+    resultdict['crc32'] = bool(hashini.getboolean('crc32', fallback=False))
+    resultdict['adler32'] = bool(hashini.getboolean('adler32', fallback=False))
+    resultdict['sha1'] = bool(hashini.getboolean('sha1', fallback=True))
+    resultdict['sha224'] = bool(hashini.getboolean('sha224', fallback=False))
+    resultdict['sha256'] = bool(hashini.getboolean('sha256', fallback=True))
+    resultdict['sha384'] = bool(hashini.getboolean('sha384', fallback=False))
+    resultdict['sha512'] = bool(hashini.getboolean('sha512', fallback=False))
+    resultdict['md5'] = bool(hashini.getboolean('md5', fallback=True))
+    resultdict['md4'] = bool(hashini.getboolean('md4', fallback=False))
+    resultdict['ripemd160'] = bool(hashini.getboolean('ripemd160', fallback=False))
+    resultdict['whirlpool'] = bool(hashini.getboolean('whirlpool', fallback=False))
+    resultdict['onefile'] = bool(hashini.getboolean('onefile', fallback=False))
+    resultdict['blocksize'] = int(hashini.getint('blocksize', fallback=16777216))
     return resultdict
 
-def verifier_config_writer(resultdict):
+def verifier_config_writer(resultdict=None):
     """
     Write a ConfigParser file to store hash preferences.
 
     :param resultdict: Dictionary of results: {method, bool}
     :type resultdict: dict({str, bool})
     """
+    if resultdict is None:
+        resultdict = verifier_config_loader()
     config = configparser.ConfigParser()
     homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
     config.read(conffile)
     for method, flag in resultdict.items():
-        config['hashmodes'][method] = str(flag).lower()
+        print(method, flag)
+        config.set('hashmodes', method, str(flag).lower())
     with open(conffile, "w") as configfile:
         config.write(configfile)

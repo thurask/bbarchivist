@@ -141,38 +141,6 @@ def grab_args():
             help="Radio software version, if not same as OS",
             nargs="?",
             default=None)
-        comps = parser.add_argument_group("compressors", "Compression methods")
-        compgroup = comps.add_mutually_exclusive_group()
-        compgroup.add_argument(
-            "--7z",
-            dest="compmethod",
-            help="Compress with 7z, LZMA2",
-            action="store_const",
-            const="7z")
-        compgroup.add_argument(
-            "--tgz",
-            dest="compmethod",
-            help="Compress with tar, GZIP",
-            action="store_const",
-            const="tgz")
-        compgroup.add_argument(
-            "--tbz",
-            dest="compmethod",
-            help="Compress with tar, BZIP2",
-            action="store_const",
-            const="tbz")
-        compgroup.add_argument(
-            "--txz",
-            dest="compmethod",
-            help="Compress with tar, LZMA (py3.3+)",
-            action="store_const",
-            const="txz")
-        compgroup.add_argument(
-            "--zip",
-            dest="compmethod",
-            help="Compress with zip, DEFLATE",
-            action="store_const",
-            const="zip")
         parser.set_defaults(compmethod="7z")
         args = parser.parse_args(sys.argv[1:])
         if args.folder is None:
@@ -181,10 +149,6 @@ def grab_args():
             args.cappath = bbconstants.CAPLOCATION
         if args.download is False:
             args.integrity = False
-        majver = sys.version_info[1]
-        if majver <= 2:  # 3.2 and under
-            if args.compmethod == "txz":
-                args.compmethod = "zip"  # fallback
         if args.gpg is True:
             gpgkey, gpgpass = filehashtools.gpg_config_loader()
             if gpgkey is None or gpgpass is None:
@@ -209,12 +173,15 @@ def grab_args():
             gpgkey = None
             gpgpass = None
         hashdict = filehashtools.verifier_config_loader()
+        filehashtools.verifier_config_writer(hashdict)
+        compmethod = barutils.compress_config_loader()
+        barutils.compress_config_writer(compmethod)
         archivist_main(args.os, args.radio, args.swrelease,
                        args.folder, args.radloaders,
                        args.compress, args.delete, args.verify,
                        hashdict, args.cappath, args.download,
                        args.extract, args.loaders,
-                       args.signed, args.compmethod,
+                       args.signed, compmethod,
                        args.gpg, gpgkey, gpgpass,
                        args.integrity, args.altsw)
     else:
@@ -230,11 +197,14 @@ def grab_args():
             deleted = False
         hashed = utilities.str2bool(input("GENERATE HASHES? Y/N: "))
         hashdict = filehashtools.verifier_config_loader()
+        filehashtools.verifier_config_writer(hashdict)
+        compmethod = barutils.compress_config_loader()
+        barutils.compress_config_writer(compmethod)
         print(" ")
         archivist_main(osversion, radioversion, softwareversion,
                        localdir, radios, compressed, deleted, hashed,
                        hashdict, bbconstants.CAPLOCATION, True,
-                       True, True, True, "7z", False,
+                       True, True, True, compmethod, False,
                        False, None, None, False, True, None)
     smeg = input("Press Enter to exit")
     if smeg or not smeg:
@@ -334,6 +304,9 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
         cappath = utilities.grab_cap()
     if localdir is None:
         localdir = os.getcwd()
+    if hashdict is None:
+        hashdict = filehashtools.verifier_config_loader()
+        filehashtools.verifier_config_writer(hashdict)
     print("~~~ARCHIVIST VERSION", bbconstants.VERSION + "~~~")
     print("OS VERSION:", osversion)
     print("RADIO VERSION:", radioversion)
@@ -446,6 +419,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
         if cont:
             rad2 = input("RADIO VERSION: ")
             radiourls = [url.replace(radioversion, rad2) for url in radiourls]
+            radioversion = rad2
         else:
             going = utilities.str2bool(input("KEEP GOING? Y/N: "))
             if going:
@@ -606,8 +580,6 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     # Get hashes (if specified)
     if hashed:
         print("\nHASHING LOADERS...")
-        if hashdict is None:
-            hashdict = filehashtools.verifier_config_loader()
         if compressed:
             filehashtools.verifier(
                 zipdir_os,

@@ -1,4 +1,4 @@
-import bbarchivist.utilities as bu
+﻿import bbarchivist.utilities as bu
 import os
 import pytest
 try:
@@ -49,6 +49,14 @@ class TestClassUtilities:
         with pytest.raises(ArgumentError) as argexc:
             bu.positive_integer(-34)
             assert "is too low" in str(argexc.value)
+
+    def test_valid_method_good(self):
+        assert bu.valid_method("tbz") == "tbz"
+    
+    def test_valid_method_bad(self):
+        with pytest.raises(ArgumentError) as argexc:
+            bu.valid_method("jackdaw")
+            assert "invalid method" in argexc
 
     def test_valid_carrier_good(self):
         assert bu.valid_carrier("302") == "302"

@@ -16,6 +16,7 @@ import sys  # version info
 import shutil  # folder operations
 import base64  # encoding for hashes
 import hashlib   # get hashes
+import configparser  # config parsing, duh
 from bbarchivist import utilities  # platform determination
 
 
@@ -547,3 +548,43 @@ def move_loaders(localdir,
                         os.remove(zipdest_rad)
                         continue
                     break
+
+
+def compress_config_loader():
+    """
+    Read a ConfigParser file to get compression preferences.
+    """
+    config = configparser.ConfigParser()
+    homepath = os.path.expanduser("~")
+    conffile = os.path.join(homepath, "bbarchivist.ini")
+    config.read(conffile)
+    if not config.has_section('compression'):
+        config['compression'] = {}
+        with open(conffile, "w") as configfile:
+            config.write(configfile)
+    compini = config['compression']
+    method = compini.get('method', fallback="7z")
+    majver = sys.version_info[1]
+    if majver <= 2:  # 3.2 and under
+        if method == "txz":
+            method = "zip"
+    return method
+
+
+def compress_config_writer(method=None):
+    """
+    Write a ConfigParser file to store compression preferences.
+
+    :param method: Method to use.
+    :type method: str
+    """
+    if method is None:
+        method = compress_config_loader()
+    config = configparser.ConfigParser(allow_no_value=True)
+    homepath = os.path.expanduser("~")
+    conffile = os.path.join(homepath, "bbarchivist.ini")
+    config.read(conffile)
+    config.set('compression', '; zip, txz, tbz, tgz, 7z')
+    config['compression']['method'] = method
+    with open(conffile, "w") as configfile:
+        config.write(configfile)

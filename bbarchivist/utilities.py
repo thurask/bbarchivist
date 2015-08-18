@@ -16,6 +16,7 @@ try:
     from shutil import which  # @UnusedImport
 except ImportError:
     import shutilwhich  # @UnusedImport
+from sys import version_info  # version checking
 
 
 def grab_cap():
@@ -75,6 +76,23 @@ def positive_integer(input_int):
         raise argparse.ArgumentError(argument=None,
                                      message="{0} is not >=0.".format(str(input_int))) #@IgnorePep8
     return int(input_int)
+
+
+def valid_method(method):
+    """
+    Check if compression method is valid, raise argparse error if it isn't.
+
+    :param method: Compression method to check.
+    :type method: str
+    """
+    methodlist = ['7z', 'zip', 'tbz', 'tgz', 'txz']
+    if version_info[1] <= 2:
+        if method == "txz":
+            method = "zip"
+    if method not in methodlist:
+        raise argparse.ArgumentError(argument=None,
+                                     message="{0} is an invalid method.".format(method)) #@IgnorePep8
+    return method
 
 
 def valid_carrier(mcc_mnc):

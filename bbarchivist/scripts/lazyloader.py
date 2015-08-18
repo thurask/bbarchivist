@@ -446,6 +446,7 @@ def lazyloader_main(device, osversion, radioversion=None,
             if cont:
                 rad2 = input("RADIO VERSION: ")
                 radiourl = radiourl.replace(radioversion, rad2)
+                radioversion = rad2
             else:
                 going = utilities.str2bool(input("KEEP GOING? Y/N: "))
                 if going:
