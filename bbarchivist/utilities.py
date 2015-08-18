@@ -11,6 +11,7 @@ import argparse  # argument parser for filters
 import platform  # platform info
 import shutil  # "which" command
 import glob  # cap grabbing
+import configparser  # config parsing, duh
 from bbarchivist import bbconstants  # cap location, version
 try:
     from shutil import which  # @UnusedImport
@@ -21,7 +22,7 @@ from sys import version_info  # version checking
 
 def grab_cap():
     """
-    Figure out where cap is, local or system-supplied.
+    Figure out where cap is, local, specified or system-supplied.
     """
     try:
         capfile = glob.glob(
@@ -29,9 +30,17 @@ def grab_cap():
                         os.getcwd(),
                         os.path.basename(bbconstants.CAPLOCATION)))[0]
     except IndexError:
-        return bbconstants.CAPLOCATION  # no local cacerts
+        try:
+            cappath = cappath_config_loader()
+            capfile = glob.glob(cappath)[0]
+        except IndexError:
+            cappath_config_writer(bbconstants.CAPLOCATION)
+            return bbconstants.CAPLOCATION  # no ini cap
+        else:
+            cappath_config_writer(os.path.abspath(capfile))
+            return os.path.abspath(capfile)  # ini cap
     else:
-        return os.path.abspath(capfile)  # local cacerts
+        return os.path.abspath(capfile)  # local cap
 
 
 def filesize_parser(file_size):
@@ -302,3 +311,38 @@ def barname_stripper(name):
     :type name: str
     """
     return name.replace("-nto+armle-v7+signed.bar", "")
+
+
+def cappath_config_loader():
+    """
+    Read a ConfigParser file to get cap preferences.
+    """
+    config = configparser.ConfigParser()
+    homepath = os.path.expanduser("~")
+    conffile = os.path.join(homepath, "bbarchivist.ini")
+    config.read(conffile)
+    if not config.has_section('cap'):
+        config['cap'] = {}
+        with open(conffile, "w") as configfile:
+            config.write(configfile)
+    capini = config['cap']
+    cappath = capini.get('path', fallback=bbconstants.CAPLOCATION)
+    return cappath
+
+
+def cappath_config_writer(cappath=None):
+    """
+    Write a ConfigParser file to store cap preferences.
+
+    :param cappath: Method to use.
+    :type cappath: str
+    """
+    if cappath is None:
+        cappath = utilities.grab_cap()
+    config = configparser.ConfigParser()
+    homepath = os.path.expanduser("~")
+    conffile = os.path.join(homepath, "bbarchivist.ini")
+    config.read(conffile)
+    config['cap']['path'] = cappath
+    with open(conffile, "w") as configfile:
+        config.write(configfile)

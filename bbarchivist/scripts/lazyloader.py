@@ -547,7 +547,6 @@ def lazyloader_main(device, osversion, radioversion=None,
     else:
         altradio = False
     loadergen.generate_lazy_loader(osversion, device,
-                                   cap=utilities.grab_cap(),
                                    localdir=localdir, altradio=radioversion)
 
     print("\nREMOVING .signed FILES...")

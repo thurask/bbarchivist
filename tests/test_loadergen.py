@@ -1,4 +1,4 @@
-import bbarchivist.loadergen as bl
+﻿import bbarchivist.loadergen as bl
 import os
 from shutil import rmtree, copyfile
 from hashlib import sha512
@@ -8,7 +8,7 @@ def setup_module(module):
     if not os.path.exists("temp"):
         os.mkdir("temp")
     os.chdir("temp")
-    with open("capfile", "w") as targetfile:
+    with open("cap-3.11.0.22.dat", "w") as targetfile:
         targetfile.write("0"*9500000)
 
 
@@ -16,8 +16,8 @@ def teardown_module(module):
     for file in os.listdir():
             if file.endswith(".signed"):
                 os.remove(file)
-    if os.path.exists("capfile"):
-        os.remove("capfile")
+    if os.path.exists("cap-3.11.0.22.dat"):
+        os.remove("cap-3.11.0.22.dat")
     os.chdir("..")
     rmtree("temp")
 
@@ -29,7 +29,7 @@ class TestClassLoadergen:
             targetfile.write("Jackdaws love my big sphinx of quartz"*5000)
         with open("radio.signed", "w") as targetfile:
             targetfile.write("Why must I chase the cat?"*5000)
-        bl.generate_lazy_loader("TESTING", 0, "capfile")
+        bl.generate_lazy_loader("TESTING", 0)
         shahash = sha512()
         with open("Z10_TESTING_STL100-1.exe", "rb") as targetfile:
             data = targetfile.read()
@@ -53,7 +53,7 @@ class TestClassLoadergen:
         copyfile("radio.m5730.signed", "radio.qc8960.wtr5.signed")
         copyfile("radio.m5730.signed", "radio.qc8930.wtr5.signed")
         copyfile("radio.m5730.signed", "radio.qc8974.wtr2.signed")
-        bl.generate_loaders("10.1.2.3000", "10.3.2.1000", True, "capfile")
+        bl.generate_loaders("10.1.2.3000", "10.3.2.1000", True)
         for file in os.listdir():
             if file.endswith(".exe"):
                 with open(file, 'rb') as filehandle:

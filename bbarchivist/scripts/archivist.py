@@ -52,14 +52,6 @@ def grab_args():
             help="Working folder",
             default=None,
             metavar="DIR")
-        parser.add_argument(
-            "-c",
-            "--cap",
-            type=utilities.file_exists,
-            dest="cappath",
-            help="Path to cap.exe",
-            default=None,
-            metavar="PATH")
         negategroup = parser.add_argument_group(
             "negators",
             "Disable program functionality")
@@ -145,33 +137,8 @@ def grab_args():
         args = parser.parse_args(sys.argv[1:])
         if args.folder is None:
             args.folder = os.getcwd()
-        if args.cappath is None:
-            args.cappath = bbconstants.CAPLOCATION
         if args.download is False:
             args.integrity = False
-        if args.gpg is True:
-            gpgkey, gpgpass = filehashtools.gpg_config_loader()
-            if gpgkey is None or gpgpass is None:
-                print("NO PGP KEY/PASS FOUND")
-                cont = utilities.str2bool(input("CONTINUE (Y/N)?: "))
-                if cont:
-                    if gpgkey is None:
-                        gpgkey = input("PGP KEY (0x12345678): ")
-                        if gpgkey[:2] != "0x":
-                            gpgkey = "0x" + gpgkey  # add preceding 0x
-                    if gpgpass is None:
-                        gpgpass = getpass.getpass(prompt="PGP PASSPHRASE: ")
-                        writebool = utilities.str2bool(input("WRITE PASSWORD TO FILE (Y/N)?:"))
-                    if writebool:
-                        password2 = gpgpass
-                    else:
-                        password2 = None
-                    filehashtools.gpg_config_writer(gpgkey, password2)
-                else:
-                    args.gpg = False
-        else:
-            gpgkey = None
-            gpgpass = None
         hashdict = filehashtools.verifier_config_loader()
         filehashtools.verifier_config_writer(hashdict)
         compmethod = barutils.compress_config_loader()
@@ -179,11 +146,10 @@ def grab_args():
         archivist_main(args.os, args.radio, args.swrelease,
                        args.folder, args.radloaders,
                        args.compress, args.delete, args.verify,
-                       hashdict, args.cappath, args.download,
+                       hashdict, args.download,
                        args.extract, args.loaders,
                        args.signed, compmethod,
-                       args.gpg, gpgkey, gpgpass,
-                       args.integrity, args.altsw)
+                       args.gpg, args.integrity, args.altsw)
     else:
         localdir = os.getcwd()
         osversion = input("OS VERSION: ")
@@ -200,12 +166,18 @@ def grab_args():
         filehashtools.verifier_config_writer(hashdict)
         compmethod = barutils.compress_config_loader()
         barutils.compress_config_writer(compmethod)
+        download = True
+        extract = True
+        loaders = True
+        signed = True
+        gpg = False
+        altsw = None
         print(" ")
         archivist_main(osversion, radioversion, softwareversion,
                        localdir, radios, compressed, deleted, hashed,
-                       hashdict, bbconstants.CAPLOCATION, True,
-                       True, True, True, compmethod, False,
-                       False, None, None, False, True, None)
+                       hashdict, download,
+                       extract, loaders, signed, compmethod, gpg,
+                       integrity, altsw)
     smeg = input("Press Enter to exit")
     if smeg or not smeg:
         raise SystemExit
@@ -213,10 +185,10 @@ def grab_args():
 
 def archivist_main(osversion, radioversion=None, softwareversion=None,
                    localdir=None, radios=True, compressed=True, deleted=True,
-                   hashed=True, hashdict=None, cappath=None, download=True, 
+                   hashed=True, hashdict=None, download=True, 
                    extract=True, loaders=True, signed=True, 
-                   compmethod="7z", gpg=False, gpgkey=None,
-                   gpgpass=None, integrity=True, altsw=None):
+                   compmethod="7z", gpg=False,
+                   integrity=True, altsw=None):
     """
     Wrap around multi-autoloader creation code.
     Some combination of creating, downloading, hashing,
@@ -249,9 +221,6 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     :param hashdict: Dictionary of hash rules, in ~\bbarchivist.ini.
     :type hashdict: dict({str: bool})
 
-    :param cappath: Path to cap.exe. Default is cap supplied with package.
-    :type cappath: str
-
     :param download: Whether to download bar files. True by default.
     :type download: bool
 
@@ -269,12 +238,6 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
 
     :param gpg: Whether to use GnuPG verification. False by default.
     :type gpg: bool
-
-    :param gpgkey: Key to use with GnuPG verification.
-    :type gpgkey: str
-
-    :param gpgpass: Passphrase to use with GnuPG verification.
-    :type gpgpass: str
 
     :param integrity: Whether to test downloaded bar files. True by default.
     :type integrity: bool
@@ -300,8 +263,6 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
                 raise SystemExit  # bye bye
         else:
             swchecked = True
-    if cappath is None:
-        cappath = utilities.grab_cap()
     if localdir is None:
         localdir = os.getcwd()
     if hashdict is None:
@@ -548,7 +509,6 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
         loadergen.generate_loaders(osversion,
                                    radioversion,
                                    radios,
-                                   cappath,
                                    localdir,
                                    altradio)
 
@@ -597,6 +557,25 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
                     loaderdir_radio,
                     **hashdict)
     if gpg:
+        gpgkey, gpgpass = filehashtools.gpg_config_loader()
+        if gpgkey is None or gpgpass is None:
+            print("NO PGP KEY/PASS FOUND")
+            cont = utilities.str2bool(input("CONTINUE (Y/N)?: "))
+            if cont:
+                if gpgkey is None:
+                    gpgkey = input("PGP KEY (0x12345678): ")
+                    if gpgkey[:2] != "0x":
+                        gpgkey = "0x" + gpgkey  # add preceding 0x
+                if gpgpass is None:
+                    gpgpass = getpass.getpass(prompt="PGP PASSPHRASE: ")
+                    writebool = utilities.str2bool(input("WRITE PASSWORD TO FILE (Y/N)?:"))
+                if writebool:
+                    gpgpass2 = gpgpass
+                else:
+                    gpgpass2 = None
+                filehashtools.gpg_config_writer(gpgkey, gpgpass2)
+            else:
+                gpgkey = None
         if gpgpass is not None and gpgkey is not None:
             print("\nVERIFYING LOADERS...")
             print("KEY:", gpgkey)
@@ -624,8 +603,6 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
                         gpgkey,
                         gpgpass,
                         True)
-        else:
-            print("\nNO KEY AND/OR PASS PROVIDED!")
 
     # Remove uncompressed loaders (if specified)
     if deleted:

@@ -15,7 +15,7 @@ from bbarchivist import utilities  # cap location
 
 def generate_loaders(
         osversion, radioversion, radios=True,
-        cap=None, localdir=None, altradio=False):
+        localdir=None, altradio=False):
     """
     Create and label autoloaders for :mod:`bbarchivist.scripts.archivist`.
 
@@ -28,9 +28,6 @@ def generate_loaders(
     :param radios: Whether to make radios or not. True by default.
     :type radios: bool
 
-    :param cap: Path to cap.exe. Default is cap supplied with package.
-    :type cap: str
-
     :param localdir: Working path. Default is local dir.
     :type localdir: str
 
@@ -38,8 +35,6 @@ def generate_loaders(
     :type altradio: bool
     """
     # default parsing
-    if cap is None:
-        cap = utilities.grab_cap()
     if localdir is None:
         localdir = os.getcwd()
     # OS Images
@@ -168,7 +163,6 @@ def generate_loaders(
                 osversion +
                 suffix + 
                 "_STL100-1.exe",
-                cap=cap,
                 firstfile=os_ti,
                 secondfile=radio_z10_ti,
                 folder=localdir)
@@ -183,7 +177,6 @@ def generate_loaders(
                     "Z10_" +
                     radioversion +
                     "_STL100-1.exe",
-                    cap=cap,
                     firstfile=radio_z10_ti,
                     folder=localdir)
             except Exception as exc:
@@ -198,7 +191,6 @@ def generate_loaders(
                 osversion +
                 suffix + 
                 "_STL100-2-3.exe",
-                cap=cap,
                 firstfile=os_8960,
                 secondfile=radio_z10_qcm,
                 folder=localdir)
@@ -213,7 +205,6 @@ def generate_loaders(
                     "Z10_" +
                     radioversion +
                     "_STL100-2-3.exe",
-                    cap=cap,
                     firstfile=radio_z10_qcm,
                     folder=localdir)
             except Exception as exc:
@@ -228,7 +219,6 @@ def generate_loaders(
                 osversion +
                 suffix + 
                 "_STL100-4.exe",
-                cap=cap,
                 firstfile=os_8960,
                 secondfile=radio_z10_vzw,
                 folder=localdir)
@@ -243,7 +233,6 @@ def generate_loaders(
                     "Z10_" +
                     radioversion +
                     "_STL100-4.exe",
-                    cap=cap,
                     firstfile=radio_z10_vzw,
                     folder=localdir)
             except Exception as exc:
@@ -258,7 +247,6 @@ def generate_loaders(
                 osversion +
                 suffix + 
                 "_SQN100-1-2-3-4-5.exe",
-                cap=cap,
                 firstfile=os_8960,
                 secondfile=radio_q10,
                 folder=localdir)
@@ -273,7 +261,6 @@ def generate_loaders(
                     "Q10_" +
                     radioversion +
                     "_SQN100-1-2-3-4-5.exe",
-                    cap=cap,
                     firstfile=radio_q10,
                     folder=localdir)
             except Exception as exc:
@@ -288,7 +275,6 @@ def generate_loaders(
                 osversion +
                 suffix + 
                 "_STA100-1-2-3-4-5-6.exe",
-                cap=cap,
                 firstfile=os_8960,
                 secondfile=radio_z30,
                 folder=localdir)
@@ -303,7 +289,6 @@ def generate_loaders(
                     "Z30_" +
                     radioversion +
                     "_STA100-1-2-3-4-5-6.exe",
-                    cap=cap,
                     firstfile=radio_z30,
                     folder=localdir)
             except Exception as exc:
@@ -318,7 +303,6 @@ def generate_loaders(
                 osversion +
                 suffix + 
                 "_STJ100-1-2.exe",
-                cap=cap,
                 firstfile=os_8x30,
                 secondfile=radio_z3,
                 folder=localdir)
@@ -333,7 +317,6 @@ def generate_loaders(
                     "Z3_" +
                     radioversion +
                     "_STJ100-1-2.exe",
-                    cap=cap,
                     firstfile=radio_z3,
                     folder=localdir)
             except Exception as exc:
@@ -348,7 +331,6 @@ def generate_loaders(
                 osversion +
                 suffix + 
                 "_SQW100-1-2-3-4.exe",
-                cap=cap,
                 firstfile=os_8974,
                 secondfile=radio_8974,
                 folder=localdir)
@@ -363,7 +345,6 @@ def generate_loaders(
                     "Passport_" +
                     radioversion +
                     "_SQW100-1-2-3-4.exe",
-                    cap=cap,
                     firstfile=radio_8974,
                     folder=localdir)
             except Exception as exc:
@@ -373,7 +354,7 @@ def generate_loaders(
 
 def generate_lazy_loader(
         osversion, device,
-        cap=None, localdir=None, altradio=None):
+        localdir=None, altradio=None):
     """
     Create and label autoloaders for :mod:`bbarchivist.scripts.lazyloader`.
     :func:`generate_loaders`, but for making one OS/radio loader.
@@ -384,9 +365,6 @@ def generate_lazy_loader(
     :param device: Selected device, from
     :type device: int
 
-    :param cap: Path to cap.exe. Default is cap supplied with package.
-    :type cap: str
-
     :param localdir: Working path. Default is local dir.
     :type localdir: str
 
@@ -394,8 +372,6 @@ def generate_lazy_loader(
     :type altradio: str
     """
     # default parsing
-    if cap is None:
-        cap = utilities.grab_cap()
     if localdir is None:
         localdir = os.getcwd()
     print("\nCREATING LOADER...")
@@ -434,7 +410,6 @@ def generate_lazy_loader(
     try:
         pseudocap.make_autoloader(
             filename=loadername,
-            cap=cap,
             firstfile=osfile,
             secondfile=radiofile,
             folder=localdir)

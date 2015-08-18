@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 
 import argparse  # parse arguments
 import sys  # load arguments
@@ -50,14 +50,6 @@ def cap_main():
                        nargs="?",
                        default=None)
     parser.add_argument(
-        "-c",
-        "--cap",
-        type=utilities.file_exists,
-        dest="cappath",
-        help="Path to cap.exe",
-        default=None,
-        metavar="PATH")
-    parser.add_argument(
         "-f",
         "--folder",
         dest="folder",
@@ -66,14 +58,11 @@ def cap_main():
         metavar="DIR")
     parser.set_defaults()
     args = parser.parse_args(sys.argv[1:])
-    if args.cappath is None:
-        args.cappath = bbconstants.CAPLOCATION
     if args.folder is None:
         args.folder = getcwd()
     if not args.filename.endswith(".exe"):
         args.filename += ".exe"
     pseudocap.make_autoloader(args.filename,
-                              args.cappath,
                               args.first,
                               args.second,
                               args.third,

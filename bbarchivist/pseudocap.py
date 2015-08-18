@@ -10,6 +10,7 @@ import os  # path work
 import binascii  # to hex and back again
 import glob  # filename matching
 from bbarchivist import bbconstants  # versions/constants
+from bbarchivist import utilities  # finding cap
 
 
 def ghetto_convert(intsize):
@@ -31,15 +32,12 @@ def ghetto_convert(intsize):
     return binascii.unhexlify(bytes(ghetto_hex.upper(), 'ascii'))
 
 
-def make_offset(cap, firstfile, secondfile="", thirdfile="",
+def make_offset(firstfile, secondfile="", thirdfile="",
                 fourthfile="", fifthfile="", sixthfile="", folder=None):
     """
     Create magic offset file for use in autoloader creation.
     Cap.exe MUST match separator version.
     Version defined in :data:`bbarchivist.bbconstants.CAPVERSION`.
-
-    :param cap: Location of cap.exe file.
-    :type cap: str
 
     :param firstfile: First signed file. Required.
     :type firstfile: str
@@ -64,6 +62,7 @@ def make_offset(cap, firstfile, secondfile="", thirdfile="",
     """
     if folder is None:
         folder = os.getcwd()
+    cap = utilities.grab_cap()
     filecount = 0
     filelist = [
         firstfile,
@@ -174,7 +173,7 @@ def make_offset(cap, firstfile, secondfile="", thirdfile="",
                 file.truncate()
 
 
-def make_autoloader(filename, cap, firstfile, secondfile="", thirdfile="",
+def make_autoloader(filename, firstfile, secondfile="", thirdfile="",
                     fourthfile="", fifthfile="", sixthfile="",
                     folder=None):
     """
@@ -183,9 +182,6 @@ def make_autoloader(filename, cap, firstfile, secondfile="", thirdfile="",
 
     :param filename: Name of autoloader.
     :type filename: str
-
-    :param cap: Location of cap.exe file.
-    :type cap: str
 
     :param firstfile: First signed file. Required.
     :type firstfile: str
@@ -208,10 +204,10 @@ def make_autoloader(filename, cap, firstfile, secondfile="", thirdfile="",
     :param folder: Working folder. Optional. Default is local.
     :type folder: str
     """
+    cap = utilities.grab_cap()
     if folder is None:
         folder = os.getcwd()
     make_offset(
-        cap,
         firstfile,
         secondfile,
         thirdfile,
@@ -219,7 +215,6 @@ def make_autoloader(filename, cap, firstfile, secondfile="", thirdfile="",
         fifthfile,
         sixthfile,
         folder)
-
     filecount = 0
     filelist = [
         firstfile,

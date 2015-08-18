@@ -1,4 +1,4 @@
-import bbarchivist.pseudocap as bp
+﻿import bbarchivist.pseudocap as bp
 import os
 from shutil import rmtree, copyfile
 from hashlib import sha512
@@ -10,19 +10,19 @@ def setup_module(module):
     os.chdir("temp")
     with open("firstfile", "w") as targetfile:
         targetfile.write("Jackdaws love my big sphinx of quartz")
-    with open("capfile", "w") as targetfile:
+    with open("cap-3.11.0.22.dat", "w") as targetfile:
         targetfile.write("0"*9500000)
-    bp.make_offset("capfile", "firstfile")
+    bp.make_offset("firstfile")
     copyfile("offset.hex", "offset.tmp")
-    bp.make_autoloader("loader.exe", "capfile", "firstfile")
+    bp.make_autoloader("loader.exe", "firstfile")
     copyfile("offset.tmp", "offset.hex")
     if os.path.exists("offset.tmp"):
         os.remove("offset.tmp")
 
 
 def teardown_module(module):
-    if os.path.exists("capfile"):
-        os.remove("capfile")
+    if os.path.exists("cap-3.11.0.22.dat"):
+        os.remove("cap-3.11.0.22.dat")
     if os.path.exists("firstfile"):
         os.remove("firstfile")
     os.chdir("..")
