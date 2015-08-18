@@ -126,89 +126,6 @@ def grab_args():
             help="Don't verify created loaders",
             action="store_false",
             default=True)
-        hashgroup = parser.add_argument_group(
-            "verifiers",
-            "Verification methods")
-        hashgroup.add_argument(
-            "--crc32",
-            dest="crc32",
-            help="Enable CRC32 verification",
-            action="store_true",
-            default=False)
-        hashgroup.add_argument(
-            "--adler32",
-            dest="adler32",
-            help="Enable Adler-32 verification",
-            action="store_true",
-            default=False)
-        hashgroup.add_argument(
-            "--md4",
-            dest="md4",
-            help="Enable MD4 verification",
-            action="store_true",
-            default=False)
-        hashgroup.add_argument(
-            "--sha224",
-            dest="sha224",
-            help="Enable SHA-224 verification",
-            action="store_true",
-            default=False)
-        hashgroup.add_argument(
-            "--sha384",
-            dest="sha384",
-            help="Enable SHA-384 verification",
-            action="store_true",
-            default=False)
-        hashgroup.add_argument(
-            "--sha512",
-            dest="sha512",
-            help="Enable SHA-512 verification",
-            action="store_true",
-            default=False)
-        hashgroup.add_argument(
-            "--ripemd160",
-            dest="ripemd160",
-            help="Enable RIPEMD-160 verification",
-            action="store_true",
-            default=False)
-        hashgroup.add_argument(
-            "--whirlpool",
-            dest="whirlpool",
-            help="Enable Whirlpool verification",
-            action="store_true",
-            default=False)
-        hashgroup.add_argument(
-            "--no-sha1",
-            dest="sha1",
-            help="Disable SHA-1 verification",
-            action="store_false",
-            default=True)
-        hashgroup.add_argument(
-            "--no-sha256",
-            dest="sha256",
-            help="Disable SHA-256 verification",
-            action="store_false",
-            default=True)
-        hashgroup.add_argument(
-            "--no-md5",
-            dest="md5",
-            help="Disable MD5 verification",
-            action="store_false",
-            default=True)
-        hashgroup.add_argument(
-            "-a",
-            "--all",
-            dest="all",
-            help="Use all methods",
-            action="store_true",
-            default=False)
-        hashgroup.add_argument(
-            "-o",
-            "--one-file",
-            dest="onefile",
-            help="One checksum file per folder",
-            action="store_true",
-            default=False)
         parser.add_argument(
             "-g",
             "--gpg",
@@ -268,18 +185,6 @@ def grab_args():
         if majver <= 2:  # 3.2 and under
             if args.compmethod == "txz":
                 args.compmethod = "zip"  # fallback
-        if args.all is True:
-            args.adler32 = True
-            args.crc32 = True
-            args.sha1 = True
-            args.sha224 = True
-            args.sha256 = True
-            args.sha384 = True
-            args.sha512 = True
-            args.md5 = True
-            args.md4 = True
-            args.ripemd160 = True
-            args.whirlpool = True
         if args.gpg is True:
             gpgkey, gpgpass = filehashtools.gpg_config_loader()
             if gpgkey is None or gpgpass is None:
@@ -303,17 +208,14 @@ def grab_args():
         else:
             gpgkey = None
             gpgpass = None
+        hashdict = filehashtools.verifier_config_loader()
         archivist_main(args.os, args.radio, args.swrelease,
                        args.folder, args.radloaders,
                        args.compress, args.delete, args.verify,
-                       args.crc32, args.adler32, args.sha1,
-                       args.sha224, args.sha256,
-                       args.sha384, args.sha512, args.md5,
-                       args.md4, args.ripemd160, args.whirlpool,
-                       args.cappath, args.download,
+                       hashdict, args.cappath, args.download,
                        args.extract, args.loaders,
                        args.signed, args.compmethod,
-                       args.gpg, gpgkey, gpgpass, args.onefile,
+                       args.gpg, gpgkey, gpgpass,
                        args.integrity, args.altsw)
     else:
         localdir = os.getcwd()
@@ -327,12 +229,11 @@ def grab_args():
         else:
             deleted = False
         hashed = utilities.str2bool(input("GENERATE HASHES? Y/N: "))
+        hashdict = filehashtools.verifier_config_loader()
         print(" ")
         archivist_main(osversion, radioversion, softwareversion,
                        localdir, radios, compressed, deleted, hashed,
-                       False, False, True, False, False,
-                       False, False, True, False, False,
-                       False, bbconstants.CAPLOCATION, True,
+                       hashdict, bbconstants.CAPLOCATION, True,
                        True, True, True, "7z", False,
                        False, None, None, False, True, None)
     smeg = input("Press Enter to exit")
@@ -342,14 +243,10 @@ def grab_args():
 
 def archivist_main(osversion, radioversion=None, softwareversion=None,
                    localdir=None, radios=True, compressed=True, deleted=True,
-                   hashed=True, crc32=False, adler32=False,
-                   sha1=True, sha224=False, sha256=False,
-                   sha384=False, sha512=False, md5=True,
-                   md4=False, ripemd160=False, whirlpool=False,
-                   cappath=None, download=True, extract=True,
-                   loaders=True, signed=True, compmethod="7z",
-                   gpg=False, gpgkey=None, gpgpass=None,
-                   onefile=False, integrity=True, altsw=None):
+                   hashed=True, hashdict=None, cappath=None, download=True, 
+                   extract=True, loaders=True, signed=True, 
+                   compmethod="7z", gpg=False, gpgkey=None,
+                   gpgpass=None, integrity=True, altsw=None):
     """
     Wrap around multi-autoloader creation code.
     Some combination of creating, downloading, hashing,
@@ -379,38 +276,8 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     :param hashed: Whether to hash files. True by default.
     :type hashed: bool
 
-    :param crc32: Whether to use CRC32. False by default.
-    :type crc32: bool
-
-    :param adler32: Whether to use Adler-32. False by default.
-    :type adler32: bool
-
-    :param sha1: Whether to use SHA-1. True by default.
-    :type sha1: bool
-
-    :param sha224: Whether to use SHA-224. False by default.
-    :type sha224: bool
-
-    :param sha256: Whether to use SHA-256. False by default.
-    :type sha256: bool
-
-    :param sha384: Whether to use SHA-384. False by default.
-    :type sha384: bool
-
-    :param sha512: Whether to use SHA-512. False by default.
-    :type sha512: bool
-
-    :param md5: Whether to use MD5. True by default.
-    :type md5: bool
-
-    :param md4: Whether to use MD4. False by default.
-    :type md4: bool
-
-    :param ripemd160: Whether to use RIPEMD160. False by default.
-    :type ripemd160: bool
-
-    :param whirlpool: Whether to use Whirlpool. False by default.
-    :type whirlpool: bool
+    :param hashdict: Dictionary of hash rules, in ~\bbarchivist.ini.
+    :type hashdict: dict({str: bool})
 
     :param cappath: Path to cap.exe. Default is cap supplied with package.
     :type cappath: str
@@ -438,9 +305,6 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
 
     :param gpgpass: Passphrase to use with GnuPG verification.
     :type gpgpass: str
-
-    :param onefile: Whether to use one checksum file. False by default.
-    :type onefile: bool
 
     :param integrity: Whether to test downloaded bar files. True by default.
     :type integrity: bool
@@ -742,95 +606,24 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     # Get hashes (if specified)
     if hashed:
         print("\nHASHING LOADERS...")
-        print(
-            "ADLER32:",
-            adler32,
-            "CRC32:",
-            crc32,
-            "MD4:",
-            md4,
-            "\nMD5:",
-            md5,
-            "SHA1:",
-            sha1,
-            "SHA224:",
-            sha224,
-            "\nSHA256:",
-            sha256,
-            "SHA384:",
-            sha384,
-            "SHA512:",
-            sha512,
-            "\nRIPEMD160:",
-            ripemd160,
-            "WHIRLPOOL:",
-            whirlpool,
-            "\n")
-        blocksize = 32 * 1024 * 1024
+        if hashdict is None:
+            hashdict = filehashtools.verifier_config_loader()
         if compressed:
             filehashtools.verifier(
                 zipdir_os,
-                blocksize,
-                crc32,
-                adler32,
-                sha1,
-                sha224,
-                sha256,
-                sha384,
-                sha512,
-                md5,
-                md4,
-                ripemd160,
-                whirlpool,
-                not onefile)
+                **hashdict)
             if radios:
                 filehashtools.verifier(
                     zipdir_radio,
-                    blocksize,
-                    crc32,
-                    adler32,
-                    sha1,
-                    sha224,
-                    sha256,
-                    sha384,
-                    sha512,
-                    md5,
-                    md4,
-                    ripemd160,
-                    whirlpool,
-                    not onefile)
+                    **hashdict)
         if not deleted:
             filehashtools.verifier(
                 loaderdir_os,
-                blocksize,
-                crc32,
-                adler32,
-                sha1,
-                sha224,
-                sha256,
-                sha384,
-                sha512,
-                md5,
-                md4,
-                ripemd160,
-                whirlpool,
-                not onefile)
+                **hashdict)
             if radios:
                 filehashtools.verifier(
                     loaderdir_radio,
-                    blocksize,
-                    crc32,
-                    adler32,
-                    sha1,
-                    sha224,
-                    sha256,
-                    sha384,
-                    sha512,
-                    md5,
-                    md4,
-                    ripemd160,
-                    whirlpool,
-                    not onefile)
+                    **hashdict)
     if gpg:
         if gpgpass is not None and gpgkey is not None:
             print("\nVERIFYING LOADERS...")
