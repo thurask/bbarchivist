@@ -1,4 +1,4 @@
-import os
+﻿import os
 from shutil import rmtree
 try:
     import gnupg
@@ -91,6 +91,8 @@ class TestClassFilehashtools:
                 pass
             else:
                 gpginst = gnupg.GPG()
+                # Note: if you get a "Unknown status message 'NEWSIG'" error, then look here:
+                # https://bitbucket.org/vinay.sajip/python-gnupg/issues/35/status-newsig-missing-in-verify
                 bf.gpgfile("tempfile.txt", gpginst, gpgkey, gpgpass)
                 with open("tempfile.txt.asc", "rb") as sig:
                     verified = gpginst.verify_file(sig, 'tempfile.txt')
@@ -136,6 +138,8 @@ class TestClassFilehashtools:
                 pass
             else:
                 gpginst = gnupg.GPG()
+                # Note: if you get a "Unknown status message 'NEWSIG'" error, then look here:
+                # https://bitbucket.org/vinay.sajip/python-gnupg/issues/35/status-newsig-missing-in-verify
                 bf.gpgrunner(os.getcwd(), gpgkey, gpgpass)
                 with open("tempfile.txt.asc", "rb") as sig:
                     verified = gpginst.verify_file(sig, 'tempfile.txt')

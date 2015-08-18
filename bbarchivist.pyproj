@@ -58,15 +58,15 @@
     <Compile Include="bbarchivist\scripts\sqlexport.py" />
     <Compile Include="bbarchivist\scripts\__init__.py" />
     <Compile Include="bbarchivist\sqlutils.py" />
-    <Compile Include="bbarchivist\tests\test_barutils.py" />
-    <Compile Include="bbarchivist\tests\test_filehashtools.py" />
-    <Compile Include="bbarchivist\tests\test_loadergen.py" />
-    <Compile Include="bbarchivist\tests\test_networkutils.py" />
-    <Compile Include="bbarchivist\tests\test_pseudocap.py" />
-    <Compile Include="bbarchivist\tests\test_sqlutils.py" />
-    <Compile Include="bbarchivist\tests\test_textgenerator.py" />
-    <Compile Include="bbarchivist\tests\test_utilities.py" />
-    <Compile Include="bbarchivist\tests\__init__.py" />
+    <Compile Include="tests\test_barutils.py" />
+    <Compile Include="tests\test_filehashtools.py" />
+    <Compile Include="tests\test_loadergen.py" />
+    <Compile Include="tests\test_networkutils.py" />
+    <Compile Include="tests\test_pseudocap.py" />
+    <Compile Include="tests\test_sqlutils.py" />
+    <Compile Include="tests\test_textgenerator.py" />
+    <Compile Include="tests\test_utilities.py" />
+    <Compile Include="tests\__init__.py" />
     <Compile Include="bbarchivist\textgenerator.py" />
     <Compile Include="bbarchivist\utilities.py" />
     <Compile Include="bbarchivist\__init__.py" />
@@ -77,7 +77,7 @@
   <ItemGroup>
     <Folder Include="bbarchivist" />
     <Folder Include="bbarchivist\scripts" />
-    <Folder Include="bbarchivist\tests" />
+    <Folder Include="tests\" />
     <Folder Include="docs" />
   </ItemGroup>
   <Import Project="$(PtvsTargetsFile)" Condition="Exists($(PtvsTargetsFile))" />

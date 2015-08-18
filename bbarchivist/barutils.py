@@ -255,7 +255,7 @@ def tbz_verify(filepath):
     if tarfile.is_tarfile(filepath):
         with tarfile.open(filepath, "r:bz2") as thefile:
                 mems = thefile.getmembers()
-        if len(mems) == 0:
+        if not mems:
             return False
         else:
             return True
@@ -295,7 +295,7 @@ def txz_verify(filepath):
     if tarfile.is_tarfile(filepath):
         with tarfile.open(filepath, "r:xz") as thefile:
                 mems = thefile.getmembers()
-        if len(mems) == 0:
+        if not mems:
             return False
         else:
             return True
