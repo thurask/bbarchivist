@@ -696,7 +696,6 @@ def verifier_config_writer(resultdict=None):
     conffile = os.path.join(homepath, "bbarchivist.ini")
     config.read(conffile)
     for method, flag in resultdict.items():
-        print(method, flag)
         config.set('hashmodes', method, str(flag).lower())
     with open(conffile, "w") as configfile:
         config.write(configfile)

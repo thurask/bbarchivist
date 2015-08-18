@@ -221,10 +221,7 @@ Help
     > bb-archivist -h
 
     usage: bb-archivist [-h] [-v] [-f DIR] [-c PATH] [-no] [-ni] [-nx] [-nl] [-nr]
-                    [-ns] [-nc] [-nd] [-nv] [--crc32] [--adler32] [--md4]
-                    [--sha224] [--sha384] [--sha512] [--ripemd160]
-                    [--whirlpool] [--no-sha1] [--no-sha256] [--no-md5] [-a]
-                    [-o] [-g] [-r [SW]] [--7z | --tgz | --tbz | --txz | --zip]
+                    [-ns] [-nc] [-nd] [-nv] [-g] [-r [SW]]
                     os [radio] [swrelease]
 
 	Download bar files, create autoloaders.
@@ -242,47 +239,21 @@ Help
 	  -g, --gpg             Enable GPG signing. Set up GnuPG.
 	  -r [SW], --radiosw [SW]
 							Radio software version, if not same as OS
-   
-   negators:
-     Disable program functionality
-   
-     -no, --no-download    Don't download files
-     -ni, --no-integrity   Don't test bar files after download
-     -nx, --no-extract     Don't extract bar files
-     -nl, --no-loaders     Don't create autoloaders
-     -nr, --no-radios      Don't make radio autoloaders
-     -ns, --no-rmsigned    Don't remove signed files
-     -nc, --no-compress    Don't compress loaders
-     -nd, --no-delete      Don't delete uncompressed loaders
-     -nv, --no-verify      Don't verify created loaders
-   
-   verifiers:
-     Verification methods
-   
-     --crc32               Enable CRC32 verification
-     --adler32             Enable Adler-32 verification
-     --md4                 Enable MD4 verification
-     --sha224              Enable SHA-224 verification
-     --sha384              Enable SHA-384 verification
-     --sha512              Enable SHA-512 verification
-     --ripemd160           Enable RIPEMD-160 verification
-     --whirlpool           Enable Whirlpool verification
-     --no-sha1             Disable SHA-1 verification
-     --no-sha256           Disable SHA-256 verification
-     --no-md5              Disable MD5 verification
-     -a, --all             Use all methods
-     -o, --one-file        One checksum file per folder
-   
-   compressors:
-     Compression methods
-   
-     --7z                  Compress with 7z, LZMA2
-     --tgz                 Compress with tar, GZIP
-     --tbz                 Compress with tar, BZIP2
-     --txz                 Compress with tar, LZMA (py3.3+)
-     --zip                 Compress with zip, DEFLATE
-   
-   http://github.com/thurask/bbarchivist
+
+	negators:
+	  Disable program functionality
+
+	  -no, --no-download    Don't download files
+	  -ni, --no-integrity   Don't test bar files after download
+	  -nx, --no-extract     Don't extract bar files
+	  -nl, --no-loaders     Don't create autoloaders
+	  -nr, --no-radios      Don't make radio autoloaders
+	  -ns, --no-rmsigned    Don't remove signed files
+	  -nc, --no-compress    Don't compress loaders
+	  -nd, --no-delete      Don't delete uncompressed loaders
+	  -nv, --no-verify      Don't verify created loaders
+
+	http://github.com/thurask/bbarchivist
 
 ----------------------------------------
 
@@ -369,39 +340,18 @@ Help
 
     > bb-filehasher -h
     
-    usage: bb-filehasher [-h] [-v] [-b INT] [--crc32] [--adler32] [--md4]
-                     [--sha224] [--sha384] [--sha512] [--ripemd160]
-                     [--whirlpool] [--no-sha1] [--no-sha256] [--no-md5] [-a]
-                     [folder]
+    usage: bb-filehasher [-h] [-v] [folder]
 
-    Applies hash functions to files. Default: SHA-1, SHA-256, MD5
-    
-    positional arguments:
-      folder               Working directory, default is local
-    
-    optional arguments:
-      -h, --help           show this help message and exit
-      -v, --version        show program's version number and exit
-      -b INT, --block INT  Blocksize (bytes), default = 16777216 (16MB)
-    
-    verifiers:
-      Verification methods
-    
-      --crc32              Enable CRC32 verification
-      --adler32            Enable Adler-32 verification
-      --md4                Enable MD4 verification
-      --sha224             Enable SHA-224 verification
-      --sha384             Enable SHA-384 verification
-      --sha512             Enable SHA-512 verification
-      --ripemd160          Enable RIPEMD-160 verification
-      --whirlpool          Enable Whirlpool verification
-      --no-sha1            Disable SHA-1 verification
-      --no-sha256          Disable SHA-256 verification
-      --no-md5             Disable MD5 verification
-      -a, --all            Use all methods
-      -o, --one-file       One checksum file per folder
-    
-    http://github.com/thurask/bbarchivist
+	Applies hash functions to files.
+
+	positional arguments:
+	  folder         Working directory, default is local
+
+	optional arguments:
+	  -h, --help     show this help message and exit
+	  -v, --version  show program's version number and exit
+
+	http://github.com/thurask/bbarchivist
 
 ----------------------------------------
 
@@ -517,28 +467,27 @@ Help
 
     > bb-pseudocap -h
     
-    usage: bb-pseudocap [-h] [-v] [-c PATH] [-f DIR]
-                    filename first [second] [third] [fourth] [fifth] [sixth]
+	usage: bb-pseudocap [-h] [-v] [-f DIR]
+						filename first [second] [third] [fourth] [fifth] [sixth]
 
-    cap.exe, implemented in Python
-    
-    positional arguments:
-      filename              Filename
-    
-    optional arguments:
-      -h, --help            show this help message and exit
-      -v, --version         show program's version number and exit
-      -c PATH, --cap PATH   Path to cap.exe
-      -f DIR, --folder DIR  Working folder
-    
-      first                 First file
-      second                Second file, optional
-      third                 Third file, optional
-      fourth                Fourth file, optional
-      fifth                 Fifth file, optional
-      sixth                 Sixth file, optional
-    
-    http://github.com/thurask/bbarchivist
+	cap.exe, implemented in Python
+
+	positional arguments:
+	  filename              Filename
+
+	optional arguments:
+	  -h, --help            show this help message and exit
+	  -v, --version         show program's version number and exit
+	  -f DIR, --folder DIR  Working folder
+
+	  first                 First file
+	  second                Second file, optional
+	  third                 Third file, optional
+	  fourth                Fourth file, optional
+	  fifth                 Fifth file, optional
+	  sixth                 Sixth file, optional
+
+	http://github.com/thurask/bbarchivist
 
 ----------------------------------------
 
@@ -561,11 +510,11 @@ Example
 
 ::
 
-    > bb-archivist 10.3.1.2726 10.3.1.2727 10.3.1.1877 -nr --sha512 --no-md5
+    > bb-archivist 10.3.1.2726 10.3.1.2727 10.3.1.1877 -nr
 
 would make only OS+radio autoloaders for OS 10.3.1.2726/radio 10.3.1.2727
 (software release 10.3.1.1877), compress them, delete uncompressed
-loaders and verify with SHA-1, SHA-256, SHA-512.
+loaders and verify with default options (SHA1, SHA512, MD5)
 
 ::
 
@@ -603,13 +552,13 @@ would generate the URLs for that given OS/radio/software release combination.
     > bb-gpgrunner "~/some_stuff"
     
 would create ASCII signature files for all files in the given folder.
-Make sure to have bbarchivist.ini in ~ or \Users\<your username> like so:
+Make sure to have bbarchivist.ini in ~ or \Users\<your username> configured like so:
 
 ::
 
     [gpgrunner]
     key = 0xACDCACDC
-    pass = NONE (leave it as NONE or delete the line, unless you want your password saved)
+    pass = yourpass (or leave this line blank to ask every time)
     
 If not, it'll ask you while running the script and make the file.
 More importantly, MAKE SURE TO HAVE GnuPG SET UP BEFOREHAND!
