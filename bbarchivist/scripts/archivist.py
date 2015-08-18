@@ -270,8 +270,10 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
         filehashtools.verifier_config_writer(hashdict)
     print("~~~ARCHIVIST VERSION", bbconstants.VERSION + "~~~")
     print("OS VERSION:", osversion)
-    print("RADIO VERSION:", radioversion)
     print("SOFTWARE VERSION:", softwareversion)
+    print("RADIO VERSION:", radioversion)
+    if altsw is not None:
+        print("RADIO SOFTWARE VERSION:", altsw)
 
     if compmethod == "7z":
         print("\nCHECKING PRESENCE OF 7ZIP...")

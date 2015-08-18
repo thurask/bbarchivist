@@ -48,14 +48,22 @@ def start_gui(osv=None, radv=None, swv=None, dev=None, aut=None,
         osentry = eg.enterbox(msg="OS version")
     else:
         osentry = osv
-    if not radv:
-        radentry = eg.enterbox(msg="Radio version, click Cancel to guess")
-    else:
-        radentry = radv
     if not swv:
         swentry = eg.enterbox(msg="Software version, click Cancel to guess")
     else:
         swentry = swv
+    if not radv:
+        radentry = eg.enterbox(msg="Radio version, click Cancel to guess")
+    else:
+        radentry = radv
+    if not alt:
+        altcheck = eg.boolbox(msg="Are you making a hybrid autoloader?",
+                              default_choice="No")
+        if altcheck:
+            altentry = eg.enterbox(msg="Software version for radio")
+        else: altentry = None
+    else:
+        altentry = alt
     choicelist = ["STL100-1", "STL100-2/3/P9982", "STL100-4", "Q10/Q5/P9983",
                   "Z30/CLASSIC/LEAP", "Z3", "PASSPORT"]
     if dev is None:
@@ -77,7 +85,7 @@ def start_gui(osv=None, radv=None, swv=None, dev=None, aut=None,
     if not dow:
         dow = True
     lazyloader_main(devint, osentry, radentry, swentry,
-                    fol, autoentry, dow, alt)
+                    fol, autoentry, dow, altentry)
 
 
 def grab_args():
@@ -245,6 +253,11 @@ def grab_args():
         softwareversion = input("SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
         if not softwareversion:
             softwareversion = None
+        altcheck = utilities.str2bool(input("HYBRID AUTOLOADER (Y/N)?: "))
+        if altcheck:
+            altsw = input("RADIO SOFTWARE RELEASE: ")
+        else:
+            altsw = None
         while True:
             inputlist = ["0=STL100-1",
                          "1=STL100-2/3/P9982",
@@ -277,7 +290,7 @@ def grab_args():
             localdir,
             autoloader,
             True,
-            None)
+            altsw)
         smeg = input("Press Enter to exit")
         if smeg or not smeg:
             raise SystemExit
@@ -339,8 +352,10 @@ def lazyloader_main(device, osversion, radioversion=None,
                   "PASSPORT"]
     print("~~~LAZYLOADER VERSION", bbconstants.VERSION + "~~~")
     print("OS VERSION:", osversion)
-    print("RADIO VERSION:", radioversion)
     print("SOFTWARE VERSION:", softwareversion)
+    print("RADIO VERSION:", radioversion)
+    if altsw is not None:
+        print("RADIO SOFTWARE VERSION:", altsw)
     print("DEVICE:", devicelist[device])
 
     if download:
