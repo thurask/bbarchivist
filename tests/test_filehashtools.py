@@ -99,22 +99,37 @@ class TestClassFilehashtools:
         assert bf.calculate_escreens(pin, app, uptime) == "E23F8E7F"
 
     def test_verifier(self):
-        bf.verifier(os.getcwd())
-        stocklines = ["MD5",
-                      "822E1187FDE7C8D55AFF8CC688701650 tempfile.txt",
-                      "",
-                      "SHA1",
-                      "71DC7CE8F27C11B792BE3F169ECF985865E276D0 tempfile.txt", #@IgnorePep8
-                      ""]
+        confload = bf.verifier_config_loader()
+        confload = confload.fromkeys(confload, False)
+        confload['md5'] = True
+        confload['sha1'] = True
+        confload['blocksize'] = 16777216
+        bf.verifier(os.getcwd(), **confload)
+        stocklines = [b"MD5",
+                      b"822E1187FDE7C8D55AFF8CC688701650 tempfile.txt",
+                      b"",
+                      b"SHA1",
+                      b"71DC7CE8F27C11B792BE3F169ECF985865E276D0 tempfile.txt", #@IgnorePep8
+                      b""]
+        stocklines2 = []
         for item in stocklines:
-            item = item.strip('\r\n')
-            item = item.strip()
-        with open("tempfile.txt.cksum", "r") as checksumfile:
-            content = checksumfile.readlines()
-            for idx, value in enumerate(content):
-                value = value.strip('\r\n')
-                value = value.strip()
-                assert stocklines[idx] == value
+            item2 = item.strip()
+            item2 = item2.replace(b'\r\n', b'')
+            item2 = item2.replace(b'\n', b'')
+            item2 = item2.replace(b'\r', b'')
+            stocklines2.append(item2)
+        print(os.path.isfile("tempfile.txt"))
+        with open("tempfile.txt.cksum", "rb") as checksumfile:
+            content = checksumfile.read().splitlines()
+        content2 = []
+        for item in content:
+            item2 = item.strip()
+            item2 = item2.replace(b'\r\n', b'')
+            item2 = item2.replace(b'\n', b'')
+            item2 = item2.replace(b'\r', b'')
+            content2.append(item2)
+        for idx, value in enumerate(content2):
+            assert stocklines2[idx] == value
 
     def test_gpgrunner(self):
         if os.getenv("TRAVIS", "false") == "true":

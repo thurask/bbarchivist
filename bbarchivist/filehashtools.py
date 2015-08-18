@@ -317,6 +317,8 @@ def verifier(workingdir, **kwargs):
     :param workingdir: Path containing files you wish to verify.
     :type workingdir: str
     """
+    if kwargs is None:
+        kwargs = verifier_config_loader()
     hashoutput_crc32 = "CRC32\n"
     hashoutput_adler32 = "ADLER32\n"
     hashoutput_sha1 = "SHA1\n"
