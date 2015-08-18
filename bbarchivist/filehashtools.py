@@ -11,6 +11,7 @@ import hashlib  # all other hashes
 import hmac  # escreens is a hmac, news at 11
 import os  # path work
 import gnupg  # interface b/w Python, GPG
+import configparser  # config parsing, duh
 
 
 def crc32hash(filepath, blocksize=16 * 1024 * 1024):
@@ -655,3 +656,38 @@ def gpgrunner(workingdir, keyid=None, passphrase=None, selective=False):
                             print("SOMETHING WENT WRONG")
                             print(str(e))
                             raise SystemExit
+
+
+def gpg_config_loader():
+    """
+    Read a ConfigParser file to get PGP key, password (optional)
+    """
+    config = configparser.ConfigParser()
+    homepath = os.path.expanduser("~")
+    conffile = os.path.join(homepath, "bbarchivist.ini")
+    config.read(conffile)
+    gpgkey = config.get('gpgrunner', 'key', fallback=None)
+    gpgpass = config.get('gpgrunner', 'pass', fallback=None)
+    return gpgkey, gpgpass
+
+
+def gpg_config_writer(key=None, password=None):
+    """
+    Write a ConfigParser file to store PGP key, password (optional)
+
+    :param key: Key ID, leave as None to not write.
+    :type key: str
+
+    :param password: Key password, leave as None to not write.
+    :type password: str
+    """
+    config = configparser.ConfigParser()
+    homepath = os.path.expanduser("~")
+    conffile = os.path.join(homepath, "bbarchivist.ini")
+    config['gpgrunner'] = {}
+    if key is not None:
+        config['gpgrunner']['key'] = key
+    if password is not None:
+        config['gpgrunner']['pass'] = password
+    with open(conffile, "w") as configfile:
+        config.write(configfile)

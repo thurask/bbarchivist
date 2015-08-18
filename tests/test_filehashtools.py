@@ -2,11 +2,10 @@
 from shutil import rmtree
 try:
     import gnupg
-    nognupg = False
 except ImportError:
     nognupg = True
 else:
-    import configparser
+    nognupg = False
 from hashlib import algorithms_available as algos
 from bbarchivist import filehashtools as bf
 
@@ -81,12 +80,7 @@ class TestClassFilehashtools:
         elif nognupg:
             pass
         else:
-            config = configparser.ConfigParser()
-            homepath = os.path.expanduser("~")
-            conffile = os.path.join(homepath, "bbarchivist.ini")
-            config.read(conffile)
-            gpgkey = config.get('gpgrunner', 'key', fallback=None)
-            gpgpass = config.get('gpgrunner', 'pass', fallback=None)
+            gpgkey, gpgpass = bf.gpg_config_loader()
             if gpgkey is None or gpgpass is None:
                 pass
             else:
@@ -128,12 +122,7 @@ class TestClassFilehashtools:
         elif nognupg:
             pass
         else:
-            config = configparser.ConfigParser()
-            homepath = os.path.expanduser("~")
-            conffile = os.path.join(homepath, "bbarchivist.ini")
-            config.read(conffile)
-            gpgkey = config.get('gpgrunner', 'key', fallback=None)
-            gpgpass = config.get('gpgrunner', 'pass', fallback=None)
+            gpgkey, gpgpass = bf.gpg_config_loader()
             if gpgkey is None or gpgpass is None:
                 pass
             else:

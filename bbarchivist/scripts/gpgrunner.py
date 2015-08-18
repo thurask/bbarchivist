@@ -1,12 +1,12 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 
 import argparse  # parse arguments
 import sys  # load arguments
 import os  # path operations
-import configparser  # INI reading
 import getpass  # invisible passwords (cf. sudo)
 from bbarchivist import filehashtools  # main program
 from bbarchivist import bbconstants  # constants/versions
+from bbarchivist import utilities  # bool parsing
 
 
 def gpgrunner_main():
@@ -35,20 +35,18 @@ def gpgrunner_main():
     if args.folder is None:
         args.folder = os.getcwd()
     workfolder = args.folder
-    config = configparser.ConfigParser()
-    homepath = os.path.expanduser("~")
-    conffile = os.path.join(homepath, "bbarchivist.ini")
-    config.read(conffile)
-    key = config.get('gpgrunner', 'key', fallback=None)
-    password = config.get('gpgrunner', 'pass', fallback=None)
+    key, password = filehashtools.gpg_config_loader()
     if key is None or password is None:
-        key = input("PGP KEY (0x12345678): ")
-        password = getpass.getpass(prompt="PGP PASSPHRASE: ")
-        config['gpgrunner'] = {}
-        config['gpgrunner']['key'] = key
-        config['gpgrunner']['pass'] = password
-        with open(conffile, "w") as configfile:
-            config.write(configfile)
+        if key is None:
+            key = input("PGP KEY (0x12345678): ")
+        if password is None:
+            password = getpass.getpass(prompt="PGP PASSPHRASE: ")
+            writebool = utilities.str2bool(input("WRITE PASSWORD TO FILE (Y/N)?:"))
+        if writebool:
+            password2 = password
+        else:
+            password2 = None
+        filehashtools.gpg_config_writer(key, password2)
     print(" ")
     filehashtools.gpgrunner(
                           workfolder,

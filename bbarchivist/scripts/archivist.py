@@ -6,7 +6,6 @@ import time  # time for downloader
 import math  # rounding of floats
 import sys  # load arguments
 import argparse  # parse arguments
-import configparser  # read ini file
 import getpass  # invisible password
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import utilities  # input validation
@@ -282,25 +281,23 @@ def grab_args():
             args.ripemd160 = True
             args.whirlpool = True
         if args.gpg is True:
-            config = configparser.ConfigParser()
-            homepath = os.path.expanduser("~")
-            conffile = os.path.join(homepath, "bbarchivist.ini")
-            config.read(conffile)
-            gpgkey = config.get('gpgrunner', 'key', fallback=None)
-            gpgpass = config.get('gpgrunner', 'pass', fallback=None)
-            if gpgpass == "NONE":
-                gpgpass = None
+            gpgkey, gpgpass = filehashtools.gpg_config_loader()
             if gpgkey is None or gpgpass is None:
-                print("NO PGP KEY FOUND")
+                print("NO PGP KEY/PASS FOUND")
                 cont = utilities.str2bool(input("CONTINUE (Y/N)?: "))
                 if cont:
-                    gpgkey = input("PGP KEY (0x12345678): ")
-                    gpgpass = getpass.getpass(prompt="PGP PASSPHRASE: ")
-                    config['gpgrunner'] = {}
-                    config['gpgrunner']['key'] = gpgkey
-                    config['gpgrunner']['pass'] = "NONE"
-                    with open(conffile, "w") as configfile:
-                        config.write(configfile)
+                    if gpgkey is None:
+                        gpgkey = input("PGP KEY (0x12345678): ")
+                        if gpgkey[:2] != "0x":
+                            gpgkey = "0x" + gpgkey  # add preceding 0x
+                    if gpgpass is None:
+                        gpgpass = getpass.getpass(prompt="PGP PASSPHRASE: ")
+                        writebool = utilities.str2bool(input("WRITE PASSWORD TO FILE (Y/N)?:"))
+                    if writebool:
+                        password2 = gpgpass
+                    else:
+                        password2 = None
+                    filehashtools.gpg_config_writer(gpgkey, password2)
                 else:
                     args.gpg = False
         else:
