@@ -145,7 +145,8 @@ def sz_compress(filepath, filename, szexe=None, strength=5):
             rawname,
             filename) +
         '"',
-        shell=True)
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.STDOUT)
     endtime = time.clock() - starttime
     endtime_proper = math.ceil(endtime * 100) / 100
     print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
@@ -177,7 +178,8 @@ def sz_verify(filepath, szexe=None):
         ' t "' +
         filepath +
         '"',
-        shell=True)
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.STDOUT)
     if excode == 0:
         return True
     else:
