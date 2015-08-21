@@ -43,6 +43,9 @@
     <Compile Include="bbarchivist\bbconstants.py" />
     <Compile Include="bbarchivist\filehashtools.py" />
     <Compile Include="bbarchivist\loadergen.py" />
+    <Compile Include="bbarchivist\fsutils.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="bbarchivist\networkutils.py" />
     <Compile Include="bbarchivist\pseudocap.py" />
     <Compile Include="bbarchivist\scripts\archivist.py" />

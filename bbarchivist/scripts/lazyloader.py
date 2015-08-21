@@ -6,6 +6,7 @@ import os  # path work
 import glob  # filename matching
 import shutil  # folder removal
 import subprocess  # autoloader running
+import json  # db work
 from bbarchivist import utilities  # input validation
 from bbarchivist import barutils  # file operations
 from bbarchivist import bbconstants  # constants/versions
@@ -477,7 +478,7 @@ def lazyloader_main(device, osversion, radioversion=None,
                                         lazy=True,
                                         workers=2)
     brokenlist = []
-    print("\nTESTING...")
+    print("\nTESTING BAR FILES...")
     for file in os.listdir(localdir):
         if file.endswith(".bar"):
             print("TESTING:", file)
@@ -502,12 +503,12 @@ def lazyloader_main(device, osversion, radioversion=None,
                     print(file, "STILL BROKEN")
                     raise SystemExit
     else:
-        print("\nALL FILES DOWNLOADED OK")
+        print("ALL FILES DOWNLOADED OK")
 
     print("\nEXTRACTING...")
     barutils.extract_bars(localdir)
 
-    print("\nTESTING...")
+    print("\nTESTING SIGNED FILES...")
     for file in os.listdir(localdir):
         if file.endswith(".bar"):
             print("TESTING:", file)
@@ -516,7 +517,7 @@ def lazyloader_main(device, osversion, radioversion=None,
             if not sha512ver:
                 print("{0} IS BROKEN".format((file)))
                 raise SystemExit
-    print("\nALL FILES EXTRACTED OK")
+    print("ALL FILES EXTRACTED OK")
 
     # Make dirs
     if not os.path.exists(localdir):
@@ -539,7 +540,7 @@ def lazyloader_main(device, osversion, radioversion=None,
         os.mkdir(os.path.join(loaderdir, osversion))
     loaderdir_os = os.path.join(loaderdir, osversion)
 
-    print("\nMOVING .bar FILES...")
+    print("\nMOVING BAR FILES...")
     for files in os.listdir(localdir):
         if files.endswith(".bar"):
             print("MOVING: " + files)
@@ -556,7 +557,6 @@ def lazyloader_main(device, osversion, radioversion=None,
                 except shutil.Error:
                     os.remove(bardest_radio)
 
-    print("\nGENERATING LOADER...")
     if altsw:
         altradio = True
     else:
@@ -564,7 +564,7 @@ def lazyloader_main(device, osversion, radioversion=None,
     loadergen.generate_lazy_loader(osversion, device,
                                    localdir=localdir, altradio=radioversion)
 
-    print("\nREMOVING .signed FILES...")
+    print("\nREMOVING SIGNED FILES...")
     for file in os.listdir(localdir):
         if file.endswith(".signed"):
             print("REMOVING: " + file)
@@ -586,21 +586,16 @@ def lazyloader_main(device, osversion, radioversion=None,
     print("\nCREATION FINISHED!")
     if autoloader:
         os.chdir(loaderdir_os)
-        if device == 0:
-            loaderfile = str(glob.glob("Z10*STL100-1*")[0])
-        elif device == 1:
-            loaderfile = str(glob.glob("Z10*STL100-2-3*")[0])
-        elif device == 2:
-            loaderfile = str(glob.glob("Z10*STL100-4*")[0])
-        elif device == 3:
-            loaderfile = str(glob.glob("Q10*")[0])
-        elif device == 4:
-            loaderfile = str(glob.glob("Z30*")[0])
-        elif device == 5:
-            loaderfile = str(glob.glob("Z3*")[0])
-        elif device == 6:
-            loaderfile = str(glob.glob("Passport*")[0])
-        else:
+        with open(bbconstants.JSONFILE) as thefile:
+            data = json.load(thefile)
+        data = data['integermap']
+        for key in data:
+            if key['id'] == device:
+                fname = key['parts'][0]+"*"+key['parts'][1]+"*"
+                break
+        try:
+            loaderfile = str(glob.glob(fname)[0])
+        except IndexError:
             loaderfile = None
         if loaderfile is not None:
             subprocess.call(loaderfile)

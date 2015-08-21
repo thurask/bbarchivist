@@ -484,7 +484,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
         print("ALL FILES EXTRACTED OK")
 
     # Move bar files
-    print("\nMOVING .bar FILES...")
+    print("\nMOVING BAR FILES...")
     for files in os.listdir(localdir):
         if files.endswith(".bar"):
             print("MOVING: " + files)
@@ -517,7 +517,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
 
     # Remove .signed files
     if signed:
-        print("\nREMOVING .signed FILES...")
+        print("\nREMOVING SIGNED FILES...")
         for file in os.listdir(localdir):
             if os.path.join(localdir, file).endswith(".signed"):
                 print("REMOVING: " + file)
@@ -535,7 +535,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
         barutils.verify(localdir, szexe)
 
     # Move zipped/unzipped loaders
-    print("\nMOVING...")
+    print("\nMOVING LOADERS...")
     barutils.move_loaders(localdir,
                           loaderdir_os, loaderdir_radio,
                           zipdir_os, zipdir_radio)
