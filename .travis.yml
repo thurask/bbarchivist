@@ -5,6 +5,7 @@ python:
     - "3.4"
 install:
     - pip install .
-    - pip install requests python-gnupg mock pytest httmock beautifulsoup4 progress shutilwhich
+    - pip install requests python-gnupg mock pytest httmock beautifulsoup4 shutilwhich
+	- pip install git+https://github.com/thurask/progress.git@no_unicode
 script:
     - py.test

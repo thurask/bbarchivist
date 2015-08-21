@@ -3,7 +3,7 @@ python-gnupg>0.0
 shutilwhich>0.0
 easygui>0.0
 beautifulsoup4>0.0
-progress>0.0
+progress>=1.2
 mock>0.0
 pytest>0.0
 httmock>0.0
