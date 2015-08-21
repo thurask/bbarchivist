@@ -137,8 +137,6 @@ def grab_args():
         args = parser.parse_args(sys.argv[1:])
         if args.folder is None:
             args.folder = os.getcwd()
-        if args.download is False:
-            args.integrity = False
         hashdict = filehashtools.verifier_config_loader()
         filehashtools.verifier_config_writer(hashdict)
         compmethod = barutils.compress_config_loader()
@@ -300,15 +298,8 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     splitos = osversion.split(".")
     splitos = [int(i) for i in splitos]
 
-    # List of OS urls
-    osurls = [baseurl + "/winchester.factory_sfi.desktop-" +
-              osversion + "-nto+armle-v7+signed.bar",
-              baseurl + "/qc8960.factory_sfi.desktop-" +
-              osversion + "-nto+armle-v7+signed.bar",
-              baseurl + "/qc8960.factory_sfi.desktop-" +
-              osversion + "-nto+armle-v7+signed.bar",
-              baseurl + "/qc8974.factory_sfi.desktop-" +
-              osversion + "-nto+armle-v7+signed.bar"]
+    osurls, radiourls = utilities.generate_urls(baseurl, osversion, radioversion)
+    # Handle URLs
     if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):  # 10.3.1+
         osurls[2] = osurls[2].replace("qc8960.factory_sfi",
                                       "qc8960.factory_sfi_hybrid_qc8x30")
@@ -318,22 +309,6 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
         osurls[1] = osurls[1].replace("qc8960.factory_sfi",
                                       "qc8960.verizon_sfi")  # verizon fallback
     osurls = list(set(osurls))  # pop duplicates
-    # List of radio urls
-    radiourls = [baseurl + "/m5730-" + radioversion +
-                 "-nto+armle-v7+signed.bar",
-                 baseurl + "/qc8960-" + radioversion +
-                 "-nto+armle-v7+signed.bar",
-                 baseurl + "/qc8960.omadm-" + radioversion +
-                 "-nto+armle-v7+signed.bar",
-                 baseurl + "/qc8960.wtr-" + radioversion +
-                 "-nto+armle-v7+signed.bar",
-                 baseurl + "/qc8960.wtr5-" + radioversion +
-                 "-nto+armle-v7+signed.bar",
-                 baseurl + "/qc8930.wtr5-" + radioversion +
-                 "-nto+armle-v7+signed.bar",
-                 baseurl + "/qc8974.wtr2-" + radioversion +
-                 "-nto+armle-v7+signed.bar"]
-
     if altsw:
         radiourls2 = []
         for rad in radiourls:
@@ -392,38 +367,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
                 raise SystemExit
 
     # Make dirs
-    if not os.path.exists(localdir):
-        os.makedirs(localdir)
-
-    if not os.path.exists(os.path.join(localdir, 'bars')):
-        os.mkdir(os.path.join(localdir, 'bars'))
-    bardir = os.path.join(localdir, 'bars')
-    if not os.path.exists(os.path.join(bardir, osversion)):
-        os.mkdir(os.path.join(bardir, osversion))
-    bardir_os = os.path.join(bardir, osversion)
-    if not os.path.exists(os.path.join(bardir, radioversion)):
-        os.mkdir(os.path.join(bardir, radioversion))
-    bardir_radio = os.path.join(bardir, radioversion)
-
-    if not os.path.exists(os.path.join(localdir, 'loaders')):
-        os.mkdir(os.path.join(localdir, 'loaders'))
-    loaderdir = os.path.join(localdir, 'loaders')
-    if not os.path.exists(os.path.join(loaderdir, osversion)):
-        os.mkdir(os.path.join(loaderdir, osversion))
-    loaderdir_os = os.path.join(loaderdir, osversion)
-    if not os.path.exists(os.path.join(loaderdir, radioversion)):
-        os.mkdir(os.path.join(loaderdir, radioversion))
-    loaderdir_radio = os.path.join(loaderdir, radioversion)
-
-    if not os.path.exists(os.path.join(localdir, 'zipped')):
-        os.mkdir(os.path.join(localdir, 'zipped'))
-    zipdir = os.path.join(localdir, 'zipped')
-    if not os.path.exists(os.path.join(zipdir, osversion)):
-        os.mkdir(os.path.join(zipdir, osversion))
-    zipdir_os = os.path.join(zipdir, osversion)
-    if not os.path.exists(os.path.join(zipdir, radioversion)):
-        os.mkdir(os.path.join(zipdir, radioversion))
-    zipdir_radio = os.path.join(zipdir, radioversion)
+    bardir_os, bardir_radio, loaderdir_os, loaderdir_radio, zipdir_os, zipdir_radio = barutils.make_dirs(localdir, osversion, radioversion)
 
     # Download files
     if download:
@@ -485,22 +429,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
 
     # Move bar files
     print("\nMOVING BAR FILES...")
-    for files in os.listdir(localdir):
-        if files.endswith(".bar"):
-            print("MOVING: " + files)
-            bardest_os = os.path.join(bardir_os, files)
-            bardest_radio = os.path.join(bardir_radio, files)
-            # even the fattest radio is less than 90MB
-            if os.path.getsize(os.path.join(localdir, files)) > 90000000:
-                try:
-                    shutil.move(os.path.join(localdir, files), bardir_os)
-                except shutil.Error:
-                    os.remove(bardest_os)
-            else:
-                try:
-                    shutil.move(os.path.join(localdir, files), bardir_radio)
-                except shutil.Error:
-                    os.remove(bardest_radio)
+    barutils.move_bars(localdir, bardir_os, bardir_radio)
 
     # Create loaders
     if loaders:

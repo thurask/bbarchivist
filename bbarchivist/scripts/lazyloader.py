@@ -363,53 +363,7 @@ def lazyloader_main(device, osversion, radioversion=None,
         baseurl = networkutils.create_base_url(softwareversion)
         if altsw:
             alturl = networkutils.create_base_url(altsw)
-        splitos = osversion.split(".")
-        splitos = [int(i) for i in splitos]
-
-        if device == 0:
-            osurl = baseurl + "/winchester.factory_sfi.desktop-"
-            osurl += osversion + "-nto+armle-v7+signed.bar"
-            radiourl = baseurl + "/m5730-"
-            radiourl += radioversion + "-nto+armle-v7+signed.bar"
-        elif device == 1:
-            osurl = baseurl + "/qc8960.factory_sfi.desktop-"
-            osurl += osversion + "-nto+armle-v7+signed.bar"
-            radiourl = baseurl + "/qc8960-"
-            radiourl += radioversion + "-nto+armle-v7+signed.bar"
-        elif device == 2:
-            osurl = baseurl + "/qc8960.verizon_sfi.desktop-"
-            osurl += osversion + "-nto+armle-v7+signed.bar"
-            radiourl = baseurl + "/qc8960.omadm-"
-            radiourl += radioversion + "-nto+armle-v7+signed.bar"
-        elif device == 3:
-            osurl = baseurl + "/qc8960.factory_sfi.desktop-"
-            osurl += osversion + "-nto+armle-v7+signed.bar"
-            radiourl = baseurl + "/qc8960.wtr-"
-            radiourl += radioversion + "-nto+armle-v7+signed.bar"
-        elif device == 4:
-            osurl = baseurl + "/qc8960.factory_sfi.desktop-"
-            osurl += osversion + "-nto+armle-v7+signed.bar"
-            radiourl = baseurl + "/qc8960.wtr5-"
-            radiourl += radioversion + "-nto+armle-v7+signed.bar"
-        elif device == 5:
-            osurl = baseurl + "/qc8960.factory_sfi.desktop-"
-            osurl += osversion + "-nto+armle-v7+signed.bar"
-            radiourl = baseurl + "/qc8930.wtr5-"
-            radiourl += radioversion + "-nto+armle-v7+signed.bar"
-            if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):
-                osurl = osurl.replace("qc8960.factory_sfi",
-                                      "qc8960.factory_sfi_hybrid_qc8x30")
-        elif device == 6:
-            osurl = baseurl + "/qc8974.factory_sfi.desktop-"
-            osurl += osversion + "-nto+armle-v7+signed.bar"
-            radiourl = baseurl + "/qc8974.wtr2-"
-            radiourl += radioversion + "-nto+armle-v7+signed.bar"
-            if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):
-                osurl = osurl.replace("qc8974.factory_sfi",
-                                      "qc8960.factory_sfi_hybrid_qc8974")
-        else:
-            return
-
+        osurl, radiourl = utilities.generate_lazy_urls(baseurl, osversion, radioversion, device)
         if altsw:
             radiourl = radiourl.replace(baseurl, alturl)
 
@@ -520,49 +474,17 @@ def lazyloader_main(device, osversion, radioversion=None,
     print("ALL FILES EXTRACTED OK")
 
     # Make dirs
-    if not os.path.exists(localdir):
-        os.makedirs(localdir)
-
-    if not os.path.exists(os.path.join(localdir, 'bars')):
-        os.mkdir(os.path.join(localdir, 'bars'))
-    bardir = os.path.join(localdir, 'bars')
-    if not os.path.exists(os.path.join(bardir, osversion)):
-        os.mkdir(os.path.join(bardir, osversion))
-    bardir_os = os.path.join(bardir, osversion)
-    if not os.path.exists(os.path.join(bardir, radioversion)):
-        os.mkdir(os.path.join(bardir, radioversion))
-    bardir_radio = os.path.join(bardir, radioversion)
-
-    if not os.path.exists(os.path.join(localdir, 'loaders')):
-        os.mkdir(os.path.join(localdir, 'loaders'))
-    loaderdir = os.path.join(localdir, 'loaders')
-    if not os.path.exists(os.path.join(loaderdir, osversion)):
-        os.mkdir(os.path.join(loaderdir, osversion))
-    loaderdir_os = os.path.join(loaderdir, osversion)
+    bardir_os, bardir_radio, loaderdir_os, lr, zo, zr = barutils.make_dirs(localdir, osversion, radioversion)
 
     print("\nMOVING BAR FILES...")
-    for files in os.listdir(localdir):
-        if files.endswith(".bar"):
-            print("MOVING: " + files)
-            bardest_os = os.path.join(bardir_os, files)
-            bardest_radio = os.path.join(bardir_radio, files)
-            if os.path.getsize(files) > 90000000:
-                try:
-                    shutil.move(files, bardir_os)
-                except shutil.Error:
-                    os.remove(bardest_os)
-            else:
-                try:
-                    shutil.move(files, bardir_radio)
-                except shutil.Error:
-                    os.remove(bardest_radio)
+    barutils.move_bars(localdir, bardir_os, bardir_radio)
 
     if altsw:
-        altradio = True
+        altradio = radioversion
     else:
-        altradio = False
+        altradio = None
     loadergen.generate_lazy_loader(osversion, device,
-                                   localdir=localdir, altradio=radioversion)
+                                   localdir=localdir, altradio=altradio)
 
     print("\nREMOVING SIGNED FILES...")
     for file in os.listdir(localdir):
@@ -571,19 +493,12 @@ def lazyloader_main(device, osversion, radioversion=None,
             os.remove(file)
 
     print("\nMOVING LOADERS...")
-    for files in os.listdir(localdir):
-        if files.endswith(
-            (".exe")
-        ) and files.startswith(
-                ("Q10", "Z10", "Z30", "Z3", "Passport")):
-            loaderdest_os = os.path.join(loaderdir_os, files)
-            print("MOVING: " + files)
-            try:
-                shutil.move(files, loaderdir_os)
-            except shutil.Error:
-                os.remove(loaderdest_os)
+    barutils.move_loaders(localdir, loaderdir_os, lr, zo, zr)
 
-    print("\nCREATION FINISHED!")
+    # Delete empty folders
+    print("\nREMOVING EMPTY FOLDERS...")
+    barutils.remove_empty_folders(localdir)
+
     if autoloader:
         os.chdir(loaderdir_os)
         with open(bbconstants.JSONFILE) as thefile:
@@ -598,6 +513,7 @@ def lazyloader_main(device, osversion, radioversion=None,
         except IndexError:
             loaderfile = None
         if loaderfile is not None:
+            print("\nSTARTING LOADER...")
             subprocess.call(loaderfile)
             print("\nFINISHED!!!")
         else:

@@ -174,9 +174,9 @@ def sz_verify(filepath, szexe=None):
     filepath = os.path.abspath(filepath)
     excode = subprocess.call(
         szexe +
-        " t '" +
+        ' t "' +
         filepath +
-        "'",
+        '"',
         shell=True)
     if excode == 0:
         return True
@@ -427,7 +427,7 @@ def verify(filepath, szexe=None):
                     print("{0} IS BROKEN!".format((file)))
             if szexe is not None:
                 if file.endswith(".7z"):
-                    sv = sz_verify(file, szexe)
+                    sv = sz_verify(os.path.abspath(file), szexe)
                     if not sv:
                         print("{0} IS BROKEN!".format((file)))
 
@@ -550,6 +550,75 @@ def move_loaders(localdir,
                         os.remove(zipdest_rad)
                         continue
                     break
+
+
+def move_bars(localdir, osdir, radiodir):
+    """
+    Move bar files to subfolders of a given folder.
+
+    :param localdir: Directory to use.
+    :type localdir: str
+
+    :param osdir: OS file directory (large bars).
+    :type osdir: str
+
+    :param radiodir: Radio file directory (small bars).
+    :type radiodir: str
+    """
+    for files in os.listdir(localdir):
+        if files.endswith(".bar"):
+            print("MOVING: " + files)
+            bardest_os = os.path.join(osdir, files)
+            bardest_radio = os.path.join(radiodir, files)
+            # even the fattest radio is less than 90MB
+            if os.path.getsize(os.path.join(localdir, files)) > 90000000:
+                try:
+                    shutil.move(os.path.join(localdir, files), osdir)
+                except shutil.Error:
+                    os.remove(bardest_os)
+            else:
+                try:
+                    shutil.move(os.path.join(localdir, files), radiodir)
+                except shutil.Error:
+                    os.remove(bardest_radio)
+
+
+def make_dirs(localdir, osversion, radioversion):
+    if not os.path.exists(localdir):
+        os.makedirs(localdir)
+
+    if not os.path.exists(os.path.join(localdir, 'bars')):
+        os.mkdir(os.path.join(localdir, 'bars'))
+    bardir = os.path.join(localdir, 'bars')
+    if not os.path.exists(os.path.join(bardir, osversion)):
+        os.mkdir(os.path.join(bardir, osversion))
+    bardir_os = os.path.join(bardir, osversion)
+    if not os.path.exists(os.path.join(bardir, radioversion)):
+        os.mkdir(os.path.join(bardir, radioversion))
+    bardir_radio = os.path.join(bardir, radioversion)
+
+    if not os.path.exists(os.path.join(localdir, 'loaders')):
+        os.mkdir(os.path.join(localdir, 'loaders'))
+    loaderdir = os.path.join(localdir, 'loaders')
+    if not os.path.exists(os.path.join(loaderdir, osversion)):
+        os.mkdir(os.path.join(loaderdir, osversion))
+    loaderdir_os = os.path.join(loaderdir, osversion)
+    if not os.path.exists(os.path.join(loaderdir, radioversion)):
+        os.mkdir(os.path.join(loaderdir, radioversion))
+    loaderdir_radio = os.path.join(loaderdir, radioversion)
+
+    if not os.path.exists(os.path.join(localdir, 'zipped')):
+        os.mkdir(os.path.join(localdir, 'zipped'))
+    zipdir = os.path.join(localdir, 'zipped')
+    if not os.path.exists(os.path.join(zipdir, osversion)):
+        os.mkdir(os.path.join(zipdir, osversion))
+    zipdir_os = os.path.join(zipdir, osversion)
+    if not os.path.exists(os.path.join(zipdir, radioversion)):
+        os.mkdir(os.path.join(zipdir, radioversion))
+    zipdir_radio = os.path.join(zipdir, radioversion)
+
+    return (bardir_os, bardir_radio, loaderdir_os,
+    loaderdir_radio, zipdir_os, zipdir_radio)
 
 
 def compress_config_loader():

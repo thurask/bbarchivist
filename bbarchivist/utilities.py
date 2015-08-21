@@ -313,6 +313,108 @@ def barname_stripper(name):
     return name.replace("-nto+armle-v7+signed.bar", "")
 
 
+def generate_urls(baseurl, osversion, radioversion):
+    """
+    Generate a list of OS URLs and a list of radio URLs based on input.
+
+    :param baseurl: Everything in the URL before the bar name,
+    including hashed software release.
+    :type baseurl: str
+
+    :param osversion: OS version.
+    :type osversion: str
+
+    :param radioversion: Radio version.
+    :type radioversion: str
+    """
+    osurls = [baseurl + "/winchester.factory_sfi.desktop-" +
+              osversion + "-nto+armle-v7+signed.bar",
+              baseurl + "/qc8960.factory_sfi.desktop-" +
+              osversion + "-nto+armle-v7+signed.bar",
+              baseurl + "/qc8960.factory_sfi.desktop-" +
+              osversion + "-nto+armle-v7+signed.bar",
+              baseurl + "/qc8974.factory_sfi.desktop-" +
+              osversion + "-nto+armle-v7+signed.bar"]
+    radiourls = [baseurl + "/m5730-" + radioversion +
+                 "-nto+armle-v7+signed.bar",
+                 baseurl + "/qc8960-" + radioversion +
+                 "-nto+armle-v7+signed.bar",
+                 baseurl + "/qc8960.omadm-" + radioversion +
+                 "-nto+armle-v7+signed.bar",
+                 baseurl + "/qc8960.wtr-" + radioversion +
+                 "-nto+armle-v7+signed.bar",
+                 baseurl + "/qc8960.wtr5-" + radioversion +
+                 "-nto+armle-v7+signed.bar",
+                 baseurl + "/qc8930.wtr5-" + radioversion +
+                 "-nto+armle-v7+signed.bar",
+                 baseurl + "/qc8974.wtr2-" + radioversion +
+                 "-nto+armle-v7+signed.bar"]
+    return osurls, radiourls
+
+
+def generate_lazy_urls(baseurl, osversion, radioversion, device):
+    """
+    Generate a pair of OS/radio URLs based on input.
+
+    :param baseurl: Everything in the URL before the bar name,
+    including hashed software release.
+    :type baseurl: str
+
+    :param osversion: OS version.
+    :type osversion: str
+
+    :param radioversion: Radio version.
+    :type radioversion: str
+
+    :param device: Device to use.
+    :type device: int
+    """
+    splitos = osversion.split(".")
+    splitos = [int(i) for i in splitos]
+    if device == 0:
+        osurl = baseurl + "/winchester.factory_sfi.desktop-"
+        osurl += osversion + "-nto+armle-v7+signed.bar"
+        radiourl = baseurl + "/m5730-"
+        radiourl += radioversion + "-nto+armle-v7+signed.bar"
+    elif device == 1:
+        osurl = baseurl + "/qc8960.factory_sfi.desktop-"
+        osurl += osversion + "-nto+armle-v7+signed.bar"
+        radiourl = baseurl + "/qc8960-"
+        radiourl += radioversion + "-nto+armle-v7+signed.bar"
+    elif device == 2:
+        osurl = baseurl + "/qc8960.verizon_sfi.desktop-"
+        osurl += osversion + "-nto+armle-v7+signed.bar"
+        radiourl = baseurl + "/qc8960.omadm-"
+        radiourl += radioversion + "-nto+armle-v7+signed.bar"
+    elif device == 3:
+        osurl = baseurl + "/qc8960.factory_sfi.desktop-"
+        osurl += osversion + "-nto+armle-v7+signed.bar"
+        radiourl = baseurl + "/qc8960.wtr-"
+        radiourl += radioversion + "-nto+armle-v7+signed.bar"
+    elif device == 4:
+        osurl = baseurl + "/qc8960.factory_sfi.desktop-"
+        osurl += osversion + "-nto+armle-v7+signed.bar"
+        radiourl = baseurl + "/qc8960.wtr5-"
+        radiourl += radioversion + "-nto+armle-v7+signed.bar"
+    elif device == 5:
+        osurl = baseurl + "/qc8960.factory_sfi.desktop-"
+        osurl += osversion + "-nto+armle-v7+signed.bar"
+        radiourl = baseurl + "/qc8930.wtr5-"
+        radiourl += radioversion + "-nto+armle-v7+signed.bar"
+        if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):
+            osurl = osurl.replace("qc8960.factory_sfi",
+                                    "qc8960.factory_sfi_hybrid_qc8x30")
+    elif device == 6:
+        osurl = baseurl + "/qc8974.factory_sfi.desktop-"
+        osurl += osversion + "-nto+armle-v7+signed.bar"
+        radiourl = baseurl + "/qc8974.wtr2-"
+        radiourl += radioversion + "-nto+armle-v7+signed.bar"
+        if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):
+            osurl = osurl.replace("qc8974.factory_sfi",
+                                    "qc8960.factory_sfi_hybrid_qc8974")
+    return osurl, radiourl
+
+
 def cappath_config_loader():
     """
     Read a ConfigParser file to get cap preferences.
