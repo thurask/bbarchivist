@@ -1,5 +1,7 @@
 ﻿#!/usr/bin/env python3
 
+"""cap.exe, implemented in Python."""
+
 import argparse  # parse arguments
 import sys  # load arguments
 from os import getcwd  # local dir
@@ -16,7 +18,7 @@ def cap_main():
     """
     parser = argparse.ArgumentParser(
         prog="bb-pseudocap",
-        description="cap.exe, implemented in Python",
+        description="cap.exe, implemented in Python.",
         epilog="http://github.com/thurask/bbarchivist")
     parser.add_argument(
         "-v",

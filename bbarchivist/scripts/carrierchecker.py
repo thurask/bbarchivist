@@ -1,4 +1,6 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
+
+"""Checks a carrier for an OS version, can download."""
 
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import networkutils  # check function

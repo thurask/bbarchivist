@@ -1,4 +1,6 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
+
+"""Export SQL database to CSV."""
 
 import argparse  # parse arguments
 import sys  # load arguments
@@ -14,7 +16,7 @@ def sqlexport_main():
     """
     parser = argparse.ArgumentParser(
         prog="bb-sqlexport",
-        description="Export SQL database to CSV",
+        description="Export SQL database to CSV.",
         epilog="http://github.com/thurask/bbarchivist")
     parser.add_argument(
         "-v",

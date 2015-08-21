@@ -1,5 +1,7 @@
 ﻿#!/usr/bin/env python3
 
+"""Create one autoloader for personal use."""
+
 import argparse  # parse arguments
 import sys  # load arguments
 import os  # path work

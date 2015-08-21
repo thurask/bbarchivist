@@ -1,5 +1,7 @@
 ﻿#!/usr/bin/env python3
 
+"""Use GPG to sign all files in a directory."""
+
 import argparse  # parse arguments
 import sys  # load arguments
 import os  # path operations
@@ -17,7 +19,7 @@ def gpgrunner_main():
     """
     parser = argparse.ArgumentParser(
         prog="bb-gpgrunner",
-        description="GPG-sign all files in a directory.",
+        description="Use GPG to sign all files in a directory.",
         epilog="http://github.com/thurask/bbarchivist")
     parser.add_argument(
         "-v",

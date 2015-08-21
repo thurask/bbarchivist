@@ -1,4 +1,6 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
+
+"""Compress all files in a directory."""
 
 import argparse  # parse arguments
 import sys  # load arguments

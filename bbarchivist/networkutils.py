@@ -117,24 +117,31 @@ class SpinManager(object):
         self.spinner = spinner
         self.thread = threading.Thread(target=self.loop, args=())
         self.thread.daemon = True
-        
+        self.scanning = False
+
     def start(self):
-        self.scanning=True
+        """
+        Begin the spinner.
+        """
+        self.scanning = True
         self.thread.start()
     
     def loop(self):
+        """
+        Spin if scanning, clean up if not.
+        """
         while self.scanning:
             time.sleep(0.5)
             line_begin()
             self.spinner.next()
-        else:
-            line_begin()
-            spinner_clear()
-            line_begin()
     
     def stop(self):
+        """
+        Stop the spinner.
+        """
         self.scanning = False
         spinner_clear()
+        line_begin()
 
 
 def download_bootstrap(urls, outdir=None, lazy=False, workers=5):

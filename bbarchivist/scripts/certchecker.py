@@ -1,4 +1,6 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
+
+"""Checks certifications for a given device."""
 
 from bbarchivist.bbconstants import VERSION, JSONFILE  # versions/constants
 from bbarchivist import networkutils  # check function

@@ -1,5 +1,7 @@
 ﻿#!/usr/bin/env python3
 
+"""Get software release for one/many OS versions."""
+
 import argparse  # parse arguments
 import sys  # load arguments
 from bbarchivist import bbconstants  # versions/constants

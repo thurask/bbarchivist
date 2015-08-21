@@ -235,14 +235,14 @@ def whirlpoolhash(filepath, blocksize=16 * 1024 * 1024):
     :type blocksize: int
     """
     try:
-        wp = hashlib.new('whirlpool')
+        wpool = hashlib.new('whirlpool')
         with open(filepath, 'rb') as file:
             while True:
                 data = file.read(blocksize)
                 if not data:
                     break
-                wp.update(data)
-        return wp.hexdigest()
+                wpool.update(data)
+        return wpool.hexdigest()
     except Exception as exc:
         print(str(exc))
         print("WHIRLPOOL HASH FAILED:\nIS IT AVAILABLE?")
@@ -290,7 +290,7 @@ def calculate_escreens(pin, app, uptime, duration=30):
     :type duration: str
     """
     #: Somehow, values for lifetimes for escreens.
-    LIFETIMES = {
+    lifetimes = {
         1: "",
         3: "Hello my baby, hello my honey, hello my rag time gal",
         7: "He was a boy, and she was a girl, can I make it any more obvious?",
@@ -298,12 +298,12 @@ def calculate_escreens(pin, app, uptime, duration=30):
         30: "I love myself today, not like yesterday. I'm cool, I'm calm, I'm gonna be okay" # @IgnorePep8
     }
     #: Escreens magic HMAC secret.
-    SECRET = 'Up the time stream without a TARDIS'
+    secret = 'Up the time stream without a TARDIS'
     duration = int(duration)
     if duration not in [1, 3, 6, 15, 30]:
         duration = 1
-    data = pin.lower() + app + uptime + LIFETIMES[duration]
-    newhmac = hmac.new(SECRET.encode(),
+    data = pin.lower() + app + uptime + lifetimes[duration]
+    newhmac = hmac.new(secret.encode(),
                        data.encode(),
                        digestmod=hashlib.sha1)
     key = newhmac.hexdigest()[:8]
@@ -578,7 +578,7 @@ def gpgrunner(workingdir, keyid=None, passphrase=None, selective=False):
                     if (file.endswith(bbconstants.ARCSPLUS) and file.startswith(bbconstants.PREFIXES)) if selective else True:
                         print("VERIFYING:", str(file))
                         try:
-                            gpgfile(os.path.join(workingdir,file), gpg, keyid=keyid, passphrase=passphrase)
+                            gpgfile(os.path.join(workingdir, file), gpg, keyid=keyid, passphrase=passphrase)
                         except Exception as exc:
                             print("SOMETHING WENT WRONG")
                             print(str(exc))

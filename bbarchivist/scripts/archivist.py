@@ -1,5 +1,7 @@
 ﻿#!/usr/bin/env python3
 
+"""Download bar files, create autoloaders."""
+
 import os  # filesystem read
 import shutil  # directory read/write
 import time  # time for downloader

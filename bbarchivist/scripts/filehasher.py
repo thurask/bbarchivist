@@ -1,5 +1,7 @@
 ﻿#!/usr/bin/env python3
 
+"""Applies hash functions to files."""
+
 import argparse  # parse arguments
 import sys  # load arguments
 import os  # path operations
@@ -19,7 +21,7 @@ def filehasher_main():
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(
             prog="bb-filehasher",
-            description="""Applies hash functions to files.""",
+            description="Applies hash functions to files.",
             epilog="http://github.com/thurask/bbarchivist")
         parser.add_argument(
             "-v",

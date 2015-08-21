@@ -1,5 +1,7 @@
 ﻿#!/usr/bin/env python3
 
+"""Generate links from OS/radio/software."""
+
 import argparse  # parse arguments
 import sys  # load arguments
 from bbarchivist import networkutils  # lookup, if sw not specified

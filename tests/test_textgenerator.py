@@ -1,4 +1,4 @@
-import bbarchivist.textgenerator as bt
+﻿import bbarchivist.textgenerator as bt
 from shutil import rmtree
 import os
 
@@ -47,4 +47,4 @@ class TestClassTextGenerator:
                        self.deb, self.cor, self.rad, True, False, None)
         with open("10.3.3000.txt", 'r') as file:
             data = file.read()
-            assert len(data) == 2917
+            assert len(data) == 2934

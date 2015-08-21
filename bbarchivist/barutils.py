@@ -405,7 +405,7 @@ def verify(filepath, method="7z", szexe=None, selective=False):
     :param selective: Only compress specific files (autoloaders). Default is false.
     :type selective: bool
     """
-    if szexe is None and method =="7z":
+    if szexe is None and method == "7z":
         ifexists = utilities.prep_seven_zip()  # see if 7z exists
         if ifexists:
             szexe = utilities.get_seven_zip(False)

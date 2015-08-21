@@ -37,7 +37,7 @@ class TestClassUtilities:
         assert os.path.basename(bu.grab_cap()) == "cap-3.11.0.22.dat"
 
     def test_filesize_parser(self):
-        assert bu.filesize_parser(987654321) == "941.9MB"
+        assert bu.filesize_parser(987654321) == "941.90MB"
 
     def test_file_exists(self):
         assert bu.file_exists(__file__)
@@ -152,21 +152,17 @@ class TestClassUtilities:
                 assert bu.win_seven_zip() == "C:\\Program Files\\7-Zip\\7z.exe"
 
     def test_get_core_count(self):
-        if version_info[1] >= 4:
-            prog = 'os.cpu_count'
-        else:
-            prog = 'multiprocessing.cpu_count'
-        with mock.patch(prog, mock.MagicMock(return_value="123")):
+        with mock.patch('bbarchivist.utilities.enum_cpus', mock.MagicMock(return_value="123")):
             assert bu.get_core_count() == "123"
 
     def test_prep_seven_zip_good(self):
         with mock.patch('platform.system', mock.MagicMock(return_value="Wandows")): #@IgnorePep8
-            with mock.patch("shutil.which", mock.MagicMock(return_value="/usr/bin/7za")): #@IgnorePep8
+            with mock.patch("bbarchivist.utilities.where_which", mock.MagicMock(return_value="/usr/bin/7za")): #@IgnorePep8
                 assert bu.prep_seven_zip() == True
 
     def test_prep_seven_zip_bad(self):
         with mock.patch('platform.system', mock.MagicMock(return_value="Wandows")): #@IgnorePep8
-            with mock.patch("shutil.which", mock.MagicMock(return_value=None)): #@IgnorePep8
+            with mock.patch("bbarchivist.utilities.where_which", mock.MagicMock(return_value=None)): #@IgnorePep8
                     assert bu.prep_seven_zip() == False
 
     def test_version_incrementer_good(self):

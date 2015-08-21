@@ -13,11 +13,31 @@ import shutil  # "which" command
 import glob  # cap grabbing
 import configparser  # config parsing, duh
 from bbarchivist import bbconstants  # cap location, version
-try:
-    from shutil import which  # @UnusedImport
-except ImportError:
-    import shutilwhich  # @UnusedImport
 from sys import version_info  # version checking
+
+
+def enum_cpus():
+    """
+    Backwards compatibility wrapper.
+    """
+    try:
+        from os import cpu_count  #@Unused Import
+    except ImportError:
+        from multiprocessing import cpu_count #@UnusedImport
+    finally:
+        return cpu_count()
+
+
+def where_which(path):
+    """
+    Backwards compatibility wrapper.
+    """
+    try:
+        from shutil import which  #@UnusedImport
+    except ImportError:
+        from shutilwhich import which  #@UnusedImport
+    finally:
+        return which(path)
 
 
 def grab_cap():
@@ -54,11 +74,11 @@ def filesize_parser(file_size):
         return "N/A"
     else:
         file_size = float(file_size)
-        for x in ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB']:
+        for sfix in ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB']:
             if file_size < 1024.0:
-                return "{:3.1f}{}".format(file_size, x)
+                return "{:3.2f}{}".format(file_size, sfix)
             file_size /= 1024.0
-        return "{:3.1f}{}".format(file_size, 'YB')
+        return "{:3.2f}{}".format(file_size, 'YB')
 
 
 def file_exists(file):
@@ -111,12 +131,10 @@ def valid_carrier(mcc_mnc):
     :type mcc_mnc: str
     """
     if not str(mcc_mnc).isdecimal():
-        raise argparse.ArgumentError(argument=None,
-                                         message="{0} is not an integer.".format(str(mcc_mnc))) #@IgnorePep8
+        raise argparse.ArgumentError(argument=None, message="{0} is not an integer.".format(str(mcc_mnc))) #@IgnorePep8
     else:
         if len(str(mcc_mnc)) > 3 or len(str(mcc_mnc)) == 0:
-            raise argparse.ArgumentError(argument=None,
-                                             message="{0} is an invalid code.".format(str(mcc_mnc))) #@IgnorePep8
+            raise argparse.ArgumentError(argument=None, message="{0} is an invalid code.".format(str(mcc_mnc))) #@IgnorePep8
         else:
             return mcc_mnc
 
@@ -243,15 +261,11 @@ def get_core_count():
     Find out how many CPU cores this system has.
     """
     try:
-        cores = str(os.cpu_count())  # thank you Python 3.4
-    except AttributeError:  # less than 3.4
-        import multiprocessing
-        try:
-            cores = str(multiprocessing.cpu_count())  # @UndefinedVariable
-        except Exception:
-            cores = "1"
+        cores = str(enum_cpus())  # thank you Python 3.4
+    except NotImplementedError:  # less than 3.4
+        cores = "1"
     else:
-        if os.cpu_count() is None:
+        if enum_cpus() is None:
             cores = "1"
     return cores
 
@@ -269,14 +283,11 @@ def prep_seven_zip(talkative=False):
         return get_seven_zip(talkative) != "error"
     else:
         try:
-            path = shutil.which("7za")
+            path = where_which("7za")
         except ImportError:  # less than 3.3
-            try:
-                import shutilwhich  # @UnusedImport
-            except ImportError:
-                if talkative:
-                    print("PLEASE INSTALL SHUTILWHICH WITH PIP")
-                return False
+            if talkative:
+                print("PLEASE INSTALL SHUTILWHICH WITH PIP")
+            return False
         else:
             if path is None:
                 if talkative:
@@ -407,16 +418,14 @@ def generate_lazy_urls(baseurl, osversion, radioversion, device):
         radiourl = baseurl + "/qc8930.wtr5-"
         radiourl += radioversion + "-nto+armle-v7+signed.bar"
         if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):
-            osurl = osurl.replace("qc8960.factory_sfi",
-                                    "qc8960.factory_sfi_hybrid_qc8x30")
+            osurl = osurl.replace("qc8960.factory_sfi", "qc8960.factory_sfi_hybrid_qc8x30")
     elif device == 6:
         osurl = baseurl + "/qc8974.factory_sfi.desktop-"
         osurl += osversion + "-nto+armle-v7+signed.bar"
         radiourl = baseurl + "/qc8974.wtr2-"
         radiourl += radioversion + "-nto+armle-v7+signed.bar"
         if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):
-            osurl = osurl.replace("qc8974.factory_sfi",
-                                    "qc8960.factory_sfi_hybrid_qc8974")
+            osurl = osurl.replace("qc8974.factory_sfi", "qc8960.factory_sfi_hybrid_qc8974")
     return osurl, radiourl
 
 
@@ -445,7 +454,7 @@ def cappath_config_writer(cappath=None):
     :type cappath: str
     """
     if cappath is None:
-        cappath = utilities.grab_cap()
+        cappath = grab_cap()
     config = configparser.ConfigParser()
     homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")

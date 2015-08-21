@@ -1,6 +1,6 @@
 ﻿#!/usr/bin/env python3
 
-"""This module is used for creation of autoloaders. 
+"""This module is used for creation of autoloaders.
 A higher level interface for :mod:`bbarchivist.pseudocap`."""
 
 __author__ = "Thurask"
@@ -12,7 +12,6 @@ import glob  # filename matching
 import json  # db work
 from bbarchivist import bbconstants  # constants/versions
 from bbarchivist import pseudocap  # implement cap
-from bbarchivist import utilities  # cap location
 
 
 def generate_loaders(
@@ -338,8 +337,8 @@ def generate_skeletons():
     Read JSON to get a dict of all filename components.
     """
     namelist = {}
-    for r in range(0, 7):
-        namelist[r] = None
+    for idx in range(0, 7):
+        namelist[idx] = None
     with open(bbconstants.JSONFILE) as thefile:
         data = json.load(thefile)
     data = data['integermap']
@@ -353,7 +352,7 @@ def generate_skeletons():
 def generate_filename(device, version, suffix=None):
     """
     Use skeleton dict to create loader filenames.
-    
+
     :param device: Device to use.
     :type device: int
 

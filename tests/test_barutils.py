@@ -1,4 +1,4 @@
-import bbarchivist.barutils as bb
+﻿import bbarchivist.barutils as bb
 import os
 from bbarchivist.utilities import prep_seven_zip, get_seven_zip
 from shutil import rmtree, copyfile
@@ -64,7 +64,7 @@ class TestClassBarutils:
             if exists:
                 szexe = get_seven_zip(False)
                 bb.compress(os.getcwd(), "7z", szexe=szexe)
-                assert bb.sz_verify("Z10_BIGLOADER.7z", szexe) == 0
+                assert bb.sz_verify("Z10_BIGLOADER.7z", szexe) == True
             else:
                 pass
         except Exception:

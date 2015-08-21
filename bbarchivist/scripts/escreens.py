@@ -1,4 +1,6 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
+
+"""Calculates escreens codes."""
 
 import argparse  # parse arguments
 import sys  # load arguments
