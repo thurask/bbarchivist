@@ -344,7 +344,7 @@ def zip_verify(filepath):
         return False
 
 
-def compress(filepath, method="7z", szexe=None):
+def compress(filepath, method="7z", szexe=None, selective=False):
     """
     Compress all autoloader files in a given folder, with a given method.
 
@@ -356,6 +356,9 @@ def compress(filepath, method="7z", szexe=None):
 
     :param szexe: Path to 7z executable, if needed.
     :type szexe: str
+
+    :param selective: Only compress specific files (autoloaders). Default is false.
+    :type selective: bool
     """
     if method == "7z" and szexe is None:
         ifexists = utilities.prep_seven_zip()  # see if 7z exists
@@ -367,39 +370,46 @@ def compress(filepath, method="7z", szexe=None):
     if majver < 3 and method == "txz":  # 3.2 and under
         method = "zip"  # fallback
     for file in os.listdir(filepath):
-        if file.endswith(".exe") and file.startswith(
-                ("Q10", "Z10", "Z30", "Z3", "Passport")):
-            filename = os.path.splitext(os.path.basename(file))[0]
-            fileloc = os.path.join(filepath, filename)
-            print("COMPRESSING: " + filename + ".exe")
-            if utilities.is_amd64():
-                strength = 9  # ultra compression
-            else:
-                strength = 5  # normal compression
-            if method == "7z":
-                sz_compress(fileloc, file, szexe, strength)
-            elif method == "tgz":
-                tgz_compress(fileloc, file, strength)
-            elif method == "txz":
-                txz_compress(fileloc, file, strength)
-            elif method == "tbz":
-                tbz_compress(fileloc, file, strength)
-            elif method == "zip":
-                zip_compress(fileloc, file)
-            else:
-                print("INVALID METHOD")
-                raise SystemExit
+        if not file.endswith((".zip", ".tar.xz", ".tar.gz", ".tar.bz2", ".7z")):  # skip already compressed files
+            if (file.endswith(".exe") and file.startswith(
+                    ("Q10", "Z10", "Z30", "Z3", "Passport"))) if selective else True:
+                filename = os.path.splitext(os.path.basename(file))[0]
+                fileloc = os.path.join(filepath, filename)
+                print("COMPRESSING: " + filename + ".exe")
+                if utilities.is_amd64():
+                    strength = 9  # ultra compression
+                else:
+                    strength = 5  # normal compression
+                if method == "7z":
+                    sz_compress(fileloc, file, szexe, strength)
+                elif method == "tgz":
+                    tgz_compress(fileloc, file, strength)
+                elif method == "txz":
+                    txz_compress(fileloc, file, strength)
+                elif method == "tbz":
+                    tbz_compress(fileloc, file, strength)
+                elif method == "zip":
+                    zip_compress(fileloc, file)
+                else:
+                    print("INVALID METHOD")
+                    raise SystemExit
 
 
-def verify(filepath, szexe=None):
+def verify(filepath, method="7z", szexe=None, selective=False):
     """
-    Verify all archive files in a given folder.
+    Verify specific archive files in a given folder.
 
     :param filepath: Working directory. Required.
     :type filepath: str
 
+    :param method: Compression type. Default is "7z". Defined in source.
+    :type method: str
+
     :param szexe: Path to 7z executable, if needed.
     :type szexe: str
+
+    :param selective: Only compress specific files (autoloaders). Default is false.
+    :type selective: bool
     """
     if szexe is None:
         ifexists = utilities.prep_seven_zip()  # see if 7z exists
@@ -407,29 +417,50 @@ def verify(filepath, szexe=None):
             szexe = utilities.get_seven_zip(False)
     majver = sys.version_info[1]
     for file in os.listdir(filepath):
-        if file.startswith(("Q10", "Z10", "Z30", "Z3", "Passport")):
-            if file.endswith(".zip"):
-                zv = zip_verify(file)
-                if not zv:
-                    print("{0} IS BROKEN!".format((file)))
-            if majver >= 3:
-                if file.endswith(".tar.xz"):
-                    xv = txz_verify(file)
-                    if not xv:
-                        print("{0} IS BROKEN!".format((file)))
-            if file.endswith(".tar.bz2"):
-                bv = tbz_verify(file)
-                if not bv:
-                    print("{0} IS BROKEN!".format((file)))
-            if file.endswith(".tar.gz"):
-                gv = tgz_verify(file)
-                if not gv:
-                    print("{0} IS BROKEN!".format((file)))
-            if szexe is not None:
-                if file.endswith(".7z"):
+        if file.endswith((".zip", ".tar.xz", ".tar.gz", ".tar.bz2", ".7z")):  # skip already compressed files
+            if file.startswith(
+                    ("Q10", "Z10", "Z30", "Z3", "Passport")) if selective else True:
+                print("VERIFYING:", file)
+                if file.endswith(".7z") and szexe is not None:
                     sv = sz_verify(os.path.abspath(file), szexe)
                     if not sv:
                         print("{0} IS BROKEN!".format((file)))
+                elif file.endswith(".tar.gz"):
+                    gv = tgz_verify(file)
+                    if not gv:
+                        print("{0} IS BROKEN!".format((file)))
+                elif file.endswith(".tar.xz"):
+                    xv = txz_verify(file)
+                    if not xv:
+                        print("{0} IS BROKEN!".format((file)))
+                elif file.endswith(".tar.bz2"):
+                    bv = tbz_verify(file)
+                    if not bv:
+                        print("{0} IS BROKEN!".format((file)))
+                elif file.endswith(".zip"):
+                    zv = zip_verify(file)
+                    if not zv:
+                        print("{0} IS BROKEN!".format((file)))
+
+
+def compress_suite(filepath, method="7z", szexe=None, selective=False):
+    """
+    Wrap compression and verification into one.
+
+    :param filepath: Working directory. Required.
+    :type filepath: str
+
+    :param method: Compression type. Default is "7z". Defined in source.
+    :type method: str
+
+    :param szexe: Path to 7z executable, if needed.
+    :type szexe: str
+
+    :param selective: Only compress specific files (autoloaders). Default is false.
+    :type selective: bool
+    """
+    compress(filepath, method, szexe, selective)
+    verify(filepath, method, szexe, selective)
 
 
 def remove_empty_folders(a_folder):

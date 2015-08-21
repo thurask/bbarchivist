@@ -64,6 +64,9 @@
     <Compile Include="bbarchivist\scripts\escreens.py" />
     <Compile Include="bbarchivist\scripts\filehasher.py" />
     <Compile Include="bbarchivist\scripts\gpgrunner.py" />
+    <Compile Include="bbarchivist\scripts\kompressor.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="bbarchivist\scripts\lazyloader.py" />
     <Compile Include="bbarchivist\scripts\linkgen.py" />
     <Compile Include="bbarchivist\scripts\sqlexport.py" />

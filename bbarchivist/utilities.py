@@ -257,14 +257,17 @@ def get_core_count():
     return cores
 
 
-def prep_seven_zip():
+def prep_seven_zip(talkative=False):
     """
     Check for presence of 7-Zip.
     On POSIX, check for p7zip.
     On Windows, check for 7-Zip.
+
+    :param talkative: Whether to output to screen. False by default.
+    :type talkative: bool
     """
     if is_windows():
-        return get_seven_zip(True) != "error"
+        return get_seven_zip(talkative) != "error"
     else:
         try:
             path = shutil.which("7za")
@@ -272,15 +275,18 @@ def prep_seven_zip():
             try:
                 import shutilwhich  # @UnusedImport
             except ImportError:
-                print("PLEASE INSTALL SHUTILWHICH WITH PIP")
+                if talkative:
+                    print("PLEASE INSTALL SHUTILWHICH WITH PIP")
                 return False
         else:
             if path is None:
-                print("NO 7ZIP")
-                print("PLEASE INSTALL p7zip")
+                if talkative:
+                    print("NO 7ZIP")
+                    print("PLEASE INSTALL p7zip")
                 return False
             else:
-                print("7ZIP FOUND AT", path)
+                if talkative:
+                    print("7ZIP FOUND AT", path)
                 return True
 
 

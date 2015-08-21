@@ -275,10 +275,10 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
 
     if compmethod == "7z":
         print("\nCHECKING PRESENCE OF 7ZIP...")
-        psz = utilities.prep_seven_zip()
+        psz = utilities.prep_seven_zip(True)
         if psz:
             print("7ZIP OK")
-            szexe = utilities.get_seven_zip()
+            szexe = utilities.get_seven_zip(True)
         else:
             szexe = ""
             print("7ZIP NOT FOUND")
@@ -461,7 +461,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
 
     if integrity:
         print("\nTESTING...")
-        barutils.verify(localdir, szexe)
+        barutils.verify(localdir, compmethod, szexe, True)
 
     # Move zipped/unzipped loaders
     print("\nMOVING LOADERS...")

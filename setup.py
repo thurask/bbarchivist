@@ -72,5 +72,6 @@ setup(name='bbarchivist',
                             'bb-gpgrunner=bbarchivist.scripts.gpgrunner:gpgrunner_main', #@IgnorePep8
                             'bb-autolookup=bbarchivist.scripts.autolookup:grab_args', #@IgnorePep8
                             'bb-pseudocap=bbarchivist.scripts.cap:cap_main',
-                            'bb-sqlexport=bbarchivist.scripts.sqlexport:sqlexport_main'] #@IgnorePep8
+                            'bb-sqlexport=bbarchivist.scripts.sqlexport:sqlexport_main', #@IgnorePep8
+                            'bb-kompressor=bbarchivist.scripts.kompressor:kompressor_main'] #@IgnorePep8
         })
