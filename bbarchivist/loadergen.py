@@ -9,6 +9,7 @@ __copyright__ = "2015 Thurask"
 
 import os  # path work
 import glob  # filename matching
+import json  # db work
 from bbarchivist import pseudocap  # implement cap
 from bbarchivist import utilities  # cap location
 
@@ -158,13 +159,11 @@ def generate_loaders(
     if os_ti is not None and radio_z10_ti is not None:
         try:
             print("\nCreating OMAP Z10 OS...")
+            filename = generate_filename(0, osversion, suffix)
             pseudocap.make_autoloader(
-                filename="Z10_" +
-                osversion +
-                suffix + 
-                "_STL100-1.exe",
-                firstfile=os_ti,
-                secondfile=radio_z10_ti,
+                filename,
+                os_ti,
+                radio_z10_ti,
                 folder=localdir)
         except Exception as exc:
             print(str(exc))
@@ -172,12 +171,11 @@ def generate_loaders(
     if radios:
         if radio_z10_ti is not None:
             print("Creating OMAP Z10 radio...")
+            filename = generate_filename(0, radioversion)
             try:
                 pseudocap.make_autoloader(
-                    "Z10_" +
-                    radioversion +
-                    "_STL100-1.exe",
-                    firstfile=radio_z10_ti,
+                    filename,
+                    radio_z10_ti,
                     folder=localdir)
             except Exception as exc:
                 print(str(exc))
@@ -186,13 +184,11 @@ def generate_loaders(
     if os_8960 is not None and radio_z10_qcm is not None:
         try:
             print("\nCreating Qualcomm Z10 OS...")
+            filename = generate_filename(1, osversion, suffix)
             pseudocap.make_autoloader(
-                "Z10_" +
-                osversion +
-                suffix + 
-                "_STL100-2-3.exe",
-                firstfile=os_8960,
-                secondfile=radio_z10_qcm,
+                filename,
+                os_8960,
+                radio_z10_qcm,
                 folder=localdir)
         except Exception as exc:
             print(str(exc))
@@ -200,12 +196,11 @@ def generate_loaders(
     if radios:
         if radio_z10_qcm is not None:
             print("Creating Qualcomm Z10 radio...")
+            filename = generate_filename(1, radioversion)
             try:
                 pseudocap.make_autoloader(
-                    "Z10_" +
-                    radioversion +
-                    "_STL100-2-3.exe",
-                    firstfile=radio_z10_qcm,
+                    filename,
+                    radio_z10_qcm,
                     folder=localdir)
             except Exception as exc:
                 print(str(exc))
@@ -214,13 +209,11 @@ def generate_loaders(
     if os_8960 is not None and radio_z10_vzw is not None:
         try:
             print("\nCreating Verizon Z10 OS...")
+            filename = generate_filename(2, osversion, suffix)
             pseudocap.make_autoloader(
-                "Z10_" +
-                osversion +
-                suffix + 
-                "_STL100-4.exe",
-                firstfile=os_8960,
-                secondfile=radio_z10_vzw,
+                filename,
+                os_8960,
+                radio_z10_vzw,
                 folder=localdir)
         except Exception as exc:
             print(str(exc))
@@ -228,12 +221,11 @@ def generate_loaders(
     if radios:
         if radio_z10_vzw is not None:
             print("Creating Verizon Z10 radio...")
+            filename = generate_filename(2, radioversion)
             try:
                 pseudocap.make_autoloader(
-                    "Z10_" +
-                    radioversion +
-                    "_STL100-4.exe",
-                    firstfile=radio_z10_vzw,
+                    filename,
+                    radio_z10_vzw,
                     folder=localdir)
             except Exception as exc:
                 print(str(exc))
@@ -242,13 +234,11 @@ def generate_loaders(
     if os_8960 is not None and radio_q10 is not None:
         try:
             print("\nCreating Q10/Q5 OS...")
+            filename = generate_filename(3, osversion, suffix)
             pseudocap.make_autoloader(
-                "Q10_" +
-                osversion +
-                suffix + 
-                "_SQN100-1-2-3-4-5.exe",
-                firstfile=os_8960,
-                secondfile=radio_q10,
+                filename,
+                os_8960,
+                radio_q10,
                 folder=localdir)
         except Exception as exc:
             print(str(exc))
@@ -256,12 +246,11 @@ def generate_loaders(
     if radios:
         if radio_q10 is not None:
             print("Creating Q10/Q5 radio...")
+            filename = generate_filename(3, radioversion)
             try:
                 pseudocap.make_autoloader(
-                    "Q10_" +
-                    radioversion +
-                    "_SQN100-1-2-3-4-5.exe",
-                    firstfile=radio_q10,
+                    filename,
+                    radio_q10,
                     folder=localdir)
             except Exception as exc:
                 print(str(exc))
@@ -270,13 +259,11 @@ def generate_loaders(
     if os_8960 is not None and radio_z30 is not None:
         try:
             print("\nCreating Z30/Classic OS...")
+            filename = generate_filename(4, osversion, suffix)
             pseudocap.make_autoloader(
-                "Z30_" +
-                osversion +
-                suffix + 
-                "_STA100-1-2-3-4-5-6.exe",
-                firstfile=os_8960,
-                secondfile=radio_z30,
+                filename,
+                os_8960,
+                radio_z30,
                 folder=localdir)
         except Exception as exc:
             print(str(exc))
@@ -284,12 +271,11 @@ def generate_loaders(
     if radios:
         if radio_z30 is not None:
             print("Creating Z30/Classic radio...")
+            filename = generate_filename(4, radioversion)
             try:
                 pseudocap.make_autoloader(
-                    "Z30_" +
-                    radioversion +
-                    "_STA100-1-2-3-4-5-6.exe",
-                    firstfile=radio_z30,
+                    filename,
+                    radio_z30,
                     folder=localdir)
             except Exception as exc:
                 print(str(exc))
@@ -298,13 +284,11 @@ def generate_loaders(
     if os_8x30 is not None and radio_z3 is not None:
         try:
             print("\nCreating Z3 OS...")
+            filename = generate_filename(5, osversion, suffix)
             pseudocap.make_autoloader(
-                "Z3_" +
-                osversion +
-                suffix + 
-                "_STJ100-1-2.exe",
-                firstfile=os_8x30,
-                secondfile=radio_z3,
+                filename,
+                os_8x30,
+                radio_z3,
                 folder=localdir)
         except Exception as exc:
             print(str(exc))
@@ -312,12 +296,11 @@ def generate_loaders(
     if radios:
         if radio_z3 is not None:
             print("Creating Z3 radio...")
+            filename = generate_filename(5, radioversion)
             try:
                 pseudocap.make_autoloader(
-                    "Z3_" +
-                    radioversion +
-                    "_STJ100-1-2.exe",
-                    firstfile=radio_z3,
+                    filename,
+                    radio_z3,
                     folder=localdir)
             except Exception as exc:
                 print(str(exc))
@@ -326,13 +309,11 @@ def generate_loaders(
     if os_8974 is not None and radio_8974 is not None:
         try:
             print("\nCreating Passport OS...")
+            filename = generate_filename(6, osversion, suffix)
             pseudocap.make_autoloader(
-                "Passport_" +
-                osversion +
-                suffix + 
-                "_SQW100-1-2-3-4.exe",
-                firstfile=os_8974,
-                secondfile=radio_8974,
+                filename,
+                os_8974,
+                radio_8974,
                 folder=localdir)
         except Exception as exc:
             print(str(exc))
@@ -340,16 +321,53 @@ def generate_loaders(
     if radios:
         if radio_8974 is not None:
             print("Creating Passport radio...")
+            filename = generate_filename(6, radioversion)
             try:
                 pseudocap.make_autoloader(
-                    "Passport_" +
-                    radioversion +
-                    "_SQW100-1-2-3-4.exe",
-                    firstfile=radio_8974,
+                    filename,
+                    radio_8974,
                     folder=localdir)
             except Exception as exc:
                 print(str(exc))
                 print("Could not create Passport radio loader")
+
+
+def generate_skeletons():
+    """
+    Read JSON to get a dict of all filename components.
+    """
+    namelist = {}
+    for r in range(0, 7):
+        namelist[r] = None
+    with open(bbconstants.JSONFILE) as thefile:
+        data = json.load(thefile)
+    data = data['integermap']
+    for key in data:
+        if key['id'] in namelist:
+            namelist[key['id']] = key['parts']
+            namelist[key['id']].append(".exe")
+    return namelist
+
+
+def generate_filename(device, version, suffix=None):
+    """
+    Use skeleton dict to create loader filenames.
+    
+    :param device: Device to use.
+    :type device: int
+
+    :param version: OS or radio version.
+    :type version: str
+
+    :param suffix: Alternate radio, or blank.
+    :type suffix: str
+    """
+    thed = generate_skeletons()
+    thed = thed[device]
+    if suffix is None:
+        suffix = ""
+    return thed[0] + version + suffix + thed[1] + thed[2]
+
 
 
 def generate_lazy_loader(
@@ -390,24 +408,8 @@ def generate_lazy_loader(
     except IndexError:
         print("No radio found")
         return
-    if device == 0:
-        loadername = "Z10_" + osversion + suffix + "_STL100-1.exe"
-    elif device == 1:
-        loadername = "Z10_" + osversion + suffix + "_STL100-2-3.exe"
-    elif device == 2:
-        loadername = "Z10_" + osversion + suffix + "_STL100-4.exe"
-    elif device == 3:
-        loadername = "Q10_" + osversion + suffix + "_SQN100-1-2-3-4-5.exe"
-    elif device == 4:
-        loadername = "Z30_" + osversion + suffix + "_STA100-1-2-3-4-5-6.exe"
-    elif device == 5:
-        loadername = "Z3_" + osversion + suffix + "_STJ100-1-2.exe"
-    elif device == 6:
-        loadername = "Passport_" + osversion + suffix + "_SQW100-1-2-3-4.exe"
-    else:
-        print("Invalid device")
-        return
     try:
+        loadername = generate_lazy_filename(osversion, suffix, device)
         pseudocap.make_autoloader(
             filename=loadername,
             firstfile=osfile,
@@ -417,3 +419,27 @@ def generate_lazy_loader(
         print(str(exc))
         print("Could not create autoloader")
         return
+
+
+def generate_lazy_filename(osversion, suffix, device):
+    """
+    Read JSON to formulate a single filename.
+
+    :param osversion: OS version.
+    :type osversion: str
+
+    :param suffix: Alternate radio, or just blank.
+    :type suffix: str
+
+    :param device: Device to use.
+    :type device: int
+    """
+    with open(bbconstants.JSONFILE) as thefile:
+        data = json.load(thefile)
+    data = data['integermap']
+    for key in data:
+        if key['id'] == device:
+            fname = key['parts']
+            break
+    loadername = fname[0] + osversion + suffix + fname[1] + ".exe"
+    return loadername
