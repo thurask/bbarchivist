@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+﻿from setuptools import setup, find_packages
 from bbarchivist import bbconstants
 from sys import version_info
 
@@ -14,7 +14,8 @@ def readme():
 cond_requires = ['requests',
                  'python-gnupg',
                  'beautifulsoup4',
-                 'easygui']
+                 'easygui',
+                 'progress']
 if version_info[1] < 3:  # 3.2 and under
     cond_requires.append('shutilwhich')
 setup(name='bbarchivist',

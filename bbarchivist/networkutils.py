@@ -11,6 +11,10 @@ import requests  # downloading
 import xml.etree.ElementTree  # XML parsing
 import re  # regexes
 import hashlib  # base url creation
+import sys  # stdout
+import threading  # get thread for spinner
+import time  # spinner delay
+from progress.spinner import Spinner  # the actual spinner
 from bbarchivist import utilities  # parse filesize
 from bbarchivist.bbconstants import SERVERS  # lookup servers
 from bs4 import BeautifulSoup  # scraping
@@ -49,6 +53,21 @@ def get_content_length(url):
         return 0
 
 
+def line_begin():
+    """
+    Go to beginning of line, to overwrite whatever's there.
+    """
+    sys.stdout.write("\r")
+    sys.stdout.flush()
+
+
+def spinner_clear():
+    """
+    Get rid of any spinner residue left in stdout.
+    """
+    sys.stdout.write("\b \b")
+    sys.stdout.flush()
+
 def download(url, output_directory=None, lazy=False):
     """
     Download file from given URL.
@@ -70,6 +89,7 @@ def download(url, output_directory=None, lazy=False):
     req = requests.get(url, stream=True)
     fsize = req.headers['content-length']
     if req.status_code != 404:  # 200 OK
+        line_begin()
         if not lazy:
             print("Downloading:",
                   local_filename,
@@ -87,6 +107,30 @@ def download(url, output_directory=None, lazy=False):
                 if chunk:  # filter out keep-alive new chunks
                     file.write(chunk)
                     file.flush()
+
+
+class SpinManager(object):
+    """
+    Wraps around progress.spinner, runs it in another thread.
+    """
+    def __init__(self, spinner):
+        self.spinner = spinner
+        self.thread = threading.Thread(target=self.loop, args=())
+        self.thread.daemon = True
+        
+    def start(self):
+        self.scanning=True
+        self.thread.start()
+    
+    def loop(self):
+        while self.scanning:
+            time.sleep(0.5)
+            line_begin()
+            self.spinner.next()
+    
+    def stop(self):
+        self.scanning = False
+        spinner_clear()
 
 
 def download_bootstrap(urls, outdir=None, lazy=False, workers=5):
@@ -107,9 +151,15 @@ def download_bootstrap(urls, outdir=None, lazy=False, workers=5):
     """
     if len(urls) < workers:
         workers = len(urls)
+    spinner = Spinner("")
+    spinman = SpinManager(spinner)
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as xec:
+        spinman.start()
         for url in urls:
             xec.submit(download, url, outdir, lazy)
+    spinman.stop()
+    spinner_clear()
+    line_begin()
 
 
 def create_base_url(softwareversion):
