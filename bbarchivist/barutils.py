@@ -18,6 +18,7 @@ import base64  # encoding for hashes
 import hashlib   # get hashes
 import configparser  # config parsing, duh
 from bbarchivist import utilities  # platform determination
+from bbarchivist import bbconstants  # premade stuff
 
 
 def extract_bars(filepath):
@@ -199,14 +200,13 @@ def tgz_compress(filepath, filename, strength=5):
     :param strength: Compression strength. 5 is normal, 9 is ultra.
     :type strength: int
     """
-    with tarfile.open(filepath + '.tar.gz',
-                                 'w:gz',
-                                 compresslevel=strength) as gzfile:
-                    starttime = time.clock()
-                    gzfile.add(filename, filter=None)
-                    endtime = time.clock() - starttime
-                    endtime_proper = math.ceil(endtime * 100) / 100
-                    print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
+    with tarfile.open(filepath + '.tar.gz', 'w:gz',
+                      compresslevel=strength) as gzfile:
+        starttime = time.clock()
+        gzfile.add(filename, filter=None)
+        endtime = time.clock() - starttime
+        endtime_proper = math.ceil(endtime * 100) / 100
+        print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
 
 
 def tgz_verify(filepath):
@@ -218,7 +218,7 @@ def tgz_verify(filepath):
     """
     if tarfile.is_tarfile(filepath):
         with tarfile.open(filepath, "r:gz") as thefile:
-                mems = thefile.getmembers()
+            mems = thefile.getmembers()
         if not mems:
             return False
         else:
@@ -240,14 +240,13 @@ def tbz_compress(filepath, filename, strength=5):
     :param strength: Compression strength. 5 is normal, 9 is ultra.
     :type strength: int
     """
-    with tarfile.open(filepath + '.tar.bz2',
-                                 'w:bz2',
-                                 compresslevel=strength) as bzfile:
-                    starttime = time.clock()
-                    bzfile.add(filename, filter=None)
-                    endtime = time.clock() - starttime
-                    endtime_proper = math.ceil(endtime * 100) / 100
-                    print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
+    with tarfile.open(filepath + '.tar.bz2', 'w:bz2',
+                      compresslevel=strength) as bzfile:
+        starttime = time.clock()
+        bzfile.add(filename, filter=None)
+        endtime = time.clock() - starttime
+        endtime_proper = math.ceil(endtime * 100) / 100
+        print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
 
 
 def tbz_verify(filepath):
@@ -259,7 +258,7 @@ def tbz_verify(filepath):
     """
     if tarfile.is_tarfile(filepath):
         with tarfile.open(filepath, "r:bz2") as thefile:
-                mems = thefile.getmembers()
+            mems = thefile.getmembers()
         if not mems:
             return False
         else:
@@ -268,7 +267,7 @@ def tbz_verify(filepath):
         return False
 
 
-def txz_compress(filepath, filename, strength=5):
+def txz_compress(filepath, filename):
     """
     Pack a file into a LZMA tarfile.
 
@@ -277,17 +276,13 @@ def txz_compress(filepath, filename, strength=5):
 
     :param filename: Name of file to pack.
     :type filename: str
-
-    :param strength: Compression strength. 5 is normal, 9 is ultra.
-    :type strength: int
     """
-    with tarfile.open(filepath + '.tar.xz',
-                                 'w:xz') as xzfile:
-                    starttime = time.clock()
-                    xzfile.add(filename, filter=None)
-                    endtime = time.clock() - starttime
-                    endtime_proper = math.ceil(endtime * 100) / 100
-                    print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
+    with tarfile.open(filepath + '.tar.xz', 'w:xz') as xzfile:
+        starttime = time.clock()
+        xzfile.add(filename, filter=None)
+        endtime = time.clock() - starttime
+        endtime_proper = math.ceil(endtime * 100) / 100
+        print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
 
 
 def txz_verify(filepath):
@@ -299,7 +294,7 @@ def txz_verify(filepath):
     """
     if tarfile.is_tarfile(filepath):
         with tarfile.open(filepath, "r:xz") as thefile:
-                mems = thefile.getmembers()
+            mems = thefile.getmembers()
         if not mems:
             return False
         else:
@@ -318,15 +313,13 @@ def zip_compress(filepath, filename):
     :param filename: Name of file to pack.
     :type filename: str
     """
-    with zipfile.ZipFile(filepath + '.zip',
-                                    'w',
-                                    zipfile.ZIP_DEFLATED,
-                                    allowZip64=True) as zfile:
-                    starttime = time.clock()
-                    zfile.write(filename)
-                    endtime = time.clock() - starttime
-                    endtime_proper = math.ceil(endtime * 100) / 100
-                    print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
+    with zipfile.ZipFile(filepath + '.zip', 'w', zipfile.ZIP_DEFLATED,
+                         allowZip64=True) as zfile:
+        starttime = time.clock()
+        zfile.write(filename)
+        endtime = time.clock() - starttime
+        endtime_proper = math.ceil(endtime * 100) / 100
+        print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
 
 
 def zip_verify(filepath):
@@ -337,8 +330,8 @@ def zip_verify(filepath):
     :type filepath: str
     """
     if zipfile.is_zipfile(filepath):
-        bt = bar_tester(filepath)
-        if bt is None:
+        brokens = bar_tester(filepath)
+        if brokens is None:
             return True
         else:
             return False
@@ -372,9 +365,8 @@ def compress(filepath, method="7z", szexe=None, selective=False):
     if majver < 3 and method == "txz":  # 3.2 and under
         method = "zip"  # fallback
     for file in os.listdir(filepath):
-        if not file.endswith((".zip", ".tar.xz", ".tar.gz", ".tar.bz2", ".7z")):  # skip already compressed files
-            if (file.endswith(".exe") and file.startswith(
-                    ("Q10", "Z10", "Z30", "Z3", "Passport"))) if selective else True:
+        if not file.endswith(bbconstants.ARCS):
+            if (file.endswith(".exe") and file.startswith(bbconstants.PREFIXES)) if selective else True:
                 filename = os.path.splitext(os.path.basename(file))[0]
                 fileloc = os.path.join(filepath, filename)
                 print("COMPRESSING: " + filename + ".exe")
@@ -387,7 +379,7 @@ def compress(filepath, method="7z", szexe=None, selective=False):
                 elif method == "tgz":
                     tgz_compress(fileloc, file, strength)
                 elif method == "txz":
-                    txz_compress(fileloc, file, strength)
+                    txz_compress(fileloc, file)
                 elif method == "tbz":
                     tbz_compress(fileloc, file, strength)
                 elif method == "zip":
@@ -413,35 +405,39 @@ def verify(filepath, method="7z", szexe=None, selective=False):
     :param selective: Only compress specific files (autoloaders). Default is false.
     :type selective: bool
     """
-    if szexe is None:
+    if szexe is None and method =="7z":
         ifexists = utilities.prep_seven_zip()  # see if 7z exists
         if ifexists:
             szexe = utilities.get_seven_zip(False)
+        else:
+            print("NO 7Z!")
     majver = sys.version_info[1]
     for file in os.listdir(filepath):
-        if file.endswith((".zip", ".tar.xz", ".tar.gz", ".tar.bz2", ".7z")):  # skip already compressed files
-            if file.startswith(
-                    ("Q10", "Z10", "Z30", "Z3", "Passport")) if selective else True:
+        if file.endswith(bbconstants.ARCS):  # skip already compressed files
+            if file.startswith(bbconstants.PREFIXES) if selective else True:
                 print("VERIFYING:", file)
                 if file.endswith(".7z") and szexe is not None:
-                    sv = sz_verify(os.path.abspath(file), szexe)
-                    if not sv:
+                    szver = sz_verify(os.path.abspath(file), szexe)
+                    if not szver:
                         print("{0} IS BROKEN!".format((file)))
                 elif file.endswith(".tar.gz"):
-                    gv = tgz_verify(file)
-                    if not gv:
+                    gzver = tgz_verify(file)
+                    if not gzver:
                         print("{0} IS BROKEN!".format((file)))
                 elif file.endswith(".tar.xz"):
-                    xv = txz_verify(file)
-                    if not xv:
-                        print("{0} IS BROKEN!".format((file)))
+                    if majver >= 3:
+                        xzver = txz_verify(file)
+                        if not xzver:
+                            print("{0} IS BROKEN!".format((file)))
+                    else:
+                        pass
                 elif file.endswith(".tar.bz2"):
-                    bv = tbz_verify(file)
-                    if not bv:
+                    bzver = tbz_verify(file)
+                    if not bzver:
                         print("{0} IS BROKEN!".format((file)))
                 elif file.endswith(".zip"):
-                    zv = zip_verify(file)
-                    if not zv:
+                    zipver = zip_verify(file)
+                    if not zipver:
                         print("{0} IS BROKEN!".format((file)))
 
 
@@ -475,7 +471,7 @@ def remove_empty_folders(a_folder):
     for curdir, subdirs, files in os.walk(a_folder):
         while True:
             try:
-                if len(subdirs) == 0 and len(files) == 0:
+                if not subdirs and not files:
                     os.rmdir(curdir)
             except OSError:
                 continue
@@ -528,8 +524,7 @@ def move_loaders(localdir,
     :type zipdir_rad: str
     """
     for files in os.listdir(localdir):
-        if files.endswith(".exe") and files.startswith(
-                ("Q10", "Z10", "Z30", "Z3", "Passport")):
+        if files.endswith(".exe") and files.startswith(bbconstants.PREFIXES):
             print("MOVING: " + files)
             exedest_os = os.path.join(exedir_os, files)
             exedest_rad = os.path.join(exedir_rad, files)
@@ -550,19 +545,7 @@ def move_loaders(localdir,
                         os.remove(exedest_rad)
                         continue
                     break
-        if files.endswith(
-            (".7z",
-             ".tar.xz",
-             ".tar.bz2",
-             ".tar.gz",
-             ".zip")
-        ) and files.startswith(
-            ("Q10",
-             "Z10",
-             "Z30",
-             "Z3",
-             "Passport")
-        ):
+        elif files.endswith(bbconstants.ARCS) and files.startswith(bbconstants.PREFIXES):
             print("MOVING: " + files)
             zipdest_os = os.path.join(zipdir_os, files)
             zipdest_rad = os.path.join(zipdir_rad, files)
@@ -617,6 +600,18 @@ def move_bars(localdir, osdir, radiodir):
 
 
 def make_dirs(localdir, osversion, radioversion):
+    """
+    Create the directory tree needed for archivist/lazyloader.
+
+    :param localdir: Root folder.
+    :type localdir: str
+
+    :param osversion: OS version.
+    :type osversion: str
+
+    :param radioversion: Radio version.
+    :type radioversion: str
+    """
     if not os.path.exists(localdir):
         os.makedirs(localdir)
 

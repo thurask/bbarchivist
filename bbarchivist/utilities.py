@@ -94,10 +94,9 @@ def valid_method(method):
     :param method: Compression method to check.
     :type method: str
     """
-    methodlist = ['7z', 'zip', 'tbz', 'tgz', 'txz']
+    methodlist = bbconstants.ARCS
     if version_info[1] <= 2:
-        if method == "txz":
-            method = "zip"
+        methodlist = methodlist[:-1]  # strip last
     if method not in methodlist:
         raise argparse.ArgumentError(argument=None,
                                      message="{0} is an invalid method.".format(method)) #@IgnorePep8

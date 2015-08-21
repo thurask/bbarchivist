@@ -12,6 +12,7 @@ import hmac  # escreens is a hmac, news at 11
 import os  # path work
 import gnupg  # interface b/w Python, GPG
 import configparser  # config parsing, duh
+from bbarchivist import bbconstants  # premade stuff
 
 
 def crc32hash(filepath, blocksize=16 * 1024 * 1024):
@@ -336,7 +337,7 @@ def verifier(workingdir, **kwargs):
         for file in os.listdir(workingdir):
             if os.path.isdir(os.path.join(workingdir, file)):
                 pass  # exclude folders
-            elif file.endswith((".cksum", ".asc")):
+            elif file.endswith(bbconstants.SUPPS):
                 pass  # exclude already generated files
             else:
                 print("HASHING:", str(file))
@@ -572,49 +573,15 @@ def gpgrunner(workingdir, keyid=None, passphrase=None, selective=False):
         if not keyid.startswith("0x"):
             keyid = "0x" + keyid.upper()
         for file in os.listdir(workingdir):
-            if os.path.isdir(os.path.join(workingdir, file)):
-                pass  # exclude folders
-            else:
-                if not file.endswith((".cksum", ".asc")):
-                    print("VERIFYING:", str(file))
-                    if selective:
-                        if file.endswith(
-                            (".7z",
-                             ".tar.xz",
-                             ".tar.bz2",
-                             ".tar.gz",
-                             ".zip",
-                             ".exe")
-                        ) and file.startswith(
-                                ("Q10",
-                                 "Z10",
-                                 "Z30",
-                                 "Z3",
-                                 "Passport")):
-                            try:
-                                gpgfile(os.path.join(
-                                    workingdir,
-                                    file
-                                ),
-                                    gpg,
-                                    keyid=keyid,
-                                    passphrase=passphrase)
-                            except Exception as e:
-                                print("SOMETHING WENT WRONG")
-                                print(str(e))
-                                raise SystemExit
-                    else:
+            if not os.path.isdir(os.path.join(workingdir, file)):
+                if not file.endswith(bbconstants.SUPPS):
+                    if (file.endswith(bbconstants.ARCSPLUS) and file.startswith(bbconstants.PREFIXES)) if selective else True:
+                        print("VERIFYING:", str(file))
                         try:
-                            gpgfile(os.path.join(
-                                workingdir,
-                                file
-                            ),
-                                gpg,
-                                keyid=keyid,
-                                passphrase=passphrase)
-                        except Exception as e:
+                            gpgfile(os.path.join(workingdir,file), gpg, keyid=keyid, passphrase=passphrase)
+                        except Exception as exc:
                             print("SOMETHING WENT WRONG")
-                            print(str(e))
+                            print(str(exc))
                             raise SystemExit
 
 

@@ -127,6 +127,10 @@ class SpinManager(object):
             time.sleep(0.5)
             line_begin()
             self.spinner.next()
+        else:
+            line_begin()
+            spinner_clear()
+            line_begin()
     
     def stop(self):
         self.scanning = False
