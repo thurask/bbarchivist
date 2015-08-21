@@ -94,7 +94,7 @@ def valid_method(method):
     :param method: Compression method to check.
     :type method: str
     """
-    methodlist = bbconstants.ARCS
+    methodlist = bbconstants.METHODS
     if version_info[1] <= 2:
         methodlist = methodlist[:-1]  # strip last
     if method not in methodlist:
