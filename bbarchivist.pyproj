@@ -25,10 +25,21 @@
   <ItemGroup>
     <Content Include=".gitattributes" />
     <Content Include=".gitignore" />
+    <Content Include=".project" />
+    <Content Include=".pydevproject" />
     <Content Include=".travis.yml" />
     <Content Include="bbarchivist\bbconstants.json" />
     <Content Include="bbarchivist\cap-3.11.0.22.dat" />
     <Content Include="docgen.bat" />
+    <Content Include="docs\bbarchivist.rst" />
+    <Content Include="docs\bbarchivist.scripts.rst" />
+    <Content Include="docs\bbarchivist.tests.rst" />
+    <Content Include="docs\html.bat" />
+    <Content Include="docs\index.rst" />
+    <Content Include="docs\make.bat" />
+    <Content Include="docs\Makefile" />
+    <Content Include="docs\modules.rst" />
+    <Content Include="docs\readme.rst" />
     <Content Include="exebuilder.bat" />
     <Content Include="install.bat" />
     <Content Include="MANIFEST.in" />
