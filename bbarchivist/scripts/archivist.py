@@ -433,7 +433,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     # Test bar files
     if integrity:
         brokenlist = []
-        print("\nTESTING...")
+        print("\nTESTING BAR FILES...")
         for file in os.listdir(localdir):
             if file.endswith(".bar"):
                 print("TESTING:", file)
@@ -462,7 +462,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
                         print(file, "STILL BROKEN")
                         raise SystemExit
         else:
-            print("\nALL FILES DOWNLOADED OK")
+            print("ALL FILES DOWNLOADED OK")
 
     # Extract bar files
     if extract:
@@ -471,16 +471,17 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
 
     # Test signed files
     if integrity:
-        print("\nTESTING...")
+        print("\nTESTING SIGNED FILES...")
         for file in os.listdir(localdir):
             if file.endswith(".bar"):
+                networkutils.line_begin()
                 print("TESTING:", file)
                 signname, signhash = barutils.retrieve_sha512(file)
                 sha512ver = barutils.verify_sha512(signname, signhash)
                 if not sha512ver:
                     print("{0} IS BROKEN".format((file)))
                     raise SystemExit
-        print("\nALL FILES EXTRACTED OK")
+        print("ALL FILES EXTRACTED OK")
 
     # Move bar files
     print("\nMOVING .bar FILES...")

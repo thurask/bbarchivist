@@ -78,7 +78,7 @@ def generate_loaders(
     except IndexError:
         try:
             os_ti = glob.glob(os.path.join(localdir,
-                                           "*os.factory_sfi.*.signed")[0])
+                                           "*os.factory_sfi.*.signed"))[0]
         except IndexError:
             os_ti = None
             print("No OMAP image found")

@@ -682,6 +682,7 @@ def verifier_config_loader():
     resultdict['blocksize'] = int(hashini.getint('blocksize', fallback=16777216))
     return resultdict
 
+
 def verifier_config_writer(resultdict=None):
     """
     Write a ConfigParser file to store hash preferences.

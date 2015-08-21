@@ -328,5 +328,5 @@ def make_autoloader(filename, firstfile, secondfile="", thirdfile="",
                 return
     except IOError as exc:
         print("Operation failed:", exc.strerror)
-    print(filename, "FINISHED!\n")
+    print(filename, "FINISHED!")
     os.remove(os.path.join(folder, "offset.hex"))

@@ -31,6 +31,7 @@ def extract_bars(filepath):
     for file in os.listdir(filepath):
         if file.endswith(".bar"):
             try:
+                print("EXTRACTING:", file)
                 zfile = zipfile.ZipFile(file, 'r')
                 names = zfile.namelist()
                 for name in names:
@@ -170,6 +171,7 @@ def sz_verify(filepath, szexe=None):
     :param szexe: Path to 7z executable.
     :type szexe: str
     """
+    filepath = os.path.abspath(filepath)
     excode = subprocess.call(
         szexe +
         " t '" +
