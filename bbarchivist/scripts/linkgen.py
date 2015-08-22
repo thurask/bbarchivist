@@ -28,26 +28,26 @@ def grab_args():
             version="%(prog)s " +
             bbconstants.VERSION)
         parser.add_argument(
-                            "os",
-                            help="OS version, 10.x.y.zzzz")
+            "os",
+            help="OS version, 10.x.y.zzzz")
         parser.add_argument(
-                            "radio",
-                            help="Radio version, 10.x.y.zzzz",
-                            nargs="?",
-                            default=None)
+            "radio",
+            help="Radio version, 10.x.y.zzzz",
+            nargs="?",
+            default=None)
         parser.add_argument(
-                            "swrelease",
-                            help="Software version, 10.x.y.zzzz",
-                            nargs="?",
-                            default=None)
+            "swrelease",
+            help="Software version, 10.x.y.zzzz",
+            nargs="?",
+            default=None)
         parser.add_argument(
-                            "-r",
-                            "--radiosw",
-                            dest="altsw",
-                            metavar="SW",
-                            help="Radio software version, if not same as OS",
-                            nargs="?",
-                            default=None)
+            "-r",
+            "--radiosw",
+            dest="altsw",
+            metavar="SW",
+            help="Radio software version, if not same as OS",
+            nargs="?",
+            default=None)
         parser.set_defaults()
         args = parser.parse_args(sys.argv[1:])
         linkgen_main(
@@ -112,16 +112,17 @@ def linkgen_main(osversion, radioversion=None,
     baseurl = networkutils.create_base_url(softwareversion)
 
     # List of debrick urls
-    osurls, coreurls, radiourls = textgenerator.url_generator(osversion, radioversion, softwareversion) #@IgnorePep8
+    oses, cores, radios = textgenerator.url_generator(osversion, radioversion, softwareversion)
 
     if altsw:
-        x, y, radiourls = textgenerator.url_generator(osversion, radioversion, altsw)
-        del x
-        del y
+        del radios
+        dbks, cors, radios = textgenerator.url_generator(osversion, radioversion, altsw)
+        del dbks
+        del cors
 
     avlty = networkutils.availability(baseurl)
     textgenerator.write_links(softwareversion, osversion, radioversion,
-                              osurls, coreurls, radiourls,
+                              oses, cores, radios,
                               avlty, False, None)
 
 if __name__ == "__main__":

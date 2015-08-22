@@ -1,4 +1,4 @@
-import os
+﻿import os
 import csv
 from shutil import rmtree
 import sqlite3
@@ -30,20 +30,24 @@ def teardown_module(module):
 class TestClassSQLUtils:
 
     def test_prepare_sw_db(self):
-        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.path.abspath(os.getcwd()))): #@IgnorePep8
+        abs = os.path.abspath(os.getcwd())
+        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=abs)):
             bs.prepare_sw_db()
         sqlpath = os.path.join(os.path.abspath(os.getcwd()), "bbarchivist.db")
         assert file_exists(sqlpath)
 
     def test_insert_sw_release(self):
-        sqlpath = os.path.join(os.path.abspath(os.getcwd()), "bbarchivist.db")
-        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.path.abspath(os.getcwd()))): #@IgnorePep8
+        abs = os.path.abspath(os.getcwd())
+        sqlpath = os.path.join(abs, "bbarchivist.db")
+        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=abs)):
             try:
                 cnxn = sqlite3.connect(sqlpath)
                 with cnxn:
                     crsr = cnxn.cursor()
                     crsr.execute("DROP TABLE Swrelease")
-                    table = "Swrelease(Id INTEGER PRIMARY KEY, Os TEXT NOT NULL UNIQUE COLLATE NOCASE, Software TEXT NOT NULL UNIQUE COLLATE NOCASE)" #@IgnorePep8
+                    reqs = "TEXT NOT NULL UNIQUE COLLATE NOCASE"
+                    prim = "INTEGER PRIMARY KEY"
+                    table = "Swrelease(Id " + prim + ", Os " + reqs + ", Software " + reqs + ")"
                     crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
             except sqlite3.Error:
                 assert False
@@ -62,17 +66,17 @@ class TestClassSQLUtils:
         if os.getenv("TRAVIS", "false") == "true":
             pass
         else:
-            sqlpath = os.path.join(os.path.abspath(os.getcwd()), "bbarchivist.db") #@IgnorePep8
-            csvpath = os.path.join(os.path.abspath(os.getcwd()), "swrelease.csv") #@IgnorePep8
-            with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.path.abspath(os.getcwd()))): #@IgnorePep8
+            sqlpath = os.path.join(os.path.abspath(os.getcwd()), "bbarchivist.db")
+            csvpath = os.path.join(os.path.abspath(os.getcwd()), "swrelease.csv")
+            with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.path.abspath(os.getcwd()))):
                 try:
                     cnxn = sqlite3.connect(sqlpath)
                     with cnxn:
                         crsr = cnxn.cursor()
                         crsr.execute("DROP TABLE Swrelease")
-                        table = "Swrelease(Id INTEGER PRIMARY KEY, Os TEXT NOT NULL UNIQUE COLLATE NOCASE, Software TEXT NOT NULL UNIQUE COLLATE NOCASE)" #@IgnorePep8
+                        table = "Swrelease(Id INTEGER PRIMARY KEY, Os TEXT NOT NULL UNIQUE COLLATE NOCASE, Software TEXT NOT NULL UNIQUE COLLATE NOCASE)"
                         crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
-                        crsr.execute("INSERT INTO Swrelease(Os, Software) VALUES (?,?)", #@IgnorePep8
+                        crsr.execute("INSERT INTO Swrelease(Os, Software) VALUES (?,?)",
                                      ("120.OSVERSION", "130.SWVERSION"))
                 except sqlite3.Error:
                     assert False

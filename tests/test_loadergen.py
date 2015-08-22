@@ -14,8 +14,8 @@ def setup_module(module):
 
 def teardown_module(module):
     for file in os.listdir():
-            if file.endswith(".signed"):
-                os.remove(file)
+        if file.endswith(".signed"):
+            os.remove(file)
     if os.path.exists("cap-3.11.0.22.dat"):
         os.remove("cap-3.11.0.22.dat")
     os.chdir("..")
@@ -37,14 +37,14 @@ class TestClassLoadergen:
         thehash = shahash.hexdigest()
         os.remove("desktop.signed")
         os.remove("radio.signed")
-        assert thehash == '71edeced963cd8cf1a7b99c8be9dc93df670471a02eef5da5e40ad4822be1e321c8e1495369dc685b943ac07287bb4b8245636c7b28c861cfd9238e0d42288a2' #@IgnorePep8
+        assert thehash == '71edeced963cd8cf1a7b99c8be9dc93df670471a02eef5da5e40ad4822be1e321c8e1495369dc685b943ac07287bb4b8245636c7b28c861cfd9238e0d42288a2'
 
     def test_generate_loaders(self):
         with open("qc8960.factory_sfi.desktop.signed", "w") as targetfile:
             targetfile.write("Jackdaws love my big sphinx of quartz"*5000)
-        copyfile("qc8960.factory_sfi.desktop.signed", "qc8x30.factory_sfi.desktop.signed") #@IgnorePep8
-        copyfile("qc8960.factory_sfi.desktop.signed", "qc8974.factory_sfi.desktop.signed") #@IgnorePep8
-        copyfile("qc8960.factory_sfi.desktop.signed", "winchester.factory_sfi.desktop.signed") #@IgnorePep8
+        copyfile("qc8960.factory_sfi.desktop.signed", "qc8x30.factory_sfi.desktop.signed")
+        copyfile("qc8960.factory_sfi.desktop.signed", "qc8974.factory_sfi.desktop.signed")
+        copyfile("qc8960.factory_sfi.desktop.signed", "winchester.factory_sfi.desktop.signed")
         with open("radio.m5730.signed", "w") as targetfile:
             targetfile.write("Why must I chase the cat?"*5000)
         copyfile("radio.m5730.signed", "radio.qc8960.BB.signed")
@@ -63,5 +63,5 @@ class TestClassLoadergen:
                         if not data:
                             break
                         shahash.update(data)
-                    assert shahash.hexdigest() in ("3143a5bdfffbab199fe071d720b374d8678e5a2baafaeaf375f747c578a314cdf10059ccfac51fbe992d6d473106c2ba18bb8a80026269b046c3e299c33adaf3",#@IgnorePep8
-                                                   "71edeced963cd8cf1a7b99c8be9dc93df670471a02eef5da5e40ad4822be1e321c8e1495369dc685b943ac07287bb4b8245636c7b28c861cfd9238e0d42288a2") #@IgnorePep8
+                    assert shahash.hexdigest() in ("3143a5bdfffbab199fe071d720b374d8678e5a2baafaeaf375f747c578a314cdf10059ccfac51fbe992d6d473106c2ba18bb8a80026269b046c3e299c33adaf3",
+                                                   "71edeced963cd8cf1a7b99c8be9dc93df670471a02eef5da5e40ad4822be1e321c8e1495369dc685b943ac07287bb4b8245636c7b28c861cfd9238e0d42288a2")

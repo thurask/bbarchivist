@@ -9,7 +9,6 @@ __copyright__ = "2015 Thurask"
 import os  # path work
 import argparse  # argument parser for filters
 import platform  # platform info
-import shutil  # "which" command
 import glob  # cap grabbing
 import configparser  # config parsing, duh
 from bbarchivist import bbconstants  # cap location, version
@@ -25,7 +24,8 @@ def enum_cpus():
     except ImportError:
         from multiprocessing import cpu_count #@UnusedImport
     finally:
-        return cpu_count()
+        cpus = cpu_count()
+    return cpus
 
 
 def where_which(path):
@@ -37,7 +37,8 @@ def where_which(path):
     except ImportError:
         from shutilwhich import which  #@UnusedImport
     finally:
-        return which(path)
+        thepath = which(path)
+    return thepath
 
 
 def grab_cap():
@@ -45,10 +46,9 @@ def grab_cap():
     Figure out where cap is, local, specified or system-supplied.
     """
     try:
-        capfile = glob.glob(
-                    os.path.join(
-                        os.getcwd(),
-                        os.path.basename(bbconstants.CAPLOCATION)))[0]
+        caplo = bbconstants.CAPLOCATION
+        here = os.getcwd()
+        capfile = glob.glob(os.path.join(here, os.path.basename(caplo)))[0]
     except IndexError:
         try:
             cappath = cappath_config_loader()
@@ -102,7 +102,7 @@ def positive_integer(input_int):
     """
     if int(input_int) <= 0:
         raise argparse.ArgumentError(argument=None,
-                                     message="{0} is not >=0.".format(str(input_int))) #@IgnorePep8
+                                     message="{0} is not >=0.".format(str(input_int)))
     return int(input_int)
 
 
@@ -117,8 +117,7 @@ def valid_method(method):
     if version_info[1] <= 2:
         methodlist = methodlist[:-1]  # strip last
     if method not in methodlist:
-        raise argparse.ArgumentError(argument=None,
-                                     message="{0} is an invalid method.".format(method)) #@IgnorePep8
+        raise argparse.ArgumentError(argument=None, message="Invalid method {0}.".format(method))
     return method
 
 
@@ -130,12 +129,11 @@ def valid_carrier(mcc_mnc):
     :type mcc_mnc: str
     """
     if not str(mcc_mnc).isdecimal():
-        raise argparse.ArgumentError(argument=None, message="{0} is not an integer.".format(str(mcc_mnc))) #@IgnorePep8
+        raise argparse.ArgumentError(argument=None, message="Non-integer {0}.".format(str(mcc_mnc)))
+    if len(str(mcc_mnc)) > 3 or len(str(mcc_mnc)) == 0:
+        raise argparse.ArgumentError(argument=None, message="{0} is invalid.".format(str(mcc_mnc)))
     else:
-        if len(str(mcc_mnc)) > 3 or len(str(mcc_mnc)) == 0:
-            raise argparse.ArgumentError(argument=None, message="{0} is an invalid code.".format(str(mcc_mnc))) #@IgnorePep8
-        else:
-            return mcc_mnc
+        return mcc_mnc
 
 
 def escreens_pin(pin):
@@ -228,7 +226,7 @@ def win_seven_zip(talkative=False):
         import winreg  # windows registry
         hk7z = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\\7-Zip")
         path = winreg.QueryValueEx(hk7z, "Path")
-    except Exception as exc:
+    except OSError as exc:
         if talkative:
             print("SOMETHING WENT WRONG")
             print(str(exc))

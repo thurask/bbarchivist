@@ -1,4 +1,4 @@
-from cx_Freeze import setup, Executable
+﻿from cx_Freeze import setup, Executable
 from os import chdir
 from os.path import join, abspath, dirname
 from requests import certs
@@ -14,25 +14,25 @@ buildOptions = dict(packages=["requests",
                               "bs4"],
                     includes=[],
                     include_files=[
-                   (certs.where(), 'cacert.pem'),
-                   (CAPLOCATION, "cap-" + CAPVERSION + ".dat")
-                   ],
-    excludes=["rsa",
-              "pywin32",
-              "pytz",
-              "Pillow",
-              "ecdsa",
-              "amqp",
-              "pydoc",
-              "pyasn1",
-              "distutils",
-              "PyQt5",
-              "numpy",
-              "matplotlib",
-              "PIL"],
-    include_msvcr=[True],
-    build_exe="lazyloader",
-    zip_includes=[])
+                        (certs.where(), 'cacert.pem'),
+                        (CAPLOCATION, "cap-" + CAPVERSION + ".dat")
+                        ],
+                    excludes=["rsa",
+                              "pywin32",
+                              "pytz",
+                              "Pillow",
+                              "ecdsa",
+                              "amqp",
+                              "pydoc",
+                              "pyasn1",
+                              "distutils",
+                              "PyQt5",
+                              "numpy",
+                              "matplotlib",
+                              "PIL"],
+                    include_msvcr=[True],
+                    build_exe="lazyloader",
+                    zip_includes=[])
 
 base = 'Console'
 

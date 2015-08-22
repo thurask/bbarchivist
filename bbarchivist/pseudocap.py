@@ -75,7 +75,9 @@ def make_offset(firstfile, secondfile="", thirdfile="",
         if i:
             filecount += 1
     # immutable things
-    separator = binascii.unhexlify(bytes("6ADF5D144E4B4C474E4F48474749530B170A0D1E0C14532D3E253A2D3D333E3B3A522F3C534E464D514E4947514E514E4F7070709CD5C5979CD5C5979CD5C597", 'ascii'))  # @IgnorePep8
+    scaff = "6ADF5D144E4B4C474E4F48474749530B170A0D1E0C14532D3E253A2D"
+    scaff += "3D333E3B3A522F3C534E464D514E4947514E514E4F7070709CD5C5979CD5C5979CD5C597"
+    separator = binascii.unhexlify(bytes(scaff, 'ascii'))  # @IgnorePep8
     password = binascii.unhexlify(bytes("0" * 160, 'ascii'))
     singlepad = binascii.unhexlify(bytes("0" * 2, 'ascii'))
     doublepad = binascii.unhexlify(bytes("0" * 4, 'ascii'))

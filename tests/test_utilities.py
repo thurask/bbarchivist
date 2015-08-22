@@ -7,7 +7,6 @@ except ImportError:
     import mock
 from shutil import rmtree, copyfile
 from argparse import ArgumentError
-from sys import version_info
 from platform import system
 
 
@@ -83,14 +82,6 @@ class TestClassUtilities:
             for dur in (2, 4, 7, 16, 31):
                 bu.escreens_duration(dur)
                 assert "duration" in str(argexc.value)
-    
-    def test_valid_method_good(self):
-        assert bu.valid_method("tgz") == "tgz"
-
-    def test_valid_method_bad(self):
-        with pytest.raises(ArgumentError) as argexc:
-            bu.valid_method("kgb")
-            assert "invalid method" in str(argexc.value)
 
     def test_str2bool_good(self):
         assert bu.str2bool("YES") == True
@@ -99,39 +90,39 @@ class TestClassUtilities:
         assert bu.str2bool("BANANA") == False
 
     def test_is_amd64_good(self):
-        with mock.patch('platform.machine', mock.MagicMock(return_value="AMD64")): #@IgnorePep8
+        with mock.patch('platform.machine', mock.MagicMock(return_value="AMD64")):
             assert bu.is_amd64()
 
     def test_is_amd64_bad(self):
-        with mock.patch('platform.machine', mock.MagicMock(return_value="AMD69")): #@IgnorePep8
+        with mock.patch('platform.machine', mock.MagicMock(return_value="AMD69")):
             assert not bu.is_amd64()
 
     def test_is_windows_good(self):
-        with mock.patch('platform.system', mock.MagicMock(return_value="Windows")): #@IgnorePep8
+        with mock.patch('platform.system', mock.MagicMock(return_value="Windows")):
             assert bu.is_windows()
 
     def test_is_windows_bad(self):
-        with mock.patch('platform.system', mock.MagicMock(return_value="Wandows")): #@IgnorePep8
+        with mock.patch('platform.system', mock.MagicMock(return_value="Wandows")):
             assert not bu.is_windows()
 
     def test_get_seven_zip(self):
-        with mock.patch('platform.system', mock.MagicMock(return_value="Wandows")): #@IgnorePep8
+        with mock.patch('platform.system', mock.MagicMock(return_value="Wandows")):
             assert bu.get_seven_zip() == "7za"
 
     def test_win_seven_zip_local_32(self):
         if system != "Windows":
             pass
         else:
-            with mock.patch('winreg.OpenKey', mock.MagicMock(return_value=OSError)): #@IgnorePep8
-                with mock.patch('platform.machine', mock.MagicMock(return_value="AMD69")): #@IgnorePep8
+            with mock.patch('winreg.OpenKey', mock.MagicMock(return_value=OSError)):
+                with mock.patch('platform.machine', mock.MagicMock(return_value="AMD69")):
                     assert bu.win_seven_zip() == "7za.exe"
 
     def test_win_seven_zip_local_6432(self):
         if system != "Windows":
             pass
         else:
-            with mock.patch('winreg.OpenKey', mock.MagicMock(return_value=OSError)): #@IgnorePep8
-                with mock.patch('platform.machine', mock.MagicMock(return_value="AMD64")): #@IgnorePep8
+            with mock.patch('winreg.OpenKey', mock.MagicMock(return_value=OSError)):
+                with mock.patch('platform.machine', mock.MagicMock(return_value="AMD64")):
                     if not os.path.exists("7za.exe"):
                         copyfile("cap-3.11.0.22.dat", "7za.exe")
                     if os.path.exists("7za64.exe"):
@@ -144,8 +135,8 @@ class TestClassUtilities:
         if system != "Windows":
             pass
         else:
-            with mock.patch('winreg.OpenKey', mock.MagicMock(return_value=OSError)): #@IgnorePep8
-                with mock.patch('platform.machine', mock.MagicMock(return_value="AMD64")): #@IgnorePep8
+            with mock.patch('winreg.OpenKey', mock.MagicMock(return_value=OSError)):
+                with mock.patch('platform.machine', mock.MagicMock(return_value="AMD64")):
                     if not os.path.exists("7za64.exe"):
                         copyfile("cap-3.11.0.22.dat", "7za64.exe")
                     assert bu.win_seven_zip() == "7za64.exe"
@@ -156,7 +147,7 @@ class TestClassUtilities:
         if system != "Windows":
             pass
         else:
-            with mock.patch('winreg.QueryValueEx', mock.MagicMock(return_value="C:\\Program Files\\7-Zip\\")): #@IgnorePep8
+            with mock.patch('winreg.QueryValueEx', mock.MagicMock(return_value="C:\\Program Files\\7-Zip\\")):
                 assert bu.win_seven_zip() == "C:\\Program Files\\7-Zip\\7z.exe"
 
     def test_get_core_count(self):
@@ -164,13 +155,13 @@ class TestClassUtilities:
             assert bu.get_core_count() == "123"
 
     def test_prep_seven_zip_good(self):
-        with mock.patch('platform.system', mock.MagicMock(return_value="Wandows")): #@IgnorePep8
-            with mock.patch("bbarchivist.utilities.where_which", mock.MagicMock(return_value="/usr/bin/7za")): #@IgnorePep8
+        with mock.patch('platform.system', mock.MagicMock(return_value="Wandows")):
+            with mock.patch("bbarchivist.utilities.where_which", mock.MagicMock(return_value="/usr/bin/7za")):
                 assert bu.prep_seven_zip() == True
 
     def test_prep_seven_zip_bad(self):
-        with mock.patch('platform.system', mock.MagicMock(return_value="Wandows")): #@IgnorePep8
-            with mock.patch("bbarchivist.utilities.where_which", mock.MagicMock(return_value=None)): #@IgnorePep8
+        with mock.patch('platform.system', mock.MagicMock(return_value="Wandows")):
+            with mock.patch("bbarchivist.utilities.where_which", mock.MagicMock(return_value=None)):
                 assert bu.prep_seven_zip() == False
 
     def test_version_incrementer_good(self):

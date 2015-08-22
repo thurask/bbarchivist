@@ -226,7 +226,8 @@ def carrierchecker_main(mcc, mnc, device,
         for bundle in releases:
             print(bundle)
     else:
-        swv, osv, radv, files = networkutils.carrier_update_request(mcc, mnc,
+        npc = networkutils.return_npc(mcc, mnc)
+        swv, osv, radv, files = networkutils.carrier_update_request(npc,
                                                                     hwid,
                                                                     upgrade,
                                                                     blitz,
@@ -238,11 +239,12 @@ def carrierchecker_main(mcc, mnc, device,
             print("\nEXPORTING...")
             if files:
                 if not upgrade:
-                    newfiles = networkutils.carrier_update_request(mcc, mnc, hwid, True, False, forced) #@IgnorePep8
+                    npc = networkutils.return_npc(mcc, mnc)
+                    newfiles = networkutils.carrier_update_request(npc, hwid, True, False, forced)
                     newfiles = newfiles[3]
                 else:
                     newfiles = files
-                osurls, coreurls, radiourls = textgenerator.url_generator(osv, radv, swv) #@IgnorePep8
+                osurls, coreurls, radiourls = textgenerator.url_generator(osv, radv, swv)
                 finalfiles = []
                 stoppers = ["8960", "8930", "8974", "m5730", "winchester"]
                 for link in newfiles:
@@ -327,7 +329,7 @@ def carrierchecker_main(mcc, mnc, device,
                 barutils.create_blitz(bardir, swv)
                 print("\nTESTING BLITZ...")
                 zipver = barutils.zip_verify("Blitz-" + swv + '.zip')
-                if not zv:
+                if not zipver:
                     print("BLITZ FILE IS BROKEN")
                     raise SystemExit
                 else:

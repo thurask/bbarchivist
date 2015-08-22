@@ -15,6 +15,12 @@ from bbarchivist import pseudocap  # implement cap
 
 
 def read_files(localdir):
+    """
+    Read list of signed files, return name assignments.
+
+    :param localdir: Directory to use.
+    :type localdir: str
+    """
     oslist = read_os_files(localdir)
     radlist = read_radio_files(localdir)
     pairdict = {}
@@ -29,9 +35,15 @@ def read_files(localdir):
         else:
             pairdict[rad] = oslist[0]
     return pairdict
-        
+
 
 def read_os_files(localdir):
+    """
+    Read list of OS signed files, return name assignments.
+
+    :param localdir: Directory to use.
+    :type localdir: str
+    """
     # 8960
     try:
         os_8960 = glob.glob(
@@ -78,6 +90,12 @@ def read_os_files(localdir):
 
 
 def read_radio_files(localdir):
+    """
+    Read list of radio signed files, return name assignments.
+
+    :param localdir: Directory to use.
+    :type localdir: str
+    """
     # STL100-1
     try:
         radio_ti = glob.glob(
@@ -133,6 +151,15 @@ def read_radio_files(localdir):
 
 
 def pretty_formatter(osversion, radioversion):
+    """
+    Format OS/radio versions to cope with systems with poor sorting.
+
+    :param osversion: OS version, 10.x.y.zzzz.
+    :type osversion: str
+
+    :param radioversion: Radio version, 10.x.y.zzzz.
+    :type radioversion: str
+    """
     # 10.x.y.zzz becomes 10.x.0y.0zzz
     splitos = osversion.split(".")
     if len(splitos[2]) == 1:
@@ -150,6 +177,15 @@ def pretty_formatter(osversion, radioversion):
 
 
 def format_suffix(altradio=None, radioversion=None):
+    """
+    Formulate suffix for hybrid autoloaders.
+
+    :param altradio: If a hybrid autoloader is being made.
+    :type altradio: bool
+
+    :param radioversion: The hybrid radio version, if applicable.
+    :type radioversion: str
+    """
     if altradio and radioversion:
         suffix = "_R"+radioversion
     else:
@@ -199,6 +235,21 @@ def generate_loaders(
 
 
 def wrap_pseudocap(filename, folder, first, second=None):
+    """
+    A filtered, excepting wrapper for pseudocap.
+
+    :param filename: The title of the new loader.
+    :type filename: str
+
+    :param folder: The folder to create the loader in.
+    :type folder: str
+
+    :param first: The first signed file, required.
+    :type first: str
+
+    :param second: The second signed file, optional.
+    :type second: str
+    """
     if first is None:
         raise SystemError
     if second is None:

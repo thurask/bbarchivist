@@ -108,20 +108,20 @@ def grab_args():
             version="%(prog)s " +
             bbconstants.VERSION)
         parser.add_argument(
-                            "os",
-                            help="OS version, 10.x.y.zzzz",
-                            nargs="?",
-                            default=None)
+            "os",
+            help="OS version, 10.x.y.zzzz",
+            nargs="?",
+            default=None)
         parser.add_argument(
-                            "radio",
-                            help="Radio version, 10.x.y.zzzz",
-                            nargs="?",
-                            default=None)
+            "radio",
+            help="Radio version, 10.x.y.zzzz",
+            nargs="?",
+            default=None)
         parser.add_argument(
-                            "swrelease",
-                            help="Software version, 10.x.y.zzzz",
-                            nargs="?",
-                            default=None)
+            "swrelease",
+            help="Software version, 10.x.y.zzzz",
+            nargs="?",
+            default=None)
         devgroup = parser.add_argument_group(
             "devices",
             "Device to load (one required)")
@@ -212,10 +212,10 @@ def grab_args():
             nargs="?",
             default=None)
         if getattr(sys, 'frozen', False):
-            mu = True
+            frozen = True
         else:
-            mu = False
-        parser.set_defaults(device=None, gui=mu)
+            frozen = False
+        parser.set_defaults(device=None, gui=frozen)
         args = parser.parse_args(sys.argv[1:])
         if args.folder is None:
             args.folder = os.getcwd()
@@ -269,11 +269,7 @@ def grab_args():
                          "5=Z3",
                          "6=PASSPORT"]
             try:
-                device = int(input(
-                                   "SELECTED DEVICE (" +
-                                   "; ".join(inputlist) +
-                                   "): ")
-                             )
+                device = int(input("SELECTED DEVICE (" +"; ".join(inputlist) +"): "))
             except ValueError:
                 continue
             else:

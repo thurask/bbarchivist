@@ -84,7 +84,7 @@ def write_links(softwareversion, osversion, radioversion,
 
 def url_generator(osversion, radioversion, softwareversion):
     """
-    Return all debrick, core radio URLs from given OS, radio software.
+    Return all debrick, core and radio URLs from given OS, radio software.
 
     :param softwareversion: Software release version.
     :type softwareversion: str
@@ -96,18 +96,20 @@ def url_generator(osversion, radioversion, softwareversion):
     :type radioversion: str
     """
     baseurl = create_base_url(softwareversion)
-    radlist = ["STL100-1", "STL100-X/P9982", "STL100-4", "Q10/Q5/P9983", "Z30/LEAP/CLASSIC", "Z3", "PASSPORT"]
+    radlist = ["STL100-1", "STL100-X/P9982", "STL100-4", "Q10/Q5/P9983",
+               "Z30/LEAP/CLASSIC", "Z3", "PASSPORT"]
     oslist = ["STL100-1", "QC8960", "VERIZON QC8960", "Z3", "PASSPORT"]
-    osurls, radiourls, coreurls = generate_urls(baseurl, osversion, radioversion, True)
-    osurls.insert(2, baseurl + "/qc8960.verizon_sfi.desktop-" + osversion + "-nto+armle-v7+signed.bar")
-    coreurls.insert(2, baseurl + "/qc8960.verizon_sfi-" + osversion + "-nto+armle-v7+signed.bar")
+    oses, radios, cores = generate_urls(baseurl, osversion, radioversion, True)
+    oses.insert(2,
+                baseurl + "/qc8960.verizon_sfi.desktop-" + osversion + "-nto+armle-v7+signed.bar")
+    cores.insert(2, oses[2].replace(".desktop", ""))
     ospairs = {}
-    for title, url in zip(oslist, osurls):
+    for title, url in zip(oslist, oses):
         ospairs[title] = url
     corepairs = {}
-    for title, url in zip(oslist, coreurls):
+    for title, url in zip(oslist, cores):
         corepairs[title] = url
     radiopairs = {}
-    for title, url in zip(radlist, radiourls):
+    for title, url in zip(radlist, radios):
         radiopairs[title] = url
     return ospairs, corepairs, radiopairs

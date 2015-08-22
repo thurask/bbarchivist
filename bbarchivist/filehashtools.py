@@ -175,7 +175,7 @@ def md4hash(filepath, blocksize=16 * 1024 * 1024):
                     break
                 md4.update(data)
         return md4.hexdigest()
-    except Exception as exc:
+    except ValueError as exc:
         print(str(exc))
         print("MD4 HASH FAILED:\nIS IT AVAILABLE?")
 
@@ -219,7 +219,7 @@ def ripemd160hash(filepath, blocksize=16 * 1024 * 1024):
                     break
                 r160.update(data)
         return r160.hexdigest()
-    except Exception as exc:
+    except ValueError as exc:
         print(str(exc))
         print("RIPEMD160 HASH FAILED:\nIS IT AVAILABLE?")
 
@@ -243,7 +243,7 @@ def whirlpoolhash(filepath, blocksize=16 * 1024 * 1024):
                     break
                 wpool.update(data)
         return wpool.hexdigest()
-    except Exception as exc:
+    except ValueError as exc:
         print(str(exc))
         print("WHIRLPOOL HASH FAILED:\nIS IT AVAILABLE?")
 
@@ -295,7 +295,7 @@ def calculate_escreens(pin, app, uptime, duration=30):
         3: "Hello my baby, hello my honey, hello my rag time gal",
         7: "He was a boy, and she was a girl, can I make it any more obvious?",
         15: "So am I, still waiting, for this world to stop hating?",
-        30: "I love myself today, not like yesterday. I'm cool, I'm calm, I'm gonna be okay" # @IgnorePep8
+        30: "I love myself today, not like yesterday. I'm cool, I'm calm, I'm gonna be okay"
     }
     #: Escreens magic HMAC secret.
     secret = 'Up the time stream without a TARDIS'
@@ -572,17 +572,21 @@ def gpgrunner(workingdir, keyid=None, passphrase=None, selective=False):
     else:
         if not keyid.startswith("0x"):
             keyid = "0x" + keyid.upper()
-        for file in os.listdir(workingdir):
-            if not os.path.isdir(os.path.join(workingdir, file)):
-                if not file.endswith(bbconstants.SUPPS):
-                    if (file.endswith(bbconstants.ARCSPLUS) and file.startswith(bbconstants.PREFIXES)) if selective else True:
-                        print("VERIFYING:", str(file))
-                        try:
-                            gpgfile(os.path.join(workingdir, file), gpg, keyid=keyid, passphrase=passphrase)
-                        except Exception as exc:
-                            print("SOMETHING WENT WRONG")
-                            print(str(exc))
-                            raise SystemExit
+        files = (file for file in os.listdir(workingdir) if not os.path.isdir(file))
+        for file in files:
+            sup = bbconstants.SUPPS
+            if not file.endswith(sup):
+                aps = bbconstants.ARCSPLUS
+                pfx = bbconstants.PREFIXES
+                if (file.endswith(aps) and file.startswith(pfx)) if selective else True:
+                    print("VERIFYING:", str(file))
+                    thepath = os.path.join(workingdir, file)
+                    try:
+                        gpgfile(thepath, gpg, keyid=keyid, passphrase=passphrase)
+                    except Exception as exc:
+                        print("SOMETHING WENT WRONG")
+                        print(str(exc))
+                        raise SystemExit
 
 
 def gpg_config_loader():

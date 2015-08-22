@@ -17,7 +17,7 @@ def grab_args():
     """
     Parse arguments from argparse/questionnaire.
 
-    Invoke :func:`autolookup.autolookup_main` with those arguments.""" #@IgnorePep8
+    Invoke :func:`autolookup.autolookup_main` with those arguments."""
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(
             prog="bb-autolookup",
@@ -163,7 +163,8 @@ def autolookup_main(osversion, loop=False, log=False,
                 if avail:
                     available = "Available"
                     if autogen:
-                        linkgen.linkgen_main(osversion, utilities.version_incrementer(osversion, 1), prel) #@IgnorePep8
+                        rad = utilities.version_incrementer(osversion, 1)
+                        linkgen.linkgen_main(osversion, rad, prel)
                     if sql:
                         sqlutils.prepare_sw_db()
                         sqlutils.insert_sw_release(osversion, prel)
@@ -205,7 +206,7 @@ def autolookup_main(osversion, loop=False, log=False,
                 if int(osversion.split(".")[3]) > 9996:
                     raise KeyboardInterrupt
                 else:
-                    osversion = utilities.version_incrementer(osversion, inc) #@IgnorePep8
+                    osversion = utilities.version_incrementer(osversion, inc)
                     swrelease = ""
                     continue
     except KeyboardInterrupt:

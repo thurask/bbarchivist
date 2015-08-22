@@ -23,7 +23,8 @@ def prepare_sw_db():
         with cnxn:
             crsr = cnxn.cursor()
             # Filter OS/software, including uniqueness, case-insensitivity, existence, etc.
-            table = "Swrelease(Id INTEGER PRIMARY KEY, Os TEXT NOT NULL UNIQUE COLLATE NOCASE, Software TEXT NOT NULL UNIQUE COLLATE NOCASE)" #@IgnorePep8
+            reqs = "TEXT NOT NULL UNIQUE COLLATE NOCASE"
+            table = "Swrelease(Id INTEGER PRIMARY KEY, Os " + reqs + ", Software " + reqs + ")"
             crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
     except sqlite3.Error as sqerror:
         print(str(sqerror))

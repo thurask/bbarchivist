@@ -210,6 +210,11 @@ SQLExport
 
 1. Convert ~\bbarchivist.db into ~\swrelease.csv, that's it
 
+Kompressor
+~~~~~~~~~~
+
+1. Compress all files in a directory
+
 Command Line Arguments
 ----------------------
 
@@ -505,6 +510,26 @@ Help
     
     http://github.com/thurask/bbarchivist
 
+----------------------------------------
+
+::
+
+	> bb-kompressor -h
+
+	usage: bb-kompressor [-h] [-v] [-m--method [METHOD]] [folder]
+
+	Compress all files in a directory.
+
+	positional arguments:
+	  folder               Working directory, default is local
+
+	optional arguments:
+	  -h, --help           show this help message and exit
+	  -v, --version        show program's version number and exit
+	  -m--method [METHOD]  Compression method
+
+	http://github.com/thurask/bbarchivist
+
 Example
 ~~~~~~~
 
@@ -588,6 +613,12 @@ in the current folder.
     > bb-sqlexport
 
 does one thing and one thing only. You're free to guess.
+
+ ::
+
+	> bb-kompressor -m zip
+
+would compress all files in the local directory to zip archives, since you specified zip.
 
 License
 -------

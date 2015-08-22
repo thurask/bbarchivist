@@ -27,10 +27,7 @@ def grab_pem():
     Work with either local cacerts or system cacerts. Since cx_freeze is dumb.
     """
     try:
-        pemfile = glob.glob(
-                    os.path.join(
-                        os.getcwd(),
-                        "cacert.pem"))[0]
+        pemfile = glob.glob(os.path.join(os.getcwd(), "cacert.pem"))[0]
     except IndexError:
         return requests.certs.where()  # no local cacerts
     else:
@@ -127,7 +124,7 @@ class SpinManager(object):
         """
         self.scanning = True
         self.thread.start()
-    
+
     def loop(self):
         """
         Spin if scanning, clean up if not.
@@ -251,18 +248,15 @@ def return_npc(mcc, mnc):
     return str(mcc).zfill(3) + str(mnc).zfill(3) + "30"
 
 
-def carrier_update_request(mcc, mnc, device,
+def carrier_update_request(npc, device,
                            upgrade=False,
                            blitz=False,
                            forced=None):
     """
     Query BlackBerry servers, check which update is out for a carrier.
 
-    :param mcc: Country code.
-    :type mcc: int
-
-    :param mnc: Network code.
-    :type mnc: int
+    :param npc: MCC + MNC (see `func:return_npc`)
+    :type npc: int
 
     :param device: Hexadecimal hardware ID.
     :type device: str
@@ -283,7 +277,6 @@ def carrier_update_request(mcc, mnc, device,
     if forced is None:
         forced = "latest"
     url = "https://cs.sl.blackberry.com/cse/updateDetails/2.2/"
-    npc = return_npc(mcc, mnc)
     query = '<?xml version="1.0" encoding="UTF-8"?>'
     query += '<updateDetailRequest version="2.2.1"'
     query += ' authEchoTS="1366644680359">'
@@ -294,7 +287,7 @@ def carrier_update_request(mcc, mnc, device,
     query += "<id>0x" + device + "</id>"
     query += "</hardware>"
     query += "<network>"
-    query += "<homeNPC>0x" + npc + "</homeNPC>"
+    query += "<homeNPC>0x" + str(npc) + "</homeNPC>"
     query += "<iccid>89014104255505565333</iccid>"
     query += "</network>"
     query += "<software>"
@@ -322,7 +315,20 @@ def carrier_update_request(mcc, mnc, device,
     header = {"Content-Type": "text/xml;charset=UTF-8"}
     os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
     req = requests.post(url, headers=header, data=query)
-    root = xml.etree.ElementTree.fromstring(req.text)
+    return parse_carrier_xml(req.text, blitz)
+
+
+def parse_carrier_xml(data, blitz=False):
+    """
+    Parse the response to a carrier update request and return the juicy bits.
+
+    :param data: The data to parse.
+    :type data: xml
+
+    :param blitz: Whether or not to create a blitz package. False by default.
+    :type blitz: bool
+    """
+    root = xml.etree.ElementTree.fromstring(data)
     sw_exists = root.find('./data/content/softwareReleaseMetadata')
     swver = ""
     if sw_exists is None:
@@ -418,7 +424,7 @@ def sr_lookup_bootstrap(osv):
                        "b1": None,
                        "b2": None}
             for key in results:
-                results[key] = xec.submit(software_release_lookup, osv, SERVERS[key]).result() #@IgnorePep8
+                results[key] = xec.submit(software_release_lookup, osv, SERVERS[key]).result()
             return results
         except KeyboardInterrupt:
             xec.shutdown(wait=False)
@@ -477,7 +483,7 @@ def ptcrb_scraper(ptcrbid):
     :param ptcrbid: Numerical ID from PTCRB (end of URL).
     :type ptcrbid: str
     """
-    baseurl = "https://ptcrb.com/vendor/complete/view_complete_request_guest.cfm?modelid=" #@IgnorePep8
+    baseurl = "https://ptcrb.com/vendor/complete/view_complete_request_guest.cfm?modelid="
     baseurl += ptcrbid
     os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
     req = requests.get(baseurl)

@@ -66,12 +66,11 @@ def retrieve_sha512(filename):
                 alist.append(manf[idx+1])
         assetname = alist[0].split(b": ")[1]
         assethash = alist[1].split(b": ")[1]
-        return (assetname, assethash)  # (b"blabla.signed", b"somehash")
+        return assetname, assethash  # (b"blabla.signed", b"somehash")
     except (RuntimeError, OSError, zipfile.BadZipFile) as exc:
         print("EXTRACTION FAILURE")
         print(str(exc))
         print("DID IT DOWNLOAD PROPERLY?")
-        return
 
 
 def verify_sha512(filename, inithash):

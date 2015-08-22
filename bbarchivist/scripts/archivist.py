@@ -35,18 +35,18 @@ def grab_args():
             version="%(prog)s " +
             bbconstants.VERSION)
         parser.add_argument(
-                            "os",
-                            help="OS version, 10.x.y.zzzz")
+            "os",
+            help="OS version, 10.x.y.zzzz")
         parser.add_argument(
-                            "radio",
-                            help="Radio version, 10.x.y.zzzz",
-                            nargs="?",
-                            default=None)
+            "radio",
+            help="Radio version, 10.x.y.zzzz",
+            nargs="?",
+            default=None)
         parser.add_argument(
-                            "swrelease",
-                            help="Software version, 10.x.y.zzzz",
-                            nargs="?",
-                            default=None)
+            "swrelease",
+            help="Software version, 10.x.y.zzzz",
+            nargs="?",
+            default=None)
         parser.add_argument(
             "-f",
             "--folder",
@@ -171,7 +171,7 @@ def grab_args():
         loaders = True
         signed = True
         gpg = False
-        integrity= True
+        integrity = True
         altsw = None
         print(" ")
         archivist_main(osversion, radioversion, softwareversion,
@@ -186,8 +186,8 @@ def grab_args():
 
 def archivist_main(osversion, radioversion=None, softwareversion=None,
                    localdir=None, radios=True, compressed=True, deleted=True,
-                   hashed=True, hashdict=None, download=True, 
-                   extract=True, loaders=True, signed=True, 
+                   hashed=True, hashdict=None, download=True,
+                   extract=True, loaders=True, signed=True,
                    compmethod="7z", gpg=False,
                    integrity=True, altsw=None):
     """
@@ -298,7 +298,8 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     baseurl = networkutils.create_base_url(softwareversion)
     if altsw:
         alturl = networkutils.create_base_url(altsw)
-    osurls, radiourls = utilities.generate_urls(baseurl, osversion, radioversion)
+    osurls, radiourls, cors = utilities.generate_urls(baseurl, osversion, radioversion)
+    del cors
     if not networkutils.availability(osurls[1]):
         osurls[1] = osurls[1].replace("qc8960.factory_sfi", "qc8960.verizon_sfi")  # fallback
     osurls = list(set(osurls))  # pop duplicates
@@ -360,7 +361,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
                 raise SystemExit
 
     # Make dirs
-    bardir_os, bardir_radio, loaderdir_os, loaderdir_radio, zipdir_os, zipdir_radio = barutils.make_dirs(localdir, osversion, radioversion)
+    bd_o, bd_r, ld_o, ld_r, zd_o, zd_r = barutils.make_dirs(localdir, osversion, radioversion)
 
     # Download files
     if download:
@@ -422,7 +423,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
 
     # Move bar files
     print("\nMOVING BAR FILES...")
-    barutils.move_bars(localdir, bardir_os, bardir_radio)
+    barutils.move_bars(localdir, bd_o, bd_r)
 
     # Create loaders
     if loaders:
@@ -459,27 +460,27 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     # Move zipped/unzipped loaders
     print("\nMOVING LOADERS...")
     barutils.move_loaders(localdir,
-                          loaderdir_os, loaderdir_radio,
-                          zipdir_os, zipdir_radio)
+                          ld_o, ld_r,
+                          zd_o, zd_r)
 
     # Get hashes (if specified)
     if hashed:
         print("\nHASHING LOADERS...")
         if compressed:
             filehashtools.verifier(
-                zipdir_os,
+                zd_o,
                 **hashdict)
             if radios:
                 filehashtools.verifier(
-                    zipdir_radio,
+                    zd_r,
                     **hashdict)
         if not deleted:
             filehashtools.verifier(
-                loaderdir_os,
+                ld_o,
                 **hashdict)
             if radios:
                 filehashtools.verifier(
-                    loaderdir_radio,
+                    ld_r,
                     **hashdict)
     if gpg:
         gpgkey, gpgpass = filehashtools.gpg_config_loader()
@@ -506,25 +507,25 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
             print("KEY:", gpgkey)
             if compressed:
                 filehashtools.gpgrunner(
-                    zipdir_os,
+                    zd_o,
                     gpgkey,
                     gpgpass,
                     True)
                 if radios:
                     filehashtools.gpgrunner(
-                        zipdir_radio,
+                        zd_r,
                         gpgkey,
                         gpgpass,
                         True)
             if not deleted:
                 filehashtools.gpgrunner(
-                    loaderdir_os,
+                    ld_o,
                     gpgkey,
                     gpgpass,
                     True)
                 if radios:
                     filehashtools.gpgrunner(
-                        loaderdir_radio,
+                        ld_r,
                         gpgkey,
                         gpgpass,
                         True)
@@ -533,9 +534,9 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     if deleted:
         print("\nDELETING UNCOMPRESSED LOADERS...")
         if radios:
-            shutil.rmtree(loaderdir_radio)
+            shutil.rmtree(ld_r)
         if loaders:
-            shutil.rmtree(loaderdir_os)
+            shutil.rmtree(ld_o)
 
     # Delete empty folders
     print("\nREMOVING EMPTY FOLDERS...")

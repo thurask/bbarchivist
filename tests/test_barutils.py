@@ -63,19 +63,14 @@ class TestClassBarutils:
         assert orighash == newhash
 
     def test_compress_sz(self):
-        try:
-            exists = prep_seven_zip()
-            if exists:
-                szexe = get_seven_zip(False)
-                bb.compress(os.getcwd(), "7z", szexe=szexe)
-                assert bb.sz_verify("Z10_BIGLOADER.7z", szexe) == True
-            else:
-                pass
-        except Exception:
-            assert False
-        finally:
-            if os.path.exists("Z10_BIGLOADER.7z"):
-                os.remove("Z10_BIGLOADER.7z")
+        exists = prep_seven_zip()
+        if exists:
+            szexe = get_seven_zip(False)
+            bb.compress(os.getcwd(), "7z", szexe=szexe)
+            result = bb.sz_verify("Z10_BIGLOADER.7z", szexe)
+        if os.path.exists("Z10_BIGLOADER.7z"):
+            os.remove("Z10_BIGLOADER.7z")
+        assert result
 
     def test_compress_zip(self):
         bb.compress(os.getcwd(), "zip")
@@ -122,17 +117,17 @@ class TestClassBarutils:
 
     def test_filter_method_good(self):
         assert bb.filter_method("tbz", None) == "tbz"
-    
+
     def test_filter_method_bad(self):
-        with mock.patch('bbarchivist.utilities.prep_seven_zip', mock.MagicMock(return_value=False)): #@IgnorePep8
+        with mock.patch('bbarchivist.utilities.prep_seven_zip', mock.MagicMock(return_value=False)):
             assert bb.filter_method("7z", None) == "zip"
 
     def test_calculate_strength_32(self):
-        with mock.patch('bbarchivist.utilities.is_amd64', mock.MagicMock(return_value=False)): #@IgnorePep8
+        with mock.patch('bbarchivist.utilities.is_amd64', mock.MagicMock(return_value=False)):
             assert bb.calculate_strength() == 5
 
     def test_calculate_strength_64(self):
-        with mock.patch('bbarchivist.utilities.is_amd64', mock.MagicMock(return_value=True)): #@IgnorePep8
+        with mock.patch('bbarchivist.utilities.is_amd64', mock.MagicMock(return_value=True)):
             assert bb.calculate_strength() == 9
 
 class TestClassBarutilsLoaderMover():
@@ -149,16 +144,16 @@ class TestClassBarutilsLoaderMover():
         os.mkdir("smallloaders")
         os.mkdir("bigzipped")
         os.mkdir("smallzipped")
-        bb.move_loaders(os.getcwd(), "bigloaders", "smallloaders", "bigzipped", "smallzipped") #@IgnorePep8
+        bb.move_loaders(os.getcwd(), "bigloaders", "smallloaders", "bigzipped", "smallzipped")
 
     def test_move_loaders_smallzip(self):
-        assert os.listdir("smallzipped")[0] == "Z3_SMALLZIPPED.zip"
+        assert "Z3_SMALLZIPPED.zip" in os.listdir("smallzipped")
 
     def test_move_loaders_bigzip(self):
-        assert os.listdir("bigzipped")[0] == "Q10_BIGZIPPED.zip"
+        assert "Q10_BIGZIPPED.zip" in os.listdir("bigzipped")
 
     def test_move_loaders_smallexe(self):
-        assert os.listdir("smallloaders")[0] == "Z30_SMALLLOADER.exe"
+        assert "Z30_SMALLLOADER.exe" in os.listdir("smallloaders")
 
     def test_move_loaders_bigexe(self):
-        assert os.listdir("bigloaders")[0] == "Z10_BIGLOADER.exe"
+        assert "Z10_BIGLOADER.exe" in os.listdir("bigloaders")

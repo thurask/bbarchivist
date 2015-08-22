@@ -51,7 +51,8 @@ def certchecker_main(device):
     data = data['devices']
     device = device.upper()
     for key in data:
-        if device in (key['hwid'], key['fccid'], key['ptcrbid']) or (device in key['name'] and 'secret' not in key): #@IgnorePep8
+        keylist = key['hwid'], key['fccid'], key['ptcrbid']
+        if device in (keylist) or (device in key['name'] and 'secret' not in key):
             if key['ptcrbid']:
                 device = key['device']
                 name = key['name']
