@@ -45,6 +45,8 @@ def get_content_length(url):
     :type url: str
     """
     os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
+    if url is None:
+        return 0
     try:
         heads = requests.head(url)
         fsize = heads.headers['content-length']

@@ -298,19 +298,9 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     baseurl = networkutils.create_base_url(softwareversion)
     if altsw:
         alturl = networkutils.create_base_url(altsw)
-    splitos = osversion.split(".")
-    splitos = [int(i) for i in splitos]
-
     osurls, radiourls = utilities.generate_urls(baseurl, osversion, radioversion)
-    # Handle URLs
-    if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):  # 10.3.1+
-        osurls[2] = osurls[2].replace("qc8960.factory_sfi",
-                                      "qc8960.factory_sfi_hybrid_qc8x30")
-        osurls[3] = osurls[3].replace("qc8974.factory_sfi",
-                                      "qc8960.factory_sfi_hybrid_qc8974")
     if not networkutils.availability(osurls[1]):
-        osurls[1] = osurls[1].replace("qc8960.factory_sfi",
-                                      "qc8960.verizon_sfi")  # verizon fallback
+        osurls[1] = osurls[1].replace("qc8960.factory_sfi", "qc8960.verizon_sfi")  # fallback
     osurls = list(set(osurls))  # pop duplicates
     if altsw:
         radiourls2 = []

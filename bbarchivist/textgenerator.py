@@ -7,8 +7,7 @@ __license__ = "Do whatever"
 __copyright__ = "2015 Thurask"
 
 from bbarchivist.networkutils import create_base_url, get_content_length
-from bbarchivist.utilities import filesize_parser
-import re
+from bbarchivist.utilities import filesize_parser, generate_urls
 
 
 def write_links(softwareversion, osversion, radioversion,
@@ -27,13 +26,13 @@ def write_links(softwareversion, osversion, radioversion,
     :type radioversion: str
 
     :param osurls: Pre-formed debrick OS URLs.
-    :type osurls: list
+    :type osurls: dict{str:str}
 
     :param coreurls: Pre-formed core OS URLs.
-    :type coreurls: str
+    :type coreurls: dict{str:str}
 
     :param radiourls: Pre-formed radio URLs.
-    :type radiourls: str
+    :type radiourls: dict{str:str}
 
     :param avlty: Availability of links to download. Default is false.
     :type avlty: bool
@@ -45,7 +44,6 @@ def write_links(softwareversion, osversion, radioversion,
     :type softwareversion: list
     """
     thename = softwareversion
-    rgx = re.compile("(?P<url>https?://[^\s]+)")
     if appendbars:
         thename += "plusapps"
     with open(thename + ".txt", "w") as target:
@@ -55,32 +53,33 @@ def write_links(softwareversion, osversion, radioversion,
         if not avlty:
             target.write("\n!!EXISTENCE NOT GUARANTEED!!\n")
         target.write("\nDEBRICK URLS:\n")
-        for i in osurls:
+        for key, value in osurls.items():
             if avlty:
-                thesize = get_content_length(re.search(rgx, i).group("url"))
+                thesize = get_content_length(value)
             else:
                 thesize = None
-            target.write(i + " [" + filesize_parser(thesize) + "] \n")
+            target.write(key + " [" + filesize_parser(thesize) + "] " + value + "\n")
         target.write("\nCORE URLS:\n")
-        for i in coreurls:
+        for key, value in coreurls.items():
             if avlty:
-                thesize = get_content_length(re.search(rgx, i).group("url"))
+                thesize = get_content_length(value)
             else:
                 thesize = None
-            target.write(i + " [" + filesize_parser(thesize) + "] \n")
+            target.write(key + " [" + filesize_parser(thesize) + "] " + value + "\n")
         target.write("\nRADIO URLS:\n")
-        for i in radiourls:
+        for key, value in radiourls.items():
             if avlty:
-                thesize = get_content_length(re.search(rgx, i).group("url"))
+                thesize = get_content_length(value)
             else:
                 thesize = None
-            target.write(i + " [" + filesize_parser(thesize) + "] \n")
+            target.write(key + " [" + filesize_parser(thesize) + "] " + value + "\n")
         if appendbars:
             target.write("\nAPP URLS:\n")
-            for i in appurls:
+            for app in appurls:
                 stoppers = ["8960", "8930", "8974", "m5730", "winchester"]
-                if all(word not in i for word in stoppers):
-                    target.write(i + "\n")
+                if all(word not in app for word in stoppers):
+                    thesize = get_content_length(app)
+                    target.write(app + " [" + filesize_parser(thesize) + "]\n")
 
 
 def url_generator(osversion, radioversion, softwareversion):
@@ -97,54 +96,18 @@ def url_generator(osversion, radioversion, softwareversion):
     :type radioversion: str
     """
     baseurl = create_base_url(softwareversion)
-    osurls = ["STL100-1: " + baseurl +
-              "/winchester.factory_sfi.desktop-" +
-              osversion + "-nto+armle-v7+signed.bar",
-              "QC8960: " + baseurl +
-              "/qc8960.factory_sfi.desktop-" +
-              osversion + "-nto+armle-v7+signed.bar",
-              "VERIZON 8960: " + baseurl +
-              "/qc8960.verizon_sfi.desktop-" +
-              osversion + "-nto+armle-v7+signed.bar",
-              "Z3: " + baseurl +
-              "/qc8960.factory_sfi_hybrid_qc8x30.desktop-" +
-              osversion + "-nto+armle-v7+signed.bar",
-              "PASSPORT: " + baseurl +
-              "/qc8960.factory_sfi_hybrid_qc8974.desktop-" +
-              osversion + "-nto+armle-v7+signed.bar"]
-
-    # List of core urls
-    coreurls = ["STL100-1: " + baseurl +
-                "/winchester.factory_sfi-" +
-                osversion + "-nto+armle-v7+signed.bar",
-                "QC8960: " + baseurl +
-                "/qc8960.factory_sfi-" +
-                osversion + "-nto+armle-v7+signed.bar",
-                "VERIZON 8960: " + baseurl +
-                "/qc8960.verizon_sfi-" +
-                osversion + "-nto+armle-v7+signed.bar",
-                "Z3: " + baseurl +
-                "/qc8960.factory_sfi_hybrid_qc8x30-" +
-                osversion + "-nto+armle-v7+signed.bar",
-                "PASSPORT: " + baseurl +
-                "/qc8960.factory_sfi_hybrid_qc8974-" +
-                osversion + "-nto+armle-v7+signed.bar"]
-
-    # List of radio urls
-    radiourls = ["STL100-1: " + baseurl + "/m5730-" + radioversion +
-                 "-nto+armle-v7+signed.bar",
-                 "STL100-X/P9982: " + baseurl + "/qc8960-" + radioversion +
-                 "-nto+armle-v7+signed.bar",
-                 "STL100-4: " + baseurl + "/qc8960.omadm-" + radioversion +
-                 "-nto+armle-v7+signed.bar",
-                 "Q10/Q5/P9983: " + baseurl + "/qc8960.wtr-" + radioversion +
-                 "-nto+armle-v7+signed.bar",
-                 "Z30/LEAP/CLASSIC: " + baseurl + "/qc8960.wtr5-" +
-                 radioversion +
-                 "-nto+armle-v7+signed.bar",
-                 "Z3: " + baseurl + "/qc8930.wtr5-" + radioversion +
-                 "-nto+armle-v7+signed.bar",
-                 "PASSPORT: " + baseurl + "/qc8974.wtr2-" + radioversion +
-                 "-nto+armle-v7+signed.bar"]
-
-    return osurls, coreurls, radiourls
+    radlist = ["STL100-1", "STL100-X/P9982", "STL100-4", "Q10/Q5/P9983", "Z30/LEAP/CLASSIC", "Z3", "PASSPORT"]
+    oslist = ["STL100-1", "QC8960", "VERIZON QC8960", "Z3", "PASSPORT"]
+    osurls, radiourls, coreurls = generate_urls(baseurl, osversion, radioversion, True)
+    osurls.insert(2, baseurl + "/qc8960.verizon_sfi.desktop-" + osversion + "-nto+armle-v7+signed.bar")
+    coreurls.insert(2, baseurl + "/qc8960.verizon_sfi-" + osversion + "-nto+armle-v7+signed.bar")
+    ospairs = {}
+    for title, url in zip(oslist, osurls):
+        ospairs[title] = url
+    corepairs = {}
+    for title, url in zip(oslist, coreurls):
+        corepairs[title] = url
+    radiopairs = {}
+    for title, url in zip(radlist, radiourls):
+        radiopairs[title] = url
+    return ospairs, corepairs, radiopairs

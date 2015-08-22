@@ -5,6 +5,10 @@ from shutil import rmtree, copyfile
 from sys import version_info
 from hashlib import sha512
 from zipfile import ZipFile, ZIP_DEFLATED
+try:
+    import unittest.mock as mock
+except ImportError:
+    import mock
 
 
 def setup_module(module):
@@ -116,6 +120,20 @@ class TestClassBarutils:
         if os.path.exists("Blitz-testing.zip"):
             os.remove("Blitz-testing.zip")
 
+    def test_filter_method_good(self):
+        assert bb.filter_method("tbz", None) == "tbz"
+    
+    def test_filter_method_bad(self):
+        with mock.patch('bbarchivist.utilities.prep_seven_zip', mock.MagicMock(return_value=False)): #@IgnorePep8
+            assert bb.filter_method("7z", None) == "zip"
+
+    def test_calculate_strength_32(self):
+        with mock.patch('bbarchivist.utilities.is_amd64', mock.MagicMock(return_value=False)): #@IgnorePep8
+            assert bb.calculate_strength() == 5
+
+    def test_calculate_strength_64(self):
+        with mock.patch('bbarchivist.utilities.is_amd64', mock.MagicMock(return_value=True)): #@IgnorePep8
+            assert bb.calculate_strength() == 9
 
 class TestClassBarutilsLoaderMover():
     @classmethod

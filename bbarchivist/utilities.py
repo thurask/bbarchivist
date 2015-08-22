@@ -71,14 +71,13 @@ def filesize_parser(file_size):
     :type file_size: float
     """
     if file_size is None:
-        return "N/A"
-    else:
-        file_size = float(file_size)
-        for sfix in ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB']:
-            if file_size < 1024.0:
-                return "{:3.2f}{}".format(file_size, sfix)
-            file_size /= 1024.0
-        return "{:3.2f}{}".format(file_size, 'YB')
+        file_size = 0
+    file_size = float(file_size)
+    for sfix in ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB']:
+        if file_size < 1024.0:
+            return "{:3.2f}{}".format(file_size, sfix)
+        file_size /= 1024.0
+    return "{:3.2f}{}".format(file_size, 'YB')
 
 
 def file_exists(file):
@@ -329,7 +328,7 @@ def barname_stripper(name):
     return name.replace("-nto+armle-v7+signed.bar", "")
 
 
-def generate_urls(baseurl, osversion, radioversion):
+def generate_urls(baseurl, osversion, radioversion, core=False):
     """
     Generate a list of OS URLs and a list of radio URLs based on input.
 
@@ -342,6 +341,9 @@ def generate_urls(baseurl, osversion, radioversion):
 
     :param radioversion: Radio version.
     :type radioversion: str
+
+    :param core: Whether or not to return core URLs as well.
+    :type core: bool
     """
     osurls = [baseurl + "/winchester.factory_sfi.desktop-" +
               osversion + "-nto+armle-v7+signed.bar",
@@ -365,7 +367,21 @@ def generate_urls(baseurl, osversion, radioversion):
                  "-nto+armle-v7+signed.bar",
                  baseurl + "/qc8974.wtr2-" + radioversion +
                  "-nto+armle-v7+signed.bar"]
-    return osurls, radiourls
+    coreurls = []
+    splitos = osversion.split(".")
+    splitos = [int(i) for i in splitos]
+    if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):  # 10.3.1+
+        osurls[2] = osurls[2].replace("qc8960.factory_sfi",
+                                      "qc8960.factory_sfi_hybrid_qc8x30")
+        osurls[3] = osurls[3].replace("qc8974.factory_sfi",
+                                      "qc8960.factory_sfi_hybrid_qc8974")
+    for url in osurls:
+        coreurls.append(url.replace(".desktop", ""))
+    if core:
+        target = osurls, radiourls, coreurls
+    else:
+        target = osurls, radiourls, []
+    return target
 
 
 def generate_lazy_urls(baseurl, osversion, radioversion, device):

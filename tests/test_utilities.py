@@ -83,6 +83,14 @@ class TestClassUtilities:
             for dur in (2, 4, 7, 16, 31):
                 bu.escreens_duration(dur)
                 assert "duration" in str(argexc.value)
+    
+    def test_valid_method_good(self):
+        assert bu.valid_method("tgz") == "tgz"
+
+    def test_valid_method_bad(self):
+        with pytest.raises(ArgumentError) as argexc:
+            bu.valid_method("kgb")
+            assert "invalid method" in str(argexc.value)
 
     def test_str2bool_good(self):
         assert bu.str2bool("YES") == True

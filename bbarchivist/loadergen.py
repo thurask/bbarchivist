@@ -107,7 +107,7 @@ def read_radio_files(localdir):
         print("No Verizon 8960 radio found")
     # Q10/Q5
     try:
-        radio_q10 = glob.glob(os.path.join(localdir, "*radio.qc8960?wtr[!5]*signed"))[0]
+        radio_q10 = glob.glob(os.path.join(localdir, "*radio.qc8960?wtr.*signed"))[0]
     except IndexError:
         radio_q10 = None
         print("No Q10/Q5 radio found")
