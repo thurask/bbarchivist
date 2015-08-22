@@ -68,6 +68,8 @@ class TestClassBarutils:
             szexe = get_seven_zip(False)
             bb.compress(os.getcwd(), "7z", szexe=szexe)
             result = bb.sz_verify("Z10_BIGLOADER.7z", szexe)
+        else:
+            pass
         if os.path.exists("Z10_BIGLOADER.7z"):
             os.remove("Z10_BIGLOADER.7z")
         assert result
