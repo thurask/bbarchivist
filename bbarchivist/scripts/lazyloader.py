@@ -6,7 +6,6 @@ import argparse  # parse arguments
 import sys  # load arguments
 import os  # path work
 import glob  # filename matching
-import shutil  # folder removal
 import subprocess  # autoloader running
 import json  # db work
 from bbarchivist import utilities  # input validation
@@ -476,10 +475,10 @@ def lazyloader_main(device, osversion, radioversion=None,
     print("ALL FILES EXTRACTED OK")
 
     # Make dirs
-    bardir_os, bardir_radio, loaderdir_os, lr, zo, zr = barutils.make_dirs(localdir, osversion, radioversion)
+    bd_o, bd_r, ld_o, ld_r, zd_o, zd_r = barutils.make_dirs(localdir, osversion, radioversion)
 
     print("\nMOVING BAR FILES...")
-    barutils.move_bars(localdir, bardir_os, bardir_radio)
+    barutils.move_bars(localdir, bd_o, bd_r)
 
     if altsw:
         altradio = radioversion
@@ -495,14 +494,14 @@ def lazyloader_main(device, osversion, radioversion=None,
             os.remove(file)
 
     print("\nMOVING LOADERS...")
-    barutils.move_loaders(localdir, loaderdir_os, lr, zo, zr)
+    barutils.move_loaders(localdir, ld_o, ld_r, zd_o, zd_r)
 
     # Delete empty folders
     print("\nREMOVING EMPTY FOLDERS...")
     barutils.remove_empty_folders(localdir)
 
     if autoloader:
-        os.chdir(loaderdir_os)
+        os.chdir(ld_o)
         with open(bbconstants.JSONFILE) as thefile:
             data = json.load(thefile)
         data = data['integermap']

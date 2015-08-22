@@ -38,7 +38,7 @@ def extract_bars(filepath):
                 for name in names:
                     if str(name).endswith(".signed"):
                         zfile.extract(name, filepath)
-            except Exception as exc:
+            except (RuntimeError, OSError, zipfile.BadZipFile) as exc:
                 print("EXTRACTION FAILURE")
                 print(str(exc))
                 print("DID IT DOWNLOAD PROPERLY?")
@@ -67,7 +67,7 @@ def retrieve_sha512(filename):
         assetname = alist[0].split(b": ")[1]
         assethash = alist[1].split(b": ")[1]
         return (assetname, assethash)  # (b"blabla.signed", b"somehash")
-    except Exception as exc:
+    except (RuntimeError, OSError, zipfile.BadZipFile) as exc:
         print("EXTRACTION FAILURE")
         print(str(exc))
         print("DID IT DOWNLOAD PROPERLY?")
@@ -292,15 +292,19 @@ def txz_verify(filepath):
     :param filepath: Filename.
     :type filepath: str
     """
-    if tarfile.is_tarfile(filepath):
-        with tarfile.open(filepath, "r:xz") as thefile:
-            mems = thefile.getmembers()
-        if not mems:
-            return False
-        else:
-            return True
+    majver = sys.version_info[1]
+    if majver <= 2:
+        pass
     else:
-        return False
+        if tarfile.is_tarfile(filepath):
+            with tarfile.open(filepath, "r:xz") as thefile:
+                mems = thefile.getmembers()
+            if not mems:
+                return False
+            else:
+                return True
+        else:
+            return False
 
 
 def zip_compress(filepath, filename):
@@ -339,6 +343,39 @@ def zip_verify(filepath):
         return False
 
 
+def filter_method(method, szexe=None):
+    """
+    Make sure methods are OK.
+
+    :param method: Compression method to use.
+    :type method: str
+
+    :param szexe: Path to 7z executable, if needed.
+    :type szexe: str
+    """
+    majver = sys.version_info[1]
+    if majver < 3 and method == "txz":  # 3.2 and under
+        method = "zip"  # fallback
+    if method == "7z" and szexe is None:
+        ifexists = utilities.prep_seven_zip()  # see if 7z exists
+        if not ifexists:
+            method = "zip"  # fallback
+        else:
+            szexe = utilities.get_seven_zip(False)
+    return method
+
+
+def calculate_strength():
+    """
+    Determine zip/gzip/bzip2 strength by OS bit setting.
+    """
+    if utilities.is_amd64():
+        strength = 9  # ultra compression
+    else:
+        strength = 5  # normal compression
+    return strength
+
+
 def compress(filepath, method="7z", szexe=None, selective=False):
     """
     Compress all autoloader files in a given folder, with a given method.
@@ -355,38 +392,27 @@ def compress(filepath, method="7z", szexe=None, selective=False):
     :param selective: Only compress specific files (autoloaders). Default is false.
     :type selective: bool
     """
-    if method == "7z" and szexe is None:
-        ifexists = utilities.prep_seven_zip()  # see if 7z exists
-        if not ifexists:
-            method = "zip"  # fallback
-        else:
-            szexe = utilities.get_seven_zip(False)
-    majver = sys.version_info[1]
-    if majver < 3 and method == "txz":  # 3.2 and under
-        method = "zip"  # fallback
-    for file in os.listdir(filepath):
-        if not file.endswith(bbconstants.ARCS):
-            if (file.endswith(".exe") and file.startswith(bbconstants.PREFIXES)) if selective else True:
-                filename = os.path.splitext(os.path.basename(file))[0]
-                fileloc = os.path.join(filepath, filename)
-                print("COMPRESSING: " + filename + ".exe")
-                if utilities.is_amd64():
-                    strength = 9  # ultra compression
-                else:
-                    strength = 5  # normal compression
-                if method == "7z":
-                    sz_compress(fileloc, file, szexe, strength)
-                elif method == "tgz":
-                    tgz_compress(fileloc, file, strength)
-                elif method == "txz":
-                    txz_compress(fileloc, file)
-                elif method == "tbz":
-                    tbz_compress(fileloc, file, strength)
-                elif method == "zip":
-                    zip_compress(fileloc, file)
-                else:
-                    print("INVALID METHOD")
-                    raise SystemExit
+    method = filter_method(method, szexe)
+    files = (file for file in os.listdir(filepath) if not file.endswith(bbconstants.ARCS))
+    for file in files:
+        if (file.endswith(".exe") and file.startswith(bbconstants.PREFIXES)) if selective else True:
+            filename = os.path.splitext(os.path.basename(file))[0]
+            fileloc = os.path.join(filepath, filename)
+            print("COMPRESSING: " + filename + ".exe")
+            strength = calculate_strength()
+            if method == "7z":
+                sz_compress(fileloc, file, szexe, strength)
+            elif method == "tgz":
+                tgz_compress(fileloc, file, strength)
+            elif method == "txz":
+                txz_compress(fileloc, file)
+            elif method == "tbz":
+                tbz_compress(fileloc, file, strength)
+            elif method == "zip":
+                zip_compress(fileloc, file)
+            else:
+                print("INVALID METHOD")
+                raise SystemExit
 
 
 def verify(filepath, method="7z", szexe=None, selective=False):
@@ -405,40 +431,27 @@ def verify(filepath, method="7z", szexe=None, selective=False):
     :param selective: Only compress specific files (autoloaders). Default is false.
     :type selective: bool
     """
-    if szexe is None and method == "7z":
-        ifexists = utilities.prep_seven_zip()  # see if 7z exists
-        if ifexists:
-            szexe = utilities.get_seven_zip(False)
-        else:
-            print("NO 7Z!")
-    majver = sys.version_info[1]
-    for file in os.listdir(filepath):
-        if file.endswith(bbconstants.ARCS):  # skip already compressed files
-            if file.startswith(bbconstants.PREFIXES) if selective else True:
-                print("VERIFYING:", file)
-                if file.endswith(".7z") and szexe is not None:
-                    szver = sz_verify(os.path.abspath(file), szexe)
-                    if not szver:
-                        print("{0} IS BROKEN!".format((file)))
-                elif file.endswith(".tar.gz"):
-                    gzver = tgz_verify(file)
-                    if not gzver:
-                        print("{0} IS BROKEN!".format((file)))
-                elif file.endswith(".tar.xz"):
-                    if majver >= 3:
-                        xzver = txz_verify(file)
-                        if not xzver:
-                            print("{0} IS BROKEN!".format((file)))
-                    else:
-                        pass
-                elif file.endswith(".tar.bz2"):
-                    bzver = tbz_verify(file)
-                    if not bzver:
-                        print("{0} IS BROKEN!".format((file)))
-                elif file.endswith(".zip"):
-                    zipver = zip_verify(file)
-                    if not zipver:
-                        print("{0} IS BROKEN!".format((file)))
+    method = filter_method(method, szexe)
+    files = (file for file in os.listdir(filepath) if file.endswith(bbconstants.ARCS))
+    for file in files:
+        if file.startswith(bbconstants.PREFIXES) if selective else True:
+            print("VERIFYING:", file)
+            if file.endswith(".7z") and szexe is not None:
+                szver = sz_verify(os.path.abspath(file), szexe)
+                if not szver:
+                    print("{0} IS BROKEN!".format((file)))
+            elif file.endswith(".tar.gz"):
+                if not tgz_verify(file):
+                    print("{0} IS BROKEN!".format((file)))
+            elif file.endswith(".tar.xz"):
+                if not txz_verify(file):
+                    print("{0} IS BROKEN!".format((file)))
+            elif file.endswith(".tar.bz2"):
+                if not tbz_verify(file):
+                    print("{0} IS BROKEN!".format((file)))
+            elif file.endswith(".zip"):
+                if not zip_verify(file):
+                    print("{0} IS BROKEN!".format((file)))
 
 
 def compress_suite(filepath, method="7z", szexe=None, selective=False):
@@ -498,18 +511,19 @@ def create_blitz(a_folder, swver):
             del dirs
             for file in files:
                 print("ZIPPING:", utilities.barname_stripper(file))
-                zfile.write(os.path.join(root, file),
-                            os.path.basename(os.path.join(root, file)))
+                abs_filename = os.path.join(root, file)
+                abs_arcname = os.path.basename(abs_filename)
+                zfile.write(abs_filename, abs_arcname)
 
 
-def move_loaders(localdir,
+def move_loaders(a_dir,
                  exedir_os, exedir_rad,
                  zipdir_os, zipdir_rad):
     """
     Move autoloaders to zipped and loaders directories in localdir.
 
-    :param localdir: Local directory, containing files you wish to move.
-    :type localdir: str
+    :param a_dir: Local directory, containing files you wish to move.
+    :type a_dir: str
 
     :param exedir_os: Large autoloader .exe destination.
     :type exedir_os: str
@@ -523,49 +537,51 @@ def move_loaders(localdir,
     :param zipdir_rad: Small autoloader archive destination.
     :type zipdir_rad: str
     """
-    for files in os.listdir(localdir):
-        if files.endswith(".exe") and files.startswith(bbconstants.PREFIXES):
-            print("MOVING: " + files)
-            exedest_os = os.path.join(exedir_os, files)
-            exedest_rad = os.path.join(exedir_rad, files)
-            # even the fattest radio is less than 90MB
-            if os.path.getsize(os.path.join(localdir, files)) > 90000000:
-                while True:
-                    try:
-                        shutil.move(os.path.join(localdir, files), exedir_os)
-                    except shutil.Error:
-                        os.remove(exedest_os)
-                        continue
-                    break
-            else:
-                while True:
-                    try:
-                        shutil.move(os.path.join(localdir, files), exedir_rad)
-                    except shutil.Error:
-                        os.remove(exedest_rad)
-                        continue
-                    break
-        elif files.endswith(bbconstants.ARCS) and files.startswith(bbconstants.PREFIXES):
-            print("MOVING: " + files)
-            zipdest_os = os.path.join(zipdir_os, files)
-            zipdest_rad = os.path.join(zipdir_rad, files)
-            # even the fattest radio is less than 90MB
-            if os.path.getsize(os.path.join(localdir, files)) > 90000000:
-                while True:
-                    try:
-                        shutil.move(os.path.join(localdir, files), zipdir_os)
-                    except shutil.Error:
-                        os.remove(zipdest_os)
-                        continue
-                    break
-            else:
-                while True:
-                    try:
-                        shutil.move(os.path.join(localdir, files), zipdir_rad)
-                    except shutil.Error:
-                        os.remove(zipdest_rad)
-                        continue
-                    break
+    arx = bbconstants.ARCS
+    pfx = bbconstants.PREFIXES
+    loaders = (file for file in os.listdir(a_dir) if file.endswith(".exe") and file.startswith(pfx))
+    for file in loaders:
+        print("MOVING: " + file)
+        exedest_os = os.path.join(exedir_os, file)
+        exedest_rad = os.path.join(exedir_rad, file)
+        loader_sorter(file, exedest_os, exedest_rad)
+    zippeds = (file for file in os.listdir(a_dir) if file.endswith(arx) and file.startswith(pfx))
+    for file in zippeds:
+        print("MOVING: " + file)
+        zipdest_os = os.path.join(zipdir_os, file)
+        zipdest_rad = os.path.join(zipdir_rad, file)
+        loader_sorter(file, zipdest_os, zipdest_rad)
+
+
+def loader_sorter(file, osdir, raddir):
+    """
+    Sort loaders based on size.
+
+    :param file: The file to sort. Absolute paths, please.
+    :type file: str
+
+    :param osdir: Large file destination.
+    :type osdir: str
+
+    :param raddir: Small file destination.
+    :type raddir: str
+    """
+    if os.path.getsize(file) > 90000000:
+        while True:
+            try:
+                shutil.move(file, osdir)
+            except shutil.Error:
+                os.remove(file)
+                continue
+            break
+    else:
+        while True:
+            try:
+                shutil.move(file, raddir)
+            except shutil.Error:
+                os.remove(file)
+                continue
+            break
 
 
 def move_bars(localdir, osdir, radiodir):
@@ -645,8 +661,7 @@ def make_dirs(localdir, osversion, radioversion):
         os.mkdir(os.path.join(zipdir, radioversion))
     zipdir_radio = os.path.join(zipdir, radioversion)
 
-    return (bardir_os, bardir_radio, loaderdir_os,
-    loaderdir_radio, zipdir_os, zipdir_radio)
+    return (bardir_os, bardir_radio, loaderdir_os, loaderdir_radio, zipdir_os, zipdir_radio)
 
 
 def compress_config_loader():

@@ -57,7 +57,8 @@ def cap_main():
         dest="folder",
         help="Working folder",
         default=None,
-        metavar="DIR")
+        metavar="DIR",
+        type=utilities.file_exists)
     parser.set_defaults()
     args = parser.parse_args(sys.argv[1:])
     if args.folder is None:

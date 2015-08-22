@@ -24,7 +24,7 @@ class TestClassTextGenerator:
         cls.cor = cor
         cls.rad = rad
 
-    def test_url_generator_debrick_length(self):
+    def test_url_generator_debrick_len(self):
         assert len(self.deb) == 5
 
     def test_url_generator_debrick_find(self):

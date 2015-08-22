@@ -52,7 +52,7 @@ class TestClassUtilities:
 
     def test_valid_method_good(self):
         assert bu.valid_method("tbz") == "tbz"
-    
+
     def test_valid_method_bad(self):
         with pytest.raises(ArgumentError) as argexc:
             bu.valid_method("jackdaw")
@@ -163,7 +163,7 @@ class TestClassUtilities:
     def test_prep_seven_zip_bad(self):
         with mock.patch('platform.system', mock.MagicMock(return_value="Wandows")): #@IgnorePep8
             with mock.patch("bbarchivist.utilities.where_which", mock.MagicMock(return_value=None)): #@IgnorePep8
-                    assert bu.prep_seven_zip() == False
+                assert bu.prep_seven_zip() == False
 
     def test_version_incrementer_good(self):
         assert bu.version_incrementer("10.3.2.2000", 1000) == "10.3.2.3000"

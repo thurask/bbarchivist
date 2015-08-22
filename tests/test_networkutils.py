@@ -1,4 +1,4 @@
-import bbarchivist.networkutils as bn
+﻿import bbarchivist.networkutils as bn
 import httmock
 import os
 from shutil import rmtree
@@ -119,13 +119,13 @@ class TestClassNetworkutils:
         filelist = [x.replace("http://google.com/", "") for x in urllist]
         for file in filelist:
             with open(file, 'rb') as filehandle:
-                    shahash = sha512()
-                    while True:
-                        data = filehandle.read()
-                        if not data:
-                            break
-                        shahash.update(data)
-                    assert shahash.hexdigest()  == "02c25df184ba5ed0eb7faa43b61fc2d0752a8230cc23d3f3085af55919198f83d1664277c6c4c00d78c0f95528fe8ab9f6dc145b8f9cc4b9a0f24482a1630bd9" #@IgnorePep8
+                shahash = sha512()
+                while True:
+                    data = filehandle.read()
+                    if not data:
+                        break
+                    shahash.update(data)
+                assert shahash.hexdigest() == "02c25df184ba5ed0eb7faa43b61fc2d0752a8230cc23d3f3085af55919198f83d1664277c6c4c00d78c0f95528fe8ab9f6dc145b8f9cc4b9a0f24482a1630bd9" #@IgnorePep8
         for file in filelist:
             if os.path.exists(file):
                 os.remove(file)
@@ -164,12 +164,12 @@ class TestClassNetworkutils:
                                                             ['http://cdn.fs.sl.blackberry.com/fs/qnx/production/f6832b88958f1c4c3f9bbfd44762e0c516760d8a/com.qnx.qcfm.radio.qc8960.wtr5/10.3.1.2727/qc8960.wtr5-10.3.1.2727-nto+armle-v7+signed.bar', #@IgnorePep8
                                                             'http://cdn.fs.sl.blackberry.com/fs/qnx/production/f6832b88958f1c4c3f9bbfd44762e0c516760d8a/com.qnx.coreos.qcfm.os.qc8960.factory_sfi.desktop/10.3.1.2726/qc8960.factory_sfi.desktop-10.3.1.2726-nto+armle-v7+signed.bar']) #@IgnorePep8
 
-    def test_software_release_lookup_good(self):
+    def test_sr_lookup_good(self):
         server = "https://cs.sl.blackberry.com/cse/srVersionLookup/2.0.0/"
         with httmock.HTTMock(sr_good_mock):
             assert bn.software_release_lookup("10.3.2.798", server) == "10.3.2.516" #@IgnorePep8
 
-    def test_software_release_lookup_bad(self):
+    def test_sr_lookup_bad(self):
         server = "https://cs.sl.blackberry.com/cse/srVersionLookup/2.0.0/"
         with httmock.HTTMock(sr_bad_mock):
             assert bn.software_release_lookup("10.3.2.798", server) == "SR not in system" #@IgnorePep8
@@ -180,7 +180,7 @@ class TestClassNetworkutils:
             for key in findings:
                 assert findings[key] == "10.3.2.516"
 
-    def test_available_bundle_lookup_big(self):
+    def test_bundle_lookup_big(self):
         with httmock.HTTMock(bl_big_mock):
             assert bn.available_bundle_lookup(302, 220, "8500240A") == ["10.0.9.2372", #@IgnorePep8
                                                                         "10.0.10.672", #@IgnorePep8
@@ -195,7 +195,7 @@ class TestClassNetworkutils:
                                                                         "10.2.1.3442", #@IgnorePep8
                                                                         "10.3.1.2708"] #@IgnorePep8
 
-    def test_available_bundle_lookup_small(self):
+    def test_bundle_lookup_small(self):
         with httmock.HTTMock(bl_little_mock):
             assert bn.available_bundle_lookup(302, 220, "6002E0A") == ["10.3.1.2726"] #@IgnorePep8
 

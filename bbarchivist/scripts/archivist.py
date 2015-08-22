@@ -171,6 +171,7 @@ def grab_args():
         loaders = True
         signed = True
         gpg = False
+        integrity= True
         altsw = None
         print(" ")
         archivist_main(osversion, radioversion, softwareversion,

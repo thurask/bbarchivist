@@ -134,7 +134,7 @@ class SpinManager(object):
             time.sleep(0.5)
             line_begin()
             self.spinner.next()
-    
+
     def stop(self):
         """
         Stop the spinner.

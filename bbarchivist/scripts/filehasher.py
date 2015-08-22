@@ -33,7 +33,8 @@ def filehasher_main():
             "folder",
             help="Working directory, default is local",
             nargs="?",
-            default=None)
+            default=None,
+            type=utilities.file_exists)
         parser.set_defaults()
         args = parser.parse_args(sys.argv[1:])
         if args.folder is None:
