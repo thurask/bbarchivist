@@ -38,4 +38,5 @@ class TestClassTextGenerator:
                        self.deb, self.cor, self.rad, True, False, None)
         with open("10.3.3000.txt", 'rb') as file:
             data = file.read()
-            assert len(data) == 2874
+            data = data.replace(b"\r", b"")
+            assert len(data) == 2848
