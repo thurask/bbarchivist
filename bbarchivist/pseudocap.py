@@ -226,6 +226,7 @@ def make_autoloader(filename, firstfile, secondfile="", thirdfile="",
     for i in filelist:
         if i:
             filecount += 1
+    print("CREATING:", filename)
     try:
         with open(os.path.join(os.path.abspath(folder),
                                filename), "wb") as autoloader:

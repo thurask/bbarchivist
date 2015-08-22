@@ -15,8 +15,8 @@ from bbarchivist import pseudocap  # implement cap
 
 
 def read_files(localdir):
-    oslist = read_os_files()
-    radlist = read_radio_files()
+    oslist = read_os_files(localdir)
+    radlist = read_radio_files(localdir)
     pairdict = {}
     # [radio_ti, radio_z10, radio_z10_vzw, radio_q10, radio_z30, radio_z3, radio_8974]
     for idx, rad in enumerate(radlist):
@@ -271,28 +271,18 @@ def generate_lazy_loader(
     if localdir is None:
         localdir = os.getcwd()
     print("\nCREATING LOADER...")
-    if altradio:
-        suffix = "_R"+altradio
-    else:
-        suffix = ""
+    suffix = format_suffix(altradio, radioversion)
     try:
         osfile = str(glob.glob("*desktop*.signed")[0])
     except IndexError:
         print("No OS found")
-        return
     try:
         rset = set(glob.glob("*.signed")) - set(glob.glob("*desktop*.signed"))
         radiofile = str(list(rset)[0])
     except IndexError:
         print("No radio found")
-        return
-    try:
-        loadername = generate_lazy_filename(osversion, suffix, device)
-        wrap_pseudocap(loadername, localdir, osfile, radiofile)
-    except Exception as exc:
-        print(str(exc))
-        print("Could not create autoloader")
-        return
+    loadername = generate_lazy_filename(osversion, suffix, device)
+    wrap_pseudocap(loadername, localdir, osfile, radiofile)
 
 
 def generate_lazy_filename(osversion, suffix, device):
@@ -315,5 +305,4 @@ def generate_lazy_filename(osversion, suffix, device):
         if key['id'] == device:
             fname = key['parts']
             break
-    loadername = fname[0] + osversion + suffix + fname[1] + ".exe"
-    return loadername
+    return fname[0] + osversion + suffix + fname[1] + ".exe"
