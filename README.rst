@@ -225,8 +225,8 @@ Help
 
     > bb-archivist -h
 
-    usage: bb-archivist [-h] [-v] [-f DIR] [-c PATH] [-no] [-ni] [-nx] [-nl] [-nr]
-                    [-ns] [-nc] [-nd] [-nv] [-g] [-r [SW]]
+    usage: bb-archivist [-h] [-v] [-f DIR] [-no] [-ni] [-nx] [-nl] [-nr] [-ns]
+                    [-nc] [-nd] [-nv] [-g] [-r [SW]] [-m [METHOD]]
                     os [radio] [swrelease]
 
 	Download bar files, create autoloaders.
@@ -240,10 +240,11 @@ Help
 	  -h, --help            show this help message and exit
 	  -v, --version         show program's version number and exit
 	  -f DIR, --folder DIR  Working folder
-	  -c PATH, --cap PATH   Path to cap.exe
 	  -g, --gpg             Enable GPG signing. Set up GnuPG.
 	  -r [SW], --radiosw [SW]
 							Radio software version, if not same as OS
+	  -m [METHOD], --method [METHOD]
+							Compression method
 
 	negators:
 	  Disable program functionality

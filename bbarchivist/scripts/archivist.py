@@ -135,14 +135,26 @@ def grab_args():
             help="Radio software version, if not same as OS",
             nargs="?",
             default=None)
+        parser.add_argument(
+            "-m",
+            "--method",
+            dest="method",
+            metavar="METHOD",
+            help="Compression method",
+            nargs="?",
+            type=utilities.valid_method,
+            default=None)
         parser.set_defaults(compmethod="7z")
         args = parser.parse_args(sys.argv[1:])
         if args.folder is None:
             args.folder = os.getcwd()
         hashdict = filehashtools.verifier_config_loader()
         filehashtools.verifier_config_writer(hashdict)
-        compmethod = barutils.compress_config_loader()
-        barutils.compress_config_writer(compmethod)
+        if args.method is None:
+            compmethod = barutils.compress_config_loader()
+            barutils.compress_config_writer(compmethod)
+        else:
+            compmethod = args.method
         archivist_main(args.os, args.radio, args.swrelease,
                        args.folder, args.radloaders,
                        args.compress, args.delete, args.verify,
@@ -165,7 +177,6 @@ def grab_args():
         hashdict = filehashtools.verifier_config_loader()
         filehashtools.verifier_config_writer(hashdict)
         compmethod = barutils.compress_config_loader()
-        barutils.compress_config_writer(compmethod)
         download = True
         extract = True
         loaders = True
@@ -179,9 +190,9 @@ def grab_args():
                        hashdict, download,
                        extract, loaders, signed, compmethod, gpg,
                        integrity, altsw)
-    smeg = input("Press Enter to exit")
-    if smeg or not smeg:
-        raise SystemExit
+        smeg = input("Press Enter to exit")
+        if smeg or not smeg:
+            raise SystemExit
 
 
 def archivist_main(osversion, radioversion=None, softwareversion=None,
@@ -271,29 +282,10 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
         filehashtools.verifier_config_writer(hashdict)
     print("~~~ARCHIVIST VERSION", bbconstants.VERSION + "~~~")
     print("OS VERSION:", osversion)
-    print("SOFTWARE VERSION:", softwareversion)
+    print("OS SOFTWARE VERSION:", softwareversion)
     print("RADIO VERSION:", radioversion)
     if altsw is not None:
         print("RADIO SOFTWARE VERSION:", altsw)
-
-    if compmethod == "7z":
-        print("\nCHECKING PRESENCE OF 7ZIP...")
-        psz = utilities.prep_seven_zip(True)
-        if psz:
-            print("7ZIP OK")
-            szexe = utilities.get_seven_zip(True)
-        else:
-            szexe = ""
-            print("7ZIP NOT FOUND")
-            cont = utilities.str2bool(input("CONTINUE? Y/N "))
-            if cont:
-                print("FALLING BACK TO ZIP...")
-                compmethod = "zip"
-            else:
-                print("\nEXITING...")
-                raise SystemExit  # bye bye
-    else:
-        szexe = ""
 
     baseurl = networkutils.create_base_url(softwareversion)
     if altsw:
@@ -311,7 +303,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
         del radiourls2
 
     # Check availability of software release
-    print("\nCHECKING SOFTWARE RELEASE AVAILABILITY...")
+    print("CHECKING SOFTWARE RELEASE AVAILABILITY...")
     if not swchecked:
         avlty = networkutils.availability(baseurl)
         if avlty:
@@ -328,7 +320,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
         print("SOFTWARE RELEASE", softwareversion, "EXISTS")
 
     if altsw:
-        print("\nCHECKING RADIO SOFTWARE RELEASE...")
+        print("CHECKING RADIO SOFTWARE RELEASE...")
         altavlty = networkutils.availability(alturl)
         if altavlty:
             print("SOFTWARE RELEASE", altsw, "EXISTS")
@@ -360,6 +352,25 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
                 print("\nEXITING...")
                 raise SystemExit
 
+    if compmethod == "7z":
+        print("\nCHECKING PRESENCE OF 7ZIP...")
+        psz = utilities.prep_seven_zip(True)
+        if psz:
+            print("7ZIP OK")
+            szexe = utilities.get_seven_zip(True)
+        else:
+            szexe = ""
+            print("7ZIP NOT FOUND")
+            cont = utilities.str2bool(input("CONTINUE? Y/N "))
+            if cont:
+                print("FALLING BACK TO ZIP...")
+                compmethod = "zip"
+            else:
+                print("\nEXITING...")
+                raise SystemExit  # bye bye
+    else:
+        szexe = ""
+
     # Make dirs
     bd_o, bd_r, ld_o, ld_r, zd_o, zd_r = barutils.make_dirs(localdir, osversion, radioversion)
 
@@ -367,6 +378,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     if download:
         print("\nBEGIN DOWNLOADING...")
         networkutils.download_bootstrap(radiourls+osurls, localdir, workers=3)
+        print("ALL FILES DOWNLOADED")
 
     # Test bar files
     if integrity:
@@ -382,7 +394,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
                     for url in radiourls+osurls:
                         if brokens in url:
                             brokenlist.append(url)
-        if brokenlist:
+        if brokenlist and download:
             print("\nREDOWNLOADING BROKEN FILES...")
             if len(brokenlist) > 5:
                 workers = 5
@@ -400,7 +412,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
                         print(file, "STILL BROKEN")
                         raise SystemExit
         else:
-            print("ALL FILES DOWNLOADED OK")
+            print("BAR FILES DOWNLOADED OK")
 
     # Extract bar files
     if extract:
@@ -419,7 +431,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
                 if not sha512ver:
                     print("{0} IS BROKEN".format((file)))
                     raise SystemExit
-        print("ALL FILES EXTRACTED OK")
+        print("SIGNED FILES EXTRACTED OK")
 
     # Move bar files
     print("\nMOVING BAR FILES...")
@@ -449,12 +461,10 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     # If compression = true, compress
     if compressed:
         print("\nCOMPRESSING...")
-        barutils.compress(localdir, compmethod, szexe)
-    else:
-        pass
+        barutils.compress(localdir, compmethod, szexe, True)
 
-    if integrity:
-        print("\nTESTING...")
+    if integrity and compressed:
+        print("\nTESTING ARCHIVES...")
         barutils.verify(localdir, compmethod, szexe, True)
 
     # Move zipped/unzipped loaders
@@ -503,7 +513,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
             else:
                 gpgkey = None
         if gpgpass is not None and gpgkey is not None:
-            print("\nVERIFYING LOADERS...")
+            print("VERIFYING LOADERS...")
             print("KEY:", gpgkey)
             if compressed:
                 filehashtools.gpgrunner(
@@ -545,7 +555,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     print("\nFINISHED!")
     endtime = time.clock() - starttime
     endtime_proper = math.ceil(endtime * 100) / 100
-    print("\nCompleted in " + str(endtime_proper) + " seconds\n")
+    print("Completed in " + str(endtime_proper) + " seconds\n")
 
 if __name__ == "__main__":
     grab_args()
