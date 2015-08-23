@@ -79,13 +79,6 @@ def grab_args():
             action="store_false",
             default=True)
         negategroup.add_argument(
-            "-nl",
-            "--no-loaders",
-            dest="loaders",
-            help="Don't create autoloaders",
-            action="store_false",
-            default=True)
-        negategroup.add_argument(
             "-nr",
             "--no-radios",
             dest="radloaders",
@@ -159,8 +152,7 @@ def grab_args():
                        args.folder, args.radloaders,
                        args.compress, args.delete, args.verify,
                        hashdict, args.download,
-                       args.extract, args.loaders,
-                       args.signed, compmethod,
+                       args.extract, args.signed, compmethod,
                        args.gpg, args.integrity, args.altsw)
     else:
         localdir = os.getcwd()
@@ -179,7 +171,6 @@ def grab_args():
         compmethod = barutils.compress_config_loader()
         download = True
         extract = True
-        loaders = True
         signed = True
         gpg = False
         integrity = True
@@ -188,7 +179,7 @@ def grab_args():
         archivist_main(osversion, radioversion, softwareversion,
                        localdir, radios, compressed, deleted, hashed,
                        hashdict, download,
-                       extract, loaders, signed, compmethod, gpg,
+                       extract, signed, compmethod, gpg,
                        integrity, altsw)
         smeg = input("Press Enter to exit")
         if smeg or not smeg:
@@ -198,7 +189,7 @@ def grab_args():
 def archivist_main(osversion, radioversion=None, softwareversion=None,
                    localdir=None, radios=True, compressed=True, deleted=True,
                    hashed=True, hashdict=None, download=True,
-                   extract=True, loaders=True, signed=True,
+                   extract=True, signed=True,
                    compmethod="7z", gpg=False,
                    integrity=True, altsw=None):
     """
@@ -238,9 +229,6 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
 
     :param extract: Whether to extract bar files. True by default.
     :type extract: bool
-
-    :param loaders: Whether to create autoloaders. True by default.
-    :type loaders: bool
 
     :param signed: Whether to delete signed files. True by default.
     :type signed: bool
@@ -438,17 +426,16 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     barutils.move_bars(localdir, bd_o, bd_r)
 
     # Create loaders
-    if loaders:
-        print("\nGENERATING LOADERS...")
-        if altsw:
-            altradio = True
-        else:
-            altradio = False
-        loadergen.generate_loaders(osversion,
-                                   radioversion,
-                                   radios,
-                                   localdir,
-                                   altradio)
+    print("\nGENERATING LOADERS...")
+    if altsw:
+        altradio = True
+    else:
+        altradio = False
+    loadergen.generate_loaders(osversion,
+                                radioversion,
+                                radios,
+                                localdir,
+                                altradio)
 
     # Remove .signed files
     if signed:
@@ -543,10 +530,9 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     # Remove uncompressed loaders (if specified)
     if deleted:
         print("\nDELETING UNCOMPRESSED LOADERS...")
+        shutil.rmtree(ld_o)
         if radios:
             shutil.rmtree(ld_r)
-        if loaders:
-            shutil.rmtree(ld_o)
 
     # Delete empty folders
     print("\nREMOVING EMPTY FOLDERS...")
