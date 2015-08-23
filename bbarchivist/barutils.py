@@ -38,7 +38,7 @@ def extract_bars(filepath):
                 for name in names:
                     if str(name).endswith(".signed"):
                         zfile.extract(name, filepath)
-            except (RuntimeError, OSError, zipfile.BadZipFile) as exc:
+            except (RuntimeError, OSError) as exc:
                 print("EXTRACTION FAILURE")
                 print(str(exc))
                 print("DID IT DOWNLOAD PROPERLY?")
@@ -392,9 +392,10 @@ def compress(filepath, method="7z", szexe=None, selective=False):
     :type selective: bool
     """
     method = filter_method(method, szexe)
-    files = (file for file in os.listdir(filepath) if not file.endswith(bbconstants.ARCS))
+    files = (file for file in os.listdir(filepath) if not os.path.isdir(file))
     for file in files:
-        if (file.endswith(".exe") and file.startswith(bbconstants.PREFIXES)) if selective else True:
+        filt = file.startswith(bbconstants.PREFIXES) and file.endswith(bbconstants.ARCS)
+        if (file.endswith(".exe") and filt) if selective else True:
             filename = os.path.splitext(os.path.basename(file))[0]
             fileloc = os.path.join(filepath, filename)
             print("COMPRESSING: " + filename + ".exe")
@@ -409,9 +410,6 @@ def compress(filepath, method="7z", szexe=None, selective=False):
                 tbz_compress(fileloc, file, strength)
             elif method == "zip":
                 zip_compress(fileloc, file)
-            else:
-                print("INVALID METHOD")
-                raise SystemExit
 
 
 def verify(filepath, method="7z", szexe=None, selective=False):
@@ -431,9 +429,10 @@ def verify(filepath, method="7z", szexe=None, selective=False):
     :type selective: bool
     """
     method = filter_method(method, szexe)
-    files = (file for file in os.listdir(filepath) if file.endswith(bbconstants.ARCS))
+    files = (file for file in os.listdir(filepath) if not os.path.isdir(file))
     for file in files:
-        if file.startswith(bbconstants.PREFIXES) if selective else True:
+        filt = file.endswith(bbconstants.ARCS) and file.startswith(bbconstants.PREFIXES)
+        if filt if selective else True:
             print("VERIFYING:", file)
             if file.endswith(".7z") and szexe is not None:
                 szver = sz_verify(os.path.abspath(file), szexe)

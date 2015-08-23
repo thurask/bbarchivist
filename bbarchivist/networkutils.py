@@ -90,15 +90,15 @@ def download(url, output_directory=None, lazy=False):
     if req.status_code != 404:  # 200 OK
         line_begin()
         if not lazy:
-            print("Downloading:",
+            print("DOWNLOADING:",
                   local_filename,
                   "[" + utilities.filesize_parser(fsize) + "]")
         else:
             if int(fsize) > 90000000:
-                print("Downloading OS",
+                print("DOWNLOADING OS",
                       "[" + utilities.filesize_parser(fsize) + "]")
             else:
-                print("Downloading radio",
+                print("DOWNLOADING RADIO",
                       "[" + utilities.filesize_parser(fsize) + "]")
         fname = output_directory + "/" + os.path.basename(url)
         with open(fname, "wb") as file:
@@ -117,11 +117,13 @@ class SpinManager(object):
         self.thread = threading.Thread(target=self.loop, args=())
         self.thread.daemon = True
         self.scanning = False
+        self.spinner.file = UselessStdout()
 
     def start(self):
         """
         Begin the spinner.
         """
+        self.spinner.file = sys.stderr
         self.scanning = True
         self.thread.start()
 
@@ -138,9 +140,33 @@ class SpinManager(object):
         """
         Stop the spinner.
         """
+        self.spinner.file = UselessStdout()
         self.scanning = False
         spinner_clear()
         line_begin()
+
+
+class UselessStdout(object):
+    """
+    A dummy IO stream. Does nothing, by design.
+    """
+    def write(self, inp):
+        """
+        Do nothing.
+        """
+        pass
+
+    def flush(self):
+        """
+        Do nothing.
+        """
+        pass
+
+    def isatty(self):
+        """
+        Convince module we're in a terminal.
+        """
+        return True
 
 
 def download_bootstrap(urls, outdir=None, lazy=False, workers=5):
