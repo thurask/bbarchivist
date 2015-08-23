@@ -2,6 +2,8 @@
 	"integermap": [
 	{
 		"id": 0,
+		"special": "",
+		"radtype": "m5730",
 		"parts": [
 						"Z10_",
 						"_STL100-1"
@@ -9,6 +11,8 @@
 	},
 	{
 		"id": 1,
+		"special": "",
+		"radtype": "qc8960.BB",
 		"parts": [
 						"Z10_",
 						"_STL100-2-3"
@@ -16,6 +20,8 @@
 	},
 	{
 		"id": 2,
+		"special": "",
+		"radtype": "omadm",
 		"parts": [
 						"Z10_",
 						"_STL100-4"
@@ -23,6 +29,8 @@
 	},
 	{
 		"id": 3,
+		"special": "",
+		"radtype": "wtr.",
 		"parts": [
 						"Q10_",
 						"_SQN100-1-2-3-4-5"
@@ -30,6 +38,8 @@
 	},
 	{
 		"id": 4,
+		"special": "8960",
+		"radtype": "wtr5",
 		"parts": [
 						"Z30_",
 						"_STA100-1-2-3-4-5-6"
@@ -37,6 +47,8 @@
 	},
 	{
 		"id": 5,
+		"special": "",
+		"radtype": "8930",
 		"parts": [
 						"Z3_",
 						"_STJ100-1-2"
@@ -44,6 +56,8 @@
 	},
 	{
 		"id": 6,
+		"special": "",
+		"radtype": "8974",
 		"parts": [
 						"Passport_",
 						"_SQW100-1-2-3-4"

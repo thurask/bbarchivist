@@ -34,7 +34,8 @@ def read_files(localdir):
             pairdict[rad] = oslist[2]
         else:
             pairdict[rad] = oslist[0]
-    return pairdict
+    filtdict = dict((k, v) for k, v in pairdict.items() if k)  # pop None
+    return filtdict
 
 
 def read_os_files(localdir):
@@ -49,7 +50,7 @@ def read_os_files(localdir):
         os_8960 = glob.glob(
             os.path.join(
                 localdir,
-                "*qc8960*_sfi.desktop*.signed"))[0]
+                "*qc8960.*_sfi.desktop*.signed"))[0]
     except IndexError:
         os_8960 = None
         print("No 8960 image found")
@@ -64,7 +65,7 @@ def read_os_files(localdir):
             os_8x30 = glob.glob(
                 os.path.join(
                     localdir,
-                    "*qc8960*_sfi.desktop*.signed"))[0]
+                    "*qc8960.*_sfi.desktop*.signed"))[0]
         except IndexError:
             os_8x30 = None
             print("No 8x30 image found")
@@ -110,7 +111,7 @@ def read_radio_files(localdir):
         radio_z10 = glob.glob(
             os.path.join(
                 localdir,
-                "*radio.qc8960?BB*.signed"))[0]
+                "*radio.qc8960*.BB*.signed"))[0]
     except IndexError:
         radio_z10 = None
         print("No 8960 radio found")
@@ -119,31 +120,31 @@ def read_radio_files(localdir):
         radio_z10_vzw = glob.glob(
             os.path.join(
                 localdir,
-                "*radio.qc8960?omadm*.signed"))[0]
+                "*radio.qc8960*omadm*.signed"))[0]
     except IndexError:
         radio_z10_vzw = None
         print("No Verizon 8960 radio found")
     # Q10/Q5
     try:
-        radio_q10 = glob.glob(os.path.join(localdir, "*radio.qc8960?wtr.*signed"))[0]
+        radio_q10 = glob.glob(os.path.join(localdir, "*radio.qc8960*wtr.*signed"))[0]
     except IndexError:
         radio_q10 = None
         print("No Q10/Q5 radio found")
     # Z30/Classic
     try:
-        radio_z30 = glob.glob(os.path.join(localdir, "*radio.qc8960?wtr5*.signed"))[0]
+        radio_z30 = glob.glob(os.path.join(localdir, "*radio.qc8960*wtr5*.signed"))[0]
     except IndexError:
         radio_z30 = None
         print("No Z30/Classic radio found")
     # Z3
     try:
-        radio_z3 = glob.glob(os.path.join(localdir, "*radio.qc8930?wtr5*.signed"))[0]
+        radio_z3 = glob.glob(os.path.join(localdir, "*radio.qc8930*wtr5*.signed"))[0]
     except IndexError:
         radio_z3 = None
         print("No Z3 radio found")
     # Passport
     try:
-        radio_8974 = glob.glob(os.path.join(localdir, "*radio.qc8974?wtr2*.signed"))[0]
+        radio_8974 = glob.glob(os.path.join(localdir, "*radio.qc8974*wtr2*.signed"))[0]
     except IndexError:
         radio_8974 = None
         print("No Passport radio found")
@@ -222,16 +223,16 @@ def generate_loaders(
     osversion, radioversion = pretty_formatter(osversion, radioversion)
     suffix = format_suffix(altradio, radioversion)
     # Generate loaders
-    print("\nCREATING LOADERS...")
-    radlist = read_radio_files(localdir)
-    for idx, radval in enumerate(radlist):
-        osname = generate_filename(idx, osversion, suffix)
-        radiofile = radval
+    print("CREATING LOADERS...")
+    filtrad = [rad for rad in filedict.keys() if rad]  # pop None
+    for radval in filtrad:
+        device = generate_device(radval)
+        osname = generate_filename(device, osversion, suffix)
         osfile = filedict[radval]
-        wrap_pseudocap(osname, localdir, osfile, radiofile)
+        wrap_pseudocap(osname, localdir, osfile, radval)
         if radios:
-            radname = generate_filename(idx, radioversion, suffix)
-            wrap_pseudocap(radname, localdir, radiofile)
+            radname = generate_filename(device, radioversion, "")
+            wrap_pseudocap(radname, localdir, radval)
 
 
 def wrap_pseudocap(filename, folder, first, second=None):
@@ -278,6 +279,29 @@ def generate_skeletons():
     return namelist
 
 
+def generate_device(radio):
+    """
+    Read JSON to get the device integer ID from device radio.
+
+    :param radio: The radio filename to look up.
+    :type radio: str
+    """
+    with open(bbconstants.JSONFILE) as thefile:
+        data = json.load(thefile)
+    data = data['integermap']
+    for key in data:
+        if not key['special']:
+            if key['radtype'] in radio:
+                idx = int(key['id'])
+                break
+        else:
+            targs = (key['special'], key['radtype'])
+            if all(idx in radio for idx in targs):
+                idx = int(key['id'])
+                break
+    return idx
+
+
 def generate_filename(device, version, suffix=None):
     """
     Use skeleton dict to create loader filenames.
@@ -292,10 +316,12 @@ def generate_filename(device, version, suffix=None):
     :type suffix: str
     """
     thed = generate_skeletons()
-    thed = thed[device]
+    if device < 0:
+        return None
+    dev = thed[device]
     if suffix is None:
         suffix = ""
-    return thed[0] + version + suffix + thed[1] + thed[2]
+    return dev[0] + version + suffix + dev[1] + dev[2]
 
 
 
@@ -321,7 +347,7 @@ def generate_lazy_loader(
     # default parsing
     if localdir is None:
         localdir = os.getcwd()
-    print("\nCREATING LOADER...")
+    print("CREATING LOADER...")
     suffix = format_suffix(bool(altradio), altradio)
     try:
         osfile = str(glob.glob("*desktop*.signed")[0])
