@@ -83,7 +83,7 @@ def make_offset(firstfile, secondfile="", thirdfile="",
     doublepad = binascii.unhexlify(bytes("0" * 4, 'ascii'))
     signedpad = binascii.unhexlify(bytes("0" * 16, 'ascii'))
     filepad = binascii.unhexlify(bytes(str(filecount).rjust(2, '0'), 'ascii'))  # 01-06
-    trailermax = int(7 - int(filecount, 10))
+    trailermax = int(7 - int(filecount))
     trailermax = trailermax * 2
     trailer = "0" * trailermax  # 00 repeated between 1 and 6 times
     trailers = binascii.unhexlify(bytes(trailer, 'ascii'))
