@@ -11,8 +11,11 @@ import argparse  # argument parser for filters
 import platform  # platform info
 import glob  # cap grabbing
 import configparser  # config parsing, duh
+import threading  # get thread for spinner
+import time  # spinner delay
+import sys  # streams, version info
+from progress.spinner import Spinner  # the actual spinner
 from bbarchivist import bbconstants  # cap location, version
-from sys import version_info  # version checking
 
 
 def enum_cpus():
@@ -114,7 +117,7 @@ def valid_method(method):
     :type method: str
     """
     methodlist = bbconstants.METHODS
-    if version_info[1] <= 2:
+    if sys.version_info[1] <= 2:
         methodlist = methodlist[:-1]  # strip last
     if method not in methodlist:
         raise argparse.ArgumentError(argument=None, message="Invalid method {0}.".format(method))
@@ -441,6 +444,87 @@ def generate_lazy_urls(baseurl, osversion, radioversion, device):
         if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):
             osurl = osurl.replace("qc8974.factory_sfi", "qc8960.factory_sfi_hybrid_qc8974")
     return osurl, radiourl
+
+
+def line_begin():
+    """
+    Go to beginning of line, to overwrite whatever's there.
+    """
+    sys.stdout.write("\r")
+    sys.stdout.flush()
+
+
+def spinner_clear():
+    """
+    Get rid of any spinner residue left in stdout.
+    """
+    sys.stdout.write("\b \b")
+    sys.stdout.flush()
+
+
+class SpinManager(object):
+    """
+    Wraps around progress.spinner, runs it in another thread.
+    """
+    def __init__(self):
+        spinner = Spinner("")
+        self.spinner = spinner
+        self.thread = threading.Thread(target=self.loop, args=())
+        self.thread.daemon = True
+        self.scanning = False
+        self.spinner.file = UselessStdout()
+
+    def start(self):
+        """
+        Begin the spinner.
+        """
+        self.spinner.file = sys.stderr
+        self.scanning = True
+        self.thread.start()
+
+    def loop(self):
+        """
+        Spin if scanning, clean up if not.
+        """
+        while self.scanning:
+            time.sleep(0.5)
+            line_begin()
+            self.spinner.next()
+
+    def stop(self):
+        """
+        Stop the spinner.
+        """
+        self.spinner.file = UselessStdout()
+        self.scanning = False
+        spinner_clear()
+        line_begin()
+
+
+class UselessStdout(object):
+    """
+    A dummy IO stream. Does nothing, by design.
+    """
+    @staticmethod
+    def write(inp):
+        """
+        Do nothing.
+        """
+        pass
+
+    @staticmethod
+    def flush():
+        """
+        Do nothing.
+        """
+        pass
+
+    @staticmethod
+    def isatty():
+        """
+        Convince module we're in a terminal.
+        """
+        return True
 
 
 def cappath_config_loader():
