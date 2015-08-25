@@ -48,8 +48,10 @@ def insert_sw_release(osversion, swrelease):
             crsr = cnxn.cursor()
             crsr.execute("INSERT INTO Swrelease(Os, Software) VALUES (?,?)",
                          (osversion, swrelease))
-    except sqlite3.Error:
+    except sqlite3.IntegrityError:
         pass  # avoid dupes
+    except sqlite3.Error as sqerror:
+        print(str(sqerror))
 
 
 def export_sql_db():
