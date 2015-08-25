@@ -69,7 +69,6 @@ def download(url, output_directory=None, lazy=False):
     req = requests.get(url, stream=True)
     fsize = req.headers['content-length']
     if req.status_code != 404:  # 200 OK
-        utilities.line_begin()
         if not lazy:
             print("DOWNLOADING:",
                   local_filename,

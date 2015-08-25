@@ -412,7 +412,6 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
         print("\nTESTING SIGNED FILES...")
         for file in os.listdir(localdir):
             if file.endswith(".bar"):
-                networkutils.line_begin()
                 print("TESTING:", file)
                 signname, signhash = barutils.retrieve_sha512(file)
                 sha512ver = barutils.verify_sha512(signname, signhash)
