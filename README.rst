@@ -225,8 +225,8 @@ Help
 
     > bb-archivist -h
 
-    usage: bb-archivist [-h] [-v] [-f DIR] [-no] [-ni] [-nx] [-nl] [-nr] [-ns]
-                    [-nc] [-nd] [-nv] [-g] [-r [SW]] [-m [METHOD]]
+    usage: bb-archivist [-h] [-v] [-f DIR] [-no] [-ni] [-nx] [-nr] [-ns] [-nc]
+                    [-nd] [-nv] [-g] [-r [SW]] [-m [METHOD]]
                     os [radio] [swrelease]
 
 	Download bar files, create autoloaders.
@@ -252,7 +252,6 @@ Help
 	  -no, --no-download    Don't download files
 	  -ni, --no-integrity   Don't test bar files after download
 	  -nx, --no-extract     Don't extract bar files
-	  -nl, --no-loaders     Don't create autoloaders
 	  -nr, --no-radios      Don't make radio autoloaders
 	  -ns, --no-rmsigned    Don't remove signed files
 	  -nc, --no-compress    Don't compress loaders
