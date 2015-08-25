@@ -7,6 +7,6 @@ install:
     - pip install .
     - pip install requests python-gnupg mock pytest httmock beautifulsoup4 shutilwhich
     - if [[ $TRAVIS_PYTHON_VERSION != 3.2 ]]; then pip install progress; fi
-    - if [[ $TRAVIS_PYTHON_VERSION == 3.2 ]]; then pip install git+https://github.com/thurask/progress.git@no_unicode; fi
+    - if [[ $TRAVIS_PYTHON_VERSION == 3.2 ]]; then pip install --upgrade git+https://github.com/thurask/progress.git@no_unicode; fi
 script:
     - py.test
