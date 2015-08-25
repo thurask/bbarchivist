@@ -77,18 +77,13 @@ def make_offset(firstfile, secondfile="", thirdfile="",
     # immutable things
     scaff = "6ADF5D144E4B4C474E4F48474749530B170A0D1E0C14532D3E253A2D"
     scaff += "3D333E3B3A522F3C534E464D514E4947514E514E4F7070709CD5C5979CD5C5979CD5C597"
-    separator = binascii.unhexlify(bytes(scaff, 'ascii'))  # @IgnorePep8
+    separator = binascii.unhexlify(bytes(scaff, 'ascii'))
     password = binascii.unhexlify(bytes("0" * 160, 'ascii'))
     singlepad = binascii.unhexlify(bytes("0" * 2, 'ascii'))
     doublepad = binascii.unhexlify(bytes("0" * 4, 'ascii'))
     signedpad = binascii.unhexlify(bytes("0" * 16, 'ascii'))
-    filepad = binascii.unhexlify(
-        bytes(
-            str(filecount).rjust(
-                2,
-                '0'),
-            'ascii'))  # between 01 and 06
-    trailermax = int(7 - int(filecount))
+    filepad = binascii.unhexlify(bytes(str(filecount).rjust(2, '0'), 'ascii'))  # 01-06
+    trailermax = int(7 - int(filecount, 10))
     trailermax = trailermax * 2
     trailer = "0" * trailermax  # 00 repeated between 1 and 6 times
     trailers = binascii.unhexlify(bytes(trailer, 'ascii'))

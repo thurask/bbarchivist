@@ -217,8 +217,6 @@ def win_seven_zip(talkative=False):
     """
     For Windows, check where 7-Zip is ("where", pretty much).
     Consult registry first for any installed instances of 7-Zip.
-    If it's not there, fall back onto the supplied executables.
-    If *those* aren't there, return "error".
 
     :param talkative: Whether to output to screen. False by default.
     :type talkative: bool
@@ -234,26 +232,37 @@ def win_seven_zip(talkative=False):
             print("SOMETHING WENT WRONG")
             print(str(exc))
             print("TRYING LOCAL FILES...")
-        listdir = os.listdir(os.getcwd())
-        filecount = 0
-        for i in listdir:
-            if i in ["7za.exe", "7za64.exe"]:
-                filecount += 1
-        if filecount == 2:
-            if talkative:
-                print("7ZIP USING LOCAL FILES")
-            if is_amd64():
-                return "7za64.exe"
-            else:
-                return "7za.exe"
-        else:
-            if talkative:
-                print("NO LOCAL FILES")
-            return "error"
+        return win_seven_zip_local(talkative)
     else:
         if talkative:
             print("7ZIP USING INSTALLED FILES")
         return '"' + os.path.join(path[0], "7z.exe") + '"'
+
+
+def win_seven_zip_local(talkative=False):
+    """
+    If 7-Zip isn't in the registry, fall back onto supplied executables.
+    If *those* aren't there, return "error".
+
+    :param talkative: Whether to output to screen. False by default.
+    :type talkative: bool
+    """
+    listdir = os.listdir(os.getcwd())
+    filecount = 0
+    for i in listdir:
+        if i in ["7za.exe", "7za64.exe"]:
+            filecount += 1
+    if filecount == 2:
+        if talkative:
+            print("7ZIP USING LOCAL FILES")
+        if is_amd64():
+            return "7za64.exe"
+        else:
+            return "7za.exe"
+    else:
+        if talkative:
+            print("NO LOCAL FILES")
+        return "error"
 
 
 def get_core_count():

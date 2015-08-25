@@ -316,7 +316,7 @@ def software_release_lookup(osver, server):
     :param server: Server to use.
     :type server: str
     """
-    reg = re.compile("(\d{1,4}\.)(\d{1,4}\.)(\d{1,4}\.)(\d{1,4})")
+    reg = re.compile(r"(\d{1,4}\.)(\d{1,4}\.)(\d{1,4}\.)(\d{1,4})")
     query = '<?xml version="1.0" encoding="UTF-8"?>'
     query += '<srVersionLookupRequest version="2.0.0"'
     query += ' authEchoTS="1366644680359">'
@@ -442,8 +442,8 @@ def ptcrb_scraper(ptcrbid):
             cleanitem = cleanitem.replace("<td>", "")
             cleanitem = cleanitem.replace("</td>", "")
             cleanitem = cleanitem.replace("\n", "")
-            cleanitem = re.sub("\s?\((.*)$", "", cleanitem)
-            cleanitem = re.sub("\sSV.*$", "", cleanitem)
+            cleanitem = re.sub(r"\s?\((.*)$", "", cleanitem)
+            cleanitem = re.sub(r"\sSV.*$", "", cleanitem)
             cleanitem = cleanitem.replace(". ", ".")
             cleanitem = cleanitem.replace(";", "")
             cleanitem = cleanitem.replace("version", "Version")
