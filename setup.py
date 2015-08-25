@@ -21,7 +21,7 @@ if version_info[1] >= 3:  # 3.3+
     cond_requires.append('progress')
 cond_links = []
 if version_info[1] < 3:
-    cond_links.append('git+https://github.com/thurask/progress.git@no_unicode')
+    cond_links.append('https://github.com/thurask/progress/tarball/no_unicode#egg=progress-2.0.0beta')
 setup(name='bbarchivist',
       version=bbconstants.VERSION,
       description='BlackBerry 10 autoloader tools',
