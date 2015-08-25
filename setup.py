@@ -14,14 +14,12 @@ def readme():
 cond_requires = ['requests',
                  'python-gnupg',
                  'beautifulsoup4',
-                 'easygui']
+                 'easygui',
+                 'progress>=1.2']
+cond_links = []
 if version_info[1] < 3:  # 3.2 and under
     cond_requires.append('shutilwhich')
-if version_info[1] >= 3:  # 3.3+
-    cond_requires.append('progress')
-cond_links = []
-if version_info[1] < 3:
-    cond_links.append('https://github.com/thurask/progress/tarball/no_unicode#egg=progress-2.0.0beta')
+    cond_links.append('https://github.com/thurask/progress/tarball/no_unicode#egg=progress-1.9')
 setup(name='bbarchivist',
       version=bbconstants.VERSION,
       description='BlackBerry 10 autoloader tools',
