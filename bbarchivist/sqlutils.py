@@ -6,10 +6,11 @@ __author__ = "Thurask"
 __license__ = "Do whatever"
 __copyright__ = "2015 Thurask"
 
-import sqlite3
-import csv
-import os
-from bbarchivist.utilities import file_exists
+import sqlite3  # the sql library
+import csv  # write to csv
+import os  # paths
+import operator  # for sorting
+from bbarchivist.utilities import file_exists  # check if file exists
 
 
 def prepare_sw_db():
@@ -69,8 +70,9 @@ def export_sql_db():
                 crsr = cnxn.cursor()
                 crsr.execute("SELECT Os,Software FROM Swrelease")
                 rows = crsr.fetchall()
+                sortedrows = sorted(rows, key=operator.itemgetter(0))
                 csvw.writerow(('osversion', 'swrelease'))
-                csvw.writerows(rows)
+                csvw.writerows(sortedrows)
         except sqlite3.Error as sqerror:
             print(str(sqerror))
     else:
