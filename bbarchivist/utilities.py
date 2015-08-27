@@ -525,6 +525,8 @@ class SpinManager(object):
         self.scanning = False
         spinner_clear()
         line_begin()
+        if not is_windows():
+            print("\n")
 
 
 class UselessStdout(object):
