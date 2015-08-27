@@ -480,6 +480,9 @@ class Spinner(object):
         self.file = UselessStdout()
 
     def next(self):
+        """
+        Iterate over itertools.cycle, write to file.
+        """
         self.file.write(next(self.wheel))
         self.file.flush()
         self.file.write("\b")
