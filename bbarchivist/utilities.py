@@ -485,7 +485,7 @@ class Spinner(object):
         """
         self.file.write(next(self.wheel))
         self.file.flush()
-        self.file.write("\b")
+        self.file.write("\r\b")
 
 
 class SpinManager(object):
