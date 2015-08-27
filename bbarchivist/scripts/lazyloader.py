@@ -13,7 +13,12 @@ from bbarchivist import barutils  # file operations
 from bbarchivist import bbconstants  # constants/versions
 from bbarchivist import networkutils  # download/lookup
 from bbarchivist import loadergen  # cap wrapper
-import easygui as eg  # gui
+try:
+    import easygui as eg  # gui
+except Exception:
+    withgui = False
+else:
+    withgui = True
 
 
 def start_gui(osv=None, radv=None, swv=None, dev=None, aut=None,
@@ -221,6 +226,8 @@ def grab_args():
             args.folder = os.getcwd()
         if not utilities.is_windows():
             args.autoloader = False
+        if not withgui:
+            args.gui = False
         if args.gui:
             start_gui(args.os,
                       args.radio,
