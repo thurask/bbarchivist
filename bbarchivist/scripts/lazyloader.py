@@ -436,8 +436,6 @@ def lazyloader_main(device, osversion, radioversion=None,
                                         lazy=True,
                                         workers=2)
     brokenlist = []
-    if not utilities.is_windows():
-        print("\n")
     print("\nTESTING BAR FILES...")
     for file in os.listdir(localdir):
         if file.endswith(".bar"):
