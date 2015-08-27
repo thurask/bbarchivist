@@ -108,9 +108,13 @@ def download_bootstrap(urls, outdir=None, lazy=False, workers=5):
         workers = len(urls)
     spinman = utilities.SpinManager()
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as xec:
-        spinman.start()
-        for url in urls:
-            xec.submit(download, url, outdir, lazy)
+        try:
+            spinman.start()
+            for url in urls:
+                xec.submit(download, url, outdir, lazy)
+        except (KeyboardInterrupt, SystemExit):
+            xec.shutdown()
+            spinman.stop()
     spinman.stop()
     utilities.spinner_clear()
     utilities.line_begin()

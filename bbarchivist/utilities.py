@@ -483,10 +483,19 @@ class Spinner(object):
         """
         Iterate over itertools.cycle, write to file.
         """
-        self.file.write(next(self.wheel))
-        self.file.flush()
-        self.file.write("\b\r")
-        self.file.flush()
+        try:
+            self.file.write(next(self.wheel))
+            self.file.flush()
+            self.file.write("\b\r")
+            self.file.flush()
+        except (KeyboardInterrupt, SystemExit):
+            self.stop()
+
+    def stop(self):
+        """
+        Kill output.
+        """
+        self.file = UselessStdout()
 
 
 class SpinManager(object):
@@ -515,14 +524,18 @@ class SpinManager(object):
         """
         while self.scanning:
             time.sleep(0.5)
-            line_begin()
-            self.spinner.next()
+            try:
+                line_begin()
+                self.spinner.next()
+            except (KeyboardInterrupt, SystemExit):
+                self.scanning = False
+                self.stop()
 
     def stop(self):
         """
         Stop the spinner.
         """
-        self.spinner.file = UselessStdout()
+        self.spinner.stop()
         self.scanning = False
         spinner_clear()
         line_begin()
