@@ -14,12 +14,9 @@ def readme():
 cond_requires = ['requests',
                  'python-gnupg',
                  'beautifulsoup4',
-                 'easygui',
-                 'progress>=1.2']
-cond_links = []
+                 'easygui']
 if version_info[1] < 3:  # 3.2 and under
     cond_requires.append('shutilwhich')
-    cond_links.append('https://github.com/thurask/progress/tarball/no_unicode#egg=progress-1.9')
 setup(name='bbarchivist',
       version=bbconstants.VERSION,
       description='BlackBerry 10 autoloader tools',
@@ -58,7 +55,6 @@ setup(name='bbarchivist',
       zip_safe=False,
       include_package_data=True,
       install_requires=cond_requires,
-      dependency_links=cond_links,
       entry_points={
           'console_scripts': [
               'bb-archivist=bbarchivist.scripts.archivist:grab_args',

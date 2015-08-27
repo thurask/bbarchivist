@@ -14,7 +14,7 @@ import configparser  # config parsing, duh
 import threading  # get thread for spinner
 import time  # spinner delay
 import sys  # streams, version info
-from progress.spinner import Spinner  # the actual spinner
+import itertools  # spinners gonna spin
 from bbarchivist import bbconstants  # cap location, version
 
 
@@ -471,12 +471,26 @@ def spinner_clear():
     sys.stdout.flush()
 
 
-class SpinManager(object):
+class Spinner(object):
     """
-    Wraps around progress.spinner, runs it in another thread.
+    A basic spinner using itertools. No need for progress.
     """
     def __init__(self):
-        spinner = Spinner("")
+        self.wheel = itertools.cycle(['-', '/', '|', '\\'])
+        self.file = UselessStdout()
+
+    def next(self):
+        self.file.write(next(self.wheel))
+        self.file.flush()
+        self.file.write("\b")
+
+
+class SpinManager(object):
+    """
+    Wraps around the itertools spinner, runs it in another thread.
+    """
+    def __init__(self):
+        spinner = Spinner()
         self.spinner = spinner
         self.thread = threading.Thread(target=self.loop, args=())
         self.thread.daemon = True

@@ -636,7 +636,6 @@ Credits/Software Used
 -  Beautiful Soup: `Leonard Richardson et al. <http://www.crummy.com/software/BeautifulSoup/>`__
 -  Python-GnuPG: `Vinay Sajip et al. <https://pythonhosted.org/python-gnupg/index.html#acknowledgements>`__
 -  easygui: `easygui dev team <https://pythonhosted.org/easygui/support.html>`__
--  progress: `Giorgos Verigakis <https://github.com/verigak/progress>`__
 -  Visual Studio Community 2015: `Microsoft <https://www.visualstudio.com>`__
 -  Python Tools for Visual Studio: `Microsoft <http://microsoft.github.io/PTVS/>`__
 -  Integration: `Travis CI <https://travis-ci.org>`__
