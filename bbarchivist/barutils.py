@@ -392,24 +392,29 @@ def compress(filepath, method="7z", szexe=None, selective=False):
     :type selective: bool
     """
     method = filter_method(method, szexe)
-    files = (file for file in os.listdir(filepath) if not os.path.isdir(file))
-    for file in files:
-        filt = file.startswith(bbconstants.PREFIXES) and file.endswith(bbconstants.ARCS)
-        if (file.endswith(".exe") and filt) if selective else True:
-            filename = os.path.splitext(os.path.basename(file))[0]
-            fileloc = os.path.join(filepath, filename)
-            print("COMPRESSING: " + filename + ".exe")
-            strength = calculate_strength()
-            if method == "7z":
-                sz_compress(fileloc, file, szexe, strength)
-            elif method == "tgz":
-                tgz_compress(fileloc, file, strength)
-            elif method == "txz":
-                txz_compress(fileloc, file)
-            elif method == "tbz":
-                tbz_compress(fileloc, file, strength)
-            elif method == "zip":
-                zip_compress(fileloc, file)
+    files = [file for file in os.listdir(filepath) if not os.path.isdir(file)]
+    print(files)
+    if selective:
+        filt0 = [file for file in files if file.startswith(bbconstants.PREFIXES)]  # loaders
+        filt1 = [file for file in filt0 if not file.endswith(bbconstants.ARCS)]  # pop compressed
+        filt2 = [file for file in filt1 if file.endswith(".exe")]  # exes only
+    else:
+        filt2 = files
+    for file in filt2:
+        filename = os.path.splitext(os.path.basename(file))[0]
+        fileloc = os.path.join(filepath, filename)
+        print("COMPRESSING: " + filename + ".exe")
+        strength = calculate_strength()
+        if method == "7z":
+            sz_compress(fileloc, file, szexe, strength)
+        elif method == "tgz":
+            tgz_compress(fileloc, file, strength)
+        elif method == "txz":
+            txz_compress(fileloc, file)
+        elif method == "tbz":
+            tbz_compress(fileloc, file, strength)
+        elif method == "zip":
+            zip_compress(fileloc, file)
 
 
 def verify(filepath, method="7z", szexe=None, selective=False):

@@ -345,7 +345,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
         psz = utilities.prep_seven_zip(True)
         if psz:
             print("7ZIP OK")
-            szexe = utilities.get_seven_zip(True)
+            szexe = utilities.get_seven_zip(False)
         else:
             szexe = ""
             print("7ZIP NOT FOUND")
