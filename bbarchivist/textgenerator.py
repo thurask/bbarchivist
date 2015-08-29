@@ -6,8 +6,9 @@ __author__ = "Thurask"
 __license__ = "Do whatever"
 __copyright__ = "2015 Thurask"
 
-from bbarchivist.networkutils import create_base_url, get_content_length
-from bbarchivist.utilities import filesize_parser, generate_urls
+
+from bbarchivist.networkutils import create_base_url, get_content_length  # base url, get filesize
+from bbarchivist.utilities import filesize_parser, generate_urls, barname_stripper  # url creation, filesize mapping, barname cleaning
 
 
 def write_links(softwareversion, osversion, radioversion,
@@ -79,7 +80,9 @@ def write_links(softwareversion, osversion, radioversion,
                 stoppers = ["8960", "8930", "8974", "m5730", "winchester"]
                 if all(word not in app for word in stoppers):
                     thesize = get_content_length(app)
-                    target.write(app + " [" + filesize_parser(thesize) + "]\n")
+                    base = app.split('/')[-1]
+                    base = barname_stripper(base)
+                    target.write(base + " [" + filesize_parser(thesize) + "] " + app + "\n")
 
 
 def url_generator(osversion, radioversion, softwareversion):
