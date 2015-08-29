@@ -1,10 +1,17 @@
-﻿import bbarchivist.loadergen as bl
+﻿#!/usr/bin/env python3
+#pylint: disable = I0011, R0201, W0613, C0301
+"""Test the loadergen module."""
+
+import bbarchivist.loadergen as bl
 import os
 from shutil import rmtree, copyfile
 from hashlib import sha512
 
 
 def setup_module(module):
+    """
+    Create necessary files.
+    """
     if not os.path.exists("temp"):
         os.mkdir("temp")
     os.chdir("temp")
@@ -13,6 +20,9 @@ def setup_module(module):
 
 
 def teardown_module(module):
+    """
+    Delete necessary files.
+    """
     for file in os.listdir():
         if file.endswith(".signed"):
             os.remove(file)
@@ -23,8 +33,13 @@ def teardown_module(module):
 
 
 class TestClassLoadergen:
-
+    """
+    Test autoloader generation.
+    """
     def test_generate_lazy_loader(self):
+        """
+        Test creating one autoloader (lazyloader).
+        """
         with open("desktop.signed", "w") as targetfile:
             targetfile.write("Jackdaws love my big sphinx of quartz"*5000)
         with open("radio.signed", "w") as targetfile:
@@ -40,6 +55,9 @@ class TestClassLoadergen:
         assert thehash == '71edeced963cd8cf1a7b99c8be9dc93df670471a02eef5da5e40ad4822be1e321c8e1495369dc685b943ac07287bb4b8245636c7b28c861cfd9238e0d42288a2'
 
     def test_generate_loaders(self):
+        """
+        Test creating multiple autoloaders (archivist).
+        """
         with open("qc8960.factory_sfi.desktop.signed", "w") as targetfile:
             targetfile.write("Jackdaws love my big sphinx of quartz"*5000)
         copyfile("qc8960.factory_sfi.desktop.signed", "qc8x30.factory_sfi.desktop.signed")

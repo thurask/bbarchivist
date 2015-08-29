@@ -1,4 +1,7 @@
-﻿from cx_Freeze import setup, Executable
+﻿#!/usr/bin/env python3
+#pylint: disable = I0011, C0111, C0103, W0622
+
+from cx_Freeze import setup, Executable
 from os import chdir
 from os.path import join, abspath, dirname
 from requests import certs

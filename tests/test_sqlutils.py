@@ -1,4 +1,8 @@
-﻿import os
+﻿#!/usr/bin/env python3
+#pylint: disable = I0011, R0201, W0613, C0301
+"""Test the sqlutils module."""
+
+import os
 import csv
 from shutil import rmtree
 import sqlite3
@@ -11,6 +15,9 @@ except ImportError:
 
 
 def setup_module(module):
+    """
+    Create necessary files.
+    """
     if not os.path.exists("temp"):
         os.mkdir("temp")
     os.chdir("temp")
@@ -19,6 +26,9 @@ def setup_module(module):
 
 
 def teardown_module(module):
+    """
+    Delete necessary files.
+    """
     if os.path.exists("bbarchivist.db"):
         os.remove("bbarchivist.db")
     if os.path.exists("swrelease.csv"):
@@ -28,18 +38,26 @@ def teardown_module(module):
 
 
 class TestClassSQLUtils:
-
+    """
+    Test SQL-related tools.
+    """
     def test_prepare_sw_db(self):
-        abs = os.path.abspath(os.getcwd())
-        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=abs)):
+        """
+        Test preparing SQL database.
+        """
+        apath = os.path.abspath(os.getcwd())
+        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=apath)):
             bs.prepare_sw_db()
         sqlpath = os.path.join(os.path.abspath(os.getcwd()), "bbarchivist.db")
         assert file_exists(sqlpath)
 
     def test_insert_sw_release(self):
-        abs = os.path.abspath(os.getcwd())
-        sqlpath = os.path.join(abs, "bbarchivist.db")
-        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=abs)):
+        """
+        Test adding software release to SQL database.
+        """
+        apath = os.path.abspath(os.getcwd())
+        sqlpath = os.path.join(apath, "bbarchivist.db")
+        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=apath)):
             try:
                 cnxn = sqlite3.connect(sqlpath)
                 with cnxn:
@@ -63,6 +81,9 @@ class TestClassSQLUtils:
                 assert False
 
     def test_export_sql_db(self):
+        """
+        Test exporting SQL database to csv file.
+        """
         if os.getenv("TRAVIS", "false") == "true":
             pass
         else:

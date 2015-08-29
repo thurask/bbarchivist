@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#pylint: disable = I0011, C0111, C0103, W0622
 # -*- coding: utf-8 -*-
 #
 # bbarchivist documentation build configuration file, created by

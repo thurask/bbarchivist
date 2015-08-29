@@ -1,10 +1,17 @@
-﻿import bbarchivist.pseudocap as bp
+﻿#!/usr/bin/env python3
+#pylint: disable = I0011, R0201, W0613, C0301
+"""Test the pseudocap module."""
+
+import bbarchivist.pseudocap as bp
 import os
 from shutil import rmtree, copyfile
 from hashlib import sha512
 
 
 def setup_module(module):
+    """
+    Create necessary files.
+    """
     if not os.path.exists("temp"):
         os.mkdir("temp")
     os.chdir("temp")
@@ -21,6 +28,9 @@ def setup_module(module):
 
 
 def teardown_module(module):
+    """
+    Delete necessary files.
+    """
     if os.path.exists("cap-3.11.0.22.dat"):
         os.remove("cap-3.11.0.22.dat")
     if os.path.exists("firstfile"):
@@ -30,16 +40,27 @@ def teardown_module(module):
 
 
 class TestClassPseudocap:
-
+    """
+    Test pseudocap, the Python equivalent of cap.exe.
+    """
     def test_ghetto_convert(self):
+        """
+        Test decimal -> little-endian hex "conversion".
+        """
         assert bp.ghetto_convert(987654321) == b'\x00\x00\x00\x00\xb1h\xde:'
 
     def test_make_offset_len(self):
+        """
+        Test offset length.
+        """
         with open("offset.hex", "rb") as targetfile:
             data = targetfile.read()
         assert len(data) == 208
 
     def test_make_offset_hash(self):
+        """
+        Test offset integrity.
+        """
         shahash = sha512()
         with open("offset.hex", "rb") as targetfile:
             data = targetfile.read()
@@ -48,6 +69,9 @@ class TestClassPseudocap:
         assert thehash == '8001a4814bff60f755d8e86a250fee517e983e54cdfc64964b2120f8ce0444ea786c441f0707f1a8a3ccda612281f6ee226264059833abcf8c910883564e8d32'
 
     def test_make_autoloader_hash(self):
+        """
+        Test loader integrity.
+        """
         shahash = sha512()
         with open("loader.exe", 'rb') as file:
             while True:
