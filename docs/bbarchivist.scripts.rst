@@ -1,6 +1,14 @@
 bbarchivist.scripts package
 ===========================
 
+Module contents
+---------------
+
+.. automodule:: bbarchivist.scripts
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 bbarchivist.scripts.archivist module
 ------------------------------------
 

@@ -342,8 +342,7 @@ def generate_urls(baseurl, osversion, radioversion, core=False):
     """
     Generate a list of OS URLs and a list of radio URLs based on input.
 
-    :param baseurl: Everything in the URL before the bar name,
-    including hashed software release.
+    :param baseurl: The URL, from http to the hashed software release.
     :type baseurl: str
 
     :param osversion: OS version.
@@ -398,8 +397,7 @@ def generate_lazy_urls(baseurl, osversion, radioversion, device):
     """
     Generate a pair of OS/radio URLs based on input.
 
-    :param baseurl: Everything in the URL before the bar name,
-    including hashed software release.
+    :param baseurl: The URL, from http to the hashed software release.
     :type baseurl: str
 
     :param osversion: OS version.

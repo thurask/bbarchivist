@@ -7,7 +7,15 @@ Subpackages
 .. toctree::
 
     bbarchivist.scripts
-    bbarchivist.tests
+    tests
+
+Module contents
+---------------
+
+.. automodule:: bbarchivist
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 bbarchivist.barutils module
 ---------------------------
