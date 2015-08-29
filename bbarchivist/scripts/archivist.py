@@ -431,10 +431,10 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     else:
         altradio = False
     loadergen.generate_loaders(osversion,
-                                radioversion,
-                                radios,
-                                localdir,
-                                altradio)
+                               radioversion,
+                               radios,
+                               localdir,
+                               altradio)
 
     # Remove .signed files
     if signed:

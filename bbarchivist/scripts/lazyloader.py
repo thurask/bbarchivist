@@ -16,9 +16,9 @@ from bbarchivist import loadergen  # cap wrapper
 try:
     import easygui as eg  # gui
 except Exception:
-    withgui = False
+    GUI_AVAILABLE = False
 else:
-    withgui = True
+    GUI_AVAILABLE = True
 
 
 def start_gui(osv=None, radv=None, swv=None, dev=None, aut=None,
@@ -226,7 +226,7 @@ def grab_args():
             args.folder = os.getcwd()
         if not utilities.is_windows():
             args.autoloader = False
-        if not withgui:
+        if not GUI_AVAILABLE:
             args.gui = False
         if args.gui:
             start_gui(args.os,

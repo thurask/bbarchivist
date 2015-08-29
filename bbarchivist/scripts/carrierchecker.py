@@ -60,7 +60,7 @@ def grab_args():
             dest="upgrade",
             help="Debrick instead of upgrade bars",
             action="store_false",
-            default=True),
+            default=True)
         parser.add_argument(
             "-f", "--folder",
             dest="folder",

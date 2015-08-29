@@ -130,7 +130,7 @@ def autolookup_main(osversion, loop=False, log=False,
     try:
         while True:
             swrelease = ""
-            print("NOW SCANNING:", osversion, end="\r"),
+            print("NOW SCANNING:", osversion, end="\r")
             results = networkutils.sr_lookup_bootstrap(osversion)
             if results is None:
                 raise KeyboardInterrupt
