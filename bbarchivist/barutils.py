@@ -393,7 +393,6 @@ def compress(filepath, method="7z", szexe=None, selective=False):
     """
     method = filter_method(method, szexe)
     files = [file for file in os.listdir(filepath) if not os.path.isdir(file)]
-    print(files)
     if selective:
         filt0 = [file for file in files if file.startswith(bbconstants.PREFIXES)]  # loaders
         filt1 = [file for file in filt0 if not file.endswith(bbconstants.ARCS)]  # pop compressed
