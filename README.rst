@@ -308,36 +308,32 @@ Help
 
     > bb-cchecker -h
 
-    usage: bb-cchecker [-h] [-v] [-a] [-d] [-e] [-u | -r] [-f DIR] [-b]
-                   [-s SWRELEASE]
+    usage: bb-cchecker [-h] [-v] [-a] [-d] [-e] [-r] [-f DIR] [-b]
+                   [-s SWRELEASE | -o OS]
                    mcc mnc device
 
-    Checks a carrier for an OS version, can download.
-    
-    positional arguments:
-      mcc                   1-3 digit country code
-      mnc                   1-3 digit carrier code
-      device                'STL100-1', 'SQW100-3', etc.
-    
-    optional arguments:
-      -h, --help            show this help message and exit
-      -v, --version         show program's version number and exit
-      -a, --available-bundles
-                            Check available bundles
-      -d, --download        Download files after checking
-      -e, --export          Export links to files
-      -f DIR, --folder DIR  Working folder
-      -b, --blitz           Create blitz package
-      -s SWRELEASE, --software-release SWRELEASE
-                            Force SW release (check bundles first!)
-    
-    bartypes:
-      File types
-    
-      -u, --upgrade         Upgrade instead of debrick bars
-      -r, --repair          Debrick instead of upgrade bars
-    
-    http://github.com/thurask/bbarchivist
+	Checks a carrier for an OS version, can download.
+
+	positional arguments:
+	  mcc                   1-3 digit country code
+	  mnc                   1-3 digit carrier code
+	  device                'STL100-1', 'SQW100-3', etc.
+
+	optional arguments:
+	  -h, --help            show this help message and exit
+	  -v, --version         show program's version number and exit
+	  -a, --available-bundles
+							Check available bundles
+	  -d, --download        Download files after checking
+	  -e, --export          Export links to files
+	  -r, --repair          Debrick instead of upgrade bars
+	  -f DIR, --folder DIR  Working folder
+	  -b, --blitz           Create blitz package
+	  -s SWRELEASE, --software-release SWRELEASE
+							Force SW release (check bundles first!)
+	  -o OS, --os OS        Force OS (check bundles first!)
+
+	http://github.com/thurask/bbarchivist
     
 ----------------------------------------
 

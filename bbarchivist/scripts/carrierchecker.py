@@ -55,23 +55,14 @@ def grab_args():
             help="Export links to files",
             action="store_true",
             default=False)
-        comps = parser.add_argument_group("bartypes", "File types")
-        compgroup = comps.add_mutually_exclusive_group()
-        compgroup.add_argument(
-            "-u", "--upgrade",
-            dest="upgrade",
-            help="Upgrade instead of debrick bars",
-            action="store_true",
-            default=False),
-        compgroup.add_argument(
+        parser.add_argument(
             "-r", "--repair",
             dest="upgrade",
             help="Debrick instead of upgrade bars",
             action="store_false",
-            default=False),
+            default=True),
         parser.add_argument(
-            "-f",
-            "--folder",
+            "-f", "--folder",
             dest="folder",
             help="Working folder",
             default=None,
@@ -82,23 +73,41 @@ def grab_args():
             help="Create blitz package",
             action="store_true",
             default=False)
-        parser.add_argument(
+        fgroup = parser.add_mutually_exclusive_group()
+        fgroup.add_argument(
             "-s", "--software-release",
-            dest="forced",
+            dest="forcedsw",
             help="Force SW release (check bundles first!)",
             default=None,
             metavar="SWRELEASE")
-        parser.set_defaults(upgrade=False)
+        fgroup.add_argument(
+            "-o", "--os",
+            dest="forcedos",
+            help="Force OS (check bundles first!)",
+            default=None,
+            metavar="OS")
+        parser.set_defaults()
         args = parser.parse_args(sys.argv[1:])
         if args.folder is None:
             args.folder = os.getcwd()
         if args.blitz:
+            args.download = True
             args.upgrade = True  # blitz takes precedence
         if args.bundles:
             args.download = False
             args.upgrade = False
             args.export = False
             args.blitz = False
+        if args.forcedos is not None and args.forcedsw is None:
+            avail = networkutils.software_release_lookup(args.forcedos, bbconstants.SERVERS['p'])
+            if avail != "SR not in system":
+                forced = avail
+            else:
+                forced = None
+        elif args.forcedos is None and args.forcedsw is not None:
+            forced = args.forcedsw
+        else:
+            forced = None
         carrierchecker_main(
             args.mcc,
             args.mnc,
@@ -109,7 +118,7 @@ def grab_args():
             args.export,
             args.blitz,
             args.bundles,
-            args.forced)
+            forced)
     else:
         while True:
             mcc = int(input("MCC: "))
@@ -156,7 +165,7 @@ def grab_args():
 
 
 def carrierchecker_main(mcc, mnc, device,
-                        download=False, upgrade=False,
+                        download=False, upgrade=True,
                         directory=None,
                         export=False,
                         blitz=False,
