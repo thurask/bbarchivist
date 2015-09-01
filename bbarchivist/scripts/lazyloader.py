@@ -8,6 +8,7 @@ import os  # path work
 import glob  # filename matching
 import subprocess  # autoloader running
 import json  # db work
+import pprint  # pretty printing
 from bbarchivist import utilities  # input validation
 from bbarchivist import barutils  # file operations
 from bbarchivist import bbconstants  # constants/versions
@@ -52,7 +53,10 @@ def start_gui(osv=None, radv=None, swv=None, dev=None, aut=None,
     :type alt: str
     """
     if not osv:
-        osentry = eg.enterbox(msg="OS version")
+        while True:
+            osentry = eg.enterbox(msg="OS version")
+            if osentry:
+                break
     else:
         osentry = osv
     if not swv:
@@ -68,14 +72,15 @@ def start_gui(osv=None, radv=None, swv=None, dev=None, aut=None,
                               default_choice="No")
         if altcheck:
             altentry = eg.enterbox(msg="Software version for radio")
-        else: altentry = None
+            if not altentry:
+                altentry = None
+        else:
+            altentry = None
     else:
         altentry = alt
-    choicelist = ["STL100-1", "STL100-2/3/P9982", "STL100-4", "Q10/Q5/P9983",
-                  "Z30/CLASSIC/LEAP", "Z3", "PASSPORT"]
     if dev is None:
-        deventry = eg.choicebox(msg="Device", choices=choicelist)
-        for idx, device in enumerate(choicelist):
+        deventry = eg.choicebox(msg="Device", choices=bbconstants.DEVICES)
+        for idx, device in enumerate(bbconstants.DEVICES):
             if device == deventry:
                 devint = idx
     else:
@@ -255,35 +260,55 @@ def grab_args():
                                 args.altsw)
     else:
         localdir = os.getcwd()
-        osversion = input("OS VERSION: ")
+        while True:
+            osversion = input("OS VERSION: ")
+            if osversion:
+                break
+        print("OS:", osversion)
         radioversion = input("RADIO VERSION (PRESS ENTER TO GUESS): ")
         if not radioversion:
             radioversion = None
+        else:
+            print("RADIO:", radioversion)
         softwareversion = input("SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
         if not softwareversion:
             softwareversion = None
+        else:
+            print("SOFTWARE RELEASE:", softwareversion)
         altcheck = utilities.str2bool(input("HYBRID AUTOLOADER (Y/N)?: "))
         if altcheck:
-            altsw = input("RADIO SOFTWARE RELEASE: ")
+            print("CREATING HYBRID AUTOLOADER")
+            while True:
+                altsw = input("RADIO SOFTWARE RELEASE: ")
+                if altsw:
+                    break
+            print("RADIO SOFTWARE RELEASE:", altsw)
         else:
             altsw = None
+        print("DEVICES:")
+        inputlist = ["0=STL100-1",
+                     "1=STL100-2/3/P9982",
+                     "2=STL100-4",
+                     "3=Q10/Q5/P9983",
+                     "4=Z30/CLASSIC/LEAP",
+                     "5=Z3",
+                     "6=PASSPORT"]
+        pprint.pprint(inputlist)
         while True:
-            inputlist = ["0=STL100-1",
-                         "1=STL100-2/3/P9982",
-                         "2=STL100-4",
-                         "3=Q10/Q5/P9983",
-                         "\n4=Z30/CLASSIC/LEAP",
-                         "5=Z3",
-                         "6=PASSPORT"]
             try:
-                device = int(input("SELECTED DEVICE (" +"; ".join(inputlist) +"): "))
-            except ValueError:
+                device = int(input("SELECTED DEVICE: "))
+                derp = inputlist[device]
+            except (ValueError, IndexError):
                 continue
             else:
+                print("DEVICE:", bbconstants.DEVICES[device])
+                del derp
                 break
         if utilities.is_windows():
             autoloader = utilities.str2bool(
                 input("RUN AUTOLOADER (WILL WIPE YOUR DEVICE!)(Y/N)?: "))
+            if autoloader:
+                print("RUN AUTOLOADER AFTER CREATION")
         else:
             autoloader = False
         print(" ")
@@ -348,20 +373,13 @@ def lazyloader_main(device, osversion, radioversion=None,
                 raise SystemExit  # bye bye
         else:
             swchecked = True
-    devicelist = ["STL100-1",
-                  "STL100-2/3/P9982",
-                  "STL100-4",
-                  "Q10/Q5/P9983",
-                  "Z30/CLASSIC/LEAP",
-                  "Z3",
-                  "PASSPORT"]
     print("~~~LAZYLOADER VERSION", bbconstants.VERSION + "~~~")
     print("OS VERSION:", osversion)
     print("SOFTWARE VERSION:", softwareversion)
     print("RADIO VERSION:", radioversion)
     if altsw is not None:
         print("RADIO SOFTWARE VERSION:", altsw)
-    print("DEVICE:", devicelist[device])
+    print("DEVICE:", bbconstants.DEVICES[device])
 
     if download:
         baseurl = networkutils.create_base_url(softwareversion)

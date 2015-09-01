@@ -40,3 +40,5 @@ METHODS = ("7z", "tbz", "tgz", "zip", "txz")
 PREFIXES = ("Q10", "Z10", "Z30", "Z3", "Passport")
 #: Support files.
 SUPPS = (".asc", ".cksum")
+#: Devices.
+DEVICES = ("STL100-1", "STL100-2/3/P9982", "STL100-4", "Q10/Q5/P9983", "Z30/CLASSIC/LEAP", "Z3", "PASSPORT")
