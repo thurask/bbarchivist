@@ -9,6 +9,7 @@ import glob  # filename matching
 import subprocess  # autoloader running
 import json  # db work
 import pprint  # pretty printing
+from bbarchivist import scriptutils  # script stuff
 from bbarchivist import utilities  # input validation
 from bbarchivist import barutils  # file operations
 from bbarchivist import bbconstants  # constants/versions
@@ -115,8 +116,7 @@ def grab_args():
             "-v",
             "--version",
             action="version",
-            version="%(prog)s " +
-            bbconstants.VERSION)
+            version="%(prog)s " + bbconstants.VERSION)
         parser.add_argument(
             "os",
             help="OS version, 10.x.y.zzzz",
@@ -356,23 +356,9 @@ def lazyloader_main(device, osversion, radioversion=None,
     :param altsw: Radio software release, if not the same as OS.
     :type altsw: str
     """
-    swchecked = False  # if we checked sw release already
-    if radioversion is None:
-        radioversion = utilities.version_incrementer(osversion, 1)
-    if softwareversion is None:
-        serv = bbconstants.SERVERS["p"]
-        softwareversion = networkutils.software_release_lookup(osversion, serv)
-        if softwareversion == "SR not in system":
-            print("SOFTWARE RELEASE NOT FOUND")
-            cont = utilities.str2bool(input("INPUT MANUALLY? Y/N: "))
-            if cont:
-                softwareversion = input("SOFTWARE RELEASE: ")
-                swchecked = False
-            else:
-                print("\nEXITING...")
-                raise SystemExit  # bye bye
-        else:
-            swchecked = True
+    swchecked = False  # if we checked SW release already
+    radioversion = scriptutils.return_radio_version(osversion, radioversion)
+    softwareversion, swchecked = scriptutils.return_sw_checked(softwareversion, osversion)
     print("~~~LAZYLOADER VERSION", bbconstants.VERSION + "~~~")
     print("OS VERSION:", osversion)
     print("SOFTWARE VERSION:", softwareversion)
@@ -380,6 +366,9 @@ def lazyloader_main(device, osversion, radioversion=None,
     if altsw is not None:
         print("RADIO SOFTWARE VERSION:", altsw)
     print("DEVICE:", bbconstants.DEVICES[device])
+
+    # Make dirs
+    bd_o, bd_r, ld_o, ld_r, zd_o, zd_r = barutils.make_dirs(localdir, osversion, radioversion)
 
     if download:
         baseurl = networkutils.create_base_url(softwareversion)
@@ -389,116 +378,33 @@ def lazyloader_main(device, osversion, radioversion=None,
         if altsw:
             radiourl = radiourl.replace(baseurl, alturl)
 
-        # Check availability of software release
-        if not swchecked:
-            avlty = networkutils.availability(baseurl)
-            if avlty:
-                print("SOFTWARE RELEASE", softwareversion, "EXISTS")
-            else:
-                print("SOFTWARE RELEASE", softwareversion, "NOT FOUND")
-                cont = utilities.str2bool(input("CONTINUE? Y/N: "))
-                if cont:
-                    pass
-                else:
-                    print("\nEXITING...")
-                    raise SystemExit
-        else:
-            print("SOFTWARE RELEASE", softwareversion, "EXISTS")
+        # Check availability of software releases
+        scriptutils.check_sw(baseurl, softwareversion, swchecked)
+        scriptutils.check_radio_sw(alturl, altsw)
 
-        if altsw:
-            print("\nCHECKING RADIO SOFTWARE RELEASE...")
-            altavlty = networkutils.availability(alturl)
-            if altavlty:
-                print("SOFTWARE RELEASE", altsw, "EXISTS")
-            else:
-                print("SOFTWARE RELEASE", altsw, "NOT FOUND")
-                cont = utilities.str2bool(input("CONTINUE? Y/N: "))
-                if cont:
-                    pass
-                else:
-                    print("\nEXITING...")
-                    raise SystemExit
+        # Check availability of OS, radio
+        scriptutils.check_os_single(osurl, osversion, device)
+        radiourl, radioversion = scriptutils.check_radio_single(radiourl, radioversion)
 
-        # Check availability of specific OS
-        osav = networkutils.availability(osurl)
-        if not osav:
-            print(osversion, "NOT AVAILABLE FOR", devicelist[device])
-            cont = utilities.str2bool(input("CONTINUE? Y/N: "))
-            if cont:
-                pass
-            else:
-                print("\nEXITING...")
-                raise SystemExit
-
-        # Check availability of specific radio
-        radav = networkutils.availability(radiourl)
-        if not radav:
-            print("RADIO VERSION NOT FOUND")
-            cont = utilities.str2bool(input("INPUT MANUALLY? Y/N: "))
-            if cont:
-                rad2 = input("RADIO VERSION: ")
-                radiourl = radiourl.replace(radioversion, rad2)
-                radioversion = rad2
-            else:
-                going = utilities.str2bool(input("KEEP GOING? Y/N: "))
-                if going:
-                    pass
-                else:
-                    print("\nEXITING...")
-                    raise SystemExit
-
-        print("\nDOWNLOADING...")
+        print("DOWNLOADING...")
         dllist = [osurl, radiourl]
         networkutils.download_bootstrap(dllist,
                                         outdir=localdir,
                                         lazy=True,
                                         workers=2)
-    brokenlist = []
-    print("\nTESTING BAR FILES...")
-    for file in os.listdir(localdir):
-        if file.endswith(".bar"):
-            print("TESTING:", file)
-            thepath = os.path.abspath(os.path.join(localdir, file))
-            brokens = barutils.bar_tester(thepath)
-            if brokens is not None:
-                os.remove(brokens)
-                for url in dllist:
-                    if brokens in url:
-                        brokenlist.append(url)
-    if brokenlist:
-        print("\nREDOWNLOADING BROKEN FILES...")
-        networkutils.download_bootstrap(brokenlist,
-                                        outdir=localdir,
-                                        lazy=True,
-                                        workers=len(brokenlist))
-        for file in os.listdir(localdir):
-            if file.endswith(".bar"):
-                thepath = os.path.abspath(os.path.join(localdir, file))
-                brokens = barutils.bar_tester(thepath)
-                if brokens is not None:
-                    print(file, "STILL BROKEN")
-                    raise SystemExit
-    else:
-        print("ALL FILES DOWNLOADED OK")
 
-    print("\nEXTRACTING...")
+    # Test bar files
+    scriptutils.test_bar_files(localdir, dllist, download)
+
+    # Extract bar files
+    print("EXTRACTING...")
     barutils.extract_bars(localdir)
 
-    print("\nTESTING SIGNED FILES...")
-    for file in os.listdir(localdir):
-        if file.endswith(".bar"):
-            print("TESTING:", file)
-            signname, signhash = barutils.retrieve_sha512(file)
-            sha512ver = barutils.verify_sha512(signname, signhash)
-            if not sha512ver:
-                print("{0} IS BROKEN".format((file)))
-                raise SystemExit
-    print("ALL FILES EXTRACTED OK")
+    # Test signed files
+    scriptutils.test_signed_files(localdir)
 
-    # Make dirs
-    bd_o, bd_r, ld_o, ld_r, zd_o, zd_r = barutils.make_dirs(localdir, osversion, radioversion)
-
-    print("\nMOVING BAR FILES...")
+    # Move bar files
+    print("MOVING BAR FILES...")
     barutils.move_bars(localdir, bd_o, bd_r)
 
     if altsw:
@@ -508,17 +414,14 @@ def lazyloader_main(device, osversion, radioversion=None,
     loadergen.generate_lazy_loader(osversion, device,
                                    localdir=localdir, altradio=altradio)
 
-    print("\nREMOVING SIGNED FILES...")
-    for file in os.listdir(localdir):
-        if file.endswith(".signed"):
-            print("REMOVING: " + file)
-            os.remove(file)
+    print("REMOVING SIGNED FILES...")
+    barutils.remove_signed_files(localdir)
 
-    print("\nMOVING LOADERS...")
+    print("MOVING LOADERS...")
     barutils.move_loaders(localdir, ld_o, ld_r, zd_o, zd_r)
 
     # Delete empty folders
-    print("\nREMOVING EMPTY FOLDERS...")
+    print("REMOVING EMPTY FOLDERS...")
     barutils.remove_empty_folders(localdir)
 
     if autoloader:

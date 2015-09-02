@@ -24,8 +24,7 @@ def escreens_main():
             "-v",
             "--version",
             action="version",
-            version="%(prog)s " +
-            bbconstants.VERSION)
+            version="%(prog)s " + bbconstants.VERSION)
         parser.add_argument("pin",
                             help="PIN, 8 characters",
                             type=utilities.escreens_pin)

@@ -24,8 +24,7 @@ def cap_main():
         "-v",
         "--version",
         action="version",
-        version="%(prog)s " +
-        bbconstants.VERSION)
+        version="%(prog)s " + bbconstants.VERSION)
     parser.add_argument("filename",
                         help="Filename")
     files = parser.add_argument_group()

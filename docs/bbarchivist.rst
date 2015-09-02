@@ -57,6 +57,14 @@ bbarchivist.pseudocap module
     :undoc-members:
     :show-inheritance:
 
+bbarchivist.scriptutils module
+---------------------------
+
+.. automodule:: bbarchivist.scriptutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 bbarchivist.sqlutils module
 ---------------------------
 

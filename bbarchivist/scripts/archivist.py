@@ -3,12 +3,11 @@
 """Download bar files, create autoloaders."""
 
 import os  # filesystem read
-import shutil  # directory read/write
 import time  # time for downloader
 import math  # rounding of floats
 import sys  # load arguments
 import argparse  # parse arguments
-import getpass  # invisible password
+from bbarchivist import scriptutils  # script stuff
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import utilities  # input validation
 from bbarchivist import barutils  # file/folder work
@@ -32,8 +31,7 @@ def grab_args():
             "-v",
             "--version",
             action="version",
-            version="%(prog)s " +
-            bbconstants.VERSION)
+            version="%(prog)s " + bbconstants.VERSION)
         parser.add_argument(
             "os",
             help="OS version, 10.x.y.zzzz")
@@ -247,22 +245,8 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     """
     starttime = time.clock()
     swchecked = False  # if we checked sw release already
-    if radioversion is None:
-        radioversion = utilities.version_incrementer(osversion, 1)
-    if softwareversion is None:
-        serv = bbconstants.SERVERS["p"]
-        softwareversion = networkutils.software_release_lookup(osversion, serv)
-        if softwareversion == "SR not in system":
-            print("SOFTWARE RELEASE NOT FOUND")
-            cont = utilities.str2bool(input("INPUT MANUALLY? Y/N: "))
-            if cont:
-                softwareversion = input("SOFTWARE RELEASE: ")
-                swchecked = False
-            else:
-                print("\nEXITING...")
-                raise SystemExit  # bye bye
-        else:
-            swchecked = True
+    radioversion = scriptutils.return_radio_version(osversion, radioversion)
+    softwareversion, swchecked = scriptutils.return_sw_checked(softwareversion, osversion)
     if localdir is None:
         localdir = os.getcwd()
     if hashdict is None:
@@ -290,142 +274,45 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
         radiourls = radiourls2
         del radiourls2
 
-    # Check availability of software release
-    print("CHECKING SOFTWARE RELEASE AVAILABILITY...")
-    if not swchecked:
-        avlty = networkutils.availability(baseurl)
-        if avlty:
-            print("SOFTWARE RELEASE", softwareversion, "EXISTS")
-        else:
-            print("SOFTWARE RELEASE", softwareversion, "NOT FOUND")
-            cont = utilities.str2bool(input("CONTINUE? Y/N: "))
-            if cont:
-                pass
-            else:
-                print("\nEXITING...")
-                raise SystemExit
-    else:
-        print("SOFTWARE RELEASE", softwareversion, "EXISTS")
+    # Check availability of software releases
+    scriptutils.check_sw(baseurl, softwareversion, swchecked)
+    scriptutils.check_radio_sw(alturl, altsw)
 
-    if altsw:
-        print("CHECKING RADIO SOFTWARE RELEASE...")
-        altavlty = networkutils.availability(alturl)
-        if altavlty:
-            print("SOFTWARE RELEASE", altsw, "EXISTS")
-        else:
-            print("SOFTWARE RELEASE", altsw, "NOT FOUND")
-            cont = utilities.str2bool(input("CONTINUE? Y/N: "))
-            if cont:
-                pass
-            else:
-                print("\nEXITING...")
-                raise SystemExit
+    # Check availability of OS, radio
+    scriptutils.check_os_bulk(osurls, osversion)
+    radiourls, radioversion = scriptutils.check_radio_bulk(radiourls, radioversion)
 
-    for url in radiourls:
-        radav = networkutils.availability(url)
-        if radav:
-            break
-    else:
-        print("RADIO VERSION NOT FOUND")
-        cont = utilities.str2bool(input("INPUT MANUALLY? Y/N: "))
-        if cont:
-            rad2 = input("RADIO VERSION: ")
-            radiourls = [url.replace(radioversion, rad2) for url in radiourls]
-            radioversion = rad2
-        else:
-            going = utilities.str2bool(input("KEEP GOING? Y/N: "))
-            if going:
-                pass
-            else:
-                print("\nEXITING...")
-                raise SystemExit
-
-    if compmethod == "7z":
-        print("\nCHECKING PRESENCE OF 7ZIP...")
-        psz = utilities.prep_seven_zip(True)
-        if psz:
-            print("7ZIP OK")
-            szexe = utilities.get_seven_zip(False)
-        else:
-            szexe = ""
-            print("7ZIP NOT FOUND")
-            cont = utilities.str2bool(input("CONTINUE? Y/N "))
-            if cont:
-                print("FALLING BACK TO ZIP...")
-                compmethod = "zip"
-            else:
-                print("\nEXITING...")
-                raise SystemExit  # bye bye
-    else:
-        szexe = ""
+    compmethod, szexe = scriptutils.get_sz_executable(compmethod)
 
     # Make dirs
     bd_o, bd_r, ld_o, ld_r, zd_o, zd_r = barutils.make_dirs(localdir, osversion, radioversion)
 
     # Download files
     if download:
-        print("\nBEGIN DOWNLOADING...")
+        print("BEGIN DOWNLOADING...")
         networkutils.download_bootstrap(radiourls+osurls, localdir, workers=3)
         print("ALL FILES DOWNLOADED")
 
     # Test bar files
     if integrity:
-        brokenlist = []
-        print("\nTESTING BAR FILES...")
-        for file in os.listdir(localdir):
-            if file.endswith(".bar"):
-                print("TESTING:", file)
-                thepath = os.path.abspath(os.path.join(localdir, file))
-                brokens = barutils.bar_tester(thepath)
-                if brokens is not None:
-                    os.remove(brokens)
-                    for url in radiourls+osurls:
-                        if brokens in url:
-                            brokenlist.append(url)
-        if brokenlist and download:
-            print("\nREDOWNLOADING BROKEN FILES...")
-            if len(brokenlist) > 5:
-                workers = 5
-            else:
-                workers = len(brokenlist)
-            networkutils.download_bootstrap(brokenlist,
-                                            outdir=localdir,
-                                            lazy=False,
-                                            workers=workers)
-            for file in os.listdir(localdir):
-                if file.endswith(".bar"):
-                    thepath = os.path.abspath(os.path.join(localdir, file))
-                    brokens = barutils.bar_tester(thepath)
-                    if brokens is not None:
-                        print(file, "STILL BROKEN")
-                        raise SystemExit
-        else:
-            print("BAR FILES DOWNLOADED OK")
+        urllist = osurls+radiourls
+        scriptutils.test_bar_files(localdir, urllist, download)
 
     # Extract bar files
     if extract:
-        print("\nEXTRACTING...")
+        print("EXTRACTING...")
         barutils.extract_bars(localdir)
 
     # Test signed files
     if integrity:
-        print("\nTESTING SIGNED FILES...")
-        for file in os.listdir(localdir):
-            if file.endswith(".bar"):
-                print("TESTING:", file)
-                signname, signhash = barutils.retrieve_sha512(file)
-                sha512ver = barutils.verify_sha512(signname, signhash)
-                if not sha512ver:
-                    print("{0} IS BROKEN".format((file)))
-                    raise SystemExit
-        print("SIGNED FILES EXTRACTED OK")
+        scriptutils.test_signed_files(localdir)
 
     # Move bar files
-    print("\nMOVING BAR FILES...")
+    print("MOVING BAR FILES...")
     barutils.move_bars(localdir, bd_o, bd_r)
 
     # Create loaders
-    print("\nGENERATING LOADERS...")
+    print("GENERATING LOADERS...")
     if altsw:
         altradio = True
     else:
@@ -438,30 +325,27 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
 
     # Remove .signed files
     if signed:
-        print("\nREMOVING SIGNED FILES...")
-        for file in os.listdir(localdir):
-            if os.path.join(localdir, file).endswith(".signed"):
-                print("REMOVING: " + file)
-                os.remove(os.path.join(localdir, file))
+        print("REMOVING SIGNED FILES...")
+        barutils.remove_signed_files(localdir)
 
     # If compression = true, compress
     if compressed:
-        print("\nCOMPRESSING...")
+        print("COMPRESSING...")
         barutils.compress(localdir, compmethod, szexe, True)
 
     if integrity and compressed:
-        print("\nTESTING ARCHIVES...")
+        print("TESTING ARCHIVES...")
         barutils.verify(localdir, compmethod, szexe, True)
 
     # Move zipped/unzipped loaders
-    print("\nMOVING LOADERS...")
+    print("MOVING LOADERS...")
     barutils.move_loaders(localdir,
                           ld_o, ld_r,
                           zd_o, zd_r)
 
     # Get hashes (if specified)
     if hashed:
-        print("\nHASHING LOADERS...")
+        print("HASHING LOADERS...")
         if compressed:
             filehashtools.verifier(
                 zd_o,
@@ -479,25 +363,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
                     ld_r,
                     **hashdict)
     if gpg:
-        gpgkey, gpgpass = filehashtools.gpg_config_loader()
-        if gpgkey is None or gpgpass is None:
-            print("NO PGP KEY/PASS FOUND")
-            cont = utilities.str2bool(input("CONTINUE (Y/N)?: "))
-            if cont:
-                if gpgkey is None:
-                    gpgkey = input("PGP KEY (0x12345678): ")
-                    if gpgkey[:2] != "0x":
-                        gpgkey = "0x" + gpgkey  # add preceding 0x
-                if gpgpass is None:
-                    gpgpass = getpass.getpass(prompt="PGP PASSPHRASE: ")
-                    writebool = utilities.str2bool(input("WRITE PASSWORD TO FILE (Y/N)?:"))
-                if writebool:
-                    gpgpass2 = gpgpass
-                else:
-                    gpgpass2 = None
-                filehashtools.gpg_config_writer(gpgkey, gpgpass2)
-            else:
-                gpgkey = None
+        gpgkey, gpgpass = scriptutils.verify_gpg_credentials()
         if gpgpass is not None and gpgkey is not None:
             print("VERIFYING LOADERS...")
             print("KEY:", gpgkey)
@@ -528,13 +394,11 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
 
     # Remove uncompressed loaders (if specified)
     if deleted:
-        print("\nDELETING UNCOMPRESSED LOADERS...")
-        shutil.rmtree(ld_o)
-        if radios:
-            shutil.rmtree(ld_r)
+        print("DELETING UNCOMPRESSED LOADERS...")
+        barutils.remove_unpacked_loaders(ld_o, ld_r, radios)
 
     # Delete empty folders
-    print("\nREMOVING EMPTY FOLDERS...")
+    print("REMOVING EMPTY FOLDERS...")
     barutils.remove_empty_folders(localdir)
 
     print("\nFINISHED!")

@@ -495,6 +495,37 @@ def remove_empty_folders(a_folder):
             break
 
 
+def remove_signed_files(a_folder):
+    """
+    Remove signed files from a given folder.
+
+    :param a_folder: Target folder.
+    :type a_folder: str
+    """
+    for file in os.listdir(a_folder):
+        if file.endswith(".signed"):
+            print("REMOVING: " + file)
+            os.remove(file)
+
+
+def remove_unpacked_loaders(osdir, raddir, radios):
+    """
+    Remove uncompressed loader folders.
+
+    :param osdir: OS loader folder.
+    :type osdir: str
+
+    :param raddir: Radio loader folder.
+    :type raddir: str
+
+    :param radios: If we made radios this run.
+    :type radios: bool
+    """
+    shutil.rmtree(osdir)
+    if radios:
+        shutil.rmtree(raddir)
+
+
 def create_blitz(a_folder, swver):
     """
     Create a blitz file: a zipped archive of all app/core/radio bars.

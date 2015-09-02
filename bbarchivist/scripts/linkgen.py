@@ -4,6 +4,7 @@
 
 import argparse  # parse arguments
 import sys  # load arguments
+from bbarchivist import scriptutils  # script stuff
 from bbarchivist import networkutils  # lookup, if sw not specified
 from bbarchivist import utilities  # increment version, if radio not specified
 from bbarchivist import bbconstants  # versions/constants
@@ -25,8 +26,7 @@ def grab_args():
             "-v",
             "--version",
             action="version",
-            version="%(prog)s " +
-            bbconstants.VERSION)
+            version="%(prog)s " + bbconstants.VERSION)
         parser.add_argument(
             "os",
             help="OS version, 10.x.y.zzzz")
@@ -96,19 +96,9 @@ def linkgen_main(osversion, radioversion=None,
     :param altsw: Radio software release, if not the same as OS.
     :type altsw: str
     """
-    if radioversion is None:
-        radioversion = utilities.version_incrementer(osversion, 1)
-    if softwareversion is None:
-        serv = bbconstants.SERVERS["p"]
-        softwareversion = networkutils.software_release_lookup(osversion, serv)
-        if softwareversion == "SR not in system":
-            print("SOFTWARE RELEASE NOT FOUND")
-            cont = utilities.str2bool(input("INPUT MANUALLY? Y/N "))
-            if cont:
-                softwareversion = input("SOFTWARE RELEASE: ")
-            else:
-                print("\nEXITING...")
-                raise SystemExit  # bye bye
+    radioversion = scriptutils.return_radio_version(osversion, radioversion)
+    softwareversion, swchecked = scriptutils.return_sw_checked(softwareversion, osversion)
+    del swchecked
     baseurl = networkutils.create_base_url(softwareversion)
 
     # List of debrick urls

@@ -2,7 +2,7 @@
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """Checks certifications for a given device."""
 
-from bbarchivist.bbconstants import VERSION, JSONFILE  # versions/constants
+from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import networkutils  # check function
 from json import load
 import argparse  # parse arguments
@@ -24,8 +24,7 @@ def grab_args():
             "-v",
             "--version",
             action="version",
-            version="%(prog)s " +
-            VERSION)
+            version="%(prog)s " + bbconstants.VERSION)
         parser.add_argument("device", help="FCCID/HWID/model number")
         parser.set_defaults()
         args = parser.parse_args(sys.argv[1:])
@@ -46,7 +45,7 @@ def certchecker_main(device):
     :param device: Hardware ID, PTCRB ID, FCC ID or model number.
     :type device: str
     """
-    with open(JSONFILE) as thefile:
+    with open(bbconstants.JSONFILE) as thefile:
         data = load(thefile)
     data = data['devices']
     device = device.upper()
@@ -61,7 +60,7 @@ def certchecker_main(device):
     else:
         print("NO PTCRB ID!")
         raise SystemExit
-    print("~~~CERTCHECKER VERSION", VERSION + "~~~")
+    print("~~~CERTCHECKER VERSION", bbconstants.VERSION + "~~~")
     print("DEVICE:", device.upper())
     print("VARIANT:", name.upper())
     print("\nCHECKING CERTIFICATIONS...\n")

@@ -24,8 +24,7 @@ def kompressor_main():
         "-v",
         "--version",
         action="version",
-        version="%(prog)s " +
-        bbconstants.VERSION)
+        version="%(prog)s " + bbconstants.VERSION)
     parser.add_argument(
         "-m"
         "--method",

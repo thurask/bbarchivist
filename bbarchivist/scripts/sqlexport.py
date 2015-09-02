@@ -21,8 +21,7 @@ def sqlexport_main():
         "-v",
         "--version",
         action="version",
-        version="%(prog)s " +
-        bbconstants.VERSION)
+        version="%(prog)s " + bbconstants.VERSION)
     parser.set_defaults()
     sqlutils.export_sql_db()
 if __name__ == "__main__":

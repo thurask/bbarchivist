@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """Get software release for one/many OS versions."""
 
@@ -27,8 +27,7 @@ def grab_args():
             "-v",
             "--version",
             action="version",
-            version="%(prog)s " +
-            bbconstants.VERSION)
+            version="%(prog)s " + bbconstants.VERSION)
         parser.add_argument("os", help="OS version, 10.x.y.zzzz")
         parser.add_argument(
             "-l", "--loop",

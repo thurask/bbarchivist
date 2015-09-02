@@ -28,8 +28,7 @@ def grab_args():
             "-v",
             "--version",
             action="version",
-            version="%(prog)s " +
-            bbconstants.VERSION)
+            version="%(prog)s " + bbconstants.VERSION)
         parser.add_argument("mcc",
                             help="1-3 digit country code",
                             type=utilities.valid_carrier)

@@ -25,8 +25,7 @@ def gpgrunner_main():
         "-v",
         "--version",
         action="version",
-        version="%(prog)s " +
-        bbconstants.VERSION)
+        version="%(prog)s " + bbconstants.VERSION)
     parser.add_argument(
         "folder",
         help="Working directory, default is local",
