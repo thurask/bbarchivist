@@ -25,3 +25,5 @@ tests/__pycache__
 venv/
 .vs/
 /bbarchivist/scripts/*.zip
+.coverage
+htmlcov/

@@ -198,32 +198,33 @@ class TestClassBarutilsLoaderMover():
                 targetfile.write("0"*95000000)
         copyfile("Z10_BIGLOADER.exe", "Q10_BIGZIPPED.zip")
         copyfile("Z30_SMALLLOADER.exe", "Z3_SMALLZIPPED.zip")
-        os.mkdir("bigloaders")
-        os.mkdir("smallloaders")
-        os.mkdir("bigzipped")
-        os.mkdir("smallzipped")
-        bb.move_loaders(os.getcwd(), "bigloaders", "smallloaders", "bigzipped", "smallzipped")
+        bdo, bdr, ldo, ldr, zdo, zdr = bb.make_dirs(os.getcwd(), "osversion", "radioversion")
+        bb.move_loaders(os.getcwd(), ldo, ldr, zdo, zdr)
 
     def test_move_loaders_smallzip(self):
         """
         Test moving small, compressed loaders.
         """
-        assert "Z3_SMALLZIPPED.zip" in os.listdir("smallzipped")
+        zipped = os.path.join(os.getcwd(), "zipped")
+        assert "Z3_SMALLZIPPED.zip" in os.listdir(os.path.join(zipped, "radioversion"))
 
     def test_move_loaders_bigzip(self):
         """
         Test moving large, compressed loaders.
         """
-        assert "Q10_BIGZIPPED.zip" in os.listdir("bigzipped")
+        zipped = os.path.join(os.getcwd(), "zipped")
+        assert "Q10_BIGZIPPED.zip" in os.listdir(os.path.join(zipped, "osversion"))
 
     def test_move_loaders_smallexe(self):
         """
         Test moving small, uncompressed loaders.
         """
-        assert "Z30_SMALLLOADER.exe" in os.listdir("smallloaders")
+        loaders = os.path.join(os.getcwd(), "loaders")
+        assert "Z30_SMALLLOADER.exe" in os.listdir(os.path.join(loaders, "radioversion"))
 
     def test_move_loaders_bigexe(self):
         """
         Test moving large, uncompressed loaders.
         """
-        assert "Z10_BIGLOADER.exe" in os.listdir("bigloaders")
+        loaders = os.path.join(os.getcwd(), "loaders")
+        assert "Z10_BIGLOADER.exe" in os.listdir(os.path.join(loaders, "osversion"))
