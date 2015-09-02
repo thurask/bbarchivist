@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301
 """Test the barutils module."""
 
@@ -199,6 +199,8 @@ class TestClassBarutilsLoaderMover():
         copyfile("Z10_BIGLOADER.exe", "Q10_BIGZIPPED.zip")
         copyfile("Z30_SMALLLOADER.exe", "Z3_SMALLZIPPED.zip")
         bdo, bdr, ldo, ldr, zdo, zdr = bb.make_dirs(os.getcwd(), "osversion", "radioversion")
+        del bdo
+        del bdr
         bb.move_loaders(os.getcwd(), ldo, ldr, zdo, zdr)
 
     def test_move_loaders_smallzip(self):
