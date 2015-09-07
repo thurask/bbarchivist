@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """Only download OS/radio bar files."""
 
@@ -9,9 +9,7 @@ import argparse  # parse arguments
 from bbarchivist import scriptutils  # script stuff
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import utilities  # input validation
-from bbarchivist import barutils  # file/folder work
 from bbarchivist import networkutils  # download/lookup
-from bbarchivist import loadergen  # cap, in Python
 
 
 def grab_args():
