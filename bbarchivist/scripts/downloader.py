@@ -12,7 +12,6 @@ from bbarchivist import utilities  # input validation
 from bbarchivist import barutils  # file/folder work
 from bbarchivist import networkutils  # download/lookup
 from bbarchivist import loadergen  # cap, in Python
-from bbarchivist import filehashtools  # hashes, GPG
 
 
 def grab_args():
