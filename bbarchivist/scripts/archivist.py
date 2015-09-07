@@ -276,7 +276,8 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
 
     # Check availability of software releases
     scriptutils.check_sw(baseurl, softwareversion, swchecked)
-    scriptutils.check_radio_sw(alturl, altsw)
+    if altsw:
+        scriptutils.check_radio_sw(alturl, altsw)
 
     # Check availability of OS, radio
     scriptutils.check_os_bulk(osurls, osversion)

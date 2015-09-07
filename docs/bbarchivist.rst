@@ -58,7 +58,7 @@ bbarchivist.pseudocap module
     :show-inheritance:
 
 bbarchivist.scriptutils module
----------------------------
+------------------------------
 
 .. automodule:: bbarchivist.scriptutils
     :members:
