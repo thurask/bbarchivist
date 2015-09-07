@@ -70,5 +70,6 @@ setup(name='bbarchivist',
               'bb-autolookup=bbarchivist.scripts.autolookup:grab_args',
               'bb-pseudocap=bbarchivist.scripts.cap:cap_main',
               'bb-sqlexport=bbarchivist.scripts.sqlexport:sqlexport_main',
-              'bb-kompressor=bbarchivist.scripts.kompressor:kompressor_main']
+              'bb-kompressor=bbarchivist.scripts.kompressor:kompressor_main',
+              'bb-downloader=bbarchivist.scripts.downloader:grab_args']
           })

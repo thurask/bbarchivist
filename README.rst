@@ -215,6 +215,11 @@ Kompressor
 
 1. Compress all files in a directory
 
+Downloader
+~~~~~~~~~~
+
+1. The same download function as in Archivist, but in isolation.
+
 Command Line Arguments
 ----------------------
 
@@ -526,6 +531,35 @@ Help
 
 	http://github.com/thurask/bbarchivist
 
+----------------------------------------
+
+::
+
+	> bb-downloader -h
+
+	usage: bb-downloader [-h] [-v] [-f DIR] [-a [SW]] [-d] [-c] [-r] [-ni]
+                     os [radio] [swrelease]
+
+	Download bar files.
+
+	positional arguments:
+	  os                    OS version, 10.x.y.zzzz
+	  radio                 Radio version, 10.x.y.zzzz
+	  swrelease             Software version, 10.x.y.zzzz
+
+	optional arguments:
+	  -h, --help            show this help message and exit
+	  -v, --version         show program's version number and exit
+	  -f DIR, --folder DIR  Working folder
+	  -a [SW], --altsw [SW]
+							Radio software version, if not same as OS
+	  -d, --debricks        Download debricks
+	  -c, --cores           Download debricks
+	  -r, --radios          Download radios
+	  -ni, --no-integrity   Don't test bar files after download
+
+	http://github.com/thurask/bbarchivist
+
 Example
 ~~~~~~~
 
@@ -615,6 +649,12 @@ does one thing and one thing only. You're free to guess.
 	> bb-kompressor -m zip
 
 would compress all files in the local directory to zip archives, since you specified zip.
+
+::
+
+	> bb-downloader 10.3.2.798 -r
+
+would download the guessed radios (10.3.2.799) for OS 10.3.2.798.
 
 License
 -------

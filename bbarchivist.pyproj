@@ -55,6 +55,9 @@
     <Compile Include="bbarchivist\bbconstants.py" />
     <Compile Include="bbarchivist\filehashtools.py" />
     <Compile Include="bbarchivist\loadergen.py" />
+    <Compile Include="bbarchivist\scripts\downloader.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="bbarchivist\scriptutils.py">
       <SubType>Code</SubType>
     </Compile>
