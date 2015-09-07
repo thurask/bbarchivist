@@ -111,7 +111,7 @@ def read_radio_files(localdir):
         radio_z10 = glob.glob(
             os.path.join(
                 localdir,
-                "*radio.qc8960*.BB*.signed"))[0]
+                "*radio.qc8960.BB*.signed"))[0]
     except IndexError:
         radio_z10 = None
         print("No 8960 radio found")
@@ -229,7 +229,8 @@ def generate_loaders(
         device = generate_device(radval)
         osname = generate_filename(device, osversion, suffix)
         osfile = filedict[radval]
-        wrap_pseudocap(osname, localdir, osfile, radval)
+        if osfile is not None:
+            wrap_pseudocap(osname, localdir, osfile, radval)
         if radios:
             radname = generate_filename(device, radioversion, "")
             wrap_pseudocap(radname, localdir, radval)
