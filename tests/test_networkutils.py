@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301
 """Test the networkutils module."""
 
@@ -7,6 +7,7 @@ import httmock
 import os
 from shutil import rmtree
 from hashlib import sha512
+import requests
 
 
 def setup_module(module):
@@ -28,7 +29,7 @@ def teardown_module(module):
     rmtree("temp")
 
 
-def cl_mock(url, request):
+def cl_good_mock(url, request):
     """
     HTTMock mock for content_length.
     """
@@ -36,6 +37,11 @@ def cl_mock(url, request):
     return httmock.response(status_code=200,
                             headers=headers)
 
+def conn_error_mock(url, request):
+    """
+    HTTMock mock for content_length, connection error.
+    """
+    raise requests.ConnectionError
 
 @httmock.urlmatch(netloc=r'(.*\.)?google\.com$')
 def download_mock(url, request):
@@ -89,11 +95,19 @@ def ps_mock(url, request):
     return {'status_code': 200, 'content': thebody}
 
 
-def cu_mock(url, request):
+def cu_good_mock(url, request):
     """
-    Mock for carrier update checking.
+    Mock for carrier update checking, ideal case.
     """
     thebody = b'<?xml version="1.0" encoding="UTF-8"?><updateDetailResponse version="2.2.1" sessionId="6158fdd7-4ac5-41ad-9849-b4ba9f18a3b5"><data authEchoTS="1366644680359"><status code="0"><friendlyMessage>Success</friendlyMessage><technicalMessage>Success</technicalMessage></status><content><updateDirectives><downloadCapOverCellular unit="MB">1035</downloadCapOverCellular><updateRequired>true</updateRequired><directive type="allowOSDowngrades" value="true"/></updateDirectives><transports><leastCostRouting>true</leastCostRouting><transport ordinal="0">serialbypass</transport><transport ordinal="1">wifigan</transport><transport ordinal="2">wifi</transport><transport ordinal="3">wan</transport><transport ordinal="4">wanroam</transport><transport ordinal="5">wanintlroam</transport></transports><softwareReleaseMetadata softwareReleaseVersion="10.3.1.1877" isSecurity="false" filterSetVersion="10.3.1.45" verbiageVersion="10.3.1.6"><cellularChargesMessage>Warning,this could be really expensive.</cellularChargesMessage></softwareReleaseMetadata><fileSets><fileSet url="http://cdn.fs.sl.blackberry.com/fs/qnx/production/f6832b88958f1c4c3f9bbfd44762e0c516760d8a"><package id="gYABgJBzlFCWITrWvadisQkRdpg" name="com.qnx.qcfm.radio.qc8960.wtr5" path="com.qnx.qcfm.radio.qc8960.wtr5/10.3.1.2727/qc8960.wtr5-10.3.1.2727-nto+armle-v7+signed.bar" downloadSize="53283856" operation="add" version="10.3.1.2727" checksum="swnw5y03_MNK3MqWF9227FynZSyIgiW3Nj42Zv96fmgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" type="system:radio"/><package id="gYABgEd1yw2Ezd7gd-uX5-coqaE" name="com.qnx.coreos.qcfm.os.qc8960.factory_sfi.desktop" path="com.qnx.coreos.qcfm.os.qc8960.factory_sfi.desktop/10.3.1.2726/qc8960.factory_sfi.desktop-10.3.1.2726-nto+armle-v7+signed.bar" downloadSize="1909111199" operation="add" version="10.3.1.2726" checksum="eb7KMyZxajwgTkamg3VPHr8mEPT4CxjKF3TbmaoGJjMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" type="system:desktop"/></fileSet></fileSets></content></data><signature><root><cipher>EC521R1</cipher><shaType>SHA512</shaType><sigR>AOm43LzpCmSwglrzvup+oWjb0gRnlmz1DWZnFLTcmfqQ4zPY4w/KmyWXQD9vg6aUQPsfB4Sl7Ejdw/F9G41jNCva</sigR><sigS>AWYQGvQ9JwIDepdt+usc1lX6N3Sk9yElF4ezZNS1w6uhEfjBpRm06rtGA+CWJEAB9tVqvfwE1ByibMz18c6ANOmM</sigS></root><chain ordinal="1"><cipher>EC521R1</cipher><shaType>SHA512</shaType><publicKey notValidUntil="1434256882020" notValidAfter="1434688882020">BAF+BsRg/iDhyw7S3QsKBhc0hvv7xQ5+/QCsxHhzUzjjrQGuY9npBdHxN3hu2dA6NZdCzR+h35T+YNka9bZTe1tjMgB4txezGIuqh3nVmk+Gze69YCZ+22BANs3DNo8q3bYD7K3/kulm2zbZESLq9YnQcCoi336JkSrGNEEPaa1yU27D7Q==</publicKey><sigR>AJSk+Z4JLIyBy3aeSireNR+9Kx+69nLLRublGIq/Y/MrHatkmvKharH48SMZZl3v19p08H8PUfps4f7NgewHOHei</sigR><sigS>AJeRkTgkhkCtQsBi2+oBElFgcbua97vEXco0x5Xs/onMDAvSL0dlbsFXKOtblX6I2pYkUTajAFEZ2MLuCTe5s/l0</sigS></chain></signature></updateDetailResponse>'
+    return {'status_code': 200, 'content': thebody}
+
+
+def cu_bad_mock(url, request):
+    """
+    Mock for carrier update checking, bad case.
+    """
+    thebody = b'<?xml version="1.0" encoding="UTF-8"?><updateDetailResponse version="2.2.1" sessionId="6158fdd7-4ac5-41ad-9849-b4ba9f18a3b5"><data authEchoTS="1366644680359"><status code="0"><friendlyMessage>Success</friendlyMessage><technicalMessage>Success</technicalMessage></status><content><updateDirectives><downloadCapOverCellular unit="MB">1035</downloadCapOverCellular><updateRequired>true</updateRequired><directive type="allowOSDowngrades" value="true"/></updateDirectives><transports><leastCostRouting>true</leastCostRouting><transport ordinal="0">serialbypass</transport><transport ordinal="1">wifigan</transport><transport ordinal="2">wifi</transport><transport ordinal="3">wan</transport><transport ordinal="4">wanroam</transport><transport ordinal="5">wanintlroam</transport></transports><fileSets><fileSet url="http://cdn.fs.sl.blackberry.com/fs/qnx/production/f6832b88958f1c4c3f9bbfd44762e0c516760d8a"><package id="gYABgJBzlFCWITrWvadisQkRdpg" name="com.qnx.qcfm.radio.qc8960.wtr5" path="com.qnx.qcfm.radio.qc8960.wtr5/10.3.1.2727/qc8960.wtr5-10.3.1.2727-nto+armle-v7+signed.bar" downloadSize="53283856" operation="add" version="10.3.1.2727" checksum="swnw5y03_MNK3MqWF9227FynZSyIgiW3Nj42Zv96fmgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" type="system:radio"/><package id="gYABgEd1yw2Ezd7gd-uX5-coqaE" name="com.qnx.coreos.qcfm.os.qc8960.factory_sfi.desktop" path="com.qnx.coreos.qcfm.os.qc8960.factory_sfi.desktop/10.3.1.2726/qc8960.factory_sfi.desktop-10.3.1.2726-nto+armle-v7+signed.bar" downloadSize="1909111199" operation="add" version="10.3.1.2726" checksum="eb7KMyZxajwgTkamg3VPHr8mEPT4CxjKF3TbmaoGJjMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" type="system:desktop"/></fileSet></fileSets></content></data><signature><root><cipher>EC521R1</cipher><shaType>SHA512</shaType><sigR>AOm43LzpCmSwglrzvup+oWjb0gRnlmz1DWZnFLTcmfqQ4zPY4w/KmyWXQD9vg6aUQPsfB4Sl7Ejdw/F9G41jNCva</sigR><sigS>AWYQGvQ9JwIDepdt+usc1lX6N3Sk9yElF4ezZNS1w6uhEfjBpRm06rtGA+CWJEAB9tVqvfwE1ByibMz18c6ANOmM</sigS></root><chain ordinal="1"><cipher>EC521R1</cipher><shaType>SHA512</shaType><publicKey notValidUntil="1434256882020" notValidAfter="1434688882020">BAF+BsRg/iDhyw7S3QsKBhc0hvv7xQ5+/QCsxHhzUzjjrQGuY9npBdHxN3hu2dA6NZdCzR+h35T+YNka9bZTe1tjMgB4txezGIuqh3nVmk+Gze69YCZ+22BANs3DNo8q3bYD7K3/kulm2zbZESLq9YnQcCoi336JkSrGNEEPaa1yU27D7Q==</publicKey><sigR>AJSk+Z4JLIyBy3aeSireNR+9Kx+69nLLRublGIq/Y/MrHatkmvKharH48SMZZl3v19p08H8PUfps4f7NgewHOHei</sigR><sigS>AJeRkTgkhkCtQsBi2+oBElFgcbua97vEXco0x5Xs/onMDAvSL0dlbsFXKOtblX6I2pYkUTajAFEZ2MLuCTe5s/l0</sigS></chain></signature></updateDetailResponse>'
     return {'status_code': 200, 'content': thebody}
 
 
@@ -129,6 +143,13 @@ def sr_bad_mock(url, request):
     return {'status_code': 200, 'content': badbody}
 
 
+def timeout_mock(url, request):
+    """
+    Mock for software release lookup, timeout.
+    """
+    raise requests.exceptions.Timeout
+
+
 class TestClassNetworkutils:
     """
     Test network utilities and support functions.
@@ -145,11 +166,25 @@ class TestClassNetworkutils:
 
     def test_get_content_length(self):
         """
-        Test content-length header checking.
+        Test content-length header checking, best case.
         """
         theurl = "http://cdn.fs.sl.blackberry.com/fs/qnx/production/7d1bb9fefe23b1c3123f748ff9e0f80cc78f006c"
-        with httmock.HTTMock(cl_mock):
+        with httmock.HTTMock(cl_good_mock):
             assert bn.get_content_length(theurl) == 525600
+
+    def test_content_length_null(self):
+        """
+        Test content-length header checking, no URL given.
+        """
+        assert bn.get_content_length(None) == 0
+
+    def test_content_length_bad(self):
+        """
+        Test content-length header checking, connection error.
+        """
+        someurl = "http://www.qrrbrbirlbel.yu"
+        with httmock.HTTMock(conn_error_mock):
+            assert bn.get_content_length(someurl) == 0
 
     def test_download(self):
         """
@@ -198,6 +233,17 @@ class TestClassNetworkutils:
         """
         assert bn.create_base_url("10.3.2.9000") == "http://cdn.fs.sl.blackberry.com/fs/qnx/production/7d1bb9fefe23b1c3123f748ff9e0f80cc78f006c"
 
+    def test_return_npc(self):
+        """
+        Test NPC generation.
+        """
+        assert bn.return_npc(10, 42) == "01004230"
+
+
+class TestClassNetworkutilsParsing:
+    """
+    Test functions that require parsing of XML/HTML.
+    """
     def test_availability_good(self):
         """
         Test availability, best case.
@@ -214,6 +260,14 @@ class TestClassNetworkutils:
         with httmock.HTTMock(av_bad_mock):
             assert not bn.availability(theurl)
 
+    def test_availability_error(self):
+        """
+        Test availability, connection error.
+        """
+        theurl = "http://cdn.fs.sl.blackberry.com/fs/qnx/production/7d1bb9fefe23b1c3123f748ff9e0f80cc78f006c"
+        with httmock.HTTMock(conn_error_mock):
+            assert not bn.availability(theurl)
+
     def test_carrier_checker_good(self):
         """
         Test carrier checking, best case.
@@ -228,18 +282,25 @@ class TestClassNetworkutils:
         with httmock.HTTMock(cc_bad_mock):
             assert bn.carrier_checker(666, 666) == ('United States', 'default')
 
-    def test_return_npc(self):
+    def test_upd_req_good(self):
         """
-        Test NPC generation.
+        Test carrier update request, ideal case.
         """
-        assert bn.return_npc(10, 42) == "01004230"
-
-    def test_carrier_update_request(self):
-        """
-        Test carrier update request.
-        """
-        with httmock.HTTMock(cu_mock):
+        with httmock.HTTMock(cu_good_mock):
             alist = ("10.3.1.1877",
+                     "10.3.1.2726",
+                     "10.3.1.2727",
+                     ['http://cdn.fs.sl.blackberry.com/fs/qnx/production/f6832b88958f1c4c3f9bbfd44762e0c516760d8a/com.qnx.qcfm.radio.qc8960.wtr5/10.3.1.2727/qc8960.wtr5-10.3.1.2727-nto+armle-v7+signed.bar',
+                      'http://cdn.fs.sl.blackberry.com/fs/qnx/production/f6832b88958f1c4c3f9bbfd44762e0c516760d8a/com.qnx.coreos.qcfm.os.qc8960.factory_sfi.desktop/10.3.1.2726/qc8960.factory_sfi.desktop-10.3.1.2726-nto+armle-v7+signed.bar'])
+            assert bn.carrier_update_request(302220,
+                                             "6002E0A") == alist
+
+    def test_upd_req_bad(self):
+        """
+        Test carrier update request, no software version.
+        """
+        with httmock.HTTMock(cu_bad_mock):
+            alist = ("N/A",
                      "10.3.1.2726",
                      "10.3.1.2727",
                      ['http://cdn.fs.sl.blackberry.com/fs/qnx/production/f6832b88958f1c4c3f9bbfd44762e0c516760d8a/com.qnx.qcfm.radio.qc8960.wtr5/10.3.1.2727/qc8960.wtr5-10.3.1.2727-nto+armle-v7+signed.bar',
@@ -261,6 +322,14 @@ class TestClassNetworkutils:
         """
         server = "https://cs.sl.blackberry.com/cse/srVersionLookup/2.0.0/"
         with httmock.HTTMock(sr_bad_mock):
+            assert bn.software_release_lookup("10.3.2.798", server) == "SR not in system"
+
+    def test_sr_lookup_timeout(self):
+        """
+        Test software lookup, timeout (alpha 1, probably).
+        """
+        server = "https://cs.sl.blackberry.com/cse/srVersionLookup/2.0.0/"
+        with httmock.HTTMock(timeout_mock):
             assert bn.software_release_lookup("10.3.2.798", server) == "SR not in system"
 
     def test_sr_lookup_bootstrap(self):

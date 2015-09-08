@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301
 """Test the utilities module."""
 
@@ -172,17 +172,72 @@ class TestClassUtilities:
         """
         assert os.path.basename(bu.grab_cap()) == "cap-3.11.0.22.dat"
 
-    def test_filesize_parser(self):
+    def test_str2bool_good(self):
         """
-        Test parsing of filesize.
+        Test checking of input parsing, best case.
+        """
+        assert bu.str2bool("YES") == True
+
+    def test_str2bool_bad(self):
+        """
+        Test checking of input parsing, worst case.
+        """
+        assert bu.str2bool("BANANA") == False
+
+    def test_version_incrementer_good(self):
+        """
+        Test version incrementing, best case.
+        """
+        assert bu.version_incrementer("10.3.2.2000", 1000) == "10.3.2.3000"
+
+    def test_version_incrementer_bad(self):
+        """
+        Test version incrementing, worst case.
+        """
+        assert bu.version_incrementer("10.3.2.9999", 3) == "10.3.2.3"
+
+    def test_barname_stripper(self):
+        """
+        Test bar name cleaning.
+        """
+        assert bu.barname_stripper("base-nto+armle-v7+signed.bar") == "base"
+
+
+class TestClassUtilitiesArgparse:
+    """
+    Test miscellaneous utilities involving arguments.
+    """
+    def test_filesize_parser_good(self):
+        """
+        Test parsing of filesize, ideal case.
         """
         assert bu.filesize_parser(987654321) == "941.90MB"
 
-    def test_file_exists(self):
+    def test_filesize_parser_none(self):
+        """
+        Test parsing of filesize, None given.
+        """
+        assert bu.filesize_parser(None) == "0.00B"
+
+    def test_filesize_parser_huge(self):
+        """
+        Test parsing of filesize, large number given.
+        """
+        assert bu.filesize_parser(pow(2, 80)) == "1.00YB"
+
+    def test_file_exists_good(self):
         """
         Test if self exists. How very Cartesian.
         """
         assert bu.file_exists(__file__)
+
+    def test_file_exists_bad(self):
+        """
+        Test if non-existent file exists. Of course.
+        """
+        with pytest.raises(ArgumentError) as argexc:
+            bu.file_exists("qrrbrbirlbel")
+            assert "not found" in str(argexc.value)
 
     def test_positive_integer_good(self):
         """
@@ -234,11 +289,27 @@ class TestClassUtilities:
             bu.valid_carrier("BANANA")
             assert "integer" in str(argexc.value)
 
-    def test_escreens_pin(self):
+    def test_escreens_pin_good(self):
         """
         Test checking of escreens PIN.
         """
         assert bu.escreens_pin("ACDCACDC") == "acdcacdc"
+
+    def test_escreens_pin_long(self):
+        """
+        Test checking of escreens PIN, too long.
+        """
+        with pytest.raises(ArgumentError) as argexc:
+            bu.escreens_pin("ACDCACDCACDCACDC")
+            assert "Invalid PIN" in str(argexc.value)
+
+    def test_escreens_pin_nonhex(self):
+        """
+        Test checking of escreens PIN, not hexadecimal.
+        """
+        with pytest.raises(ArgumentError) as argexc:
+            bu.escreens_pin("MONGOLIA")
+            assert "Invalid PIN" in str(argexc.value)
 
     def test_escreens_duration_good(self):
         """
@@ -255,33 +326,3 @@ class TestClassUtilities:
             for dur in (2, 4, 7, 16, 31):
                 bu.escreens_duration(dur)
                 assert "duration" in str(argexc.value)
-
-    def test_str2bool_good(self):
-        """
-        Test checking of input parsing, best case.
-        """
-        assert bu.str2bool("YES") == True
-
-    def test_str2bool_bad(self):
-        """
-        Test checking of input parsing, worst case.
-        """
-        assert bu.str2bool("BANANA") == False
-
-    def test_version_incrementer_good(self):
-        """
-        Test version incrementing, best case.
-        """
-        assert bu.version_incrementer("10.3.2.2000", 1000) == "10.3.2.3000"
-
-    def test_version_incrementer_bad(self):
-        """
-        Test version incrementing, worst case.
-        """
-        assert bu.version_incrementer("10.3.2.9999", 3) == "10.3.2.3"
-
-    def test_barname_stripper(self):
-        """
-        Test bar name cleaning.
-        """
-        assert bu.barname_stripper("base-nto+armle-v7+signed.bar") == "base"

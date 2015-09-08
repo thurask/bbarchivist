@@ -27,7 +27,7 @@ def prepare_sw_db():
             reqs = "TEXT NOT NULL UNIQUE COLLATE NOCASE"
             table = "Swrelease(Id INTEGER PRIMARY KEY, Os " + reqs + ", Software " + reqs + ")"
             crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
-    except sqlite3.Error as sqerror:
+    except sqlite3.Error as sqerror:  # pragma: no cover
         print(str(sqerror))
 
 
@@ -49,9 +49,9 @@ def insert_sw_release(osversion, swrelease):
             crsr = cnxn.cursor()
             crsr.execute("INSERT INTO Swrelease(Os, Software) VALUES (?,?)",
                          (osversion, swrelease))
-    except sqlite3.IntegrityError:
+    except sqlite3.IntegrityError:  # pragma: no cover
         pass  # avoid dupes
-    except sqlite3.Error as sqerror:
+    except sqlite3.Error as sqerror:  # pragma: no cover
         print(str(sqerror))
 
 
@@ -73,8 +73,8 @@ def export_sql_db():
                 sortedrows = sorted(rows, key=operator.itemgetter(0))
                 csvw.writerow(('osversion', 'swrelease'))
                 csvw.writerows(sortedrows)
-        except sqlite3.Error as sqerror:
+        except sqlite3.Error as sqerror:  # pragma: no cover
             print(str(sqerror))
-    else:
+    else:  # pragma: no cover
         print("NO SQL DATABASE FOUND!")
         raise SystemExit

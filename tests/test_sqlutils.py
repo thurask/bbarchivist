@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301
 """Test the sqlutils module."""
 
@@ -79,6 +79,15 @@ class TestClassSQLUtils:
                 assert ("70.OSVERSION", "80.SWVERSION") in rows
             except sqlite3.Error:
                 assert False
+            try:
+                cnxn = sqlite3.connect(sqlpath)
+                with cnxn:
+                    crsr = cnxn.cursor()
+                    crsr.execute("SELECT Os,Software FROM Swrelease")
+                    rows = crsr.fetchall()
+                assert ("70.OSVERSION", "80.SWVERSION") in rows
+            except sqlite3.IntegrityError:
+                assert True
 
     def test_export_sql_db(self):
         """

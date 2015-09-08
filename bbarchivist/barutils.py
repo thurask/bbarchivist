@@ -38,7 +38,7 @@ def extract_bars(filepath):
                 for name in names:
                     if str(name).endswith(".signed"):
                         zfile.extract(name, filepath)
-            except (RuntimeError, OSError) as exc:
+            except (RuntimeError, OSError) as exc:  # pragma: no cover
                 print("EXTRACTION FAILURE")
                 print(str(exc))
                 print("DID IT DOWNLOAD PROPERLY?")
@@ -106,7 +106,7 @@ def bar_tester(filepath):
     with zipfile.ZipFile(filepath, "r") as zfile:
         brokens = zfile.testzip()
         if brokens is not None:
-            return filepath
+            return filepath  # pragma: no cover
         else:
             return None
 
@@ -150,16 +150,13 @@ def sz_compress(filepath, filename, szexe=None, strength=5):
     endtime = time.clock() - starttime
     endtime_proper = math.ceil(endtime * 100) / 100
     print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
-    if excode == 0:
-        print("NO ERRORS")
-    elif excode == 1:
-        print("COMPLETED WITH WARNINGS")
-    elif excode == 2:
-        print("FATAL ERROR")
-    elif excode == 7:
-        print("COMMAND LINE ERROR")
-    elif excode == 8:
-        print("OUT OF MEMORY ERROR")
+    codedict = {0:"NO ERRORS",
+                1:"COMPLETED WITH WARNINGS",
+                2:"FATAL ERROR",
+                7:"COMMAND LINE ERROR",
+                8:"OUT OF MEMORY ERROR",
+                255:"USER STOPPED PROCESS"}
+    print(codedict[excode])
 
 
 def sz_verify(filepath, szexe=None):
@@ -180,10 +177,7 @@ def sz_verify(filepath, szexe=None):
         '"',
         stdout=subprocess.DEVNULL,
         stderr=subprocess.STDOUT)
-    if excode == 0:
-        return True
-    else:
-        return False
+    return excode == 0
 
 
 def tgz_compress(filepath, filename, strength=5):
@@ -662,7 +656,7 @@ def make_dirs(localdir, osversion, radioversion):
     :type radioversion: str
     """
     if not os.path.exists(localdir):
-        os.makedirs(localdir)
+        os.makedirs(localdir)  # pragma: no cover
 
     if not os.path.exists(os.path.join(localdir, 'bars')):
         os.mkdir(os.path.join(localdir, 'bars'))

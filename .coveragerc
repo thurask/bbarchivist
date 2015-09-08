@@ -1,0 +1,3 @@
+[run]
+omit = bbarchivist/scripts/*
+       bbarchivist/__init__.py

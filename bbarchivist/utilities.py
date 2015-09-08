@@ -20,11 +20,11 @@ from bbarchivist import bbconstants  # cap location, version
 
 def enum_cpus():
     """
-    Backwards compatibility wrapper.
+    Backwards compatibility wrapper for CPU count.
     """
     try:
         from os import cpu_count  #@Unused Import
-    except ImportError:
+    except ImportError:  # pragma: no cover
         from multiprocessing import cpu_count #@UnusedImport
     finally:
         cpus = cpu_count()
@@ -33,15 +33,18 @@ def enum_cpus():
 
 def where_which(path):
     """
-    Backwards compatibility wrapper.
+    Backwards compatibility wrapper for approximating which/where.
     """
-    try:
+    try:  # pragma: no cover
         from shutil import which  #@UnusedImport
-    except ImportError:
-        from shutilwhich import which  #@UnusedImport
-    finally:
+    except ImportError:  # pragma: no cover
+        try:
+            from shutilwhich import which  #@UnusedImport
+        except ImportError:
+            raise SystemExit
+    finally:  # pragma: no cover
         thepath = which(path)
-    return thepath
+    return thepath  # pragma: no cover
 
 
 def grab_cap():
@@ -52,7 +55,7 @@ def grab_cap():
         caplo = bbconstants.CAPLOCATION
         here = os.getcwd()
         capfile = glob.glob(os.path.join(here, os.path.basename(caplo)))[0]
-    except IndexError:
+    except IndexError:  # pragma: no cover
         try:
             cappath = cappath_config_loader()
             capfile = glob.glob(cappath)[0]
@@ -117,7 +120,7 @@ def valid_method(method):
     :type method: str
     """
     methodlist = bbconstants.METHODS
-    if sys.version_info[1] <= 2:
+    if sys.version_info[1] <= 2:  # pragma: no cover
         methodlist = methodlist[:-1]  # strip last
     if method not in methodlist:
         raise argparse.ArgumentError(argument=None, message="Invalid method {0}.".format(method))
@@ -221,20 +224,20 @@ def win_seven_zip(talkative=False):
     :param talkative: Whether to output to screen. False by default.
     :type talkative: bool
     """
-    if talkative:
+    if talkative:  # pragma: no cover
         print("CHECKING INSTALLED FILES...")
     try:
         import winreg  # windows registry
         hk7z = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\\7-Zip")
         path = winreg.QueryValueEx(hk7z, "Path")
-    except OSError as exc:
-        if talkative:
+    except OSError as exc:  # pragma: no cover
+        if talkative:  # pragma: no cover
             print("SOMETHING WENT WRONG")
             print(str(exc))
             print("TRYING LOCAL FILES...")
-        return win_seven_zip_local(talkative)
+        return win_seven_zip_local(talkative)  # pragma: no cover
     else:
-        if talkative:
+        if talkative:  # pragma: no cover
             print("7ZIP USING INSTALLED FILES")
         return '"' + os.path.join(path[0], "7z.exe") + '"'
 
@@ -247,20 +250,20 @@ def win_seven_zip_local(talkative=False):
     :param talkative: Whether to output to screen. False by default.
     :type talkative: bool
     """
-    listdir = os.listdir(os.getcwd())
-    filecount = 0
-    for i in listdir:
+    listdir = os.listdir(os.getcwd())  # pragma: no cover
+    filecount = 0  # pragma: no cover
+    for i in listdir:  # pragma: no cover
         if i in ["7za.exe", "7za64.exe"]:
             filecount += 1
-    if filecount == 2:
-        if talkative:
+    if filecount == 2:  # pragma: no cover
+        if talkative:  # pragma: no cover
             print("7ZIP USING LOCAL FILES")
         if is_amd64():
             return "7za64.exe"
         else:
             return "7za.exe"
-    else:
-        if talkative:
+    else:  # pragma: no cover
+        if talkative:  # pragma: no cover
             print("NO LOCAL FILES")
         return "error"
 
@@ -270,11 +273,11 @@ def get_core_count():
     Find out how many CPU cores this system has.
     """
     try:
-        cores = str(enum_cpus())  # thank you Python 3.4
-    except NotImplementedError:  # less than 3.4
-        cores = "1"
+        cores = str(enum_cpus())  # 3.4 and up
+    except NotImplementedError:  # pragma: no cover
+        cores = "1"  # 3.2-3.3
     else:
-        if enum_cpus() is None:
+        if enum_cpus() is None:  # pragma: no cover
             cores = "1"
     return cores
 
@@ -293,18 +296,18 @@ def prep_seven_zip(talkative=False):
     else:
         try:
             path = where_which("7za")
-        except ImportError:  # less than 3.3
+        except ImportError:  # pragma: no cover
             if talkative:
                 print("PLEASE INSTALL SHUTILWHICH WITH PIP")
             return False
         else:
             if path is None:
-                if talkative:
+                if talkative:  # pragma: no cover
                     print("NO 7ZIP")
                     print("PLEASE INSTALL p7zip")
                 return False
             else:
-                if talkative:
+                if talkative:  # pragma: no cover
                     print("7ZIP FOUND AT", path)
                 return True
 
@@ -381,15 +384,15 @@ def generate_urls(baseurl, osversion, radioversion, core=False):
     splitos = [int(i) for i in splitos]
     if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):  # 10.3.1+
         osurls[2] = osurls[2].replace("qc8960.factory_sfi",
-                                      "qc8960.factory_sfi_hybrid_qc8x30")
+                                      "qc8960.factory_sfi_hybrid_qc8x30")  # pragma: no cover
         osurls[3] = osurls[3].replace("qc8974.factory_sfi",
-                                      "qc8960.factory_sfi_hybrid_qc8974")
+                                      "qc8960.factory_sfi_hybrid_qc8974")  # pragma: no cover
     for url in osurls:
         coreurls.append(url.replace(".desktop", ""))
     if core:
         target = osurls, radiourls, coreurls
     else:
-        target = osurls, radiourls, []
+        target = osurls, radiourls, []  # pragma: no cover
     return target
 
 
@@ -486,7 +489,7 @@ class Spinner(object):
             self.file.flush()
             self.file.write("\b\r")
             self.file.flush()
-        except (KeyboardInterrupt, SystemExit):
+        except (KeyboardInterrupt, SystemExit):  # pragma: no cover
             self.stop()
 
     def stop(self):
@@ -525,7 +528,7 @@ class SpinManager(object):
             try:
                 line_begin()
                 self.spinner.next()
-            except (KeyboardInterrupt, SystemExit):
+            except (KeyboardInterrupt, SystemExit):  # pragma: no cover
                 self.scanning = False
                 self.stop()
 
@@ -538,7 +541,7 @@ class SpinManager(object):
         spinner_clear()
         line_begin()
         if not is_windows():
-            print("\n")
+            print("\n")  # pragma: no cover
 
 
 class UselessStdout(object):
@@ -564,7 +567,7 @@ class UselessStdout(object):
         """
         Convince module we're in a terminal.
         """
-        return True
+        return True  # pragma: no cover
 
 
 def cappath_config_loader():

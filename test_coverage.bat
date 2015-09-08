@@ -1,0 +1,1 @@
+py.test --cov=bbarchivist tests/ --cov-report html

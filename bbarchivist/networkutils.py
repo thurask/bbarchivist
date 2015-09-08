@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 
 """This module is used for network connections; APIs, downloading, related tools."""
 
@@ -74,10 +74,10 @@ def download(url, output_directory=None, lazy=False):
                   local_filename,
                   "[" + utilities.filesize_parser(fsize) + "]")
         else:
-            if int(fsize) > 90000000:
+            if int(fsize) > 90000000:  # pragma: no cover
                 print("DOWNLOADING OS",
                       "[" + utilities.filesize_parser(fsize) + "]")
-            else:
+            else:  # pragma: no cover
                 print("DOWNLOADING RADIO",
                       "[" + utilities.filesize_parser(fsize) + "]")
         fname = output_directory + "/" + os.path.basename(url)
@@ -90,7 +90,7 @@ def download(url, output_directory=None, lazy=False):
 
 def download_bootstrap(urls, outdir=None, lazy=False, workers=5):
     """
-    Run downloaders for each file in given URl iterable.
+    Run downloaders for each file in given URL iterable.
 
     :param urls: URLs to download.
     :type urls: list
@@ -105,14 +105,14 @@ def download_bootstrap(urls, outdir=None, lazy=False, workers=5):
     :type workers: int
     """
     if len(urls) < workers:
-        workers = len(urls)
+        workers = len(urls)  # pragma: no cover
     spinman = utilities.SpinManager()
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as xec:
         try:
             spinman.start()
             for url in urls:
                 xec.submit(download, url, outdir, lazy)
-        except (KeyboardInterrupt, SystemExit):
+        except (KeyboardInterrupt, SystemExit):  # pragma: no cover
             xec.shutdown()
             spinman.stop()
     spinman.stop()
@@ -218,7 +218,7 @@ def carrier_update_request(npc, device,
     :param forced: Force a software release.
     :type forced: str
     """
-    if upgrade:
+    if upgrade:  # pragma: no cover
         upg = "upgrade"
     else:
         upg = "repair"
@@ -296,15 +296,15 @@ def parse_carrier_xml(data, blitz=False):
             else:
                 if child.get("type") not in ["system:radio",
                                              "system:desktop",
-                                             "system:os"]:
+                                             "system:os"]:  # pragma: no cover
                     files.append(baseurl + child.get("path"))
             if child.get("type") == "system:radio":
                 radver = child.get("version")
             if child.get("type") == "system:desktop":
                 osver = child.get("version")
-            if child.get("type") == "system:os":
+            if child.get("type") == "system:os":  # pragma: no cover
                 osver = child.get("version")
-            else:
+            else:  # pragma: no cover
                 pass
     return(swver, osver, radver, files)
 
@@ -374,7 +374,7 @@ def sr_lookup_bootstrap(osv):
             for key in results:
                 results[key] = xec.submit(software_release_lookup, osv, SERVERS[key]).result()
             return results
-        except KeyboardInterrupt:
+        except KeyboardInterrupt:  # pragma: no cover
             xec.shutdown(wait=False)
 
 
@@ -452,7 +452,7 @@ def ptcrb_scraper(ptcrbid):
             cleanitem = cleanitem.replace(";", "")
             cleanitem = cleanitem.replace("version", "Version")
             cleanitem = cleanitem.replace("Verison", "Version")
-            if item.count("OS") > 1:
+            if item.count("OS") > 1:  # pragma: no cover
                 templist = item.split("OS")
                 templist[0] = "OS"
                 cleanitem = "".join([templist[0], templist[1]])
