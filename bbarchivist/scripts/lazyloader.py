@@ -53,22 +53,26 @@ def start_gui(osv=None, radv=None, swv=None, dev=None, aut=None,
     :param alt: Alternate software release, for alternate radio.
     :type alt: str
     """
-    if not osv:
+    if osv is None:
         while True:
             osentry = eg.enterbox(msg="OS version")
             if osentry:
                 break
     else:
         osentry = osv
-    if not swv:
+    if swv is None:
         swentry = eg.enterbox(msg="Software version, click Cancel to guess")
+        if not swentry:
+            swentry = None
     else:
         swentry = swv
-    if not radv:
+    if radv is None:
         radentry = eg.enterbox(msg="Radio version, click Cancel to guess")
+        if not radentry:
+            radentry = None
     else:
         radentry = radv
-    if not alt:
+    if alt is None:
         altcheck = eg.boolbox(msg="Are you making a hybrid autoloader?",
                               default_choice="No")
         if altcheck:
@@ -87,15 +91,15 @@ def start_gui(osv=None, radv=None, swv=None, dev=None, aut=None,
     else:
         devint = dev
     if utilities.is_windows():
-        if not aut:
+        if aut is None:
             autoentry = eg.boolbox(msg="Run autoloader?")
         else:
             autoentry = aut
     else:
         autoentry = False
-    if not fol:
+    if fol is None:
         fol = os.getcwd()
-    if not dow:
+    if dow is None:
         dow = True
     lazyloader_main(devint, osentry, radentry, swentry,
                     fol, autoentry, dow, altentry)
@@ -356,6 +360,8 @@ def lazyloader_main(device, osversion, radioversion=None,
     :param altsw: Radio software release, if not the same as OS.
     :type altsw: str
     """
+    if (osversion or device) is None:
+        raise SystemExit
     swchecked = False  # if we checked SW release already
     radioversion = scriptutils.return_radio_version(osversion, radioversion)
     softwareversion, swchecked = scriptutils.return_sw_checked(softwareversion, osversion)
@@ -369,7 +375,7 @@ def lazyloader_main(device, osversion, radioversion=None,
 
     # Make dirs
     bd_o, bd_r, ld_o, ld_r, zd_o, zd_r = barutils.make_dirs(localdir, osversion, radioversion)
-
+    osurl = radiourl = None
     if download:
         baseurl = networkutils.create_base_url(softwareversion)
         if altsw:
@@ -387,8 +393,9 @@ def lazyloader_main(device, osversion, radioversion=None,
         scriptutils.check_os_single(osurl, osversion, device)
         radiourl, radioversion = scriptutils.check_radio_single(radiourl, radioversion)
 
+    dllist = [osurl, radiourl]
+    if download:
         print("DOWNLOADING...")
-        dllist = [osurl, radiourl]
         networkutils.download_bootstrap(dllist,
                                         outdir=localdir,
                                         lazy=True,
@@ -427,7 +434,7 @@ def lazyloader_main(device, osversion, radioversion=None,
 
     if autoloader:
         os.chdir(ld_o)
-        with open(bbconstants.JSONFILE) as thefile:
+        with open(utilities.grab_json()) as thefile:
             data = json.load(thefile)
         data = data['integermap']
         for key in data:

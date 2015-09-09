@@ -4,7 +4,8 @@
 
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import networkutils  # check function
-from json import load
+from bbarchivist import utilities  # json
+from json import load  # read json
 import argparse  # parse arguments
 import sys  # load arguments
 
@@ -45,7 +46,7 @@ def certchecker_main(device):
     :param device: Hardware ID, PTCRB ID, FCC ID or model number.
     :type device: str
     """
-    with open(bbconstants.JSONFILE) as thefile:
+    with open(utilities.grab_json()) as thefile:
         data = load(thefile)
     data = data['devices']
     device = device.upper()

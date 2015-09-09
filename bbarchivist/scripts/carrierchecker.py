@@ -206,7 +206,7 @@ def carrierchecker_main(mcc, mnc, device,
     device = device.upper()
     if directory is None:
         directory = os.getcwd()
-    with open(bbconstants.JSONFILE) as thefile:
+    with open(utilities.grab_json()) as thefile:
         data = json.load(thefile)
     data = data['devices']
     for key in data:

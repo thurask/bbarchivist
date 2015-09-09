@@ -12,6 +12,7 @@ import glob  # filename matching
 import json  # db work
 from bbarchivist import bbconstants  # constants/versions
 from bbarchivist import pseudocap  # implement cap
+from bbarchivist import utilities  # json
 
 
 def read_files(localdir):
@@ -270,7 +271,7 @@ def generate_skeletons():
     namelist = {}
     for idx in range(0, 7):
         namelist[idx] = None
-    with open(bbconstants.JSONFILE) as thefile:
+    with open(utilities.grab_json()) as thefile:
         data = json.load(thefile)
     data = data['integermap']
     for key in data:
@@ -287,7 +288,7 @@ def generate_device(radio):
     :param radio: The radio filename to look up.
     :type radio: str
     """
-    with open(bbconstants.JSONFILE) as thefile:
+    with open(utilities.grab_json()) as thefile:
         data = json.load(thefile)
     data = data['integermap']
     for key in data:
@@ -376,7 +377,7 @@ def generate_lazy_filename(osversion, suffix, device):
     :param device: Device to use.
     :type device: int
     """
-    with open(bbconstants.JSONFILE) as thefile:
+    with open(utilities.grab_json()) as thefile:
         data = json.load(thefile)
     data = data['integermap']
     for key in data:

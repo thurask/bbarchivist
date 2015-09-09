@@ -69,6 +69,18 @@ def grab_cap():
         return os.path.abspath(capfile)  # local cap
 
 
+def grab_json():
+    """
+    Figure out where JSON is, local or system-supplied.
+    """
+    try:
+        jfile = file_exists(bbconstants.JSONFILE)
+    except argparse.ArgumentError:  # pragma: no cover
+        jfile = glob.glob(os.path.join(os.getcwd(), "bbconstants.json"))[0]
+    finally:
+        return os.path.abspath(jfile)  # local JSON
+
+
 def filesize_parser(file_size):
     """
     Raw byte file size to human-readable string.
