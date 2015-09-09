@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """Get software release for one/many OS versions."""
 
@@ -66,6 +66,14 @@ def grab_args():
             help="Add valid links to database",
             action="store_true",
             default=False)
+        parser.add_argument(
+            "-c", "--ceiling",
+            dest="ceiling",
+            help="When to stop script, default = 9996",
+            default=9996,
+            type=int,
+            choices=range(1, 9997),
+            metavar="INT")
         args = parser.parse_args(sys.argv[1:])
         parser.set_defaults()
         autolookup_main(
@@ -75,7 +83,8 @@ def grab_args():
             args.autogen,
             args.increment,
             args.sql,
-            args.quiet)
+            args.quiet,
+            args.ceiling)
     else:
         osversion = input("OS VERSION: ")
         recurse = utilities.str2bool(input("LOOP?: "))
@@ -87,7 +96,8 @@ def grab_args():
             False,
             3,
             False,
-            False)
+            False,
+            9996)
         smeg = input("Press Enter to exit")
         if smeg or not smeg:
             raise SystemExit
@@ -95,7 +105,7 @@ def grab_args():
 
 def autolookup_main(osversion, loop=False, log=False,
                     autogen=False, inc=3, sql=False,
-                    quiet=False):
+                    quiet=False, ceiling=9996):
     """
     Lookup a software release from an OS. Can iterate.
 
@@ -119,6 +129,9 @@ def autolookup_main(osversion, loop=False, log=False,
 
     :param quiet: Whether to only output if the release exists. Default is false.
     :type quiet: bool
+
+    :param ceiling: When to stop loop. Default is 9996 (i.e. 10.x.y.9996).
+    :type ceiling: int
     """
     print("~~~AUTOLOOKUP VERSION", bbconstants.VERSION + "~~~")
     print("")
@@ -202,7 +215,7 @@ def autolookup_main(osversion, loop=False, log=False,
             if not loop:
                 raise KeyboardInterrupt  # hack, but whateva, I do what I want
             else:
-                if int(osversion.split(".")[3]) > 9996:
+                if int(osversion.split(".")[3]) > ceiling:
                     raise KeyboardInterrupt
                 else:
                     osversion = utilities.version_incrementer(osversion, inc)

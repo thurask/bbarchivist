@@ -429,22 +429,25 @@ Help
 
     > bb-autolookup -h
     
-    usage: bb-autolookup [-h] [-v] [-l] [-o] [-a] [-i INT] [-s] os
+    usage: bb-autolookup [-h] [-v] [-l] [-o] [-a] [-q] [-i INT] [-s] [-c INT] os
 
-    Get software release for one/many OS versions.
-    
-    positional arguments:
-      os                    OS version, 10.x.y.zzzz
-    
-    optional arguments:
-      -h, --help            show this help message and exit
-      -v, --version         show program's version number and exit
-      -l, --loop            Loop lookup, CTRL-C to quit
-      -o, --output          Output to file
-      -a, --autogen         Generate links for availables
-      -i INT, --increment INT
-                            Loop increment, default = 3
-      -s, --sql             Add valid links to database
+	Get software release for one/many OS versions.
+
+	positional arguments:
+	  os                    OS version, 10.x.y.zzzz
+
+	optional arguments:
+	  -h, --help            show this help message and exit
+	  -v, --version         show program's version number and exit
+	  -l, --loop            Loop lookup, CTRL-C to quit
+	  -o, --output          Output to file
+	  -a, --autogen         Generate links for availables
+	  -q, --quiet           Only print if available
+	  -i INT, --increment INT
+							Loop increment, default = 3
+	  -s, --sql             Add valid links to database
+	  -c INT, --ceiling INT
+							When to stop script, default = 9996
     
     http://github.com/thurask/bbarchivist
    
