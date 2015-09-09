@@ -42,6 +42,7 @@ def return_sw_checked(softwareversion, osversion):
     :param osversion: OS version.
     :type osversion: str
     """
+    swchecked = False
     if softwareversion is None:
         serv = bbconstants.SERVERS["p"]
         softwareversion = networkutils.software_release_lookup(osversion, serv)
