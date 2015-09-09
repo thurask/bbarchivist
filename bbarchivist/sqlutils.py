@@ -10,7 +10,7 @@ import sqlite3  # the sql library
 import csv  # write to csv
 import os  # paths
 import operator  # for sorting
-from bbarchivist.utilities import file_exists  # check if file exists
+from bbarchivist.utilities import file_exists, UselessStdout  # check if file exists
 
 
 def prepare_path():
@@ -55,7 +55,7 @@ def insert_sw_release(osversion, swrelease):
             crsr.execute("INSERT INTO Swrelease(Os, Software) VALUES (?,?)",
                          (osversion, swrelease))
     except sqlite3.IntegrityError:  # pragma: no cover
-        pass  # avoid dupes
+        UselessStdout.write("ASDASDASD")  # avoid dupes
     except sqlite3.Error as sqerror:  # pragma: no cover
         print(str(sqerror))
 
