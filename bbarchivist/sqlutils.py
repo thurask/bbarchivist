@@ -13,14 +13,21 @@ import operator  # for sorting
 from bbarchivist.utilities import file_exists  # check if file exists
 
 
+def prepare_path():
+    """
+    Figure out where the path is.
+    """
+    thepath = os.path.expanduser("~")
+    sqlpath = os.path.join(thepath, "bbarchivist.db")
+    return sqlpath
+
+
 def prepare_sw_db():
     """
     Create SQLite database, if not already existing.
     """
-    thepath = os.path.expanduser("~")
-    thepath = os.path.join(thepath, "bbarchivist.db")
     try:
-        cnxn = sqlite3.connect(thepath)
+        cnxn = sqlite3.connect(prepare_path())
         with cnxn:
             crsr = cnxn.cursor()
             # Filter OS/software, including uniqueness, case-insensitivity, existence, etc.
@@ -41,16 +48,38 @@ def insert_sw_release(osversion, swrelease):
     :param swrelease: Software release.
     :type swrelease: str
     """
-    thepath = os.path.expanduser("~")
-    thepath = os.path.join(thepath, "bbarchivist.db")
     try:
-        cnxn = sqlite3.connect(thepath)
+        cnxn = sqlite3.connect(prepare_path())
         with cnxn:
             crsr = cnxn.cursor()
             crsr.execute("INSERT INTO Swrelease(Os, Software) VALUES (?,?)",
                          (osversion, swrelease))
     except sqlite3.IntegrityError:  # pragma: no cover
         pass  # avoid dupes
+    except sqlite3.Error as sqerror:  # pragma: no cover
+        print(str(sqerror))
+
+
+def check_entry_existence(osversion, swrelease):
+    """
+    Check if we did this one already.
+
+    :param osversion: OS version.
+    :type osversion: str
+
+    :param swrelease: Software release.
+    :type swrelease: str
+    """
+    try:
+        cnxn = sqlite3.connect(prepare_path())
+        with cnxn:
+            crsr = cnxn.cursor()
+            exis = crsr.execute("SELECT EXISTS (SELECT 1 FROM Swrelease WHERE Os=? AND Software=?)",
+                                (osversion, swrelease)).fetchone()[0]  # check if exists
+            if exis:
+                return True
+            else:
+                return False
     except sqlite3.Error as sqerror:  # pragma: no cover
         print(str(sqerror))
 
@@ -63,7 +92,7 @@ def export_sql_db():
     sqlpath = os.path.join(thepath, "bbarchivist.db")
     if file_exists(sqlpath):
         try:
-            cnxn = sqlite3.connect(sqlpath)
+            cnxn = sqlite3.connect(prepare_path())
             with cnxn:
                 csvpath = os.path.join(thepath, "swrelease.csv")
                 csvw = csv.writer(open(csvpath, "w"))

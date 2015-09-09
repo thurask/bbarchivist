@@ -10,7 +10,6 @@ __copyright__ = "2015 Thurask"
 import os  # path work
 import glob  # filename matching
 import json  # db work
-from bbarchivist import bbconstants  # constants/versions
 from bbarchivist import pseudocap  # implement cap
 from bbarchivist import utilities  # json
 

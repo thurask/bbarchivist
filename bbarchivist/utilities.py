@@ -1,5 +1,5 @@
 ﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, E0611
+#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, E0611, W0150
 """This module is used for miscellaneous utilities."""
 
 __author__ = "Thurask"
@@ -74,11 +74,11 @@ def grab_json():
     Figure out where JSON is, local or system-supplied.
     """
     try:
-        jfile = file_exists(bbconstants.JSONFILE)
+        jfile = file_exists(bbconstants.JSONFILE)  # system JSON
     except argparse.ArgumentError:  # pragma: no cover
-        jfile = glob.glob(os.path.join(os.getcwd(), "bbconstants.json"))[0]
+        jfile = glob.glob(os.path.join(os.getcwd(), "bbconstants.json"))[0]  # local JSON
     finally:
-        return os.path.abspath(jfile)  # local JSON
+        return os.path.abspath(jfile)
 
 
 def filesize_parser(file_size):
