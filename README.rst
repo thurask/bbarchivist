@@ -247,7 +247,7 @@ Help
 	  -f DIR, --folder DIR  Working folder
 	  -g, --gpg             Enable GPG signing. Set up GnuPG.
 	  -r [SW], --radiosw [SW]
-							Radio software version, if not same as OS
+							Radio software version; use without software to guess
 	  -m [METHOD], --method [METHOD]
 							Compression method
 
@@ -292,20 +292,20 @@ Help
 	  -f DIR, --folder DIR  Working folder
 	  -n, --no-download     Don't download files
 	  -r [SW], --radiosw [SW]
-							Radio software version, if not same as OS
-    
-    devices:
-      Device to load (one required)
-    
-      --stl100-1            STL100-1
-      --stl100-x            STL100-2/3, P'9982
-      --stl100-4            STL100-4
-      --q10                 Q10, Q5, P'9983
-      --z30                 Z30, Classic, Leap
-      --z3                  Z3
-      --passport            Passport
-    
-    http://github.com/thurask/bbarchivist
+							Radio software version; use without software to guess
+
+	devices:
+	  Device to load (one required)
+
+	  --stl100-1            STL100-1
+	  --stl100-x            STL100-2/3, P'9982
+	  --stl100-4            STL100-4
+	  --q10                 Q10, Q5, P'9983
+	  --z30                 Z30, Classic, Leap
+	  --z3                  Z3
+	  --passport            Passport
+
+	http://github.com/thurask/bbarchivist
 
 ----------------------------------------
 

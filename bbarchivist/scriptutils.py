@@ -61,6 +61,36 @@ def return_sw_checked(softwareversion, osversion):
     return softwareversion, swchecked
 
 
+def return_radio_sw_checked(altsw, radioversion):
+    """
+    Check radio software existence, return boolean.
+
+    :param altsw: Software release version.
+    :type altsw: str
+
+    :param radioversion: Radio version.
+    :type radioversion: str
+    """
+    if altsw == "checkme":
+        serv = bbconstants.SERVERS["p"]
+        testos = utilities.version_incrementer(radioversion, -1)
+        altsw = networkutils.software_release_lookup(testos, serv)
+        if altsw == "SR not in system":
+            print("RADIO SOFTWARE RELEASE NOT FOUND")
+            cont = utilities.str2bool(input("INPUT MANUALLY? Y/N: "))
+            if cont:
+                altsw = input("SOFTWARE RELEASE: ")
+                altchecked = False
+            else:
+                print("\nEXITING...")
+                raise SystemExit  # bye bye
+        else:
+            altchecked = True
+    else:
+        altchecked = True
+    return altsw, altchecked
+
+
 def check_sw(baseurl, softwareversion, swchecked):
     """
     Check existence of software release.

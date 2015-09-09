@@ -123,8 +123,9 @@ def grab_args():
             "--radiosw",
             dest="altsw",
             metavar="SW",
-            help="Radio software version, if not same as OS",
+            help="Radio software version; use without software to guess",
             nargs="?",
+            const="checkme",
             default=None)
         parser.add_argument(
             "-m",
@@ -245,8 +246,12 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     """
     starttime = time.clock()
     swchecked = False  # if we checked sw release already
+    if altsw:
+        altchecked = False
     radioversion = scriptutils.return_radio_version(osversion, radioversion)
     softwareversion, swchecked = scriptutils.return_sw_checked(softwareversion, osversion)
+    if altsw == "checkme":
+        altsw, altchecked = scriptutils.return_radio_sw_checked(altsw, radioversion)
     if localdir is None:
         localdir = os.getcwd()
     if hashdict is None:

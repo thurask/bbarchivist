@@ -76,9 +76,9 @@ def start_gui(osv=None, radv=None, swv=None, dev=None, aut=None,
         altcheck = eg.boolbox(msg="Are you making a hybrid autoloader?",
                               default_choice="No")
         if altcheck:
-            altentry = eg.enterbox(msg="Software version for radio")
+            altentry = eg.enterbox(msg="Software version for radio, click Cancel to guess")
             if not altentry:
-                altentry = None
+                altentry = "checkme"
         else:
             altentry = None
     else:
@@ -222,8 +222,9 @@ def grab_args():
             "--radiosw",
             dest="altsw",
             metavar="SW",
-            help="Radio software version, if not same as OS",
+            help="Radio software version; use without software to guess",
             nargs="?",
+            const="checkme",
             default=None)
         if getattr(sys, 'frozen', False):
             frozen = True
@@ -282,11 +283,11 @@ def grab_args():
         altcheck = utilities.str2bool(input("HYBRID AUTOLOADER (Y/N)?: "))
         if altcheck:
             print("CREATING HYBRID AUTOLOADER")
-            while True:
-                altsw = input("RADIO SOFTWARE RELEASE: ")
-                if altsw:
-                    break
-            print("RADIO SOFTWARE RELEASE:", altsw)
+            altsw = input("RADIO SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
+            if altsw:
+                print("RADIO SOFTWARE RELEASE:", altsw)
+            else:
+                altsw = "checkme"
         else:
             altsw = None
         print("DEVICES:")
@@ -363,8 +364,12 @@ def lazyloader_main(device, osversion, radioversion=None,
     if (osversion or device) is None:
         raise SystemExit
     swchecked = False  # if we checked SW release already
+    if altsw:
+        altchecked = False
     radioversion = scriptutils.return_radio_version(osversion, radioversion)
     softwareversion, swchecked = scriptutils.return_sw_checked(softwareversion, osversion)
+    if altsw == "checkme":
+        altsw, altchecked = scriptutils.return_radio_sw_checked(altsw, radioversion)
     print("~~~LAZYLOADER VERSION", bbconstants.VERSION + "~~~")
     print("OS VERSION:", osversion)
     print("SOFTWARE VERSION:", softwareversion)
