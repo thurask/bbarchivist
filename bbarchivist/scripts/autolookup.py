@@ -179,7 +179,8 @@ def autolookup_main(osversion, loop=False, log=False,
                         linkgen.linkgen_main(osversion, rad, prel)
                     if sql:
                         sqlutils.prepare_sw_db()
-                        sqlutils.insert_sw_release(osversion, prel)
+                        if not sqlutils.check_entry_existence(osversion, prel):
+                            sqlutils.insert_sw_release(osversion, prel)
                 else:
                     available = "Unavailable"
             else:
