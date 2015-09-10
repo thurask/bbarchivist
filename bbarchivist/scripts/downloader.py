@@ -150,6 +150,8 @@ def downloader_main(osversion, radioversion=None, softwareversion=None,
     swchecked = False  # if we checked sw release already
     radioversion = scriptutils.return_radio_version(osversion, radioversion)
     softwareversion, swchecked = scriptutils.return_sw_checked(softwareversion, osversion)
+    if altsw:
+        altsw, altchecked = scriptutils.return_radio_sw_checked(altsw, radioversion)
     if localdir is None:
         localdir = os.getcwd()
     print("~~~DOWNLOADER VERSION", bbconstants.VERSION + "~~~")
