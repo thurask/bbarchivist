@@ -4,7 +4,6 @@
 
 import argparse  # parse arguments
 import sys  # load arguments
-import getpass  # password
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import networkutils  # lookup
 from bbarchivist import utilities  # incrementer

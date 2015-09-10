@@ -121,7 +121,7 @@ def check_sw(baseurl, softwareversion, swchecked):
         print("SOFTWARE RELEASE", softwareversion, "EXISTS")
 
 
-def check_radio_sw(alturl, altsw):
+def check_radio_sw(alturl, altsw, altchecked):
     """
     Check existence of radio software release.
 
@@ -130,9 +130,12 @@ def check_radio_sw(alturl, altsw):
 
     :param altsw: Radio software release.
     :type altsw: str
+
+    :param altchecked: If we checked the sw release already.
+    :type altchecked: bool
     """
-    if altsw:
-        print("CHECKING RADIO SOFTWARE RELEASE...")
+    print("CHECKING RADIO SOFTWARE RELEASE...")
+    if not altchecked:
         altavlty = networkutils.availability(alturl)
         if altavlty:
             print("SOFTWARE RELEASE", altsw, "EXISTS")
@@ -144,6 +147,8 @@ def check_radio_sw(alturl, altsw):
             else:
                 print("\nEXITING...")
                 raise SystemExit
+    else:
+        print("SOFTWARE RELEASE", altsw, "EXISTS")
 
 
 def check_os_single(osurl, osversion, device):

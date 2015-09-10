@@ -392,7 +392,7 @@ def lazyloader_main(device, osversion, radioversion=None,
         # Check availability of software releases
         scriptutils.check_sw(baseurl, softwareversion, swchecked)
         if altsw:
-            scriptutils.check_radio_sw(alturl, altsw)
+            scriptutils.check_radio_sw(alturl, altsw, altchecked)
 
         # Check availability of OS, radio
         scriptutils.check_os_single(osurl, osversion, device)

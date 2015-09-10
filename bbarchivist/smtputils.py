@@ -75,6 +75,31 @@ def smtp_config_writer(server=None, port=None, username=None, password=None, is_
 
 def send_email(kwargs):
     """
+    Wrap email sending based on SSL/TLS.
+
+    :param server: SMTP email server.
+    :type server: str
+
+    :param port: Port to use.
+    :type port: int
+
+    :param username: Email address.
+    :type username: str
+
+    :param password: Email password, optional.
+    :type password: str
+
+    :param is_ssl: True if server uses SSL, False if TLS only.
+    :type is_ssl: bool
+
+    :param software: Software release.
+    :type software: str
+
+    :param os: OS version.
+    :type os: str
+
+    :param body: Email message body.
+    :type body: str
     """
     if kwargs['password'] is None:
         kwargs['password'] = getpass.getpass(prompt="PASSWORD: ")
@@ -86,6 +111,19 @@ def send_email(kwargs):
 
 def parse_kwargs(kwargs):
     """
+    Extract variables from kwargs.
+
+    :param server: SMTP email server.
+    :type server: str
+
+    :param port: Port to use.
+    :type port: int
+
+    :param username: Email address.
+    :type username: str
+
+    :param password: Email password, optional.
+    :type password: str
     """
     server = kwargs['server']
     username = kwargs['username']
@@ -96,6 +134,16 @@ def parse_kwargs(kwargs):
 
 def generate_message(body, username, subject):
     """
+    Generate message body/headers.
+
+    :param body: Body of text.
+    :type body: str
+
+    :param username: Address to send to and from.
+    :type username: str
+
+    :param subject: Subject of message.
+    :type subject: str
     """
     msg = MIMEText(body)
     msg['Subject'] = subject
@@ -106,12 +154,44 @@ def generate_message(body, username, subject):
 
 def generate_subject(softwarerelease, osversion):
     """
+    Generate message subject.
+
+    :param softwarerelease: Software version.
+    :type softwarerelease: str
+
+    :param osversion: OS version.
+    :type osversion: str
     """
     return "SW {0} - OS {1} available!".format(softwarerelease, osversion)
 
 
 def send_email_ssl(kwargs):
     """
+    Send email with SSL (Gmail, Fastmail, etc.) over SMTP.
+
+    :param server: SMTP email server.
+    :type server: str
+
+    :param port: Port to use.
+    :type port: int
+
+    :param username: Email address.
+    :type username: str
+
+    :param password: Email password, optional.
+    :type password: str
+
+    :param is_ssl: True if server uses SSL, False if TLS only.
+    :type is_ssl: bool
+
+    :param software: Software release.
+    :type software: str
+
+    :param os: OS version.
+    :type os: str
+
+    :param body: Email message body.
+    :type body: str
     """
     server, username, port, password = parse_kwargs(kwargs)
     subject = generate_subject(kwargs['software'], kwargs['os'])
@@ -125,6 +205,31 @@ def send_email_ssl(kwargs):
 
 def send_email_tls(kwargs):
     """
+    Send email without SSL (Outlook) over SMTP.
+
+    :param server: SMTP email server.
+    :type server: str
+
+    :param port: Port to use.
+    :type port: int
+
+    :param username: Email address.
+    :type username: str
+
+    :param password: Email password, optional.
+    :type password: str
+
+    :param is_ssl: True if server uses SSL, False if TLS only.
+    :type is_ssl: bool
+
+    :param software: Software release.
+    :type software: str
+
+    :param os: OS version.
+    :type os: str
+
+    :param body: Email message body.
+    :type body: str
     """
     server, username, port, password = parse_kwargs(kwargs)
     subject = generate_subject(kwargs['software'], kwargs['os'])
@@ -139,6 +244,13 @@ def send_email_tls(kwargs):
 
 def prep_email(osversion, softwarerelease):
     """
+    Bootstrap the whole process.
+
+    :param osversion: OS version.
+    :type osversion: str
+
+    :param softwarerelease: Software version.
+    :type softwarerelease: str
     """
     results = smtp_config_loader()
     smtp_config_writer(**results)

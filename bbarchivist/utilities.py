@@ -589,7 +589,7 @@ def return_and_delete(target):
     :param target: Text file to read.
     :type target: str
     """
-    with open (target, "r") as thefile:
+    with open(target, "r") as thefile:
         content = thefile.read()
     os.remove(target)
     return content

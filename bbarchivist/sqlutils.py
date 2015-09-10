@@ -75,7 +75,7 @@ def pop_sw_release(osversion, swrelease):
         with cnxn:
             crsr = cnxn.cursor()
             crsr.execute("DELETE FROM Swrelease WHERE Os=? AND Software=?",
-                                (osversion, swrelease))
+                         (osversion, swrelease))
     except sqlite3.Error as sqerror:  # pragma: no cover
         print(str(sqerror))
 
