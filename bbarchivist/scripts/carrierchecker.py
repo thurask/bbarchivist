@@ -210,12 +210,11 @@ def carrierchecker_main(mcc, mnc, device,
         data = json.load(thefile)
     data = data['devices']
     for key in data:
-        if 'secret' not in key:
-            if key['name'] == device:
-                model = key['device']
-                family = key['family']
-                hwid = key['hwid']
-                break
+        if 'secret' not in key and key['name'] == device:
+            model = key['device']
+            family = key['family']
+            hwid = key['hwid']
+            break
     else:
         print("INVALID DEVICE!")
         raise SystemExit

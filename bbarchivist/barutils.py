@@ -710,9 +710,8 @@ def compress_config_loader():
     compini = config['compression']
     method = compini.get('method', fallback="7z")
     majver = sys.version_info[1]
-    if majver <= 2:  # 3.2 and under
-        if method == "txz":
-            method = "zip"
+    if majver <= 2 and method == "txz":  # 3.2 and under
+        method = "zip"
     return method
 
 

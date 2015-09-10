@@ -291,10 +291,9 @@ def generate_device(radio):
         data = json.load(thefile)
     data = data['integermap']
     for key in data:
-        if not key['special']:
-            if key['radtype'] in radio:
-                idx = int(key['id'])
-                break
+        if not key['special'] and key['radtype'] in radio:
+            idx = int(key['id'])
+            break
         else:
             targs = (key['special'], key['radtype'])
             if all(idx in radio for idx in targs):

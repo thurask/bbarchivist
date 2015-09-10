@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301
 """Test the filehashtools module."""
 
@@ -33,9 +33,8 @@ def teardown_module(module):
         os.remove("tempfile.txt")
     if os.path.exists("tempfile.txt.cksum"):
         os.remove("tempfile.txt.cksum")
-    if not NOGNUPG:
-        if os.path.exists("tempfile.txt.asc"):
-            os.remove("tempfile.txt.asc")
+    if not NOGNUPG and os.path.exists("tempfile.txt.asc"):
+        os.remove("tempfile.txt.asc")
     os.chdir("..")
     rmtree("temp")
 
