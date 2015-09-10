@@ -78,6 +78,9 @@
     <Compile Include="bbarchivist\scripts\linkgen.py" />
     <Compile Include="bbarchivist\scripts\sqlexport.py" />
     <Compile Include="bbarchivist\scripts\__init__.py" />
+    <Compile Include="bbarchivist\smtputils.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="bbarchivist\sqlutils.py" />
     <Compile Include="tests\test_barutils.py" />
     <Compile Include="tests\test_filehashtools.py" />

@@ -429,7 +429,8 @@ Help
 
     > bb-autolookup -h
     
-    usage: bb-autolookup [-h] [-v] [-l] [-o] [-a] [-q] [-i INT] [-s] [-c INT] os
+    usage: bb-autolookup [-h] [-v] [-l] [-o] [-a] [-q] [-i INT] [-s] [-e] [-c INT]
+                     os
 
 	Get software release for one/many OS versions.
 
@@ -446,8 +447,11 @@ Help
 	  -i INT, --increment INT
 							Loop increment, default = 3
 	  -s, --sql             Add valid links to database
+	  -e, --email           Email valid links to self
 	  -c INT, --ceiling INT
 							When to stop script, default = 9996
+
+	http://github.com/thurask/bbarchivist
     
     http://github.com/thurask/bbarchivist
    

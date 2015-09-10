@@ -60,6 +60,26 @@ def insert_sw_release(osversion, swrelease):
         print(str(sqerror))
 
 
+def pop_sw_release(osversion, swrelease):
+    """
+    Remove given entry from database.
+
+    :param osversion: OS version.
+    :type osversion: str
+
+    :param swrelease: Software release.
+    :type swrelease: str
+    """
+    try:
+        cnxn = sqlite3.connect(prepare_path())
+        with cnxn:
+            crsr = cnxn.cursor()
+            crsr.execute("DELETE FROM Swrelease WHERE Os=? AND Software=?",
+                                (osversion, swrelease))
+    except sqlite3.Error as sqerror:  # pragma: no cover
+        print(str(sqerror))
+
+
 def check_entry_existence(osversion, swrelease):
     """
     Check if we did this one already.

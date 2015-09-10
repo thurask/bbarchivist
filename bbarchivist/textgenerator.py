@@ -13,7 +13,7 @@ from bbarchivist.utilities import filesize_parser, generate_urls, barname_stripp
 
 def write_links(softwareversion, osversion, radioversion,
                 osurls, coreurls, radiourls, avlty=False,
-                appendbars=False, appurls=None):
+                appendbars=False, appurls=None, temp=False):
     """
     Write lookup links to file. Check for availability, can include app bars.
 
@@ -43,10 +43,15 @@ def write_links(softwareversion, osversion, radioversion,
 
     :param appurls: App bar URLs to add.
     :type softwareversion: list
+
+    :param temp: If file we write to is temporary.
+    :type temp: bool
     """
     thename = softwareversion
     if appendbars:
         thename += "plusapps"
+    if temp:  # pragma: no cover
+        thename = "TEMPFILE"
     with open(thename + ".txt", "w") as target:
         target.write("OS VERSION: " + osversion + "\n")
         target.write("RADIO VERSION: " + radioversion + "\n")

@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, E0611, W0150
 """This module is used for miscellaneous utilities."""
 
@@ -580,6 +580,19 @@ class UselessStdout(object):
         Convince module we're in a terminal.
         """
         return True  # pragma: no cover
+
+
+def return_and_delete(target):
+    """
+    Read text file, then delete it. Return contents.
+
+    :param target: Text file to read.
+    :type target: str
+    """
+    with open (target, "r") as thefile:
+        content = thefile.read()
+    os.remove(target)
+    return content
 
 
 def cappath_config_loader():

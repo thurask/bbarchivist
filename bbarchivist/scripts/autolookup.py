@@ -4,11 +4,13 @@
 
 import argparse  # parse arguments
 import sys  # load arguments
+import getpass  # password
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import networkutils  # lookup
 from bbarchivist import utilities  # incrementer
 from bbarchivist import sqlutils  # sql db work
 from bbarchivist.scripts import linkgen  # link generator @UnresolvedImport
+from bbarchivist import smtputils  # email
 import time  # get datestamp for lookup
 import os  # path work
 
@@ -67,6 +69,12 @@ def grab_args():
             action="store_true",
             default=False)
         parser.add_argument(
+            "-e", "--email",
+            dest="email",
+            help="Email valid links to self",
+            action="store_true",
+            default=False)
+        parser.add_argument(
             "-c", "--ceiling",
             dest="ceiling",
             help="When to stop script, default = 9996",
@@ -84,7 +92,8 @@ def grab_args():
             args.increment,
             args.sql,
             args.quiet,
-            args.ceiling)
+            args.ceiling,
+            args.email)
     else:
         osversion = input("OS VERSION: ")
         recurse = utilities.str2bool(input("LOOP?: "))
@@ -97,7 +106,8 @@ def grab_args():
             3,
             False,
             False,
-            9996)
+            9996,
+            False)
         smeg = input("Press Enter to exit")
         if smeg or not smeg:
             raise SystemExit
@@ -105,7 +115,7 @@ def grab_args():
 
 def autolookup_main(osversion, loop=False, log=False,
                     autogen=False, inc=3, sql=False,
-                    quiet=False, ceiling=9996):
+                    quiet=False, ceiling=9996, mailer=False):
     """
     Lookup a software release from an OS. Can iterate.
 
@@ -132,7 +142,12 @@ def autolookup_main(osversion, loop=False, log=False,
 
     :param ceiling: When to stop loop. Default is 9996 (i.e. 10.x.y.9996).
     :type ceiling: int
+
+    :param mailer: Whether to send new valid links through email. Default is false.
+    :type mailer: bool
     """
+    if mailer:
+        sql = True
     print("~~~AUTOLOOKUP VERSION", bbconstants.VERSION + "~~~")
     print("")
     if log:
@@ -180,6 +195,10 @@ def autolookup_main(osversion, loop=False, log=False,
                     if sql:
                         sqlutils.prepare_sw_db()
                         if not sqlutils.check_entry_existence(osversion, prel):
+                            if mailer:
+                                rad = utilities.version_incrementer(osversion, 1)
+                                linkgen.linkgen_main(osversion, rad, prel, temp=True)
+                                smtputils.prep_email(osversion, prel)
                             sqlutils.insert_sw_release(osversion, prel)
                 else:
                     available = "Unavailable"

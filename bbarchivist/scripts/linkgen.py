@@ -80,7 +80,7 @@ def grab_args():
 
 
 def linkgen_main(osversion, radioversion=None,
-                 softwareversion=None, altsw=None):
+                 softwareversion=None, altsw=None, temp=False):
     """
     Generate debrick/core/radio links for given OS, radio, software release.
 
@@ -95,6 +95,9 @@ def linkgen_main(osversion, radioversion=None,
 
     :param altsw: Radio software release, if not the same as OS.
     :type altsw: str
+
+    :param temp: If file we write to is temporary.
+    :type temp: bool
     """
     radioversion = scriptutils.return_radio_version(osversion, radioversion)
     softwareversion, swchecked = scriptutils.return_sw_checked(softwareversion, osversion)
@@ -113,7 +116,7 @@ def linkgen_main(osversion, radioversion=None,
     avlty = networkutils.availability(baseurl)
     textgenerator.write_links(softwareversion, osversion, radioversion,
                               oses, cores, radios,
-                              avlty, False, None)
+                              avlty, False, None, temp)
 
 if __name__ == "__main__":
     grab_args()
