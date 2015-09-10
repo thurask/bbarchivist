@@ -437,16 +437,20 @@ def verify(filepath, method="7z", szexe=None, selective=False):
                 if not szver:
                     print("{0} IS BROKEN!".format((file)))
             elif file.endswith(".tar.gz"):
-                if not tgz_verify(file):
+                tgver = tgz_verify(file)
+                if not tgver:
                     print("{0} IS BROKEN!".format((file)))
             elif file.endswith(".tar.xz"):
-                if not txz_verify(file):
+                txver = txz_verify(file)
+                if not txver:
                     print("{0} IS BROKEN!".format((file)))
             elif file.endswith(".tar.bz2"):
-                if not tbz_verify(file):
+                tbver = tbz_verify(file)
+                if not tbver:
                     print("{0} IS BROKEN!".format((file)))
             elif file.endswith(".zip"):
-                if not zip_verify(file):
+                zver = zip_verify(file)
+                if not zver:
                     print("{0} IS BROKEN!".format((file)))
 
 
