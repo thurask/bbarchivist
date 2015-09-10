@@ -452,8 +452,6 @@ Help
 							When to stop script, default = 9996
 
 	http://github.com/thurask/bbarchivist
-    
-    http://github.com/thurask/bbarchivist
    
 ----------------------------------------
 
