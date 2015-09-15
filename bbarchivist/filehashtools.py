@@ -310,6 +310,26 @@ def calculate_escreens(pin, app, uptime, duration=30):
     return key.upper()
 
 
+def hash_formatter(filename, hashfunc, workingdir, blocksize=16777216):
+    """
+    Generate and pretty format the hash result for a file.
+
+    :param filename: File to hash.
+    :type filename: str
+
+    :param hashfunc: Hash function to use.
+    :type hashfunc: function
+
+    :param workingdir: Working directory.
+    :type workingdir: str
+
+    :param blocksize: Block size. Default is 16MB.
+    :type blocksize: int
+    """
+    result = hashfunc(os.path.join(workingdir, filename), blocksize)
+    return "{0} {1}\n".format(result.upper(), filename)
+
+
 def verifier(workingdir, **kwargs):
     """
     For all files in a directory, perform various hash/checksum functions.
@@ -331,6 +351,7 @@ def verifier(workingdir, **kwargs):
     hashoutput_md4 = "MD4\n"
     hashoutput_ripemd160 = "RIPEMD160\n"
     hashoutput_whirlpool = "WHIRLPOOL\n"
+    block = int(kwargs['blocksize'])
     if os.listdir(workingdir):
         for file in os.listdir(workingdir):
             if os.path.isdir(os.path.join(workingdir, file)):
@@ -340,127 +361,27 @@ def verifier(workingdir, **kwargs):
             else:
                 print("HASHING:", str(file))
                 if kwargs['adler32']:
-                    print("ADLER32 ", end="")
-                    result_adler32 = adler32hash(
-                        os.path.join(
-                            workingdir,
-                            file),
-                        kwargs['blocksize'])
-                    hashoutput_adler32 += str(result_adler32.upper())
-                    hashoutput_adler32 += " "
-                    hashoutput_adler32 += str(file)
-                    hashoutput_adler32 += " \n"
+                    hashoutput_adler32 += hash_formatter(file, adler32hash, workingdir, block)
                 if kwargs['crc32']:
-                    print("CRC32 ", end="")
-                    result_crc32 = crc32hash(
-                        os.path.join(
-                            workingdir,
-                            file),
-                        kwargs['blocksize'])
-                    hashoutput_crc32 += str(result_crc32.upper())
-                    hashoutput_crc32 += " "
-                    hashoutput_crc32 += str(file)
-                    hashoutput_crc32 += " \n"
+                    hashoutput_crc32 += hash_formatter(file, crc32hash, workingdir, block)
                 if kwargs['md4']:
-                    print("MD4 ", end="")
-                    result_md4 = md4hash(
-                        os.path.join(
-                            workingdir,
-                            file),
-                        kwargs['blocksize'])
-                    hashoutput_md4 += str(result_md4.upper())
-                    hashoutput_md4 += " "
-                    hashoutput_md4 += str(file)
-                    hashoutput_md4 += " \n"
+                    hashoutput_md4 += hash_formatter(file, md4hash, workingdir, block)
                 if kwargs['md5']:
-                    print("MD5 ", end="")
-                    result_md5 = md5hash(
-                        os.path.join(
-                            workingdir,
-                            file),
-                        kwargs['blocksize'])
-                    hashoutput_md5 += str(result_md5.upper())
-                    hashoutput_md5 += " "
-                    hashoutput_md5 += str(file)
-                    hashoutput_md5 += " \n"
+                    hashoutput_md5 += hash_formatter(file, md5hash, workingdir, block)
                 if kwargs['sha1']:
-                    print("SHA1 ", end="")
-                    result_sha1 = sha1hash(
-                        os.path.join(
-                            workingdir,
-                            file),
-                        kwargs['blocksize'])
-                    hashoutput_sha1 += str(result_sha1.upper())
-                    hashoutput_sha1 += " "
-                    hashoutput_sha1 += str(file)
-                    hashoutput_sha1 += " \n"
+                    hashoutput_sha1 += hash_formatter(file, sha1hash, workingdir, block)
                 if kwargs['sha224']:
-                    print("SHA224 ", end="")
-                    result_sha224 = sha224hash(
-                        os.path.join(
-                            workingdir,
-                            file),
-                        kwargs['blocksize'])
-                    hashoutput_sha224 += str(result_sha224.upper())
-                    hashoutput_sha224 += " "
-                    hashoutput_sha224 += str(file)
-                    hashoutput_sha224 += " \n"
+                    hashoutput_sha224 += hash_formatter(file, sha224hash, workingdir, block)
                 if kwargs['sha256']:
-                    print("SHA256 ", end="")
-                    result_sha256 = sha256hash(
-                        os.path.join(
-                            workingdir,
-                            file),
-                        kwargs['blocksize'])
-                    hashoutput_sha256 += str(result_sha256.upper())
-                    hashoutput_sha256 += " "
-                    hashoutput_sha256 += str(file)
-                    hashoutput_sha256 += " \n"
+                    hashoutput_sha256 += hash_formatter(file, sha256hash, workingdir, block)
                 if kwargs['sha384']:
-                    print("SHA384 ", end="")
-                    result_sha384 = sha384hash(
-                        os.path.join(
-                            workingdir,
-                            file),
-                        kwargs['blocksize'])
-                    hashoutput_sha384 += str(result_sha384.upper())
-                    hashoutput_sha384 += " "
-                    hashoutput_sha384 += str(file)
-                    hashoutput_sha384 += " \n"
+                    hashoutput_sha384 += hash_formatter(file, sha384hash, workingdir, block)
                 if kwargs['sha512']:
-                    print("SHA512 ", end="")
-                    result_sha512 = sha512hash(
-                        os.path.join(
-                            workingdir,
-                            file),
-                        kwargs['blocksize'])
-                    hashoutput_sha512 += str(result_sha512.upper())
-                    hashoutput_sha512 += " "
-                    hashoutput_sha512 += str(file)
-                    hashoutput_sha512 += " \n"
+                    hashoutput_sha512 += hash_formatter(file, sha512hash, workingdir, block)
                 if kwargs['ripemd160']:
-                    print("RIPEMD160 ", end="")
-                    result_ripemd160 = ripemd160hash(
-                        os.path.join(
-                            workingdir,
-                            file),
-                        kwargs['blocksize'])
-                    hashoutput_ripemd160 += str(result_ripemd160.upper())
-                    hashoutput_ripemd160 += " "
-                    hashoutput_ripemd160 += str(file)
-                    hashoutput_ripemd160 += " \n"
+                    hashoutput_ripemd160 += hash_formatter(file, ripemd160hash, workingdir, block)
                 if kwargs['whirlpool']:
-                    print("WHIRLPOOL ", end="")
-                    result_whirlpool = whirlpoolhash(
-                        os.path.join(
-                            workingdir,
-                            file),
-                        kwargs['blocksize'])
-                    hashoutput_whirlpool += str(result_whirlpool.upper())
-                    hashoutput_whirlpool += " "
-                    hashoutput_whirlpool += str(file)
-                    hashoutput_whirlpool += " \n"
-                print("\n")
+                    hashoutput_whirlpool += hash_formatter(file, whirlpoolhash, workingdir, block)
                 if not kwargs['onefile']:
                     basename = file + ".cksum"
                     targetname = os.path.join(workingdir, basename)
@@ -533,16 +454,11 @@ def verifier(workingdir, **kwargs):
                     target.write(hashoutput_ripemd160 + "\n")
                 if kwargs['whirlpool']:
                     target.write(hashoutput_whirlpool + "\n")
-            if any((kwargs['crc32'], kwargs['adler32'],
+            if not any((kwargs['crc32'], kwargs['adler32'],
                     kwargs['md4'], kwargs['md5'], kwargs['sha1'],
                     kwargs['sha224'], kwargs['sha256'], kwargs['sha384'],
                     kwargs['sha512'], kwargs['ripemd160'],
                     kwargs['whirlpool'])):
-                with open(os.path.join(workingdir,
-                                       'all.cksum'), 'rb+') as target:
-                    target.seek(-2, os.SEEK_END)  # navigate to last character
-                    target.truncate()  # get rid of trailing \n
-            else:
                 os.remove(os.path.join(workingdir, 'all.cksum'))
 
 
