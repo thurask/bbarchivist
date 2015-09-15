@@ -39,7 +39,6 @@
     <Content Include="docs\Makefile" />
     <Content Include="docs\modules.rst" />
     <Content Include="docs\readme.rst" />
-    <Content Include="docs\tests.rst" />
     <Content Include="exebuilder.bat" />
     <Content Include="install.bat" />
     <Content Include="MANIFEST.in" />
