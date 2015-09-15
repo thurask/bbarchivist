@@ -11,4 +11,5 @@ install:
 env:
     - PYTHONDONTWRITEBYTECODE=true
 script:
+    - rm  -rf tests/__init__.py
     - py.test --assert=plain
