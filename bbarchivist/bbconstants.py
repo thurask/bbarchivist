@@ -9,7 +9,7 @@ __copyright__ = "2015 Thurask"
 import os.path  # for producing cap location constant
 
 #: App version.
-VERSION = "2.1.3"
+VERSION = "2.2.0"
 #: File location.
 LOCATION = os.path.abspath(__file__)
 #: File folder.
