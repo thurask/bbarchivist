@@ -550,7 +550,25 @@
 		"ptcrbid":"",
 		"secret":"True"
 	},
-	{
+    {
+        "device": "",
+        "family": "UNRELEASED",
+        "name": "STV100-5",
+        "hwid": "",
+        "fccid": "",
+        "ptcrbid": "",
+        "secret": "True"
+    },
+    {
+        "device": "",
+        "family": "UNRELEASED",
+        "name": "STV100-6",
+        "hwid": "",
+        "fccid": "",
+        "ptcrbid": "",
+        "secret": "True"
+    },
+    {
 		"device":"",
 		"family":"UNRELEASED",
 		"name":"STV100-4",
