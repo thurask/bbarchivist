@@ -9,4 +9,5 @@ install:
     - pip install requests python-gnupg mock pytest httmock beautifulsoup4 shutilwhich
     - if [[ $TRAVIS_PYTHON_VERSION == 3.5 ]]; then pip install --upgrade git+https://github.com/pytest-dev/pytest.git; fi
 script:
+    - cd tests
     - py.test
