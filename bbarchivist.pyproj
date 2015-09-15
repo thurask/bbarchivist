@@ -81,53 +81,31 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="bbarchivist\sqlutils.py" />
-    <Compile Include="tests\barutils\test_barutils.py" />
-    <Compile Include="tests\barutils\__init__.py" />
-    <Compile Include="tests\filehashtools\test_filehashtools.py" />
-    <Compile Include="tests\filehashtools\__init__.py" />
-    <Compile Include="tests\loadergen\test_loadergen.py" />
-    <Compile Include="tests\loadergen\__init__.py" />
-    <Compile Include="tests\networkutils\test_networkutils.py" />
-    <Compile Include="tests\networkutils\__init__.py" />
-    <Compile Include="tests\pseudocap\test_pseudocap.py" />
-    <Compile Include="tests\pseudocap\__init__.py" />
-    <Compile Include="tests\scriptutils\test_scriptutils.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="tests\scriptutils\__init__.py" />
-    <Compile Include="tests\smtputils\test_smtputils.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="tests\smtputils\__init__.py" />
-    <Compile Include="tests\sqlutils\test_sqlutils.py" />
-    <Compile Include="tests\sqlutils\__init__.py" />
-    <Compile Include="tests\textgenerator\test_textgenerator.py" />
-    <Compile Include="tests\textgenerator\__init__.py" />
-    <Compile Include="tests\utilities\test_utilities.py" />
-    <Compile Include="tests\utilities\__init__.py" />
-    <Compile Include="tests\__init__.py" />
+    <Compile Include="tests\test_barutils.py" />
+    <Compile Include="tests\test_filehashtools.py" />
+    <Compile Include="tests\test_loadergen.py" />
+    <Compile Include="tests\test_networkutils.py" />
+    <Compile Include="tests\test_pseudocap.py" />
+    <Compile Include="tests\test_scriptutils.py" />
+    <Compile Include="tests\test_smtputils.py" />
+    <Compile Include="tests\test_sqlutils.py" />
+    <Compile Include="tests\test_textgenerator.py" />
+    <Compile Include="tests\test_utilities.py" />
     <Compile Include="bbarchivist\textgenerator.py" />
     <Compile Include="bbarchivist\utilities.py" />
     <Compile Include="bbarchivist\__init__.py" />
     <Compile Include="cxsetup.py" />
     <Compile Include="docs\conf.py" />
     <Compile Include="setup.py" />
+    <Compile Include="tests\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bbarchivist" />
     <Folder Include="bbarchivist\scripts" />
     <Folder Include="tests\" />
     <Folder Include="docs" />
-    <Folder Include="tests\barutils\" />
-    <Folder Include="tests\filehashtools\" />
-    <Folder Include="tests\loadergen\" />
-    <Folder Include="tests\networkutils\" />
-    <Folder Include="tests\pseudocap\" />
-    <Folder Include="tests\scriptutils\" />
-    <Folder Include="tests\smtputils\" />
-    <Folder Include="tests\sqlutils\" />
-    <Folder Include="tests\textgenerator\" />
-    <Folder Include="tests\utilities\" />
   </ItemGroup>
   <Import Project="$(PtvsTargetsFile)" Condition="Exists($(PtvsTargetsFile))" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="!Exists($(PtvsTargetsFile))" />

@@ -1,1 +1,1 @@
-py.test --cov=bbarchivist tests/ --cov-report html
+py.test --cov=bbarchivist tests/ --cov-report html --cov-config .coveragerc
