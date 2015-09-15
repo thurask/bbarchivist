@@ -22,6 +22,15 @@ bbarchivist/tests/__pycache__
 scripts/__pycache__
 scripts/lazyloader
 tests/__pycache__
+tests/barutils/__pycache__
+tests/filehashtools/__pycache__
+tests/loadergen/__pycache__
+tests/networkutils/__pycache__
+tests/pseudocap/__pycache__
+tests/smtputils/__pycache__
+tests/sqlutils/__pycache__
+tests/textgenerator/__pycache__
+tests/utilities/__pycache__
 venv/
 .vs/
 /bbarchivist/scripts/*.zip

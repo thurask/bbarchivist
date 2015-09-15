@@ -1,13 +1,8 @@
 bbarchivist.scripts package
 ===========================
 
-Module contents
----------------
-
-.. automodule:: bbarchivist.scripts
-    :members:
-    :undoc-members:
-    :show-inheritance:
+Submodules
+----------
 
 bbarchivist.scripts.archivist module
 ------------------------------------
@@ -25,6 +20,14 @@ bbarchivist.scripts.autolookup module
     :undoc-members:
     :show-inheritance:
 
+bbarchivist.scripts.cap module
+------------------------------
+
+.. automodule:: bbarchivist.scripts.cap
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 bbarchivist.scripts.carrierchecker module
 -----------------------------------------
 
@@ -37,6 +40,14 @@ bbarchivist.scripts.certchecker module
 --------------------------------------
 
 .. automodule:: bbarchivist.scripts.certchecker
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+bbarchivist.scripts.downloader module
+-------------------------------------
+
+.. automodule:: bbarchivist.scripts.downloader
     :members:
     :undoc-members:
     :show-inheritance:
@@ -65,6 +76,14 @@ bbarchivist.scripts.gpgrunner module
     :undoc-members:
     :show-inheritance:
 
+bbarchivist.scripts.kompressor module
+-------------------------------------
+
+.. automodule:: bbarchivist.scripts.kompressor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 bbarchivist.scripts.lazyloader module
 -------------------------------------
 
@@ -77,6 +96,23 @@ bbarchivist.scripts.linkgen module
 ----------------------------------
 
 .. automodule:: bbarchivist.scripts.linkgen
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+bbarchivist.scripts.sqlexport module
+------------------------------------
+
+.. automodule:: bbarchivist.scripts.sqlexport
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: bbarchivist.scripts
     :members:
     :undoc-members:
     :show-inheritance:

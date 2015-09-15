@@ -17,8 +17,6 @@ Contents:
    
    bbarchivist.scripts
    
-   tests
-   
 Indices and tables
 ==================
 

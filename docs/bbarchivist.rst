@@ -1,13 +1,15 @@
 bbarchivist package
 ===================
 
-Module contents
----------------
+Subpackages
+-----------
 
-.. automodule:: bbarchivist
-    :members:
-    :undoc-members:
-    :show-inheritance:
+.. toctree::
+
+    bbarchivist.scripts
+
+Submodules
+----------
 
 bbarchivist.barutils module
 ---------------------------
@@ -65,6 +67,14 @@ bbarchivist.scriptutils module
     :undoc-members:
     :show-inheritance:
 
+bbarchivist.smtputils module
+----------------------------
+
+.. automodule:: bbarchivist.smtputils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 bbarchivist.sqlutils module
 ---------------------------
 
@@ -85,6 +95,15 @@ bbarchivist.utilities module
 ----------------------------
 
 .. automodule:: bbarchivist.utilities
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: bbarchivist
     :members:
     :undoc-members:
     :show-inheritance:
