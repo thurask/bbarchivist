@@ -11,4 +11,4 @@ install:
 env:
     - PYTHONDONTWRITEBYTECODE=true
 script:
-    - py.test
+    - py.test --assert=plain
