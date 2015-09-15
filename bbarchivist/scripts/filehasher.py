@@ -1,5 +1,5 @@
 ﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
+#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, W0142
 """Applies hash functions to files."""
 
 import argparse  # parse arguments

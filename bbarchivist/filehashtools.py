@@ -331,9 +331,7 @@ def verifier(workingdir, **kwargs):
     hashoutput_md4 = "MD4\n"
     hashoutput_ripemd160 = "RIPEMD160\n"
     hashoutput_whirlpool = "WHIRLPOOL\n"
-    if os.listdir(workingdir) == []:
-        return
-    else:
+    if os.listdir(workingdir):
         for file in os.listdir(workingdir):
             if os.path.isdir(os.path.join(workingdir, file)):
                 pass  # exclude folders

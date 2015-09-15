@@ -1,5 +1,5 @@
 ﻿#!/usr/bin/env python3
-
+#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """This module is used to operate with bar files and other archives."""
 
 __author__ = "Thurask"
@@ -42,7 +42,6 @@ def extract_bars(filepath):
                 print("EXTRACTION FAILURE")
                 print(str(exc))
                 print("DID IT DOWNLOAD PROPERLY?")
-                return
 
 
 def retrieve_sha512(filename):
@@ -111,7 +110,7 @@ def bar_tester(filepath):
             return None
 
 
-def sz_compress(filepath, filename, szexe=None, strength=5):
+def sz_compress(filepath, filename, szexe=None, strength=5, errors=False):
     """
     Pack a file into a LZMA2 7z file.
 
@@ -126,37 +125,24 @@ def sz_compress(filepath, filename, szexe=None, strength=5):
 
     :param strength: Compression strength. 5 is normal, 9 is ultra.
     :type strength: int
+
+    :param errors: Print completion status message. Default is false.
+    :type errors: bool
     """
     starttime = time.clock()
+    strength = str(strength)
     rawname = os.path.dirname(filepath)
-    excode = subprocess.call(
-        szexe +
-        " a -mx" +
-        str(strength) +
-        " -m0=lzma2 -mmt" +
-        utilities.get_core_count() +
-        " " +
-        '"' +
-        filepath +
-        '.7z"' +
-        " " +
-        '"' +
-        os.path.join(
-            rawname,
-            filename) +
-        '"',
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.STDOUT)
+    cores = str(utilities.get_core_count())
+    initfold = os.path.join(rawname, filename)
+    excode = subprocess.call('{0} a -mx{1} -m0=lzma2 -mmt{2} "{3}.7z" "{4}"'.format(
+        szexe, strength, cores, filepath, initfold),
+                             stdout=subprocess.DEVNULL,
+                             stderr=subprocess.STDOUT)
     endtime = time.clock() - starttime
     endtime_proper = math.ceil(endtime * 100) / 100
     print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
-    codedict = {0:"NO ERRORS",
-                1:"COMPLETED WITH WARNINGS",
-                2:"FATAL ERROR",
-                7:"COMMAND LINE ERROR",
-                8:"OUT OF MEMORY ERROR",
-                255:"USER STOPPED PROCESS"}
-    print(codedict[excode])
+    if errors:
+        print(bbconstants.SZCODES[excode])
 
 
 def sz_verify(filepath, szexe=None):
@@ -170,13 +156,10 @@ def sz_verify(filepath, szexe=None):
     :type szexe: str
     """
     filepath = os.path.abspath(filepath)
-    excode = subprocess.call(
-        szexe +
-        ' t "' +
-        filepath +
-        '"',
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.STDOUT)
+    excode = subprocess.call('{0} t "{1}"'.format(
+        szexe, filepath),
+                             stdout=subprocess.DEVNULL,
+                             stderr=subprocess.STDOUT)
     return excode == 0
 
 
@@ -285,8 +268,7 @@ def txz_verify(filepath):
     :param filepath: Filename.
     :type filepath: str
     """
-    majver = sys.version_info[1]
-    if majver <= 2:
+    if sys.version_info[1] <= 2:
         pass
     else:
         if tarfile.is_tarfile(filepath):
@@ -392,7 +374,7 @@ def compress(filepath, method="7z", szexe=None, selective=False):
         filt1 = [file for file in filt0 if not file.endswith(bbconstants.ARCS)]  # pop compressed
         filt2 = [file for file in filt1 if file.endswith(".exe")]  # exes only
     else:
-        filt2 = files
+        filt2 = [file for file in files if not file.endswith(bbconstants.ARCS)]  # pop compressed
     for file in filt2:
         filename = os.path.splitext(os.path.basename(file))[0]
         fileloc = os.path.join(filepath, filename)
@@ -429,8 +411,10 @@ def verify(filepath, method="7z", szexe=None, selective=False):
     method = filter_method(method, szexe)
     files = (file for file in os.listdir(filepath) if not os.path.isdir(file))
     for file in files:
-        filt = file.endswith(bbconstants.ARCS) and file.startswith(bbconstants.PREFIXES)
-        if filt if selective else True:
+        filt = file.endswith(bbconstants.ARCS)
+        if selective:
+            filt = filt and file.startswith(bbconstants.PREFIXES)
+        if filt:
             print("VERIFYING:", file)
             if file.endswith(".7z") and szexe is not None:
                 szver = sz_verify(os.path.abspath(file), szexe)

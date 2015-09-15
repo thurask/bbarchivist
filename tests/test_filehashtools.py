@@ -1,5 +1,5 @@
-#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301
+﻿#!/usr/bin/env python3
+#pylint: disable = I0011, R0201, W0613, C0301, W0142
 """Test the filehashtools module."""
 
 import os
