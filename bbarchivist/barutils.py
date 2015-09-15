@@ -141,7 +141,7 @@ def sz_compress(filepath, filename, szexe=None, strength=5, errors=False):
     endtime = time.clock() - starttime
     endtime_proper = math.ceil(endtime * 100) / 100
     print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
-    if errors:
+    if errors:  # pragma: no cover
         print(bbconstants.SZCODES[excode])
 
 
@@ -195,11 +195,11 @@ def tgz_verify(filepath):
     if tarfile.is_tarfile(filepath):
         with tarfile.open(filepath, "r:gz") as thefile:
             mems = thefile.getmembers()
-        if not mems:
+        if not mems:  # pragma: no cover
             return False
         else:
             return True
-    else:
+    else:  # pragma: no cover
         return False
 
 
@@ -235,11 +235,11 @@ def tbz_verify(filepath):
     if tarfile.is_tarfile(filepath):
         with tarfile.open(filepath, "r:bz2") as thefile:
             mems = thefile.getmembers()
-        if not mems:
+        if not mems:  # pragma: no cover
             return False
         else:
             return True
-    else:
+    else:  # pragma: no cover
         return False
 
 
@@ -268,17 +268,17 @@ def txz_verify(filepath):
     :param filepath: Filename.
     :type filepath: str
     """
-    if sys.version_info[1] <= 2:
+    if sys.version_info[1] <= 2:  # pragma: no cover
         pass
     else:
         if tarfile.is_tarfile(filepath):
             with tarfile.open(filepath, "r:xz") as thefile:
                 mems = thefile.getmembers()
-            if not mems:
+            if not mems:  # pragma: no cover
                 return False
             else:
                 return True
-        else:
+        else:  # pragma: no cover
             return False
 
 
@@ -312,9 +312,9 @@ def zip_verify(filepath):
         brokens = bar_tester(filepath)
         if brokens is None:
             return True
-        else:
+        else:  # pragma: no cover
             return False
-    else:
+    else:  # pragma: no cover
         return False
 
 
@@ -328,14 +328,13 @@ def filter_method(method, szexe=None):
     :param szexe: Path to 7z executable, if needed.
     :type szexe: str
     """
-    majver = sys.version_info[1]
-    if majver < 3 and method == "txz":  # 3.2 and under
+    if sys.version_info[1] < 3 and method == "txz":  # pragma: no cover
         method = "zip"  # fallback
     if method == "7z" and szexe is None:
         ifexists = utilities.prep_seven_zip()  # see if 7z exists
         if not ifexists:
             method = "zip"  # fallback
-        else:
+        else:  # pragma: no cover
             szexe = utilities.get_seven_zip(False)
     return method
 
@@ -369,7 +368,7 @@ def compress(filepath, method="7z", szexe=None, selective=False):
     """
     method = filter_method(method, szexe)
     files = [file for file in os.listdir(filepath) if not os.path.isdir(file)]
-    if selective:
+    if selective:  # pragma: no cover
         filt0 = [file for file in files if file.startswith(bbconstants.PREFIXES)]  # loaders
         filt1 = [file for file in filt0 if not file.endswith(bbconstants.ARCS)]  # pop compressed
         filt2 = [file for file in filt1 if file.endswith(".exe")]  # exes only
@@ -470,9 +469,9 @@ def remove_empty_folders(a_folder):
             try:
                 if not subdirs and not files:
                     os.rmdir(curdir)
-            except OSError:
+            except OSError:  # pragma: no cover
                 continue
-            except NotImplementedError:
+            except NotImplementedError:  # pragma: no cover
                 break
             break
 
@@ -585,7 +584,7 @@ def loader_sorter(file, osdir, raddir):
         while True:
             try:
                 shutil.move(file, osdir)
-            except shutil.Error:
+            except shutil.Error:  # pragma: no cover
                 os.remove(file)
                 continue
             break
@@ -593,7 +592,7 @@ def loader_sorter(file, osdir, raddir):
         while True:
             try:
                 shutil.move(file, raddir)
-            except shutil.Error:
+            except shutil.Error:  # pragma: no cover
                 os.remove(file)
                 continue
             break
@@ -621,12 +620,12 @@ def move_bars(localdir, osdir, radiodir):
             if os.path.getsize(os.path.join(localdir, files)) > 90000000:
                 try:
                     shutil.move(os.path.join(localdir, files), osdir)
-                except shutil.Error:
+                except shutil.Error:  # pragma: no cover
                     os.remove(bardest_os)
             else:
                 try:
                     shutil.move(os.path.join(localdir, files), radiodir)
-                except shutil.Error:
+                except shutil.Error:  # pragma: no cover
                     os.remove(bardest_radio)
 
 

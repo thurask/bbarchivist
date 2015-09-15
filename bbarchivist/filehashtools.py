@@ -50,7 +50,7 @@ def adler32hash(filepath, blocksize=16 * 1024 * 1024):
             if not data:
                 break
             asum = zlib.adler32(data, asum)
-            if asum < 0:
+            if asum < 0:  # pragma: no cover
                 asum += 2 ** 32
     final = format(asum & 0xFFFFFFFF, "08x")
     return final
@@ -175,7 +175,7 @@ def md4hash(filepath, blocksize=16 * 1024 * 1024):
                     break
                 md4.update(data)
         return md4.hexdigest()
-    except ValueError as exc:
+    except ValueError as exc:  # pragma: no cover
         print(str(exc))
         print("MD4 HASH FAILED:\nIS IT AVAILABLE?")
 
@@ -219,7 +219,7 @@ def ripemd160hash(filepath, blocksize=16 * 1024 * 1024):
                     break
                 r160.update(data)
         return r160.hexdigest()
-    except ValueError as exc:
+    except ValueError as exc:  # pragma: no cover
         print(str(exc))
         print("RIPEMD160 HASH FAILED:\nIS IT AVAILABLE?")
 
@@ -243,7 +243,7 @@ def whirlpoolhash(filepath, blocksize=16 * 1024 * 1024):
                     break
                 wpool.update(data)
         return wpool.hexdigest()
-    except ValueError as exc:
+    except ValueError as exc:  # pragma: no cover
         print(str(exc))
         print("WHIRLPOOL HASH FAILED:\nIS IT AVAILABLE?")
 
@@ -300,7 +300,7 @@ def calculate_escreens(pin, app, uptime, duration=30):
     #: Escreens magic HMAC secret.
     secret = 'Up the time stream without a TARDIS'
     duration = int(duration)
-    if duration not in [1, 3, 6, 15, 30]:
+    if duration not in [1, 3, 6, 15, 30]:  # pragma: no cover
         duration = 1
     data = pin.lower() + app + uptime + lifetimes[duration]
     newhmac = hmac.new(secret.encode(),
@@ -348,7 +348,7 @@ def verifier(workingdir, **kwargs):
     :param workingdir: Path containing files you wish to verify.
     :type workingdir: str
     """
-    if kwargs is None:
+    if kwargs is None:  # pragma: no cover
         kwargs = verifier_config_loader()
     hashoutput_crc32 = ["CRC32"]
     hashoutput_adler32 = ["ADLER32"]
@@ -364,7 +364,7 @@ def verifier(workingdir, **kwargs):
     block = int(kwargs['blocksize'])
     if os.listdir(workingdir):
         for file in os.listdir(workingdir):
-            if os.path.isdir(os.path.join(workingdir, file)):
+            if os.path.isdir(os.path.join(workingdir, file)):  # pragma: no cover
                 pass  # exclude folders
             elif file.endswith(bbconstants.SUPPS):
                 pass  # exclude already generated files
@@ -430,7 +430,7 @@ def verifier(workingdir, **kwargs):
                     hashoutput_md4 = hash_resetter(hashoutput_md4)
                     hashoutput_ripemd160 = hash_resetter(hashoutput_ripemd160)
                     hashoutput_whirlpool = hash_resetter(hashoutput_whirlpool)
-        if kwargs['onefile']:
+        if kwargs['onefile']:  # pragma: no cover
             with open(os.path.join(workingdir, 'all.cksum'), 'w') as target:
                 if kwargs['adler32']:
                     target.write("\n".join(hashoutput_adler32))
@@ -474,11 +474,11 @@ def gpgrunner(workingdir, keyid=None, passphrase=None, selective=False):
     """
     try:
         gpg = gnupg.GPG()
-    except ValueError:
+    except ValueError:  # pragma: no cover
         print("COULD NOT FIND GnuPG!")
         raise SystemExit
     else:
-        if not keyid.startswith("0x"):
+        if not keyid.startswith("0x"):  # pragma: no cover
             keyid = "0x" + keyid.upper()
         files = (file for file in os.listdir(workingdir) if not os.path.isdir(file))
         for file in files:
@@ -491,7 +491,7 @@ def gpgrunner(workingdir, keyid=None, passphrase=None, selective=False):
                     thepath = os.path.join(workingdir, file)
                     try:
                         gpgfile(thepath, gpg, keyid=keyid, passphrase=passphrase)
-                    except Exception as exc:
+                    except Exception as exc:  # pragma: no cover
                         print("SOMETHING WENT WRONG")
                         print(str(exc))
                         raise SystemExit
@@ -541,7 +541,7 @@ def verifier_config_loader():
     homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
     config.read(conffile)
-    if not config.has_section('hashmodes'):
+    if not config.has_section('hashmodes'):  # pragma: no cover
         config['hashmodes'] = {}
         with open(conffile, "w") as configfile:
             config.write(configfile)
