@@ -330,6 +330,16 @@ def hash_formatter(filename, hashfunc, workingdir, blocksize=16777216):
     return "{0} {1}\n".format(result.upper(), filename)
 
 
+def hash_resetter(hashlist):
+    """
+    Reset list by returning only the first item.
+
+    :param hashlist: List to reset. First item is the type of hash.
+    :type hashlist: list
+    """
+    return [hashlist[0]]
+
+
 def verifier(workingdir, **kwargs):
     """
     For all files in a directory, perform various hash/checksum functions.
@@ -340,17 +350,17 @@ def verifier(workingdir, **kwargs):
     """
     if kwargs is None:
         kwargs = verifier_config_loader()
-    hashoutput_crc32 = "CRC32\n"
-    hashoutput_adler32 = "ADLER32\n"
-    hashoutput_sha1 = "SHA1\n"
-    hashoutput_sha224 = "SHA224\n"
-    hashoutput_sha256 = "SHA256\n"
-    hashoutput_sha384 = "SHA384\n"
-    hashoutput_sha512 = "SHA512\n"
-    hashoutput_md5 = "MD5\n"
-    hashoutput_md4 = "MD4\n"
-    hashoutput_ripemd160 = "RIPEMD160\n"
-    hashoutput_whirlpool = "WHIRLPOOL\n"
+    hashoutput_crc32 = ["CRC32"]
+    hashoutput_adler32 = ["ADLER32"]
+    hashoutput_sha1 = ["SHA1"]
+    hashoutput_sha224 = ["SHA224"]
+    hashoutput_sha256 = ["SHA256"]
+    hashoutput_sha384 = ["SHA384"]
+    hashoutput_sha512 = ["SHA512"]
+    hashoutput_md5 = ["MD5"]
+    hashoutput_md4 = ["MD4"]
+    hashoutput_ripemd160 = ["RIPEMD160"]
+    hashoutput_whirlpool = ["WHIRLPOOL"]
     block = int(kwargs['blocksize'])
     if os.listdir(workingdir):
         for file in os.listdir(workingdir):
@@ -361,105 +371,89 @@ def verifier(workingdir, **kwargs):
             else:
                 print("HASHING:", str(file))
                 if kwargs['adler32']:
-                    hashoutput_adler32 += hash_formatter(file, adler32hash, workingdir, block)
+                    hashoutput_adler32.append(hash_formatter(file, adler32hash, workingdir, block))
                 if kwargs['crc32']:
-                    hashoutput_crc32 += hash_formatter(file, crc32hash, workingdir, block)
+                    hashoutput_crc32.append(hash_formatter(file, crc32hash, workingdir, block))
                 if kwargs['md4']:
-                    hashoutput_md4 += hash_formatter(file, md4hash, workingdir, block)
+                    hashoutput_md4.append(hash_formatter(file, md4hash, workingdir, block))
                 if kwargs['md5']:
-                    hashoutput_md5 += hash_formatter(file, md5hash, workingdir, block)
+                    hashoutput_md5.append(hash_formatter(file, md5hash, workingdir, block))
                 if kwargs['sha1']:
-                    hashoutput_sha1 += hash_formatter(file, sha1hash, workingdir, block)
+                    hashoutput_sha1.append(hash_formatter(file, sha1hash, workingdir, block))
                 if kwargs['sha224']:
-                    hashoutput_sha224 += hash_formatter(file, sha224hash, workingdir, block)
+                    hashoutput_sha224.append(hash_formatter(file, sha224hash, workingdir, block))
                 if kwargs['sha256']:
-                    hashoutput_sha256 += hash_formatter(file, sha256hash, workingdir, block)
+                    hashoutput_sha256.append(hash_formatter(file, sha256hash, workingdir, block))
                 if kwargs['sha384']:
-                    hashoutput_sha384 += hash_formatter(file, sha384hash, workingdir, block)
+                    hashoutput_sha384.append(hash_formatter(file, sha384hash, workingdir, block))
                 if kwargs['sha512']:
-                    hashoutput_sha512 += hash_formatter(file, sha512hash, workingdir, block)
+                    hashoutput_sha512.append(hash_formatter(file, sha512hash, workingdir, block))
                 if kwargs['ripemd160']:
-                    hashoutput_ripemd160 += hash_formatter(file, ripemd160hash, workingdir, block)
+                    hashoutput_ripemd160.append(hash_formatter(file, ripemd160hash, workingdir, block))
                 if kwargs['whirlpool']:
-                    hashoutput_whirlpool += hash_formatter(file, whirlpoolhash, workingdir, block)
+                    hashoutput_whirlpool.append(hash_formatter(file, whirlpoolhash, workingdir, block))
                 if not kwargs['onefile']:
                     basename = file + ".cksum"
                     targetname = os.path.join(workingdir, basename)
                     with open(targetname, 'w') as target:
                         if kwargs['adler32']:
-                            target.write(hashoutput_adler32 + "\n")
+                            target.write("\n".join(hashoutput_adler32))
                         if kwargs['crc32']:
-                            target.write(hashoutput_crc32 + "\n")
+                            target.write("\n".join(hashoutput_crc32))
                         if kwargs['md4']:
-                            target.write(hashoutput_md4 + "\n")
+                            target.write("\n".join(hashoutput_md4))
                         if kwargs['md5']:
-                            target.write(hashoutput_md5 + "\n")
+                            target.write("\n".join(hashoutput_md5))
                         if kwargs['sha1']:
-                            target.write(hashoutput_sha1 + "\n")
+                            target.write("\n".join(hashoutput_sha1))
                         if kwargs['sha224']:
-                            target.write(hashoutput_sha224 + "\n")
+                            target.write("\n".join(hashoutput_sha224))
                         if kwargs['sha256']:
-                            target.write(hashoutput_sha256 + "\n")
+                            target.write("\n".join(hashoutput_sha256))
                         if kwargs['sha384']:
-                            target.write(hashoutput_sha384 + "\n")
+                            target.write("\n".join(hashoutput_sha384))
                         if kwargs['sha512']:
-                            target.write(hashoutput_sha512 + "\n")
+                            target.write("\n".join(hashoutput_sha512))
                         if kwargs['ripemd160']:
-                            target.write(hashoutput_ripemd160 + "\n")
+                            target.write("\n".join(hashoutput_ripemd160))
                         if kwargs['whirlpool']:
-                            target.write(hashoutput_whirlpool + "\n")
-                    if any((kwargs['crc32'], kwargs['adler32'],
-                            kwargs['md4'], kwargs['md5'], kwargs['sha1'],
-                            kwargs['sha224'], kwargs['sha256'], kwargs['sha384'],
-                            kwargs['sha512'], kwargs['ripemd160'],
-                            kwargs['whirlpool'])):
-                        with open(targetname, 'rb+') as target:
-                            target.seek(-2, os.SEEK_END)
-                            target.truncate()
-                    else:
-                        os.remove(targetname)
+                            target.write("\n".join(hashoutput_whirlpool))
                     # reset hashes
-                    hashoutput_crc32 = "CRC32\n"
-                    hashoutput_adler32 = "ADLER32\n"
-                    hashoutput_sha1 = "SHA1\n"
-                    hashoutput_sha224 = "SHA224\n"
-                    hashoutput_sha256 = "SHA256\n"
-                    hashoutput_sha384 = "SHA384\n"
-                    hashoutput_sha512 = "SHA512\n"
-                    hashoutput_md5 = "MD5\n"
-                    hashoutput_md4 = "MD4\n"
-                    hashoutput_ripemd160 = "RIPEMD160\n"
-                    hashoutput_whirlpool = "WHIRLPOOL\n"
+                    hashoutput_crc32 = hash_resetter(hashoutput_crc32)
+                    hashoutput_adler32 = hash_resetter(hashoutput_adler32)
+                    hashoutput_sha1 = hash_resetter(hashoutput_sha1)
+                    hashoutput_sha224 = hash_resetter(hashoutput_sha224)
+                    hashoutput_sha256 = hash_resetter(hashoutput_sha256)
+                    hashoutput_sha384 = hash_resetter(hashoutput_sha384)
+                    hashoutput_sha512 = hash_resetter(hashoutput_sha512)
+                    hashoutput_md5 = hash_resetter(hashoutput_md5)
+                    hashoutput_md4 = hash_resetter(hashoutput_md4)
+                    hashoutput_ripemd160 = hash_resetter(hashoutput_ripemd160)
+                    hashoutput_whirlpool = hash_resetter(hashoutput_whirlpool)
         if kwargs['onefile']:
             with open(os.path.join(workingdir, 'all.cksum'), 'w') as target:
                 if kwargs['adler32']:
-                    target.write(hashoutput_adler32 + "\n")
+                    target.write("\n".join(hashoutput_adler32))
                 if kwargs['crc32']:
-                    target.write(hashoutput_crc32 + "\n")
+                    target.write("\n".join(hashoutput_crc32))
                 if kwargs['md4']:
-                    target.write(hashoutput_md4 + "\n")
+                    target.write("\n".join(hashoutput_md4))
                 if kwargs['md5']:
-                    target.write(hashoutput_md5 + "\n")
+                    target.write("\n".join(hashoutput_md5))
                 if kwargs['sha1']:
-                    target.write(hashoutput_sha1 + "\n")
+                    target.write("\n".join(hashoutput_sha1))
                 if kwargs['sha224']:
-                    target.write(hashoutput_sha224 + "\n")
+                    target.write("\n".join(hashoutput_sha224))
                 if kwargs['sha256']:
-                    target.write(hashoutput_sha256 + "\n")
+                    target.write("\n".join(hashoutput_sha256))
                 if kwargs['sha384']:
-                    target.write(hashoutput_sha384 + "\n")
+                    target.write("\n".join(hashoutput_sha384))
                 if kwargs['sha512']:
-                    target.write(hashoutput_sha512 + "\n")
+                    target.write("\n".join(hashoutput_sha512))
                 if kwargs['ripemd160']:
-                    target.write(hashoutput_ripemd160 + "\n")
+                    target.write("\n".join(hashoutput_ripemd160))
                 if kwargs['whirlpool']:
-                    target.write(hashoutput_whirlpool + "\n")
-            if not any((kwargs['crc32'], kwargs['adler32'],
-                    kwargs['md4'], kwargs['md5'], kwargs['sha1'],
-                    kwargs['sha224'], kwargs['sha256'], kwargs['sha384'],
-                    kwargs['sha512'], kwargs['ripemd160'],
-                    kwargs['whirlpool'])):
-                os.remove(os.path.join(workingdir, 'all.cksum'))
+                    target.write("\n".join(hashoutput_whirlpool))
 
 
 def gpgrunner(workingdir, keyid=None, passphrase=None, selective=False):
