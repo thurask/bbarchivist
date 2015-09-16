@@ -2,6 +2,9 @@
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """Only download OS/radio bar files."""
 
+__author__ = "Thurask"
+__license__ = "WTFPL v2"
+__copyright__ = "2015 Thurask"
 
 import os  # filesystem read
 import sys  # load arguments

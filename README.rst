@@ -661,13 +661,6 @@ would compress all files in the local directory to zip archives, since you speci
 
 would download the guessed radios (10.3.2.799) for OS 10.3.2.798.
 
-License
--------
-
-No fancy licensing here, just fork this and do whatever. Although, if
-you figure out something interesting, please do try to put it upstream
-via pull request.
-
 Credits/Software Used
 ---------------------
 
@@ -681,3 +674,10 @@ Credits/Software Used
 -  Python Tools for Visual Studio: `Microsoft <http://microsoft.github.io/PTVS/>`__
 -  Integration: `Travis CI <https://travis-ci.org>`__
 -  Feedback, bug reports, feature requests: Users Like You
+
+License
+-------
+Copyright © 2015 Thurask <thuraski@hotmail.com>
+This work is free. You can redistribute it and/or modify it under the
+terms of the Do What The Fuck You Want To Public License, Version 2,
+as published by Sam Hocevar. See the LICENSE file for more details.

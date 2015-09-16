@@ -3,7 +3,7 @@
 """This module is used for generation of URLs and related text files."""
 
 __author__ = "Thurask"
-__license__ = "Do whatever"
+__license__ = "WTFPL v2"
 __copyright__ = "2015 Thurask"
 
 

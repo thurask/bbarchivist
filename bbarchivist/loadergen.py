@@ -4,7 +4,7 @@
 A higher level interface for :mod:`bbarchivist.pseudocap`."""
 
 __author__ = "Thurask"
-__license__ = "Do whatever"
+__license__ = "WTFPL v2"
 __copyright__ = "2015 Thurask"
 
 import os  # path work

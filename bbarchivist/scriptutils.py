@@ -3,7 +3,7 @@
 """This module contains various utilities for the scripts folder."""
 
 __author__ = "Thurask"
-__license__ = "Do whatever"
+__license__ = "WTFPL v2"
 __copyright__ = "2015 Thurask"
 
 

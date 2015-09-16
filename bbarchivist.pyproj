@@ -41,6 +41,7 @@
     <Content Include="docs\readme.rst" />
     <Content Include="exebuilder.bat" />
     <Content Include="install.bat" />
+    <Content Include="LICENSE" />
     <Content Include="MANIFEST.in" />
     <Content Include="pylint.rc" />
     <Content Include="pytest.ini" />

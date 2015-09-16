@@ -3,7 +3,7 @@
 """This module is the Python-ized implementation of cap.exe"""
 
 __author__ = "Thurask"
-__license__ = "Do whatever"
+__license__ = "WTFPL v2"
 __copyright__ = "2015 Thurask"
 
 import os  # path work
