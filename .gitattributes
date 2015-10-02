@@ -36,3 +36,4 @@
 * -crlf
 
 # Git-LFS https://github.com/github/git-lfs
+*.dat filter=lfs diff=lfs merge=lfs -text
