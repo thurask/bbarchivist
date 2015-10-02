@@ -36,3 +36,4 @@ venv/
 /bbarchivist/scripts/*.zip
 .coverage
 htmlcov/
+.cache/
