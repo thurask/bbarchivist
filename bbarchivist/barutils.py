@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """This module is used to operate with bar files and other archives."""
 
@@ -685,11 +685,11 @@ def compress_config_loader():
     config = configparser.ConfigParser()
     homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
+    if not os.path.exists(conffile):
+        open(conffile, 'w').close()
     config.read(conffile)
     if not config.has_section('compression'):
         config['compression'] = {}
-        with open(conffile, "w") as configfile:
-            config.write(configfile)
     compini = config['compression']
     method = compini.get('method', fallback="7z")
     majver = sys.version_info[1]
@@ -707,11 +707,14 @@ def compress_config_writer(method=None):
     """
     if method is None:
         method = compress_config_loader()
-    config = configparser.ConfigParser(allow_no_value=True)
+    config = configparser.ConfigParser()
     homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
+    if not os.path.exists(conffile):
+        open(conffile, 'w').close()
     config.read(conffile)
-    config.set('compression', '; zip, txz, tbz, tgz, 7z')
+    if not config.has_section('compression'):
+        config['compression'] = {}
     config['compression']['method'] = method
     with open(conffile, "w") as configfile:
         config.write(configfile)

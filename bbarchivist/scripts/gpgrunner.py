@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """Use GPG to sign all files in a directory."""
 
@@ -46,7 +46,7 @@ def gpgrunner_main():
             key = input("PGP KEY (0x12345678): ")
         if password is None:
             password = getpass.getpass(prompt="PGP PASSPHRASE: ")
-            writebool = utilities.str2bool(input("WRITE PASSWORD TO FILE (Y/N)?:"))
+            writebool = utilities.str2bool(input("WRITE PASSWORD TO FILE (Y/N)?: "))
         if writebool:
             password2 = password
         else:

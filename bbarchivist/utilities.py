@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, E0611, W0150
 """This module is used for miscellaneous utilities."""
 
@@ -602,11 +602,11 @@ def cappath_config_loader():
     config = configparser.ConfigParser()
     homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
+    if not os.path.exists(conffile):
+        open(conffile, 'w').close()
     config.read(conffile)
     if not config.has_section('cap'):
         config['cap'] = {}
-        with open(conffile, "w") as configfile:
-            config.write(configfile)
     capini = config['cap']
     cappath = capini.get('path', fallback=bbconstants.CAPLOCATION)
     return cappath
@@ -624,6 +624,8 @@ def cappath_config_writer(cappath=None):
     config = configparser.ConfigParser()
     homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
+    if not os.path.exists(conffile):
+        open(conffile, 'w').close()
     config.read(conffile)
     config['cap']['path'] = cappath
     with open(conffile, "w") as configfile:

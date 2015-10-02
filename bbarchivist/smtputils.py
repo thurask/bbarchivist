@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, W0142
 """This module is used for dealing with SMTP email sending."""
 
@@ -22,17 +22,17 @@ def smtp_config_loader():
     config = configparser.ConfigParser()
     homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
+    if not os.path.exists(conffile):
+        open(conffile, 'w').close()
     config.read(conffile)
     if not config.has_section('email'):
         config['email'] = {}
-        with open(conffile, "w") as configfile:
-            config.write(configfile)
     smtpini = config['email']
     resultdict['server'] = smtpini.get('server', fallback=None)
     resultdict['port'] = int(smtpini.getint('port', fallback=0))
     resultdict['username'] = smtpini.get('username', fallback=None)
     resultdict['password'] = smtpini.get('password', fallback=None)
-    resultdict['is_ssl'] = bool(smtpini.getboolean('is_ssl', fallback=True))
+    resultdict['is_ssl'] = smtpini.get('is_ssl', fallback=None)
     return resultdict
 
 
@@ -58,7 +58,11 @@ def smtp_config_writer(server=None, port=None, username=None, password=None, is_
     config = configparser.ConfigParser()
     homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
-    config['email'] = {}
+    if not os.path.exists(conffile):
+        open(conffile, 'w').close()
+    config.read(conffile)
+    if not config.has_section('email'):
+        config['email'] = {}
     if server is not None:
         config['email']['server'] = server
     if port is not None:
@@ -71,6 +75,26 @@ def smtp_config_writer(server=None, port=None, username=None, password=None, is_
         config['email']['is_ssl'] = str(is_ssl).lower()
     with open(conffile, "w") as configfile:
         config.write(configfile)
+
+
+def smtp_config_generator(results):
+    """
+    Take user input to create the SMTP configparser settings.
+
+    :param results: The results to put in bbarchivist.ini.
+    :type results: dict
+    """
+    if results['server'] is None:
+        results['server'] = input("SMTP SERVER ADDRESS: ")
+    if results['port'] == 0:
+        results['port'] = input("SMTP SERVER PORT: ")
+    if results['username'] is None:
+        results['username'] = input("EMAIL ADDRESS: ")
+    if results['password'] is None:
+        results['password'] = getpass.getpass(prompt="PASSWORD: ")
+    if results['is_ssl'] is None:
+        results['is_ssl'] = bool((str(utilities.str2bool(input("Y: SSL, N: TLS (Y/N): ")))).lower())
+    return results
 
 
 def send_email(kwargs):
@@ -103,7 +127,7 @@ def send_email(kwargs):
     """
     if kwargs['password'] is None:
         kwargs['password'] = getpass.getpass(prompt="PASSWORD: ")
-    if kwargs['is_ssl']:
+    if utilities.str2bool(kwargs['is_ssl']):
         send_email_ssl(kwargs)
     else:
         send_email_tls(kwargs)
@@ -242,7 +266,7 @@ def send_email_tls(kwargs):
     smt.quit()
 
 
-def prep_email(osversion, softwarerelease):
+def prep_email(osversion, softwarerelease, password=None):
     """
     Bootstrap the whole process.
 
@@ -251,11 +275,15 @@ def prep_email(osversion, softwarerelease):
 
     :param softwarerelease: Software version.
     :type softwarerelease: str
+
+    :param password: Email password. None to prompt later.
+    :type password: str
     """
     results = smtp_config_loader()
     smtp_config_writer(**results)
     results['software'] = softwarerelease
     results['os'] = osversion
-    bodytext = utilities.return_and_delete("TEMPFILE.txt")
-    results['body'] = bodytext
+    results['body'] = utilities.return_and_delete("TEMPFILE.txt")
+    if password is not None:
+        results['password'] = password
     send_email(results)

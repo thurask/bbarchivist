@@ -8,6 +8,7 @@ __copyright__ = "2015 Thurask"
 
 import argparse  # parse arguments
 import sys  # load arguments
+import getpass  # password entry
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import networkutils  # lookup
 from bbarchivist import utilities  # incrementer
@@ -151,6 +152,9 @@ def autolookup_main(osversion, loop=False, log=False,
     """
     if mailer:
         sql = True
+        smtpsetup = smtputils.smtp_config_loader()
+        smtpsetup = smtputils.smtp_config_generator(smtpsetup)
+        smtputils.smtp_config_writer(**smtpsetup)
     print("~~~AUTOLOOKUP VERSION", bbconstants.VERSION + "~~~")
     print("")
     if log:
@@ -201,7 +205,7 @@ def autolookup_main(osversion, loop=False, log=False,
                             if mailer:
                                 rad = utilities.version_incrementer(osversion, 1)
                                 linkgen.linkgen_main(osversion, rad, prel, temp=True)
-                                smtputils.prep_email(osversion, prel)
+                                smtputils.prep_email(osversion, prel, smtpsetup['password'])
                             sqlutils.insert_sw_release(osversion, prel)
                 else:
                     available = "Unavailable"

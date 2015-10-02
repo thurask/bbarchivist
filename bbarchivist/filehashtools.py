@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """This module is used to generate file hashes/checksums and PGP signatures."""
 
@@ -505,6 +505,8 @@ def gpg_config_loader():
     homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
     config.read(conffile)
+    if not config.has_section('gpgrunner'):  # pragma: no cover
+        config['gpgrunner'] = {}
     gpgkey = config.get('gpgrunner', 'key', fallback=None)
     gpgpass = config.get('gpgrunner', 'pass', fallback=None)
     return gpgkey, gpgpass
@@ -523,7 +525,11 @@ def gpg_config_writer(key=None, password=None):
     config = configparser.ConfigParser()
     homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
-    config['gpgrunner'] = {}
+    config.read(conffile)
+    if not os.path.exists(conffile):
+        open(conffile, 'w').close()
+    if not config.has_section('gpgrunner'):  # pragma: no cover
+        config['gpgrunner'] = {}
     if key is not None:
         config['gpgrunner']['key'] = key
     if password is not None:
@@ -540,11 +546,11 @@ def verifier_config_loader():
     config = configparser.ConfigParser()
     homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
+    if not os.path.exists(conffile):
+        open(conffile, 'w').close()
     config.read(conffile)
     if not config.has_section('hashmodes'):  # pragma: no cover
         config['hashmodes'] = {}
-        with open(conffile, "w") as configfile:
-            config.write(configfile)
     hashini = config['hashmodes']
     resultdict['crc32'] = bool(hashini.getboolean('crc32', fallback=False))
     resultdict['adler32'] = bool(hashini.getboolean('adler32', fallback=False))
@@ -575,6 +581,8 @@ def verifier_config_writer(resultdict=None):
     homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
     config.read(conffile)
+    if not config.has_section('hashmodes'):
+        config['hashmodes'] = {}
     for method, flag in resultdict.items():
         config.set('hashmodes', method, str(flag).lower())
     with open(conffile, "w") as configfile:

@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """Compress all files in a directory."""
 
@@ -57,6 +57,7 @@ def kompressor_main():
     else:
         szexe = None
     workfolder = args.folder
+    barutils.compress_config_writer()
     print(" ")
     barutils.compress_suite(workfolder,
                             method,
