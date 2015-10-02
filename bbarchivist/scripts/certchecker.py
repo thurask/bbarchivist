@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """Checks certifications for a given device."""
 
@@ -56,12 +56,11 @@ def certchecker_main(device):
     device = device.upper()
     for key in data:
         keylist = key['hwid'], key['fccid'], key['ptcrbid']
-        if device in (keylist) or (device in key['name'] and 'secret' not in key):
-            if key['ptcrbid']:
-                device = key['device']
-                name = key['name']
-                ptcrbid = key['ptcrbid']
-                break
+        if (device in (keylist) or (device in key['name'] and 'secret' not in key)) and key['ptcrbid']:
+            device = key['device']
+            name = key['name']
+            ptcrbid = key['ptcrbid']
+            break
     else:
         print("NO PTCRB ID!")
         raise SystemExit
@@ -70,8 +69,8 @@ def certchecker_main(device):
     print("VARIANT:", name.upper())
     print("\nCHECKING CERTIFICATIONS...\n")
     certlist = networkutils.ptcrb_scraper(ptcrbid)
-    for cert in certlist:
-        print(cert)
+    for item in certlist:
+        print(item)
 
 if __name__ == "__main__":
     grab_args()

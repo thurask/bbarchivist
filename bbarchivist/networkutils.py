@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """This module is used for network connections; APIs, downloading, related tools."""
 
@@ -438,31 +438,51 @@ def ptcrb_scraper(ptcrbid):
     soup = BeautifulSoup(req.content, 'html.parser')
     text = soup.get_text()
     text = text.replace("\r\n", " ")
-    prelimlist = re.findall("OS Version.+[^\\n]", text, re.IGNORECASE)
+    prelimlist = re.findall("OS .+[^\\n]", text, re.IGNORECASE)
     cleanlist = []
     for item in prelimlist:
         if not item.endswith("\r\n"):  # they should hire QC people...
-            cleanitem = item
-            cleanitem = cleanitem.replace("<td>", "")
-            cleanitem = cleanitem.replace("</td>", "")
-            cleanitem = cleanitem.replace("\n", "")
-            cleanitem = re.sub(r"\s?\((.*)$", "", cleanitem)
-            cleanitem = re.sub(r"\sSV.*$", "", cleanitem)
-            cleanitem = cleanitem.replace(". ", ".")
-            cleanitem = cleanitem.replace(";", "")
-            cleanitem = cleanitem.replace("version", "Version")
-            cleanitem = cleanitem.replace("Verison", "Version")
-            if item.count("OS") > 1:  # pragma: no cover
-                templist = item.split("OS")
-                templist[0] = "OS"
-                cleanitem = "".join([templist[0], templist[1]])
-            cleanitem = cleanitem.replace(" Version:", ":")
-            cleanitem = cleanitem.replace("Version ", " ")
-            cleanitem = cleanitem.replace(":1", ": 1")
-            cleanitem = cleanitem.replace(", ", " ")
-            cleanitem = cleanitem.replace("Software", "SW")
-            cleanitem = cleanitem.replace("  ", " ")
-            cleanitem = cleanitem.replace("OS ", "OS: ")
-            cleanitem = cleanitem.strip()
-            cleanlist.append(cleanitem)
+            cleanlist.append(ptcrb_item_cleaner(item))
     return cleanlist
+
+
+def ptcrb_item_cleaner(item):
+    """
+    Cleanup poorly formatted PTCRB entries written by an intern.
+
+    :param item: The item to clean.
+    :type item: str
+    """
+    item = item.replace("<td>", "")
+    item = item.replace("</td>", "")
+    item = item.replace("\n", "")
+    item = item.replace(" (SR", ", SR")
+    item = re.sub(r"\s?\((.*)$", "", item)
+    item = re.sub(r"\sSV.*$", "", item)
+    item = item.replace(")", "")
+    item = item.replace(". ", ".")
+    item = item.replace(";", "")
+    item = item.replace("version", "Version")
+    item = item.replace("Verison", "Version")
+    if item.count("OS") > 1:  # pragma: no cover
+        templist = item.split("OS")
+        templist[0] = "OS"
+        item = "".join([templist[0], templist[1]])
+    item = item.replace("SR", "SW Release")
+    item = item.replace(" Version:", ":")
+    item = item.replace("Version ", " ")
+    item = item.replace(":1", ": 1")
+    item = item.replace(", ", " ")
+    item = item.replace("Software", "SW")
+    item = item.replace("  ", " ")
+    item = item.replace("OS ", "OS: ")
+    item = item.replace("Radio ", "Radio: ")
+    item = item.replace("Release ", "Release: ")
+    spaclist = item.split(" ")
+    while len(spaclist[1]) < 11:
+        spaclist[1] += " "
+    while len(spaclist[3]) < 11:
+        spaclist[3] += " "
+    item = " ".join(spaclist)
+    item = item.strip()
+    return item
