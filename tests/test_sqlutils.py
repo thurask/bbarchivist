@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301
 """Test the sqlutils module."""
 
@@ -53,7 +53,7 @@ class TestClassSQLUtils:
 
     def test_insert_sw_release(self):
         """
-        Test adding software release to SQL database.
+        Test adding software release to SQL database, including uniqueness.
         """
         apath = os.path.abspath(os.getcwd())
         sqlpath = os.path.join(apath, "bbarchivist.db")
@@ -88,6 +88,45 @@ class TestClassSQLUtils:
                 assert ("70.OSVERSION", "80.SWVERSION") in rows
             except sqlite3.IntegrityError:
                 assert True
+
+    def test_pop_sw_release(self):
+        """
+        Test removing software release from SQL database.
+        """
+        apath = os.path.abspath(os.getcwd())
+        sqlpath = os.path.join(apath, "bbarchivist.db")
+        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=apath)):
+            try:
+                cnxn = sqlite3.connect(sqlpath)
+                with cnxn:
+                    crsr = cnxn.cursor()
+                    crsr.execute("DROP TABLE Swrelease")
+                    reqs = "TEXT NOT NULL UNIQUE COLLATE NOCASE"
+                    prim = "INTEGER PRIMARY KEY"
+                    table = "Swrelease(Id " + prim + ", Os " + reqs + ", Software " + reqs + ")"
+                    crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
+            except sqlite3.Error:
+                assert False
+            bs.insert_sw_release("70.OSVERSION", "80.SWVERSION")
+            try:
+                cnxn = sqlite3.connect(sqlpath)
+                with cnxn:
+                    crsr = cnxn.cursor()
+                    crsr.execute("SELECT Os,Software FROM Swrelease")
+                    rows = crsr.fetchall()
+                assert ("70.OSVERSION", "80.SWVERSION") in rows
+            except sqlite3.Error:
+                assert False
+            bs.pop_sw_release("70.OSVERSION", "80.SWVERSION")
+            try:
+                cnxn = sqlite3.connect(sqlpath)
+                with cnxn:
+                    crsr = cnxn.cursor()
+                    crsr.execute("SELECT Os,Software FROM Swrelease")
+                    rows = crsr.fetchall()
+                assert not rows
+            except sqlite3.Error:
+                assert False
 
     def test_export_sql_db(self):
         """
