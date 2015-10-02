@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """This module is the Python-ized implementation of cap.exe"""
 
@@ -137,7 +137,6 @@ def make_offset(firstfile, secondfile=None, thirdfile=None,
         file.write(doublepad)
         file.write(trailers)
         file.write(makeup)
-        
 
 
 def make_autoloader(filename, firstfile, secondfile="", thirdfile="",

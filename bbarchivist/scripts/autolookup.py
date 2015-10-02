@@ -8,7 +8,6 @@ __copyright__ = "2015 Thurask"
 
 import argparse  # parse arguments
 import sys  # load arguments
-import getpass  # password entry
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import networkutils  # lookup
 from bbarchivist import utilities  # incrementer
