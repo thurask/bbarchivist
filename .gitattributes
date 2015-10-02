@@ -36,4 +36,3 @@
 * -crlf
 
 # Git-LFS https://github.com/github/git-lfs
-bbarchivist\cap-3.11.0.22.dat filter=lfs diff=lfs merge=lfs -text
