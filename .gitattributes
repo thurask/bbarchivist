@@ -10,16 +10,16 @@
 *.dbproj merge=union
 
 # Standard to msysgit
-*.doc	 diff=astextplain
-*.DOC	 diff=astextplain
+*.doc  diff=astextplain
+*.DOC  diff=astextplain
 *.docx diff=astextplain
 *.DOCX diff=astextplain
 *.dot  diff=astextplain
 *.DOT  diff=astextplain
 *.pdf  diff=astextplain
-*.PDF	 diff=astextplain
-*.rtf	 diff=astextplain
-*.RTF	 diff=astextplain
+*.PDF  diff=astextplain
+*.rtf  diff=astextplain
+*.RTF  diff=astextplain
 
 # Explicitly declare text files you want to always be normalized and converted
 # to native line endings on checkout.
@@ -30,8 +30,10 @@
 # Denote all files that are truly binary and should not be modified.
 *.png binary
 *.jpg binary
-*.dat binary
+#*.dat binary
 
 # Disregard line endings
 * -crlf
+
+# Git-LFS https://github.com/github/git-lfs
 *.dat filter=lfs diff=lfs merge=lfs -text
