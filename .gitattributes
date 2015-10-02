@@ -34,3 +34,4 @@
 
 # Disregard line endings
 * -crlf
+*.dat filter=lfs diff=lfs merge=lfs -text
