@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301
 """Test the loadergen module."""
 
@@ -52,7 +52,7 @@ class TestClassLoadergen:
         thehash = shahash.hexdigest()
         os.remove("desktop.signed")
         os.remove("radio.signed")
-        assert thehash == '71edeced963cd8cf1a7b99c8be9dc93df670471a02eef5da5e40ad4822be1e321c8e1495369dc685b943ac07287bb4b8245636c7b28c861cfd9238e0d42288a2'
+        assert thehash == 'd4872a853e19fb8512067f50555827c74ec33da6fd5d71ae3ddd1b0ce98a18e01727eb1f345f476d6d59bcb438be8780e3f1dc7b212dc63b4b7c09914093a730'
 
     def test_generate_loaders(self):
         """
@@ -82,4 +82,4 @@ class TestClassLoadergen:
                             break
                         shahash.update(data)
                     assert shahash.hexdigest() in ("3143a5bdfffbab199fe071d720b374d8678e5a2baafaeaf375f747c578a314cdf10059ccfac51fbe992d6d473106c2ba18bb8a80026269b046c3e299c33adaf3",
-                                                   "71edeced963cd8cf1a7b99c8be9dc93df670471a02eef5da5e40ad4822be1e321c8e1495369dc685b943ac07287bb4b8245636c7b28c861cfd9238e0d42288a2")
+                                                   "d4872a853e19fb8512067f50555827c74ec33da6fd5d71ae3ddd1b0ce98a18e01727eb1f345f476d6d59bcb438be8780e3f1dc7b212dc63b4b7c09914093a730")
