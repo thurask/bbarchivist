@@ -27,8 +27,6 @@ def ghetto_convert(intsize):
     hexsize = format(intsize, '08x')  # '00AABBCC'
     newlist = [hexsize[i:i + 2]
                for i in range(0, len(hexsize), 2)]  # ['00', 'AA','BB','CC']
-    while "00" in newlist:
-        newlist.remove("00")  # extra padding
     newlist.reverse()
     ghetto_hex = "".join(newlist)  # 'CCBBAA'
     ghetto_hex = ghetto_hex.rjust(16, '0')
@@ -128,8 +126,8 @@ def make_offset(firstfile, secondfile=None, thirdfile=None,
         file.write(password)
         file.write(filepad)
         file.write(doublepad)
-        file.write(firststart)
         file.write(singlepad)
+        file.write(firststart)
         file.write(secondstart)
         file.write(thirdstart)
         file.write(fourthstart)
