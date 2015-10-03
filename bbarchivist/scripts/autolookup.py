@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """Get software release for one/many OS versions."""
 
@@ -219,8 +219,8 @@ def autolookup_main(osversion, loop=False, log=False,
             if swrelease != "":
                 if sql:
                     sqlutils.prepare_sw_db()
-                    if not sqlutils.check_entry_existence(osversion, prel):
-                        sqlutils.insert_sw_release(osversion, prel, available.lower())
+                    if not sqlutils.check_entry_existence(osversion, swrelease):
+                        sqlutils.insert_sw_release(osversion, swrelease, available.lower())
                 out = "OS {} - SR {} - [{}|{}|{}|{}|{}] - {}".format(osversion,
                                                                      swrelease,
                                                                      pav,
