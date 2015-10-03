@@ -70,14 +70,13 @@ A copy of cap.exe is included with this script.
 
 Since archivist does the entire autoloader process for all devices from start
 to finish, make sure to have A LOT of hard drive space. 40GB at least,
-even more if you aren't using 7-Zip compression. Other processes require several GB,
-but not 40.
+even more if you aren't using 7-Zip compression. Other processes require less, of course.
 
 It also requires the
 `requests <http://docs.python-requests.org/en/latest/user/install/>`__
 and `Beautiful Soup 4 <http://www.crummy.com/software/BeautifulSoup/#Download>`__
-libraries installed somehow. Installation with pip does this
-automatically, or use your package manager's version.
+libraries installed somehow. Lazyloader requires `easygui<http://pythonhosted.org/easygui/>`__ as well.
+Installation with pip does this automatically, or use your package manager's version.
 
 PGP support requires the
 `python-gnupg <https://pythonhosted.org/python-gnupg/index.html>`__
@@ -124,7 +123,7 @@ Testing
 ~~~~~~~
 
 If you want to run the unit tests yourself, you'll also need mock, pytest
-and httmock installed via pip.
+and httmock installed via pip. Install from the requirements-devel file with pip.
 
 Testing of GnuPG-related functions requires setting up GnuPG in the first place.
 
@@ -192,6 +191,7 @@ Autolookup
 
 1. Ask for OS version, whether to loop (if not specified)
 2. Return lookup/availability for given OS (if lookup is valid)
+3. Export valid links to text file/SQL database/email (if specified)
 
 Certchecker
 ~~~~~~~~~~~
@@ -208,7 +208,8 @@ Pseudocap
 SQLExport
 ~~~~~~~~~
 
-1. Convert ~\bbarchivist.db into ~\swrelease.csv, that's it
+1. Convert ~\bbarchivist.db into ~\swrelease.csv
+2. Remove an OS/software pair from ~\bbarchivist.db
 
 Kompressor
 ~~~~~~~~~~
@@ -506,15 +507,17 @@ Help
 
     > bb-sqlexport -h
     
-    usage: bb-sqlexport [-h] [-v]
+    usage: bb-sqlexport [-h] [-v] [-p OS SW]
 
-    Export SQL database to CSV
-    
-    optional arguments:
-      -h, --help     show this help message and exit
-      -v, --version  show program's version number and exit
-    
-    http://github.com/thurask/bbarchivist
+	Export SQL database to CSV.
+
+	optional arguments:
+	  -h, --help            show this help message and exit
+	  -v, --version         show program's version number and exit
+	  -p OS SW, --pop OS SW
+							Pop this OS and SW from the database
+
+	http://github.com/thurask/bbarchivist
 
 ----------------------------------------
 
@@ -647,7 +650,7 @@ in the current folder.
 
     > bb-sqlexport
 
-does one thing and one thing only. You're free to guess.
+exports the SQL database to a CSV file. With the -p <OS SW> option, it instead removes that one from the database.
 
  ::
 
