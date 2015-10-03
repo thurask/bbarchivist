@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301
 """Test the sqlutils module."""
 
@@ -30,11 +30,14 @@ def teardown_module(module):
     Delete necessary files.
     """
     if os.path.exists("bbarchivist.db"):
-        os.remove("bbarchivist.db")
+        try:
+            os.remove("bbarchivist.db")
+        except PermissionError:
+            pass
     if os.path.exists("swrelease.csv"):
         os.remove("swrelease.csv")
     os.chdir("..")
-    rmtree("temp")
+    rmtree("temp", ignore_errors=True)
 
 
 class TestClassSQLUtils:
@@ -62,14 +65,16 @@ class TestClassSQLUtils:
                 cnxn = sqlite3.connect(sqlpath)
                 with cnxn:
                     crsr = cnxn.cursor()
-                    crsr.execute("DROP TABLE Swrelease")
+                    crsr.execute("DROP TABLE IF EXISTS Swrelease")
+                    reqid = "INTEGER PRIMARY KEY"
                     reqs = "TEXT NOT NULL UNIQUE COLLATE NOCASE"
-                    prim = "INTEGER PRIMARY KEY"
-                    table = "Swrelease(Id " + prim + ", Os " + reqs + ", Software " + reqs + ")"
+                    reqs2 = "TEXT"
+                    table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(
+                        *(reqid, reqs, reqs2))
                     crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
             except sqlite3.Error:
                 assert False
-            bs.insert_sw_release("70.OSVERSION", "80.SWVERSION")
+            bs.insert_sw_release("70.OSVERSION", "80.SWVERSION", "available")
             try:
                 cnxn = sqlite3.connect(sqlpath)
                 with cnxn:
@@ -100,21 +105,23 @@ class TestClassSQLUtils:
                 cnxn = sqlite3.connect(sqlpath)
                 with cnxn:
                     crsr = cnxn.cursor()
-                    crsr.execute("DROP TABLE Swrelease")
+                    crsr.execute("DROP TABLE IF EXISTS Swrelease")
+                    reqid = "INTEGER PRIMARY KEY"
                     reqs = "TEXT NOT NULL UNIQUE COLLATE NOCASE"
-                    prim = "INTEGER PRIMARY KEY"
-                    table = "Swrelease(Id " + prim + ", Os " + reqs + ", Software " + reqs + ")"
+                    reqs2 = "TEXT"
+                    table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(
+                        *(reqid, reqs, reqs2))
                     crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
             except sqlite3.Error:
                 assert False
-            bs.insert_sw_release("70.OSVERSION", "80.SWVERSION")
+            bs.insert_sw_release("70.OSVERSION", "80.SWVERSION", "available")
             try:
                 cnxn = sqlite3.connect(sqlpath)
                 with cnxn:
                     crsr = cnxn.cursor()
-                    crsr.execute("SELECT Os,Software FROM Swrelease")
+                    crsr.execute("SELECT Os,Software,Available FROM Swrelease")
                     rows = crsr.fetchall()
-                assert ("70.OSVERSION", "80.SWVERSION") in rows
+                assert ("70.OSVERSION", "80.SWVERSION", "available") in rows
             except sqlite3.Error:
                 assert False
             bs.pop_sw_release("70.OSVERSION", "80.SWVERSION")
@@ -139,15 +146,17 @@ class TestClassSQLUtils:
                 cnxn = sqlite3.connect(sqlpath)
                 with cnxn:
                     crsr = cnxn.cursor()
-                    crsr.execute("DROP TABLE Swrelease")
+                    crsr.execute("DROP TABLE IF EXISTS Swrelease")
+                    reqid = "INTEGER PRIMARY KEY"
                     reqs = "TEXT NOT NULL UNIQUE COLLATE NOCASE"
-                    prim = "INTEGER PRIMARY KEY"
-                    table = "Swrelease(Id " + prim + ", Os " + reqs + ", Software " + reqs + ")"
+                    reqs2 = "TEXT"
+                    table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(
+                        *(reqid, reqs, reqs2))
                     crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
             except sqlite3.Error:
                 assert False
             assert not bs.check_entry_existence("70.OSVERSION", "80.SWVERSION")
-            bs.insert_sw_release("70.OSVERSION", "80.SWVERSION")
+            bs.insert_sw_release("70.OSVERSION", "80.SWVERSION", "available")
             assert bs.check_entry_existence("70.OSVERSION", "80.SWVERSION")
 
     def test_export_sql_db(self):
@@ -164,11 +173,15 @@ class TestClassSQLUtils:
                     cnxn = sqlite3.connect(sqlpath)
                     with cnxn:
                         crsr = cnxn.cursor()
-                        crsr.execute("DROP TABLE Swrelease")
-                        table = "Swrelease(Id INTEGER PRIMARY KEY, Os TEXT NOT NULL UNIQUE COLLATE NOCASE, Software TEXT NOT NULL UNIQUE COLLATE NOCASE)"
+                        crsr.execute("DROP TABLE IF EXISTS Swrelease")
+                        reqid = "INTEGER PRIMARY KEY"
+                        reqs = "TEXT NOT NULL UNIQUE COLLATE NOCASE"
+                        reqs2 = "TEXT"
+                        table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(
+                            *(reqid, reqs, reqs2))
                         crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
-                        crsr.execute("INSERT INTO Swrelease(Os, Software) VALUES (?,?)",
-                                     ("120.OSVERSION", "130.SWVERSION"))
+                        crsr.execute("INSERT INTO Swrelease(Os, Software, Available, Date) VALUES (?,?,?,?)",
+                                     ("120.OSVERSION", "130.SWVERSION", "available", "1970 January 1"))
                 except sqlite3.Error:
                     assert False
                 bs.export_sql_db()
