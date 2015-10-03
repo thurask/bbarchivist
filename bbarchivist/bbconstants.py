@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 
 """This module is used to define constants for the program."""
 
@@ -9,7 +9,7 @@ __copyright__ = "2015 Thurask"
 import os.path  # for producing cap location constant
 
 #: App version.
-VERSION = "2.2.0"
+VERSION = "2.2.1"
 #: File location.
 LOCATION = os.path.abspath(__file__)
 #: File folder.
