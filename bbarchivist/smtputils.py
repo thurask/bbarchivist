@@ -22,10 +22,10 @@ def smtp_config_loader():
     config = configparser.ConfigParser()
     homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
-    if not os.path.exists(conffile):
+    if not os.path.exists(conffile):  # pragma: no cover
         open(conffile, 'w').close()
     config.read(conffile)
-    if not config.has_section('email'):
+    if not config.has_section('email'):  # pragma: no cover
         config['email'] = {}
     smtpini = config['email']
     resultdict['server'] = smtpini.get('server', fallback=None)
@@ -58,10 +58,10 @@ def smtp_config_writer(server=None, port=None, username=None, password=None, is_
     config = configparser.ConfigParser()
     homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
-    if not os.path.exists(conffile):
+    if not os.path.exists(conffile):  # pragma: no cover
         open(conffile, 'w').close()
     config.read(conffile)
-    if not config.has_section('email'):
+    if not config.has_section('email'):  # pragma: no cover
         config['email'] = {}
     if server is not None:
         config['email']['server'] = server
@@ -84,15 +84,15 @@ def smtp_config_generator(results):
     :param results: The results to put in bbarchivist.ini.
     :type results: dict
     """
-    if results['server'] is None:
+    if results['server'] is None:  # pragma: no cover
         results['server'] = input("SMTP SERVER ADDRESS: ")
-    if results['port'] == 0:
+    if results['port'] == 0:  # pragma: no cover
         results['port'] = input("SMTP SERVER PORT: ")
-    if results['username'] is None:
+    if results['username'] is None:  # pragma: no cover
         results['username'] = input("EMAIL ADDRESS: ")
-    if results['password'] is None:
+    if results['password'] is None:  # pragma: no cover
         results['password'] = getpass.getpass(prompt="PASSWORD: ")
-    if results['is_ssl'] is None:
+    if results['is_ssl'] is None:  # pragma: no cover
         results['is_ssl'] = bool((str(utilities.str2bool(input("Y: SSL, N: TLS (Y/N): ")))).lower())
     return results
 

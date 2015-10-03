@@ -129,11 +129,13 @@ class TestClassScriptutils:
 
     def test_szexe_irrelevant(self):
         """
+        Test 7z exe finding, without actually looking.
         """
         assert bs.get_sz_executable("tbz") == ("tbz", "")
 
     def test_szexe_present(self):
         """
+        Test 7z exe finding, when it exists.
         """
         with mock.patch('bbarchivist.utilities.prep_seven_zip',
                         mock.MagicMock(return_value=True)):
