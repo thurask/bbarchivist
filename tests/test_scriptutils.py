@@ -7,7 +7,6 @@ try:
     import unittest.mock as mock
 except ImportError:
     import mock
-import pytest
 
 class TestClassScriptutils:
     """
@@ -140,5 +139,5 @@ class TestClassScriptutils:
         with mock.patch('bbarchivist.utilities.prep_seven_zip',
                         mock.MagicMock(return_value=True)):
             with mock.patch('bbarchivist.utilities.get_seven_zip',
-                        mock.MagicMock(return_value="jackdaw")):
+                            mock.MagicMock(return_value="jackdaw")):
                 assert bs.get_sz_executable("7z") == ("7z", "jackdaw")

@@ -209,6 +209,7 @@ class TestClassBarutils:
 
     def test_compress_suite(self):
         """
+        Test the bulk compression/verification suite.
         """
         os.mkdir("suite")
         suitedir = os.path.abspath(os.path.join(os.getcwd(), "suite"))
@@ -218,7 +219,7 @@ class TestClassBarutils:
             afile.write("I'm just gonna shake")
         bb.compress_suite(suitedir, "zip", None, True)
         rmtree(suitedir, ignore_errors=True)
-        
+
 
 class TestClassBarutilsVerifier:
     """
@@ -296,7 +297,7 @@ class TestClassBarutilsSha512:
         """
         mstring = b"Somestuff\nName: target.signed\nDigest: tmpeiqm5cFdIwu5YWw4aOkEojS2vw74tsS-onS8qPhT53sEd5LqGW7Ueqmws_rKUE5RV402n2CehlQSwkGwBwQ\nmorestuff"
         fstring = b"Jackdaws love my big sphinx of quartz"
-        with zipfile.ZipFile("mfest.bar.dummy", mode= "w",
+        with zipfile.ZipFile("mfest.bar.dummy", mode="w",
                              compression=zipfile.ZIP_DEFLATED) as zfile:
             zfile.writestr("MANIFEST.MF", mstring)
             zfile.writestr("target.signed", fstring)
@@ -333,6 +334,8 @@ class TestClassBarutilsLoaderMover:
         copyfile("Z10_BIGLOADER.exe", "Q10_BIGZIPPED.zip")
         copyfile("Z30_SMALLLOADER.exe", "Z3_SMALLZIPPED.zip")
         bdo, bdr, ldo, ldr, zdo, zdr = bb.make_dirs(os.getcwd(), "osversion", "radioversion")
+        del bdo
+        del bdr
         bb.move_loaders(os.getcwd(), ldo, ldr, zdo, zdr)
 
     def test_move_loaders_smallzip(self):

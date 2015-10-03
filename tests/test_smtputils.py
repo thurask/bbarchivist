@@ -13,22 +13,22 @@ class TestClassScriptutils:
         """
         Test config filtering.
         """
-        results={"server": "abc.xyz",
-                 "port": 69,
-                 "username": "luser",
-                 "password": "hunter2",
-                 "is_ssl": True}
+        results = {"server": "abc.xyz",
+                   "port": 69,
+                   "username": "luser",
+                   "password": "hunter2",
+                   "is_ssl": True}
         assert bs.smtp_config_generator(results) == results
 
     def test_parse_kwargs(self):
         """
         Test kwarg unpacking.
         """
-        results={"server": "abc.xyz",
-                 "port": 69,
-                 "username": "luser",
-                 "password": "hunter2",
-                 "is_ssl": True}
+        results = {"server": "abc.xyz",
+                   "port": 69,
+                   "username": "luser",
+                   "password": "hunter2",
+                   "is_ssl": True}
         assert bs.parse_kwargs(results) == (results['server'],
                                             results['username'],
                                             results['port'],
