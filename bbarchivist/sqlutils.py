@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """This module is used for dealing with SQL databases, including CSV export."""
 
@@ -10,6 +10,7 @@ import sqlite3  # the sql library
 import csv  # write to csv
 import os  # paths
 import operator  # for sorting
+import time  # current date
 from bbarchivist.utilities import file_exists, UselessStdout  # check if file exists
 
 
@@ -31,14 +32,17 @@ def prepare_sw_db():
         with cnxn:
             crsr = cnxn.cursor()
             # Filter OS/software, including uniqueness, case-insensitivity, existence, etc.
+            reqid = "INTEGER PRIMARY KEY"
             reqs = "TEXT NOT NULL UNIQUE COLLATE NOCASE"
-            table = "Swrelease(Id INTEGER PRIMARY KEY, Os " + reqs + ", Software " + reqs + ")"
+            reqs2 = "TEXT NOT NULL"
+            table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(
+                *(reqid, reqs, reqs2))
             crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
     except sqlite3.Error as sqerror:  # pragma: no cover
         print(str(sqerror))
 
 
-def insert_sw_release(osversion, swrelease):
+def insert_sw_release(osversion, swrelease, available, curdate=None):
     """
     Insert values into main SQLite database.
 
@@ -47,13 +51,25 @@ def insert_sw_release(osversion, swrelease):
 
     :param swrelease: Software release.
     :type swrelease: str
+
+    :param servers: If release is available. String converted boolean.
+    :type servers: str
+
+    :param curdate: If None, today. For manual dates, specify this.
+    :type curdate: str
     """
+    if curdate is None:
+        curdate = time.strftime("%Y %B %d")
     try:
         cnxn = sqlite3.connect(prepare_path())
         with cnxn:
             crsr = cnxn.cursor()
-            crsr.execute("INSERT INTO Swrelease(Os, Software) VALUES (?,?)",
-                         (osversion, swrelease))
+            try:
+                crsr.execute("INSERT INTO Swrelease(Os, Software, Available, Date) VALUES (?,?,?,?)",
+                             (osversion, swrelease, available, curdate))  # insert if new
+            except sqlite3.IntegrityError:
+                crsr.execute("UPDATE Swrelease SET Available=? WHERE Os=? AND Software=?",
+                             (available, osversion, swrelease))  # update if not new
     except sqlite3.IntegrityError:  # pragma: no cover
         UselessStdout.write("ASDASDASD")  # avoid dupes
     except sqlite3.Error as sqerror:  # pragma: no cover
@@ -117,10 +133,10 @@ def export_sql_db():
                 csvpath = os.path.join(thepath, "swrelease.csv")
                 csvw = csv.writer(open(csvpath, "w"))
                 crsr = cnxn.cursor()
-                crsr.execute("SELECT Os,Software FROM Swrelease")
+                crsr.execute("SELECT Os,Software,Available,Date FROM Swrelease")
                 rows = crsr.fetchall()
                 sortedrows = sorted(rows, key=operator.itemgetter(0))
-                csvw.writerow(('osversion', 'swrelease'))
+                csvw.writerow(('OS Version', 'Software Release', 'Available', 'First Added'))
                 csvw.writerows(sortedrows)
         except sqlite3.Error as sqerror:  # pragma: no cover
             print(str(sqerror))
