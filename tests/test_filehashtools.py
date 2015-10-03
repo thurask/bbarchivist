@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, W0142
 """Test the filehashtools module."""
 
@@ -156,20 +156,51 @@ class TestClassFilehashtools:
         uptime = "69696969"
         assert bf.calculate_escreens(pin, app, uptime) == "E23F8E7F"
 
-    def test_verifier(self):
+    def test_verifier(self, onefile=False):
         """
         Test batch hashing.
+
+        :param onefile: One file or not. Default is false.
+        :type onefile: bool
         """
         confload = bf.verifier_config_loader()
         confload = confload.fromkeys(confload, False)
+        confload['adler32'] = True
+        confload['crc32'] = True
+        confload['md4'] = True
         confload['md5'] = True
         confload['sha1'] = True
+        confload['sha224'] = True
+        confload['sha256'] = True
+        confload['sha384'] = True
+        confload['sha512'] = True
+        confload['ripemd160'] = True
+        confload['whirlpool'] = True
         confload['blocksize'] = 16777216
+        confload['onefile'] = onefile
         bf.verifier(os.getcwd(), **confload)
-        stocklines = [b"MD5",
+        stocklines = [b"ADLER32",
+                      b"02470DCD tempfile.txt",
+                      b"CRC32",
+                      b"ED5D3F26 tempfile.txt",
+                      b"MD4",
+                      b"DF26ADA1A895F94E1F1257FAD984E809 tempfile.txt",
+                      b"MD5",
                       b"822E1187FDE7C8D55AFF8CC688701650 tempfile.txt",
                       b"SHA1",
-                      b"71DC7CE8F27C11B792BE3F169ECF985865E276D0 tempfile.txt"]
+                      b"71DC7CE8F27C11B792BE3F169ECF985865E276D0 tempfile.txt",
+                      b"SHA224",
+                      b"7BCD7B77F63633BF0F7DB181106F08EB630A58C521B109BE1CC4A404 tempfile.txt",
+                      b"SHA256",
+                      b"F118871C45171D5FE4E9049980959E033EEEABCFA12046C243FDA310580E8A0B tempfile.txt",
+                      b"SHA384",
+                      b"76620873C0D27873C137B082425C6E87E3D601C4B19241A1F2222F7F700A2FE8D3C648B26F62325A411CB020BFF527BE tempfile.txt",
+                      b"SHA512",
+                      b"B66A5E8AA9B9705748C2EE585B0E1A3A41288D2DAFC3BE2DB12FA89D2F2A3E14F9DEC11DE4BA865BB51EAA6C2CFEB294139455E34DA7D827A19504B0906C01C1 tempfile.txt",
+                      b"RIPEMD160",
+                      b"F3E191024C33768E2589E2EFCA53D55F4E4945EE tempfile.txt",
+                      b"WHIRLPOOL",
+                      b"9835D12F3CB3EA3934635E4A7CC918E489379ED69D894EBC2C09BBF99FE72567BFD26C919AD666E170752ABFC4B8C37B376F5102F9E5DE59AF2B65EFC2E01293 tempfile.txt",]
         stocklines2 = []
         for item in stocklines:
             item2 = item.strip()
@@ -177,8 +208,11 @@ class TestClassFilehashtools:
             item2 = item2.replace(b'\n', b'')
             item2 = item2.replace(b'\r', b'')
             stocklines2.append(item2)
-        print(os.path.isfile("tempfile.txt"))
-        with open("tempfile.txt.cksum", "rb") as checksumfile:
+        if onefile:
+            filename = "all.cksum"
+        else:
+            filename = "tempfile.txt.cksum"
+        with open(filename, "rb") as checksumfile:
             content = checksumfile.read().splitlines()
         content2 = []
         for item in content:
@@ -189,6 +223,12 @@ class TestClassFilehashtools:
             content2.append(item2)
         for idx, value in enumerate(content2):
             assert stocklines2[idx] == value
+
+    def test_verifier_onefile(self):
+        """
+        Test batch hashing, one output file.
+        """
+        self.test_verifier(True)
 
     def test_gpgrunner(self):
         """

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301
 """Test the utilities module."""
 
@@ -201,6 +201,91 @@ class TestClassUtilities:
         Test bar name cleaning.
         """
         assert bu.barname_stripper("base-nto+armle-v7+signed.bar") == "base"
+
+    def test_return_and_delete(self):
+        """
+        Test reading a file then deleting it.
+        """
+        with open("TEST.txt", "w") as afile:
+            afile.write("You can call me Al")
+        assert bu.return_and_delete("TEST.txt") == "You can call me Al"
+
+
+class TestClassLazyUrls:
+    """
+    Test generation of lazyloader URLs.
+    """
+    def test_stl1(self):
+        """
+        Test STL100-1 URLs.
+        """
+        ourl, rurl = bu.generate_lazy_urls("http://www.qrrbrbirlbel.yu/", "10.2.3.4567", "10.9.8.7654", 0)
+        assert "winchester" in ourl
+        assert "m5730" in rurl
+
+    def test_stlx(self):
+        """
+        Test STL100-X URLs.
+        """
+        ourl, rurl = bu.generate_lazy_urls("http://www.qrrbrbirlbel.yu/", "10.2.3.4567", "10.9.8.7654", 1)
+        assert "qc8960.factory_sfi" in ourl
+        assert "qc8960-" in rurl
+
+    def test_stl4(self):
+        """
+        Test STL100-4 URLs.
+        """
+        ourl, rurl = bu.generate_lazy_urls("http://www.qrrbrbirlbel.yu/", "10.2.3.4567", "10.9.8.7654", 2)
+        assert "verizon" in ourl
+        assert "qc8960.omadm" in rurl
+
+    def test_q10(self):
+        """
+        Test Q10 URLs.
+        """
+        ourl, rurl = bu.generate_lazy_urls("http://www.qrrbrbirlbel.yu/", "10.2.3.4567", "10.9.8.7654", 3)
+        assert "qc8960.factory_sfi" in ourl
+        assert "qc8960.wtr" in rurl
+
+    def test_z30(self):
+        """
+        Test Z30 URLs.
+        """
+        ourl, rurl = bu.generate_lazy_urls("http://www.qrrbrbirlbel.yu/", "10.2.3.4567", "10.9.8.7654", 4)
+        assert "qc8960.factory_sfi" in ourl
+        assert "qc8960.wtr5" in rurl
+
+    def test_z3(self):
+        """
+        Test Z3 URLs.
+        """
+        ourl, rurl = bu.generate_lazy_urls("http://www.qrrbrbirlbel.yu/", "10.2.3.4567", "10.9.8.7654", 5)
+        assert "qc8960.factory_sfi" in ourl
+        assert "qc8930" in rurl
+
+    def test_z3_alt(self):
+        """
+        Test Z3 URLs, having been updated due to OS version.
+        """
+        ourl, rurl = bu.generate_lazy_urls("http://www.qrrbrbirlbel.yu/", "10.9.8.7654", "10.2.3.4567", 5)
+        assert "qc8960.factory_sfi_hybrid_qc8x30" in ourl
+        assert "qc8930" in rurl
+
+    def test_8974(self):
+        """
+        Test 8974 URLs.
+        """
+        ourl, rurl = bu.generate_lazy_urls("http://www.qrrbrbirlbel.yu/", "10.2.3.4567", "10.9.8.7654", 6)
+        assert "qc8974" in ourl
+        assert "8974.wtr2" in rurl
+    
+    def test_8974_alt(self):
+        """
+        Test 8974 URLs, having been updated due to OS version.
+        """
+        ourl, rurl = bu.generate_lazy_urls("http://www.qrrbrbirlbel.yu/", "10.9.8.7654", "10.2.3.4567", 6)
+        assert "qc8960.factory_sfi_hybrid_qc8974" in ourl
+        assert "qc8974.wtr2" in rurl
 
 
 class TestClassUtilitiesArgparse:

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """This module is used to generate file hashes/checksums and PGP signatures."""
 
@@ -504,6 +504,8 @@ def gpg_config_loader():
     config = configparser.ConfigParser()
     homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
+    if not os.path.exists(conffile):  # pragma: no cover
+        open(conffile, 'w').close()
     config.read(conffile)
     if not config.has_section('gpgrunner'):  # pragma: no cover
         config['gpgrunner'] = {}
@@ -525,9 +527,9 @@ def gpg_config_writer(key=None, password=None):
     config = configparser.ConfigParser()
     homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
-    config.read(conffile)
-    if not os.path.exists(conffile):
+    if not os.path.exists(conffile):  # pragma: no cover
         open(conffile, 'w').close()
+    config.read(conffile)
     if not config.has_section('gpgrunner'):  # pragma: no cover
         config['gpgrunner'] = {}
     if key is not None:
@@ -546,7 +548,7 @@ def verifier_config_loader():
     config = configparser.ConfigParser()
     homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
-    if not os.path.exists(conffile):
+    if not os.path.exists(conffile):  # pragma: no cover
         open(conffile, 'w').close()
     config.read(conffile)
     if not config.has_section('hashmodes'):  # pragma: no cover
@@ -580,8 +582,10 @@ def verifier_config_writer(resultdict=None):
     config = configparser.ConfigParser()
     homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
+    if not os.path.exists(conffile):  # pragma: no cover
+        open(conffile, 'w').close()
     config.read(conffile)
-    if not config.has_section('hashmodes'):
+    if not config.has_section('hashmodes'):  # pragma: no cover
         config['hashmodes'] = {}
     for method, flag in resultdict.items():
         config.set('hashmodes', method, str(flag).lower())

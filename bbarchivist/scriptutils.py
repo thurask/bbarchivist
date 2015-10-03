@@ -45,13 +45,13 @@ def return_sw_checked(softwareversion, osversion):
     if softwareversion is None:
         serv = bbconstants.SERVERS["p"]
         softwareversion = networkutils.software_release_lookup(osversion, serv)
-        if softwareversion == "SR not in system":
+        if softwareversion == "SR not in system":  # pragma: no cover
             print("SOFTWARE RELEASE NOT FOUND")
             cont = utilities.str2bool(input("INPUT MANUALLY? Y/N: "))
-            if cont:
+            if cont:  # pragma: no cover
                 softwareversion = input("SOFTWARE RELEASE: ")
                 swchecked = False
-            else:
+            else:  # pragma: no cover
                 print("\nEXITING...")
                 raise SystemExit  # bye bye
         else:
@@ -75,13 +75,13 @@ def return_radio_sw_checked(altsw, radioversion):
         serv = bbconstants.SERVERS["p"]
         testos = utilities.version_incrementer(radioversion, -1)
         altsw = networkutils.software_release_lookup(testos, serv)
-        if altsw == "SR not in system":
+        if altsw == "SR not in system":  # pragma: no cover
             print("RADIO SOFTWARE RELEASE NOT FOUND")
             cont = utilities.str2bool(input("INPUT MANUALLY? Y/N: "))
-            if cont:
+            if cont:  # pragma: no cover
                 altsw = input("SOFTWARE RELEASE: ")
                 altchecked = False
-            else:
+            else:  # pragma: no cover
                 print("\nEXITING...")
                 raise SystemExit  # bye bye
         else:
@@ -109,12 +109,12 @@ def check_sw(baseurl, softwareversion, swchecked):
         avlty = networkutils.availability(baseurl)
         if avlty:
             print("SOFTWARE RELEASE", softwareversion, "EXISTS")
-        else:
+        else:  # pragma: no cover
             print("SOFTWARE RELEASE", softwareversion, "NOT FOUND")
             cont = utilities.str2bool(input("CONTINUE? Y/N: "))
-            if cont:
+            if cont:  # pragma: no cover
                 pass
-            else:
+            else:  # pragma: no cover
                 print("\nEXITING...")
                 raise SystemExit
     else:
@@ -139,12 +139,12 @@ def check_radio_sw(alturl, altsw, altchecked):
         altavlty = networkutils.availability(alturl)
         if altavlty:
             print("SOFTWARE RELEASE", altsw, "EXISTS")
-        else:
+        else:  # pragma: no cover
             print("SOFTWARE RELEASE", altsw, "NOT FOUND")
             cont = utilities.str2bool(input("CONTINUE? Y/N: "))
-            if cont:
+            if cont:  # pragma: no cover
                 pass
-            else:
+            else:  # pragma: no cover
                 print("\nEXITING...")
                 raise SystemExit
     else:
@@ -165,12 +165,12 @@ def check_os_single(osurl, osversion, device):
     :type device: int
     """
     osav = networkutils.availability(osurl)
-    if not osav:
+    if not osav:  # pragma: no cover
         print(osversion, "NOT AVAILABLE FOR", bbconstants.DEVICES[device])
         cont = utilities.str2bool(input("CONTINUE? Y/N: "))
-        if cont:
+        if cont:  # pragma: no cover
             pass
-        else:
+        else:  # pragma: no cover
             print("\nEXITING...")
             raise SystemExit
 
@@ -189,12 +189,12 @@ def check_os_bulk(osurls, osversion):
         osav = networkutils.availability(url)
         if osav:
             break
-    else:
+    else:  # pragma: no cover
         print("OS VERSION NOT FOUND")
         cont = utilities.str2bool(input("CONTINUE? Y/N: "))
-        if cont:
+        if cont:  # pragma: no cover
             pass
-        else:
+        else:  # pragma: no cover
             print("\nEXITING...")
             raise SystemExit
 
@@ -210,18 +210,18 @@ def check_radio_single(radiourl, radioversion):
     :type radioversion: str
     """
     radav = networkutils.availability(radiourl)
-    if not radav:
+    if not radav:  # pragma: no cover
         print("RADIO VERSION NOT FOUND")
         cont = utilities.str2bool(input("INPUT MANUALLY? Y/N: "))
-        if cont:
+        if cont:  # pragma: no cover
             rad2 = input("RADIO VERSION: ")
             radiourl = radiourl.replace(radioversion, rad2)
             radioversion = rad2
-        else:
+        else:  # pragma: no cover
             going = utilities.str2bool(input("KEEP GOING? Y/N: "))
-            if going:
+            if going:  # pragma: no cover
                 pass
-            else:
+            else:  # pragma: no cover
                 print("\nEXITING...")
                 raise SystemExit
     return radiourl, radioversion
@@ -241,18 +241,18 @@ def check_radio_bulk(radiourls, radioversion):
         radav = networkutils.availability(url)
         if radav:
             break
-    else:
+    else:  # pragma: no cover
         print("RADIO VERSION NOT FOUND")
         cont = utilities.str2bool(input("INPUT MANUALLY? Y/N: "))
-        if cont:
+        if cont:  # pragma: no cover
             rad2 = input("RADIO VERSION: ")
             radiourls = [url.replace(radioversion, rad2) for url in radiourls]
             radioversion = rad2
-        else:
+        else:  # pragma: no cover
             going = utilities.str2bool(input("KEEP GOING? Y/N: "))
-            if going:
+            if going:  # pragma: no cover
                 pass
-            else:
+            else:  # pragma: no cover
                 print("\nEXITING...")
                 raise SystemExit
     return radiourls, radioversion
@@ -273,14 +273,14 @@ def get_sz_executable(compmethod):
         if psz:
             print("7ZIP OK")
             szexe = utilities.get_seven_zip(False)
-        else:
+        else:  # pragma: no cover
             szexe = ""
             print("7ZIP NOT FOUND")
             cont = utilities.str2bool(input("CONTINUE? Y/N "))
-            if cont:
+            if cont:  # pragma: no cover
                 print("FALLING BACK TO ZIP...")
                 compmethod = "zip"
-            else:
+            else:  # pragma: no cover
                 print("\nEXITING...")
                 raise SystemExit  # bye bye
     return compmethod, szexe

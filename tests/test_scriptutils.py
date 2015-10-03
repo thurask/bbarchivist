@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301
 """Test the scriptutils module."""
 
@@ -126,3 +126,17 @@ class TestClassScriptutils:
                                        "10.3.2.2640") == (radiourls,
                                                           "10.3.2.2640")
             assert "NOT FOUND" not in capsys.readouterr()[0]
+
+    def test_szexe_irrelevant(self):
+        """
+        """
+        assert bs.get_sz_executable("tbz") == ("tbz", "")
+
+    def test_szexe_present(self):
+        """
+        """
+        with mock.patch('bbarchivist.utilities.prep_seven_zip',
+                        mock.MagicMock(return_value=True)):
+            with mock.patch('bbarchivist.utilities.get_seven_zip',
+                        mock.MagicMock(return_value="jackdaw")):
+                assert bs.get_sz_executable("7z") == ("7z", "jackdaw")

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301
 """Test the barutils module."""
 
@@ -8,7 +8,7 @@ from bbarchivist.utilities import prep_seven_zip, get_seven_zip
 from shutil import rmtree, copyfile
 from sys import version_info
 from hashlib import sha512
-from zipfile import ZipFile, ZIP_DEFLATED
+import zipfile
 try:
     import unittest.mock as mock
 except ImportError:
@@ -40,6 +40,8 @@ def teardown_module(module):
     rmtree("smallloaders", ignore_errors=True)
     rmtree("bigzipped", ignore_errors=True)
     rmtree("smallzipped", ignore_errors=True)
+    rmtree("bigbars", ignore_errors=True)
+    rmtree("smallbars", ignore_errors=True)
     os.chdir("..")
     rmtree("temp", ignore_errors=True)
 
@@ -60,9 +62,9 @@ class TestClassBarutils:
                     break
                 shahash.update(data)
         orighash = shahash.hexdigest()
-        with ZipFile('testfile.bar',
-                     'w',
-                     ZIP_DEFLATED) as zfile:
+        with zipfile.ZipFile('testfile.bar',
+                             'w',
+                             zipfile.ZIP_DEFLATED) as zfile:
             zfile.write("testfile.signed")
         os.remove("testfile.signed")
         bb.extract_bars(os.getcwd())
@@ -146,6 +148,29 @@ class TestClassBarutils:
         bb.remove_empty_folders(os.getcwd())
         assert "a_temp_folder" not in os.listdir()
 
+    def test_remove_signed_files(self):
+        """
+        Test removal of signed files.
+        """
+        os.mkdir("signeds")
+        signeddir = os.path.abspath(os.path.join(os.getcwd(), "signeds"))
+        with open(os.path.join(signeddir, "something.signed"), "w") as afile:
+            afile.write("Haters gonna hate")
+        with open(os.path.join(signeddir, "something.else"), "w") as afile:
+            afile.write("I'm just gonna shake")
+        bb.remove_signed_files(signeddir)
+        assert len(os.listdir("signeds")) == 1
+        rmtree(signeddir, ignore_errors=True)
+
+    def test_remove_uncomps(self):
+        """
+        Test removing uncompressed loader directories.
+        """
+        os.mkdir("uncompL")
+        os.mkdir("uncompR")
+        bb.remove_unpacked_loaders("uncompL", "uncompR", True)
+        assert not any(["uncompL", "uncompR"]) in os.listdir()
+
     def test_create_blitz(self):
         """
         Test blitz package creation.
@@ -182,7 +207,116 @@ class TestClassBarutils:
         with mock.patch('bbarchivist.utilities.is_amd64', mock.MagicMock(return_value=True)):
             assert bb.calculate_strength() == 9
 
-class TestClassBarutilsLoaderMover():
+    def test_compress_suite(self):
+        """
+        """
+        os.mkdir("suite")
+        suitedir = os.path.abspath(os.path.join(os.getcwd(), "suite"))
+        with open(os.path.join(suitedir, "Z10.exe"), "w") as afile:
+            afile.write("Haters gonna hate")
+        with open(os.path.join(suitedir, "Z30.exe"), "w") as afile:
+            afile.write("I'm just gonna shake")
+        bb.compress_suite(suitedir, "zip", None, True)
+        rmtree(suitedir, ignore_errors=True)
+        
+
+class TestClassBarutilsVerifier:
+    """
+    Test verification of archives.
+    """
+    @classmethod
+    def setup_class(cls):
+        """
+        Create compressed loaders to verify.
+        """
+        os.mkdir("verifiers")
+        verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
+        aloader = os.path.join(verdir, "Q10.exe")
+        with open(aloader, "w") as afile:
+            afile.write("Haters gonna hate")
+        exists = prep_seven_zip()
+        if exists:
+            szexe = get_seven_zip(False)
+            bb.compress(verdir, "7z", szexe, True)
+        else:
+            pass
+
+    def test_verify_sz(self):
+        """
+        Test 7z verification.
+        """
+        verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
+        exists = prep_seven_zip()
+        if not exists:
+            pass
+        else:
+            szexe = get_seven_zip(False)
+            assert bb.verify(verdir, '7z', szexe, True)
+
+    def test_verify_zip(self):
+        """
+        Test zip verification.
+        """
+        verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
+        assert bb.verify(verdir, 'zip', None, True)
+
+    def test_verify_tgz(self):
+        """
+        Test tar.gz verification.
+        """
+        verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
+        assert bb.verify(verdir, 'tgz', None, True)
+
+    def test_verify_tbz(self):
+        """
+        Test tar.bz2 verification.
+        """
+        verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
+        assert bb.verify(verdir, 'tbz', None, True)
+
+    def test_verify_txz(self):
+        """
+        Test tar.xz verification.
+        """
+        if version_info[1] < 3:
+            pass
+        else:
+            verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
+            assert bb.verify(verdir, 'txz', None, True)
+
+
+class TestClassBarutilsSha512:
+    """
+    Test manifest parsing/verification.
+    """
+    @classmethod
+    def setup_class(cls):
+        """
+        Create file to verify.
+        """
+        mstring = b"Somestuff\nName: target.signed\nDigest: tmpeiqm5cFdIwu5YWw4aOkEojS2vw74tsS-onS8qPhT53sEd5LqGW7Ueqmws_rKUE5RV402n2CehlQSwkGwBwQ\nmorestuff"
+        fstring = b"Jackdaws love my big sphinx of quartz"
+        with zipfile.ZipFile("mfest.bar.dummy", mode= "w",
+                             compression=zipfile.ZIP_DEFLATED) as zfile:
+            zfile.writestr("MANIFEST.MF", mstring)
+            zfile.writestr("target.signed", fstring)
+        with open("target.signed", "wb") as targetfile:
+            targetfile.write(fstring)
+
+    def test_sha512_retrieve(self):
+        """
+        Test retrieval of SHA512 hash (in Base64) from a bar file's manifest.
+        """
+        assert bb.retrieve_sha512("mfest.bar.dummy") == (b"target.signed", b"tmpeiqm5cFdIwu5YWw4aOkEojS2vw74tsS-onS8qPhT53sEd5LqGW7Ueqmws_rKUE5RV402n2CehlQSwkGwBwQ")
+
+    def test_sha512_verify(self):
+        """
+        Test comparison of signed file hash with that from the manifest.
+        """
+        assert  bb.verify_sha512("target.signed", b"tmpeiqm5cFdIwu5YWw4aOkEojS2vw74tsS-onS8qPhT53sEd5LqGW7Ueqmws_rKUE5RV402n2CehlQSwkGwBwQ")
+
+
+class TestClassBarutilsLoaderMover:
     """
     Test moving of files.
     """
@@ -199,8 +333,6 @@ class TestClassBarutilsLoaderMover():
         copyfile("Z10_BIGLOADER.exe", "Q10_BIGZIPPED.zip")
         copyfile("Z30_SMALLLOADER.exe", "Z3_SMALLZIPPED.zip")
         bdo, bdr, ldo, ldr, zdo, zdr = bb.make_dirs(os.getcwd(), "osversion", "radioversion")
-        del bdo
-        del bdr
         bb.move_loaders(os.getcwd(), ldo, ldr, zdo, zdr)
 
     def test_move_loaders_smallzip(self):
@@ -230,3 +362,36 @@ class TestClassBarutilsLoaderMover():
         """
         loaders = os.path.join(os.getcwd(), "loaders")
         assert "Z10_BIGLOADER.exe" in os.listdir(os.path.join(loaders, "osversion"))
+
+
+class TestClassBarUtilsBarMover:
+    """
+    Test moving of files.
+    """
+    @classmethod
+    def setup_class(cls):
+        """
+        Create files to move.
+        """
+        with open("BIGBAR.bar", "w") as targetfile:
+            targetfile.write("0"*95000000)
+        with open("SMALLBAR.bar", "w") as targetfile:
+            targetfile.write("0"*95000)
+        bardir = os.path.join(os.getcwd(), "bars")
+        bardir_os = os.path.join(bardir, "osversion")
+        bardir_radio = os.path.join(bardir, "radioversion")
+        bb.move_bars(os.getcwd(), bardir_os, bardir_radio)
+
+    def test_move_bars_small(self):
+        """
+        Test moving small bar files.
+        """
+        bars = os.path.join(os.getcwd(), "bars")
+        assert "SMALLBAR.bar" in os.listdir(os.path.join(bars, "radioversion"))
+
+    def test_move_bars_big(self):
+        """
+        Test moving large bar files.
+        """
+        bars = os.path.join(os.getcwd(), "bars")
+        assert "BIGBAR.bar" in os.listdir(os.path.join(bars, "osversion"))
