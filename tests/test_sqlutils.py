@@ -56,7 +56,7 @@ class TestClassSQLUtils:
 
     def test_insert_sw_release(self):
         """
-        Test adding software release to SQL database, including uniqueness.
+        Test adding/updating software release to SQL database, including uniqueness.
         """
         apath = os.path.abspath(os.getcwd())
         sqlpath = os.path.join(apath, "bbarchivist.db")
@@ -74,23 +74,33 @@ class TestClassSQLUtils:
                     crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
             except sqlite3.Error:
                 assert False
+            bs.insert_sw_release("70.OSVERSION", "80.SWVERSION", "unavailable")
+            try:
+                cnxn = sqlite3.connect(sqlpath)
+                with cnxn:
+                    crsr = cnxn.cursor()
+                    crsr.execute("SELECT Os,Software,Available FROM Swrelease")
+                    rows = crsr.fetchall()
+                assert ("70.OSVERSION", "80.SWVERSION", "unavailable") in rows
+            except sqlite3.Error:
+                assert False
             bs.insert_sw_release("70.OSVERSION", "80.SWVERSION", "available")
             try:
                 cnxn = sqlite3.connect(sqlpath)
                 with cnxn:
                     crsr = cnxn.cursor()
-                    crsr.execute("SELECT Os,Software FROM Swrelease")
+                    crsr.execute("SELECT Os,Software,Available FROM Swrelease")
                     rows = crsr.fetchall()
-                assert ("70.OSVERSION", "80.SWVERSION") in rows
+                assert ("70.OSVERSION", "80.SWVERSION", "available") in rows
             except sqlite3.Error:
                 assert False
             try:
                 cnxn = sqlite3.connect(sqlpath)
                 with cnxn:
                     crsr = cnxn.cursor()
-                    crsr.execute("SELECT Os,Software FROM Swrelease")
+                    crsr.execute("SELECT Os,Software,Available FROM Swrelease")
                     rows = crsr.fetchall()
-                assert ("70.OSVERSION", "80.SWVERSION") in rows
+                assert ("70.OSVERSION", "80.SWVERSION", "available") in rows
             except sqlite3.IntegrityError:
                 assert True
 
