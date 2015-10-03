@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """This module is used to operate with bar files and other archives."""
 
@@ -54,9 +54,13 @@ def retrieve_sha512(filename):
     try:
         zfile = zipfile.ZipFile(filename, 'r')
         names = zfile.namelist()
+        manifest = None
         for name in names:
             if name.endswith("MANIFEST.MF"):
                 manifest = name
+                break
+        if manifest is None:  # pragma: no cover
+            raise SystemExit
         manf = zfile.read(manifest).splitlines()
         alist = []
         for idx, line in enumerate(manf):
@@ -66,7 +70,7 @@ def retrieve_sha512(filename):
         assetname = alist[0].split(b": ")[1]
         assethash = alist[1].split(b": ")[1]
         return assetname, assethash  # (b"blabla.signed", b"somehash")
-    except (RuntimeError, OSError, zipfile.BadZipFile) as exc:
+    except (RuntimeError, OSError, zipfile.BadZipFile) as exc:  # pragma: no cover
         print("EXTRACTION FAILURE")
         print(str(exc))
         print("DID IT DOWNLOAD PROPERLY?")
@@ -92,7 +96,7 @@ def verify_sha512(filename, inithash):
     rawdigest = sha512.digest()  # must be bytestring, not hexadecimalized str
     b64h = base64.b64encode(rawdigest, altchars=b"-_")  # replace some chars
     b64h = b64h.strip(b"==")  # remove padding
-    return b64h == inithash
+    return (b64h == inithash)
 
 
 def bar_tester(filepath):
@@ -374,7 +378,8 @@ def compress(filepath, method="7z", szexe=None, selective=False):
         filt2 = [file for file in filt1 if file.endswith(".exe")]  # exes only
     else:
         filt2 = [file for file in files if not file.endswith(bbconstants.ARCS)]  # pop compressed
-    for file in filt2:
+    filt3 = [os.path.join(filepath, file) for file in filt2]
+    for file in filt3:
         filename = os.path.splitext(os.path.basename(file))[0]
         fileloc = os.path.join(filepath, filename)
         print("COMPRESSING: " + filename + ".exe")
@@ -389,6 +394,7 @@ def compress(filepath, method="7z", szexe=None, selective=False):
             tbz_compress(fileloc, file, strength)
         elif method == "zip":
             zip_compress(fileloc, file)
+    return True
 
 
 def verify(filepath, method="7z", szexe=None, selective=False):
@@ -408,33 +414,39 @@ def verify(filepath, method="7z", szexe=None, selective=False):
     :type selective: bool
     """
     method = filter_method(method, szexe)
-    files = (file for file in os.listdir(filepath) if not os.path.isdir(file))
+    files = (os.path.join(filepath, file) for file in os.listdir(filepath) if not os.path.isdir(file))
     for file in files:
         filt = file.endswith(bbconstants.ARCS)
         if selective:
             filt = filt and file.startswith(bbconstants.PREFIXES)
-        if filt:
+        if filt:  # pragma: no cover
             print("VERIFYING:", file)
             if file.endswith(".7z") and szexe is not None:
                 szver = sz_verify(os.path.abspath(file), szexe)
                 if not szver:
                     print("{0} IS BROKEN!".format((file)))
+                    return False
             elif file.endswith(".tar.gz"):
                 tgver = tgz_verify(file)
                 if not tgver:
                     print("{0} IS BROKEN!".format((file)))
+                    return False
             elif file.endswith(".tar.xz"):
                 txver = txz_verify(file)
                 if not txver:
                     print("{0} IS BROKEN!".format((file)))
+                    return False
             elif file.endswith(".tar.bz2"):
                 tbver = tbz_verify(file)
                 if not tbver:
                     print("{0} IS BROKEN!".format((file)))
+                    return False
             elif file.endswith(".zip"):
                 zver = zip_verify(file)
                 if not zver:
                     print("{0} IS BROKEN!".format((file)))
+                    return False
+    return True
 
 
 def compress_suite(filepath, method="7z", szexe=None, selective=False):
@@ -483,10 +495,12 @@ def remove_signed_files(a_folder):
     :param a_folder: Target folder.
     :type a_folder: str
     """
-    for file in os.listdir(a_folder):
+    files = [os.path.join(os.path.abspath(a_folder), file) for file in os.listdir(a_folder)]
+    for file in files:
         if file.endswith(".signed"):
-            print("REMOVING: " + file)
-            os.remove(file)
+            if os.path.exists(file):
+                print("REMOVING: " + file)
+                os.remove(os.path.abspath(file))
 
 
 def remove_unpacked_loaders(osdir, raddir, radios):
@@ -685,10 +699,10 @@ def compress_config_loader():
     config = configparser.ConfigParser()
     homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
-    if not os.path.exists(conffile):
+    if not os.path.exists(conffile):  # pragma: no cover
         open(conffile, 'w').close()
     config.read(conffile)
-    if not config.has_section('compression'):
+    if not config.has_section('compression'):  # pragma: no cover
         config['compression'] = {}
     compini = config['compression']
     method = compini.get('method', fallback="7z")
@@ -710,10 +724,10 @@ def compress_config_writer(method=None):
     config = configparser.ConfigParser()
     homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
-    if not os.path.exists(conffile):
+    if not os.path.exists(conffile):  # pragma: no cover
         open(conffile, 'w').close()
     config.read(conffile)
-    if not config.has_section('compression'):
+    if not config.has_section('compression'):  # pragma: no cover
         config['compression'] = {}
     config['compression']['method'] = method
     with open(conffile, "w") as configfile:

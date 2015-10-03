@@ -128,6 +128,28 @@ class TestClassSQLUtils:
             except sqlite3.Error:
                 assert False
 
+    def test_entry_existence(self):
+        """
+        Test recognition of already inserted entries.
+        """
+        apath = os.path.abspath(os.getcwd())
+        sqlpath = os.path.join(apath, "bbarchivist.db")
+        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=apath)):
+            try:
+                cnxn = sqlite3.connect(sqlpath)
+                with cnxn:
+                    crsr = cnxn.cursor()
+                    crsr.execute("DROP TABLE Swrelease")
+                    reqs = "TEXT NOT NULL UNIQUE COLLATE NOCASE"
+                    prim = "INTEGER PRIMARY KEY"
+                    table = "Swrelease(Id " + prim + ", Os " + reqs + ", Software " + reqs + ")"
+                    crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
+            except sqlite3.Error:
+                assert False
+            assert not bs.check_entry_existence("70.OSVERSION", "80.SWVERSION")
+            bs.insert_sw_release("70.OSVERSION", "80.SWVERSION")
+            assert bs.check_entry_existence("70.OSVERSION", "80.SWVERSION")
+
     def test_export_sql_db(self):
         """
         Test exporting SQL database to csv file.

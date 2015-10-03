@@ -21,7 +21,15 @@ def setup_module(module):
         targetfile.write("0"*9500000)
     bp.make_offset("firstfile")
     copyfile("offset.hex", "offset.tmp")
-    bp.make_autoloader("loader.exe", "firstfile")
+    bp.make_autoloader("loader1.exe", "firstfile")
+    bp.make_autoloader("loader2.exe", "firstfile", "firstfile")
+    bp.make_autoloader("loader3.exe", "firstfile", "firstfile", "firstfile")
+    bp.make_autoloader("loader4.exe", "firstfile", "firstfile", "firstfile",
+                       "firstfile")
+    bp.make_autoloader("loader5.exe", "firstfile", "firstfile", "firstfile",
+                       "firstfile", "firstfile")
+    bp.make_autoloader("loader6.exe", "firstfile", "firstfile", "firstfile",
+                       "firstfile", "firstfile", "firstfile")
     copyfile("offset.tmp", "offset.hex")
     if os.path.exists("offset.tmp"):
         os.remove("offset.tmp")
@@ -49,6 +57,12 @@ class TestClassPseudocap:
         """
         assert bp.ghetto_convert(987654321) == b'\x00\x00\x00\x00\xb1h\xde:'
 
+    def test_gconvert_nonint(self):
+        """
+        Test non-int "conversion".
+        """
+        assert bp.ghetto_convert("987654321") == b'\x00\x00\x00\x00\xb1h\xde:'
+
     def test_make_offset_len(self):
         """
         Test offset length.
@@ -68,12 +82,12 @@ class TestClassPseudocap:
         thehash = shahash.hexdigest()
         assert thehash == '8001a4814bff60f755d8e86a250fee517e983e54cdfc64964b2120f8ce0444ea786c441f0707f1a8a3ccda612281f6ee226264059833abcf8c910883564e8d32'
 
-    def test_make_autoloader_hash(self):
+    def test_first_loader(self):
         """
         Test loader integrity.
         """
         shahash = sha512()
-        with open("loader.exe", 'rb') as file:
+        with open("loader1.exe", 'rb') as file:
             while True:
                 data = file.read(1048576)
                 if not data:
@@ -81,3 +95,73 @@ class TestClassPseudocap:
                 shahash.update(data)
         thehash = shahash.hexdigest()
         assert thehash == 'f4f6ac62387a665471898b14b4934c594b5877ac4170a1d204264ca8ed9be8709b6c5fd66c75c975ab76e26fbf512a02918d723e34c579d523c3b2bfbd11d6e4'
+
+    def test_second_loader(self):
+        """
+        Test loader integrity.
+        """
+        shahash = sha512()
+        with open("loader2.exe", 'rb') as file:
+            while True:
+                data = file.read(1048576)
+                if not data:
+                    break
+                shahash.update(data)
+        thehash = shahash.hexdigest()
+        assert thehash == '36693f2e4f33d7f8b13b7569339d7731c2d24314ca514b3366ede2221c1bf7da0c65a2a1b52fd53152c9cc2f5893cbb385a7a69e44da3686132a422c598b44b9'
+
+    def test_third_loader(self):
+        """
+        Test loader integrity.
+        """
+        shahash = sha512()
+        with open("loader3.exe", 'rb') as file:
+            while True:
+                data = file.read(1048576)
+                if not data:
+                    break
+                shahash.update(data)
+        thehash = shahash.hexdigest()
+        assert thehash == '31fd64cf114af147f7cdfc7257a7987b2bae9d63fe1fc30042eedc8feee51876cdedbe7b6e33ac45fd6ac575e3305164e267da4d887681703450f8c043c079aa'
+
+    def test_fourth_loader(self):
+        """
+        Test loader integrity.
+        """
+        shahash = sha512()
+        with open("loader4.exe", 'rb') as file:
+            while True:
+                data = file.read(1048576)
+                if not data:
+                    break
+                shahash.update(data)
+        thehash = shahash.hexdigest()
+        assert thehash == 'e33b55ac78823b8f7e637a9b56608ea4fbba75a2660f959597257db74235e3ad63fdefe525621258d24b1ca6948072f6571142a27cca385d90bf63736696f50e'
+
+    def test_fifth_loader(self):
+        """
+        Test loader integrity.
+        """
+        shahash = sha512()
+        with open("loader5.exe", 'rb') as file:
+            while True:
+                data = file.read(1048576)
+                if not data:
+                    break
+                shahash.update(data)
+        thehash = shahash.hexdigest()
+        assert thehash == 'c797f5a7197d6e657c4ff1dbaef7b16bea86e4cfeb631652c487a3181837710f7fb3c33b6f826b39f1e8470388ceae8a3ad0caf6939aba646236cff61ebf16d1'
+
+    def test_sixth_loader(self):
+        """
+        Test loader integrity.
+        """
+        shahash = sha512()
+        with open("loader6.exe", 'rb') as file:
+            while True:
+                data = file.read(1048576)
+                if not data:
+                    break
+                shahash.update(data)
+        thehash = shahash.hexdigest()
+        assert thehash == '511b817b00b33c7c2d007d6dfcb77a10ab1ca1be7ba0dadd47a940cdaf7a03948a58f17a24dcbc0bd1b66dc9a2163a5efd1c0a0ecd5c63d5d6a311c844b168fb'
