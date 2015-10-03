@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """Export SQL database to CSV."""
 
@@ -33,7 +33,7 @@ def sqlexport_main():
         dest="popsw",
         help="Pop this OS and SW from the database",
         nargs=2,
-        metavar="OS SW",
+        metavar=("OS", "SW"),
         default=False)
     parser.set_defaults()
     args = parser.parse_args(sys.argv[1:])
