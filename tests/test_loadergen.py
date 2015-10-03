@@ -92,6 +92,7 @@ class TestClassLoadergen:
 
     def test_filename_nosuffix(self):
         """
+        Test filename creation without suffix.
         """
         assert bl.generate_filename(0, "10.3.2.2789", None) == "Z10_10.3.2.2789_STL100-1.exe"
 
@@ -103,6 +104,7 @@ class TestClassLoadergen:
 
     def test_pretty_formatter(self):
         """
+        Test OS/radio version formatting.
         """
         assert bl.pretty_formatter("10.3.2.680",
                                    "10.3.2.681") == ("10.3.02.0680",

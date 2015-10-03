@@ -278,7 +278,7 @@ class TestClassLazyUrls:
         ourl, rurl = bu.generate_lazy_urls("http://www.qrrbrbirlbel.yu/", "10.2.3.4567", "10.9.8.7654", 6)
         assert "qc8974" in ourl
         assert "8974.wtr2" in rurl
-    
+
     def test_8974_alt(self):
         """
         Test 8974 URLs, having been updated due to OS version.

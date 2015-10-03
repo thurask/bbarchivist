@@ -96,7 +96,7 @@ def verify_sha512(filename, inithash):
     rawdigest = sha512.digest()  # must be bytestring, not hexadecimalized str
     b64h = base64.b64encode(rawdigest, altchars=b"-_")  # replace some chars
     b64h = b64h.strip(b"==")  # remove padding
-    return (b64h == inithash)
+    return b64h == inithash
 
 
 def bar_tester(filepath):
