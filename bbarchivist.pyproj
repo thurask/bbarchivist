@@ -23,6 +23,7 @@
     <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include=".coveragerc" />
     <Content Include=".coveralls.yml" />
     <Content Include=".gitattributes" />
     <Content Include=".gitignore" />
@@ -42,6 +43,7 @@
     <Content Include="docs\readme.rst" />
     <Content Include="exebuilder.bat" />
     <Content Include="install.bat" />
+    <Content Include="lfsbat.bat" />
     <Content Include="LICENSE" />
     <Content Include="MANIFEST.in" />
     <Content Include="pylint.rc" />
@@ -49,6 +51,7 @@
     <Content Include="README.rst" />
     <Content Include="requirements-devel.txt" />
     <Content Include="requirements-user.txt" />
+    <Content Include="test_coverage.bat" />
     <Content Include="upload.bat" />
   </ItemGroup>
   <ItemGroup>
