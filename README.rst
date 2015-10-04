@@ -12,9 +12,9 @@ README
     :target: https://travis-ci.org/thurask/bbarchivist
     :alt: Travis CI
 
-.. image:: https://img.shields.io/github/issues/thurask/bbarchivist.svg
-    :target: https://github.com/thurask/bbarchivist
-    :alt: GitHub issues
+.. image:: https://coveralls.io/repos/thurask/bbarchivist/badge.svg?branch=master&service=github
+    :target: https://coveralls.io/github/thurask/bbarchivist?branch=master
+    :alt: Coveralls.io
     
 .. image:: https://img.shields.io/github/forks/thurask/bbarchivist.svg
     :target: https://github.com/thurask/bbarchivist
