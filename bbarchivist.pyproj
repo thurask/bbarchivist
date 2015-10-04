@@ -23,6 +23,7 @@
     <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include=".coveralls.yml" />
     <Content Include=".gitattributes" />
     <Content Include=".gitignore" />
     <Content Include=".project" />

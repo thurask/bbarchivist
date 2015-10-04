@@ -15,4 +15,4 @@ before_script:
 script:
     - py.test --assert=plain --cov coveralls
 after_success:
-    - coveralls
+    - COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN coveralls
