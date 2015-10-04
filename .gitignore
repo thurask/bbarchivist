@@ -34,7 +34,6 @@ tests/utilities/__pycache__
 venv/
 .vs/
 /bbarchivist/scripts/*.zip
-.coverage
 htmlcov/
 .cache/
 /.cache/v/cache

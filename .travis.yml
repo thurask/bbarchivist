@@ -6,10 +6,13 @@ python:
     - "3.5"
 install:
     - pip install .
-    - pip install requests python-gnupg mock pytest httmock beautifulsoup4 shutilwhich
-    - if [[ $TRAVIS_PYTHON_VERSION == 3.5 ]]; then pip install --upgrade git+https://github.com/pytest-dev/pytest.git; fi
+    - pip install -r requirements-devel.txt
+    - pip install python-coveralls
 env:
     - PYTHONDONTWRITEBYTECODE=true
-script:
+before_script:
     - rm  -rf tests/__init__.py
-    - py.test --assert=plain
+script:
+    - py.test --assert=plain --cov coveralls
+after_success:
+    - coveralls
