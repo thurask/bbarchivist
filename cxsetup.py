@@ -11,32 +11,32 @@ from bbarchivist.bbconstants import VERSION, CAPLOCATION, CAPVERSION, JSONFILE
 # fine tuning.
 localdir = dirname(abspath(__file__))
 localdir = join(localdir, r"bbarchivist\scripts")
-buildOptions = dict(packages=["requests",
-                              "bbarchivist",
-                              "easygui",
-                              "bs4"],
-                    includes=[],
-                    include_files=[
-                        (certs.where(), 'cacert.pem'),
-                        (CAPLOCATION, "cap-" + CAPVERSION + ".dat"),
-                        (JSONFILE, "bbconstants.json")
-                        ],
-                    excludes=["rsa",
-                              "pywin32",
-                              "pytz",
-                              "Pillow",
-                              "ecdsa",
-                              "amqp",
-                              "pydoc",
-                              "pyasn1",
-                              "distutils",
-                              "PyQt5",
-                              "numpy",
-                              "matplotlib",
-                              "PIL"],
-                    include_msvcr=[True],
-                    build_exe="lazyloader",
-                    zip_includes=[])
+build_options = dict(packages=["requests",
+                               "bbarchivist",
+                               "easygui",
+                               "bs4"],
+                     includes=[],
+                     include_files=[
+                         (certs.where(), 'cacert.pem'),
+                         (CAPLOCATION, "cap-" + CAPVERSION + ".dat"),
+                         (JSONFILE, "bbconstants.json")
+                         ],
+                     excludes=["rsa",
+                               "pywin32",
+                               "pytz",
+                               "Pillow",
+                               "ecdsa",
+                               "amqp",
+                               "pydoc",
+                               "pyasn1",
+                               "distutils",
+                               "PyQt5",
+                               "numpy",
+                               "matplotlib",
+                               "PIL"],
+                     include_msvcr=[True],
+                     build_exe="lazyloader",
+                     zip_includes=[])
 
 base = 'Console'
 
@@ -54,5 +54,5 @@ setup(name='lazyloader',
       version=VERSION,
       description='Lazyloader ' + VERSION,
       options=dict(
-          build_exe=buildOptions),
+          build_exe=build_options),
       executables=executables)
