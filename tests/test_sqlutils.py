@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301
 """Test the sqlutils module."""
 
@@ -7,7 +7,7 @@ import csv
 from shutil import rmtree
 import sqlite3
 import bbarchivist.sqlutils as bs
-from bbarchivist.utilities import file_exists
+from bbarchivist.utilities import file_exists, UselessStdout
 try:
     import unittest.mock as mock
 except ImportError:
@@ -33,7 +33,7 @@ def teardown_module(module):
         try:
             os.remove("bbarchivist.db")
         except PermissionError:
-            pass
+            UselessStdout.write("ASDASDASD")  # take that
     if os.path.exists("swrelease.csv"):
         os.remove("swrelease.csv")
     os.chdir("..")
