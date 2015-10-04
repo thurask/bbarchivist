@@ -675,7 +675,7 @@ Credits/Software Used
 -  easygui: `easygui dev team <https://pythonhosted.org/easygui/support.html>`__
 -  Visual Studio Community 2015: `Microsoft <https://www.visualstudio.com>`__
 -  Python Tools for Visual Studio: `Microsoft <http://microsoft.github.io/PTVS/>`__
--  Integration: `Travis CI <https://travis-ci.org>`__
+-  Integration: `Travis CI <https://travis-ci.org>`__, `Coveralls.io <https://coveralls.io>`__
 -  Feedback, bug reports, feature requests: Users Like You
 
 License
