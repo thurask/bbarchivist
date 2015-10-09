@@ -344,7 +344,7 @@ def software_release_lookup(osver, server):
     os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
     try:
         req = requests.post(server, headers=header, data=query, timeout=1)
-    except requests.exceptions.Timeout:
+    except (requests.exceptions.Timeout, requests.exceptions.ConnectionError):
         return "SR not in system"
     root = xml.etree.ElementTree.fromstring(req.text)
     packages = root.findall('./data/content/')
