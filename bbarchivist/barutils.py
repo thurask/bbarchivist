@@ -691,12 +691,16 @@ def make_dirs(localdir, osversion, radioversion):
     return (bardir_os, bardir_radio, loaderdir_os, loaderdir_radio, zipdir_os, zipdir_radio)
 
 
-def compress_config_loader():
+def compress_config_loader(homepath=None):
     """
     Read a ConfigParser file to get compression preferences.
+
+    :param homepath: Folder containing bbarchivist.ini. Default is user directory.
+    :type homepath: str
     """
     config = configparser.ConfigParser()
-    homepath = os.path.expanduser("~")
+    if homepath is None:  # pragma: no cover
+        homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
     if not os.path.exists(conffile):  # pragma: no cover
         open(conffile, 'w').close()
@@ -705,23 +709,26 @@ def compress_config_loader():
         config['compression'] = {}
     compini = config['compression']
     method = compini.get('method', fallback="7z")
-    majver = sys.version_info[1]
-    if majver <= 2 and method == "txz":  # 3.2 and under
-        method = "zip"
+    if sys.version_info[1] <= 2 and method == "txz":  # pragma: no cover
+        method = "zip"  # for 3.2 compatibility
     return method
 
 
-def compress_config_writer(method=None):
+def compress_config_writer(method=None, homepath=None):
     """
     Write a ConfigParser file to store compression preferences.
 
     :param method: Method to use.
     :type method: str
+
+    :param homepath: Folder containing bbarchivist.ini. Default is user directory.
+    :type homepath: str
     """
-    if method is None:
+    if method is None:  # pragma: no cover
         method = compress_config_loader()
     config = configparser.ConfigParser()
-    homepath = os.path.expanduser("~")
+    if homepath is None:  # pragma: no cover
+        homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
     if not os.path.exists(conffile):  # pragma: no cover
         open(conffile, 'w').close()

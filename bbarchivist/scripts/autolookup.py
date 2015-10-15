@@ -153,6 +153,7 @@ def autolookup_main(osversion, loop=False, log=False,
         sql = True
         smtpsetup = smtputils.smtp_config_loader()
         smtpsetup = smtputils.smtp_config_generator(smtpsetup)
+        smtpsetup['homepath'] = None
         smtputils.smtp_config_writer(**smtpsetup)
     print("~~~AUTOLOOKUP VERSION", bbconstants.VERSION + "~~~")
     print("")
