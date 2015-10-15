@@ -192,10 +192,8 @@ class TestClassSQLUtils:
             except sqlite3.Error:
                 assert False
             bs.export_sql_db()
-            with open(csvpath, 'r') as csvfile:
-                csvr = csv.reader(csvfile)
-                arow = []
+            with open(csvpath, 'r', newline="\n") as csvfile:
+                csvr = csv.reader(csvfile, dialect='excel')
                 for idx, row in enumerate(csvr):
-                    if idx == 2:
-                        arow = row
-                assert "120.OSVERSION" in arow[0].strip()
+                    if idx == 1:
+                        assert "120.OSVERSION" in row[0]

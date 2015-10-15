@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """This module is used for dealing with SQL databases, including CSV export."""
 
@@ -131,7 +131,7 @@ def export_sql_db():
             cnxn = sqlite3.connect(prepare_path())
             with cnxn:
                 csvpath = os.path.join(thepath, "swrelease.csv")
-                csvw = csv.writer(open(csvpath, "w"))
+                csvw = csv.writer(open(csvpath, "w"), dialect='excel')
                 crsr = cnxn.cursor()
                 crsr.execute("SELECT Os,Software,Available,Date FROM Swrelease")
                 rows = crsr.fetchall()
