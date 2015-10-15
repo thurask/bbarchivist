@@ -12,6 +12,7 @@ except ImportError:
 from shutil import rmtree, copyfile
 from argparse import ArgumentError
 from platform import system
+from configparser import ConfigParser
 
 
 def setup_module(module):
@@ -411,3 +412,28 @@ class TestClassUtilitiesArgparse:
             for dur in (2, 4, 7, 16, 31):
                 bu.escreens_duration(dur)
                 assert "duration" in str(argexc.value)
+
+
+class TestClassUtilitiesConfig:
+    """
+    Test reading/writing configs with ConfigParser. 
+    """
+    def test_cappath_loader(self):
+        """
+        Test reading CAP path settings.
+        """
+        config = ConfigParser()
+        open("bbarchivist.ini", 'w').close()
+        config.read("bbarchivist.ini")
+        config['cap'] = {}
+        config['cap']['path'] = "DUMMY.ASD"
+        with open("bbarchivist.ini", "w") as configfile:
+            config.write(configfile)
+        assert bu.cappath_config_loader(os.getcwd()) == "DUMMY.ASD"
+
+    def test_cappath_writer(self):
+        """
+        Test writing CAP path settings.
+        """
+        bu.cappath_config_writer("DUMMY.ZXC", os.getcwd())
+        assert bu.cappath_config_loader(os.getcwd()) == "DUMMY.ZXC"

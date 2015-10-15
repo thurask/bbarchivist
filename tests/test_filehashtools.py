@@ -12,6 +12,7 @@ else:
     NOGNUPG = False
 from hashlib import algorithms_available as algos
 from bbarchivist import filehashtools as bf
+from configparser import ConfigParser
 
 
 def setup_module(module):
@@ -258,3 +259,66 @@ class TestClassFilehashtools:
                             pass
                     else:
                         assert verified
+
+class TestClassFilehashtoolsConfig:
+    """
+    Test reading/writing configs with ConfigParser. 
+    """
+    def setup_class(self):
+        self.hashdict = {}
+        self.hashdict['crc32'] = False
+        self.hashdict['adler32'] = False
+        self.hashdict['sha1'] = True
+        self.hashdict['sha224'] = False
+        self.hashdict['sha256'] = True
+        self.hashdict['sha384'] = False
+        self.hashdict['sha512'] = False
+        self.hashdict['md5'] = True
+        self.hashdict['md4'] = False
+        self.hashdict['ripemd160'] = False
+        self.hashdict['whirlpool'] = False
+        self.hashdict['onefile'] = False
+        self.hashdict['blocksize'] = 16777216
+
+    def test_hash_loader(self):
+        """
+        Test reading hash settings.
+        """
+        assert bf.verifier_config_loader(os.getcwd()) == self.hashdict
+
+    def test_hash_writer(self):
+        """
+        Test writing hash settings.
+        """
+        hash2 = self.hashdict
+        hash2['sha512'] = True
+        bf.verifier_config_writer(hash2, os.getcwd())
+        assert bf.verifier_config_loader(os.getcwd()) == hash2
+
+    def test_gpg_loader_empty(self):
+        """
+        Test reading GPG settings on empty.
+        """
+        assert bf.gpg_config_loader(os.getcwd()) == (None, None)
+
+    def test_gpg_loader_loaded(self):
+        """
+        Test reading GPG settings when completed.
+        """
+        config = ConfigParser()
+        open("bbarchivist.ini", 'w').close()
+        config.read("bbarchivist.ini")
+        config['gpgrunner'] = {}
+        config['gpgrunner']['key'] = "0xDEADBEEF"
+        config['gpgrunner']['pass'] = "hunter2"
+        with open("bbarchivist.ini", "w") as configfile:
+            config.write(configfile)
+        assert bf.gpg_config_loader(os.getcwd()) == ("0xDEADBEEF", "hunter2")
+
+    def test_gpg_writer(self):
+        """
+        Test writing GPG settings.
+        """
+        bf.gpg_config_writer("0xDEADF00D", "swordfish", os.getcwd())
+        assert bf.gpg_config_loader(os.getcwd()) == ("0xDEADF00D", "swordfish")
+
