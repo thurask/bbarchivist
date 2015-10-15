@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, W0142
 """This module is used for dealing with SMTP email sending."""
 
@@ -14,13 +14,17 @@ from email.mime.text import MIMEText  # email formatting
 from bbarchivist import utilities  # file work
 
 
-def smtp_config_loader():
+def smtp_config_loader(homepath=None):
     """
     Read a ConfigParser file to get email preferences.
+
+    :param homepath: Folder containing bbarchivist.ini. Default is user directory.
+    :type homepath: str
     """
     resultdict = {}
     config = configparser.ConfigParser()
-    homepath = os.path.expanduser("~")
+    if homepath is None:  # pragma: no cover
+        homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
     if not os.path.exists(conffile):  # pragma: no cover
         open(conffile, 'w').close()
@@ -36,7 +40,7 @@ def smtp_config_loader():
     return resultdict
 
 
-def smtp_config_writer(server=None, port=None, username=None, password=None, is_ssl=True):
+def smtp_config_writer(server=None, port=None, username=None, password=None, is_ssl=True, homepath=None):
     """
     Write a ConfigParser file to store email server details.
 
@@ -54,9 +58,13 @@ def smtp_config_writer(server=None, port=None, username=None, password=None, is_
 
     :param is_ssl: True if server uses SSL, False if TLS only.
     :type is_ssl: bool
+
+    :param homepath: Folder containing bbarchivist.ini. Default is user directory.
+    :type homepath: str
     """
     config = configparser.ConfigParser()
-    homepath = os.path.expanduser("~")
+    if homepath is None:  # pragma: no cover
+        homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
     if not os.path.exists(conffile):  # pragma: no cover
         open(conffile, 'w').close()
@@ -93,7 +101,11 @@ def smtp_config_generator(results):
     if results['password'] is None:  # pragma: no cover
         results['password'] = getpass.getpass(prompt="PASSWORD: ")
     if results['is_ssl'] is None:  # pragma: no cover
-        results['is_ssl'] = bool((str(utilities.str2bool(input("Y: SSL, N: TLS (Y/N): ")))).lower())
+        use_ssl = utilities.str2bool(input("Y: SSL, N: TLS (Y/N): "))
+        if use_ssl:
+            results['is_ssl'] = "true"
+        else:
+            results['is_ssl'] = "false"
     return results
 
 
@@ -280,6 +292,7 @@ def prep_email(osversion, softwarerelease, password=None):
     :type password: str
     """
     results = smtp_config_loader()
+    results['homepath'] = None
     smtp_config_writer(**results)
     results['software'] = softwarerelease
     results['os'] = osversion

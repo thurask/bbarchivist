@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, E0611, W0150
 """This module is used for miscellaneous utilities."""
 
@@ -595,12 +595,16 @@ def return_and_delete(target):
     return content
 
 
-def cappath_config_loader():
+def cappath_config_loader(homepath=None):
     """
     Read a ConfigParser file to get cap preferences.
+
+    :param homepath: Folder containing bbarchivist.ini. Default is user directory.
+    :type homepath: str
     """
     config = configparser.ConfigParser()
-    homepath = os.path.expanduser("~")
+    if homepath is None:  # pragma: no cover
+        homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
     if not os.path.exists(conffile):  # pragma: no cover
         open(conffile, 'w').close()
@@ -612,17 +616,21 @@ def cappath_config_loader():
     return cappath
 
 
-def cappath_config_writer(cappath=None):
+def cappath_config_writer(cappath=None, homepath=None):
     """
     Write a ConfigParser file to store cap preferences.
 
     :param cappath: Method to use.
     :type cappath: str
+
+    :param homepath: Folder containing bbarchivist.ini. Default is user directory.
+    :type homepath: str
     """
-    if cappath is None:
+    if cappath is None:  # pragma: no cover
         cappath = grab_cap()
     config = configparser.ConfigParser()
-    homepath = os.path.expanduser("~")
+    if homepath is None:  # pragma: no cover
+        homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
     if not os.path.exists(conffile):  # pragma: no cover
         open(conffile, 'w').close()

@@ -497,12 +497,16 @@ def gpgrunner(workingdir, keyid=None, passphrase=None, selective=False):
                         raise SystemExit
 
 
-def gpg_config_loader():
+def gpg_config_loader(homepath=None):
     """
     Read a ConfigParser file to get PGP key, password (optional)
+
+    :param homepath: Folder containing bbarchivist.ini. Default is user directory.
+    :type homepath: str
     """
     config = configparser.ConfigParser()
-    homepath = os.path.expanduser("~")
+    if homepath is None:  # pragma: no cover
+        homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
     if not os.path.exists(conffile):  # pragma: no cover
         open(conffile, 'w').close()
@@ -514,7 +518,7 @@ def gpg_config_loader():
     return gpgkey, gpgpass
 
 
-def gpg_config_writer(key=None, password=None):
+def gpg_config_writer(key=None, password=None, homepath=None):
     """
     Write a ConfigParser file to store PGP key, password (optional)
 
@@ -523,9 +527,13 @@ def gpg_config_writer(key=None, password=None):
 
     :param password: Key password, leave as None to not write.
     :type password: str
+
+    :param homepath: Folder containing bbarchivist.ini. Default is user directory.
+    :type homepath: str
     """
     config = configparser.ConfigParser()
-    homepath = os.path.expanduser("~")
+    if homepath is None:  # pragma: no cover
+        homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
     if not os.path.exists(conffile):  # pragma: no cover
         open(conffile, 'w').close()
@@ -540,13 +548,17 @@ def gpg_config_writer(key=None, password=None):
         config.write(configfile)
 
 
-def verifier_config_loader():
+def verifier_config_loader(homepath=None):
     """
     Read a ConfigParser file to get hash preferences.
+
+    :param homepath: Folder containing bbarchivist.ini. Default is user directory.
+    :type homepath: str
     """
     resultdict = {}
     config = configparser.ConfigParser()
-    homepath = os.path.expanduser("~")
+    if homepath is None:  # pragma: no cover
+        homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
     if not os.path.exists(conffile):  # pragma: no cover
         open(conffile, 'w').close()
@@ -570,17 +582,21 @@ def verifier_config_loader():
     return resultdict
 
 
-def verifier_config_writer(resultdict=None):
+def verifier_config_writer(resultdict=None, homepath=None):
     """
     Write a ConfigParser file to store hash preferences.
 
     :param resultdict: Dictionary of results: {method, bool}
     :type resultdict: dict({str, bool})
+
+    :param homepath: Folder containing bbarchivist.ini. Default is user directory.
+    :type homepath: str
     """
-    if resultdict is None:
+    if resultdict is None:  # pragma: no cover
         resultdict = verifier_config_loader()
     config = configparser.ConfigParser()
-    homepath = os.path.expanduser("~")
+    if homepath is None:  # pragma: no cover
+        homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
     if not os.path.exists(conffile):  # pragma: no cover
         open(conffile, 'w').close()
