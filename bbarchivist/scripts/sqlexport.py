@@ -35,12 +35,32 @@ def sqlexport_main():
         nargs=2,
         metavar=("OS", "SW"),
         default=False)
+    parser.add_argument(
+        "-l",
+        "--list",
+        dest="list",
+        help="List entries in database",
+        action="store_true",
+        default=False)
     parser.set_defaults()
     args = parser.parse_args(sys.argv[1:])
-    if not args.popsw:
+    if args.list:
+        args.popsw = False
+    if not args.popsw and not args.list:
         sqlutils.export_sql_db()
-    else:
+    elif args.popsw:
         sqlutils.pop_sw_release(*args.popsw)
         print("POPPED: OS {0} - SW {1}".format(*args.popsw))
+    else:
+        rellist = sqlutils.list_sw_releases()
+        if rellist is not None:
+            for rel in rellist:
+                if rel[2] == "available":
+                    affix = "  "
+                else:
+                    affix = ""
+                print("OS {} - SR {} - {} - {}".format(
+                    rel[0], rel[1], (rel[2] + affix), rel[3]))
+
 if __name__ == "__main__":
     sqlexport_main()

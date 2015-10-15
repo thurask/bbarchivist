@@ -507,7 +507,7 @@ Help
 
     > bb-sqlexport -h
     
-    usage: bb-sqlexport [-h] [-v] [-p OS SW]
+    usage: bb-sqlexport [-h] [-v] [-p OS SW] [-l]
 
 	Export SQL database to CSV.
 
@@ -516,6 +516,7 @@ Help
 	  -v, --version         show program's version number and exit
 	  -p OS SW, --pop OS SW
 							Pop this OS and SW from the database
+	  -l, --list            List entries in database
 
 	http://github.com/thurask/bbarchivist
 
@@ -650,7 +651,7 @@ in the current folder.
 
     > bb-sqlexport
 
-exports the SQL database to a CSV file. With the -p <OS SW> option, it instead removes that one from the database.
+exports the SQL database to a CSV file.
 
  ::
 

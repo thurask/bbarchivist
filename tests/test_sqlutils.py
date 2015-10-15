@@ -197,3 +197,27 @@ class TestClassSQLUtils:
                 for idx, row in enumerate(csvr):
                     if idx == 1:
                         assert "120.OSVERSION" in row[0]
+
+    def test_list_sw_releases(self):
+        """
+        Test returning all rows from SQL database.
+        """
+        sqlpath = os.path.join(os.path.abspath(os.getcwd()), "bbarchivist.db")
+        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.path.abspath(os.getcwd()))):
+            try:
+                cnxn = sqlite3.connect(sqlpath)
+                with cnxn:
+                    crsr = cnxn.cursor()
+                    crsr.execute("DROP TABLE IF EXISTS Swrelease")
+                    reqid = "INTEGER PRIMARY KEY"
+                    reqs = "TEXT NOT NULL UNIQUE COLLATE NOCASE"
+                    reqs2 = "TEXT"
+                    table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(
+                        *(reqid, reqs, reqs2))
+                    crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
+                    crsr.execute("INSERT INTO Swrelease(Os, Software, Available, Date) VALUES (?,?,?,?)",
+                                    ("120.OSVERSION", "130.SWVERSION", "available", "1970 January 1"))
+            except sqlite3.Error:
+                assert False
+            rellist = bs.list_sw_releases()
+            assert rellist[0] == ("120.OSVERSION", "130.SWVERSION", "available", "1970 January 1")
