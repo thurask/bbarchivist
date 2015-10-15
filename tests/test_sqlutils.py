@@ -173,32 +173,29 @@ class TestClassSQLUtils:
         """
         Test exporting SQL database to csv file.
         """
-        if os.getenv("TRAVIS", "false") == "true":
-            pass
-        else:
-            sqlpath = os.path.join(os.path.abspath(os.getcwd()), "bbarchivist.db")
-            csvpath = os.path.join(os.path.abspath(os.getcwd()), "swrelease.csv")
-            with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.path.abspath(os.getcwd()))):
-                try:
-                    cnxn = sqlite3.connect(sqlpath)
-                    with cnxn:
-                        crsr = cnxn.cursor()
-                        crsr.execute("DROP TABLE IF EXISTS Swrelease")
-                        reqid = "INTEGER PRIMARY KEY"
-                        reqs = "TEXT NOT NULL UNIQUE COLLATE NOCASE"
-                        reqs2 = "TEXT"
-                        table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(
-                            *(reqid, reqs, reqs2))
-                        crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
-                        crsr.execute("INSERT INTO Swrelease(Os, Software, Available, Date) VALUES (?,?,?,?)",
-                                     ("120.OSVERSION", "130.SWVERSION", "available", "1970 January 1"))
-                except sqlite3.Error:
-                    assert False
-                bs.export_sql_db()
-                with open(csvpath, 'r') as csvfile:
-                    csvr = csv.reader(csvfile)
-                    arow = []
-                    for idx, row in enumerate(csvr):
-                        if idx == 2:
-                            arow = row
-                    assert arow[0].strip() == "120.OSVERSION"
+        sqlpath = os.path.join(os.path.abspath(os.getcwd()), "bbarchivist.db")
+        csvpath = os.path.join(os.path.abspath(os.getcwd()), "swrelease.csv")
+        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.path.abspath(os.getcwd()))):
+            try:
+                cnxn = sqlite3.connect(sqlpath)
+                with cnxn:
+                    crsr = cnxn.cursor()
+                    crsr.execute("DROP TABLE IF EXISTS Swrelease")
+                    reqid = "INTEGER PRIMARY KEY"
+                    reqs = "TEXT NOT NULL UNIQUE COLLATE NOCASE"
+                    reqs2 = "TEXT"
+                    table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(
+                        *(reqid, reqs, reqs2))
+                    crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
+                    crsr.execute("INSERT INTO Swrelease(Os, Software, Available, Date) VALUES (?,?,?,?)",
+                                    ("120.OSVERSION", "130.SWVERSION", "available", "1970 January 1"))
+            except sqlite3.Error:
+                assert False
+            bs.export_sql_db()
+            with open(csvpath, 'r') as csvfile:
+                csvr = csv.reader(csvfile)
+                arow = []
+                for idx, row in enumerate(csvr):
+                    if idx == 2:
+                        arow = row
+                assert arow[0].strip() == "120.OSVERSION"
