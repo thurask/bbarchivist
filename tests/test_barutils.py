@@ -367,7 +367,7 @@ class TestClassBarutilsLoaderMover:
         assert "Z10_BIGLOADER.exe" in os.listdir(os.path.join(loaders, "osversion"))
 
 
-class TestClassBarUtilsBarMover:
+class TestClassBarutilsBarMover:
     """
     Test moving of files.
     """
@@ -398,3 +398,21 @@ class TestClassBarUtilsBarMover:
         """
         bars = os.path.join(os.getcwd(), "bars")
         assert "BIGBAR.bar" in os.listdir(os.path.join(bars, "osversion"))
+
+
+class TestClassBarutilsConfig:
+    """
+    Test reading/writing configs with ConfigParser. 
+    """
+    def test_compress_loader(self):
+        """
+        Test reading compression settings.
+        """
+        assert bb.compress_config_loader(os.getcwd()) == "7z"
+
+    def test_compress_writer(self):
+        """
+        Test writing compression settings.
+        """
+        bb.compress_config_writer("tbz", os.getcwd())
+        assert bb.compress_config_loader(os.getcwd()) == "tbz"
