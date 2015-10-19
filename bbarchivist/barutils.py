@@ -498,7 +498,7 @@ def remove_signed_files(a_folder):
     files = [os.path.join(os.path.abspath(a_folder), file) for file in os.listdir(a_folder)]
     for file in files:
         if file.endswith(".signed") and os.path.exists(file):
-            print("REMOVING: " + file)
+            print("REMOVING: " + os.path.basename(file))
             os.remove(os.path.abspath(file))
 
 
