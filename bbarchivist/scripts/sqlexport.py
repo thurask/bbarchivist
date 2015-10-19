@@ -59,7 +59,7 @@ def sqlexport_main():
                     affix = "  "
                 else:
                     affix = ""
-                print("OS {} - SR {} - {} - {}".format(
+                print("OS {0} - SR {1} - {2} - {3}".format(
                     rel[0], rel[1], (rel[2] + affix), rel[3]))
 
 if __name__ == "__main__":
