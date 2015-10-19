@@ -385,6 +385,8 @@ def lazyloader_main(device, osversion, radioversion=None,
     # Make dirs
     bd_o, bd_r, ld_o, ld_r, zd_o, zd_r = barutils.make_dirs(localdir, osversion, radioversion)
     osurl = radiourl = None
+
+    # Create download URLs
     if download:
         baseurl = networkutils.create_base_url(softwareversion)
         if altsw:
@@ -403,6 +405,8 @@ def lazyloader_main(device, osversion, radioversion=None,
         radiourl, radioversion = scriptutils.check_radio_single(radiourl, radioversion)
 
     dllist = [osurl, radiourl]
+
+    # Download files
     if download:
         print("DOWNLOADING...")
         networkutils.download_bootstrap(dllist,
@@ -424,6 +428,7 @@ def lazyloader_main(device, osversion, radioversion=None,
     print("MOVING BAR FILES...")
     barutils.move_bars(localdir, bd_o, bd_r)
 
+    # Generate loader
     if altsw:
         altradio = radioversion
     else:
@@ -431,38 +436,27 @@ def lazyloader_main(device, osversion, radioversion=None,
     loadergen.generate_lazy_loader(osversion, device,
                                    localdir=localdir, altradio=altradio)
 
+    # Test loader
+    suffix = loadergen.format_suffix(bool(altradio), altradio)
+    loadername = loadergen.generate_filename(device, osversion, suffix)
+    scriptutils.test_single_loader(loadername)
+
+    # Remove signed files
     print("REMOVING SIGNED FILES...")
     barutils.remove_signed_files(localdir)
 
+    # Move loaders
     print("MOVING LOADERS...")
     barutils.move_loaders(localdir, ld_o, ld_r, zd_o, zd_r)
+    loadername = os.path.join(ld_o, loadername)
 
     # Delete empty folders
     print("REMOVING EMPTY FOLDERS...")
     barutils.remove_empty_folders(localdir)
 
     if autoloader:
-        os.chdir(ld_o)
-        with open(utilities.grab_json()) as thefile:
-            data = json.load(thefile)
-        data = data['integermap']
-        for key in data:
-            if key['id'] == device:
-                fname = key['parts'][0]+"*"+key['parts'][1]+"*"
-                break
-        try:
-            loaderfile = str(glob.glob(fname)[0])
-        except IndexError:
-            loaderfile = None
-        if loaderfile is not None:
-            print("\nSTARTING LOADER...")
-            subprocess.call(loaderfile)
-            print("\nFINISHED!!!")
-        else:
-            print("Error!")
-            raise SystemExit
-    else:
-        print("\nFINISHED!!!")
+        subprocess.call(loadername)
+    print("\nFINISHED!!!")
 
 if __name__ == "__main__":
     grab_args()

@@ -268,6 +268,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     if altsw is not None:
         print("RADIO SOFTWARE VERSION:", altsw)
 
+    # Generate download URLs
     baseurl = networkutils.create_base_url(softwareversion)
     if altsw:
         alturl = networkutils.create_base_url(altsw)
@@ -292,6 +293,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     scriptutils.check_os_bulk(osurls, osversion)
     radiourls, radioversion = scriptutils.check_radio_bulk(radiourls, radioversion)
 
+    # Get 7z executable
     compmethod, szexe = scriptutils.get_sz_executable(compmethod)
 
     # Make dirs
@@ -332,6 +334,10 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
                                radios,
                                localdir,
                                altradio)
+
+    # Test loader files
+    if integrity:
+        scriptutils.test_loader_files(localdir)
 
     # Remove .signed files
     if signed:
