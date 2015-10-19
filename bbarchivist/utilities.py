@@ -15,7 +15,8 @@ import threading  # get thread for spinner
 import time  # spinner delay
 import sys  # streams, version info
 import itertools  # spinners gonna spin
-from bbarchivist import bbconstants  # cap location, version
+import subprocess  # loader verification
+from bbarchivist import bbconstants  # cap location, version, filename bits
 
 
 def enum_cpus():
@@ -593,6 +594,39 @@ def return_and_delete(target):
         content = thefile.read()
     os.remove(target)
     return content
+
+
+def verify_loader_integrity(loaderfile):
+    """
+    Test for created loader integrity. Windows-only.
+
+    :param loaderfile: Path to loader.
+    :type loaderfile: str
+    """
+    if not is_windows():
+        pass
+    else:
+        excode = subprocess.call('{0} fileinfo"'.format(loaderfile),
+                                 stdout=subprocess.DEVNULL,
+                                 stderr=subprocess.STDOUT)
+        return excode == 0  # 0 if OK, non-zero if something broke
+
+
+def verify_bulk_loaders(loaderdir):
+    """
+    Run :func:`verify_loader_integrity` for all files in a dir.
+
+    :param loaderdir: Directory to use.
+    :type loaderdir: str
+    """
+    files = (file for file in os.listdir(loaderdir) if not os.path.isdir(file))
+    brokens = []
+    for file in files:
+        if (file.endswith(".exe") and file.startswith(bbconstants.PREFIXES)):
+            print("TESTING: {0}".format((file)))
+            if not verify_loader_integrity(file):
+                brokens.append(file)
+    return brokens
 
 
 def cappath_config_loader(homepath=None):

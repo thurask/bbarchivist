@@ -356,6 +356,45 @@ def test_signed_files(localdir):
         print("ALL FILES EXTRACTED OK")
 
 
+def test_loader_files(localdir):
+    """
+    Test loader files after creation.
+
+    :param localdir: Directory.
+    :type localdir: str
+    """
+    if not utilities.is_windows():
+        pass
+    else:
+        print("TESTING LOADER FILES...")
+        brokens = utilities.verify_bulk_loaders(localdir)
+        if brokens:
+            print("BROKEN FILES:")
+            for file in brokens:
+                print(file)
+            raise SystemExit
+        else:
+            print("ALL FILES CREATED OK")
+
+
+def test_single_loader(loaderfile):
+    """
+    Test single loader file after creation.
+
+    :param loaderfile: File to check.
+    :type loaderfile: str
+    """
+    if not utilities.is_windows():
+        pass
+    else:
+        print("TESTING LOADER...")
+        if not utilities.verify_loader_integrity(loaderfile):
+            print("{0} IS BROKEN!".format(os.path.basename(loaderfile)))
+            raise SystemExit
+        else:
+            print("LOADER CREATED OK")
+
+
 def verify_gpg_credentials():
     """
     Read GPG key/pass from file, verify if incomplete.
