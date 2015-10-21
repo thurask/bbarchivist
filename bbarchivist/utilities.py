@@ -606,10 +606,14 @@ def verify_loader_integrity(loaderfile):
     if not is_windows():
         pass
     else:
-        excode = subprocess.call('{0} fileinfo"'.format(loaderfile),
+        try:
+            excode = subprocess.call('{0} fileinfo"'.format(loaderfile),
                                  stdout=subprocess.DEVNULL,
                                  stderr=subprocess.STDOUT)
-        return excode == 0  # 0 if OK, non-zero if something broke
+        except OSError:
+            excode = -1
+        finally:
+            return excode == 0  # 0 if OK, non-zero if something broke
 
 
 def verify_bulk_loaders(loaderdir):
@@ -619,14 +623,17 @@ def verify_bulk_loaders(loaderdir):
     :param loaderdir: Directory to use.
     :type loaderdir: str
     """
-    files = (file for file in os.listdir(loaderdir) if not os.path.isdir(file))
-    brokens = []
-    for file in files:
-        if (file.endswith(".exe") and file.startswith(bbconstants.PREFIXES)):
-            print("TESTING: {0}".format((file)))
-            if not verify_loader_integrity(file):
-                brokens.append(file)
-    return brokens
+    if not is_windows():
+        pass
+    else:
+        files = (file for file in os.listdir(loaderdir) if not os.path.isdir(file))
+        brokens = []
+        for file in files:
+            if (file.endswith(".exe") and file.startswith(bbconstants.PREFIXES)):
+                print("TESTING: {0}".format((file)))
+                if not verify_loader_integrity(file):
+                    brokens.append(file)
+        return brokens
 
 
 def cappath_config_loader(homepath=None):
