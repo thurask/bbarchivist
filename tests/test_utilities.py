@@ -26,6 +26,9 @@ def setup_module(module):
         targetfile.write("Jackdaws love my big sphinx of quartz")
     copyfile("cap-3.11.0.22.dat", "7za.exe")
     copyfile("cap-3.11.0.22.dat", "7za64.exe")
+    copyfile("cap-3.11.0.22.dat", "Z10_loader1.exe")
+    copyfile("cap-3.11.0.22.dat", "Z10_loader2.exe")
+    copyfile("cap-3.11.0.22.dat", "Z10_loader3.exe")
 
 
 def teardown_module(module):
@@ -38,6 +41,12 @@ def teardown_module(module):
         os.remove("7za.exe")
     if os.path.exists("7za64.exe"):
         os.remove("7za64.exe")
+    if os.path.exists("Z10_loader1.exe"):
+        os.remove("Z10_loader1.exe")
+    if os.path.exists("Z10_loader1.exe"):
+        os.remove("Z10_loader2.exe")
+    if os.path.exists("Z10_loader1.exe"):
+        os.remove("Z10_loader3.exe")
     os.chdir("..")
     rmtree("temp")
 
@@ -161,6 +170,65 @@ class TestClassUtilitiesPlatform:
         """
         with mock.patch('bbarchivist.utilities.enum_cpus', mock.MagicMock(return_value="123")):
             assert bu.get_core_count() == "123"
+
+
+class TestClassUtilitiesLoaders:
+    """
+    Test autoloader integrity checking.
+    """
+    def test_integrity_single_good(self):
+        """
+        Test checking return code of one autoloader, best case.
+        """
+        with mock.patch('platform.system', mock.MagicMock(return_value="Windows")):
+            with mock.patch('subprocess.call', mock.MagicMock(return_value=0)):
+                assert bu.verify_loader_integrity("Z10_loader1.exe")
+
+    def test_integrity_single_bad(self):
+        """
+        Test checking return code of one autoloader, worst case.
+        """
+        with mock.patch('platform.system', mock.MagicMock(return_value="Windows")):
+            with mock.patch('subprocess.call', mock.MagicMock(return_value=255)):
+                assert not bu.verify_loader_integrity("Z10_loader1.exe")
+
+    def test_integrity_single_exception(self):
+        """
+        Test checking return code of one autoloader, if OSError is raised.
+        """
+        with mock.patch('platform.system', mock.MagicMock(return_value="Windows")):
+            with mock.patch('subprocess.call', mock.MagicMock(side_effect=OSError)):
+                assert not bu.verify_loader_integrity("Z10_loader1.exe")
+
+    def test_integrity_single_nonwin(self):
+        """
+        Test checking return code of one autoloader, non-Windows.
+        """
+        with mock.patch('platform.system', mock.MagicMock(return_value="Wandows")):
+            assert bu.verify_loader_integrity(os.devnull) is None
+
+    def test_integrity_bulk_good(self):
+        """
+        Test checking return code of all autoloaders, best case.
+        """
+        with mock.patch('platform.system', mock.MagicMock(return_value="Windows")):
+            with mock.patch('subprocess.call', mock.MagicMock(return_value=0)):
+                assert not bu.verify_bulk_loaders(os.getcwd())
+        
+    def test_integrity_bulk_bad(self):
+        """
+        Test checking return code of all autoloaders, worst case.
+        """
+        with mock.patch('platform.system', mock.MagicMock(return_value="Windows")):
+            with mock.patch('subprocess.call', mock.MagicMock(return_value=255)):
+                assert bu.verify_bulk_loaders(os.getcwd())
+
+    def test_integrity_bulk_nonwin(self):
+        """
+        Test checking return code of all autoloaders, non-Windows.
+        """
+        with mock.patch('platform.system', mock.MagicMock(return_value="Wandows")):
+            assert bu.verify_bulk_loaders(os.devnull) is None
 
 
 class TestClassUtilities:

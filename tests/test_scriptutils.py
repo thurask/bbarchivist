@@ -2,11 +2,41 @@
 #pylint: disable = I0011, R0201, W0613, C0301
 """Test the scriptutils module."""
 
+import os
+from shutil import rmtree, copyfile
 import bbarchivist.scriptutils as bs
 try:
     import unittest.mock as mock
 except ImportError:
     import mock
+
+
+def setup_module(module):
+    """
+    Create necessary files.
+    """
+    if not os.path.exists("temp"):
+        os.mkdir("temp")
+    os.chdir("temp")
+    with open("Z10_loader1.exe", "w") as targetfile:
+        targetfile.write("Jackdaws love my big sphinx of quartz")
+    copyfile("Z10_loader1.exe", "Z10_loader2.exe")
+    copyfile("Z10_loader1.exe", "Z10_loader3.exe")
+
+
+def teardown_module(module):
+    """
+    Delete necessary files.
+    """
+    if os.path.exists("Z10_loader1.exe"):
+        os.remove("Z10_loader1.exe")
+    if os.path.exists("Z10_loader1.exe"):
+        os.remove("Z10_loader2.exe")
+    if os.path.exists("Z10_loader1.exe"):
+        os.remove("Z10_loader3.exe")
+    os.chdir("..")
+    rmtree("temp")
+
 
 class TestClassScriptutils:
     """
@@ -141,3 +171,51 @@ class TestClassScriptutils:
             with mock.patch('bbarchivist.utilities.get_seven_zip',
                             mock.MagicMock(return_value="jackdaw")):
                 assert bs.get_sz_executable("7z") == ("7z", "jackdaw")
+
+    def test_loader_verify_single_good(self, capsys):
+        """
+        Test checking one loader, best case.
+        """
+        with mock.patch('platform.system', mock.MagicMock(return_value="Windows")):
+            with mock.patch('bbarchivist.utilities.verify_loader_integrity',
+                            mock.MagicMock(return_value=True)):
+                bs.test_single_loader("Z10_loader1.exe")
+                assert "OK" in capsys.readouterr()[0]
+
+    def test_loader_verify_single_bad(self):
+        """
+        Test checking one loader, worst case.
+        """
+        with mock.patch('platform.system', mock.MagicMock(return_value="Windows")):
+            with mock.patch('bbarchivist.utilities.verify_loader_integrity',
+                            mock.MagicMock(return_value=False)):
+                try:
+                    bs.test_single_loader("Z10_loader1.exe")
+                except SystemExit:
+                    assert True
+                else:
+                    assert False
+
+    def test_loader_verify_bulk_good(self, capsys):
+        """
+        Test checking many loaders, best case.
+        """
+        with mock.patch('platform.system', mock.MagicMock(return_value="Windows")):
+            with mock.patch('bbarchivist.utilities.verify_loader_integrity',
+                        mock.MagicMock(return_value=True)):
+                bs.test_loader_files(os.getcwd())
+                assert "OK" in capsys.readouterr()[0]
+        
+    def test_loader_verify_bulk_bad(self):
+        """
+        Test checking many loaders, worst case.
+        """
+        with mock.patch('platform.system', mock.MagicMock(return_value="Windows")):
+            with mock.patch('bbarchivist.utilities.verify_loader_integrity',
+                            mock.MagicMock(return_value=False)):
+                try:
+                    bs.test_loader_files(os.getcwd())
+                except SystemExit:
+                    assert True
+                else:
+                    assert False
