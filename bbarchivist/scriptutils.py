@@ -406,11 +406,13 @@ def verify_gpg_credentials():
         if cont:
             if gpgkey is None:
                 gpgkey = input("PGP KEY (0x12345678): ")
-                if gpgkey[:2] != "0x":
+                if not gpgkey.startswith("0x"):
                     gpgkey = "0x" + gpgkey  # add preceding 0x
             if gpgpass is None:
                 gpgpass = getpass.getpass(prompt="PGP PASSPHRASE: ")
                 writebool = utilities.str2bool(input("WRITE PASSWORD TO FILE (Y/N)?:"))
+            else:
+                writebool = False
             if writebool:
                 gpgpass2 = gpgpass
             else:

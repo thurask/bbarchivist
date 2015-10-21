@@ -7,7 +7,7 @@ import csv
 from shutil import rmtree
 import sqlite3
 import bbarchivist.sqlutils as bs
-from bbarchivist.utilities import file_exists, UselessStdout
+from bbarchivist.utilities import file_exists
 try:
     import unittest.mock as mock
 except ImportError:

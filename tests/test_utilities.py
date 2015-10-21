@@ -24,6 +24,7 @@ def setup_module(module):
     os.chdir("temp_utilities")
     with open("cap-3.11.0.22.dat", "w") as targetfile:
         targetfile.write("Jackdaws love my big sphinx of quartz")
+    copyfile("cap-3.11.0.22.dat", "bbconstants.json")
     copyfile("cap-3.11.0.22.dat", "7za.exe")
     copyfile("cap-3.11.0.22.dat", "7za64.exe")
     copyfile("cap-3.11.0.22.dat", "Z10_loader1.exe")
@@ -227,7 +228,13 @@ class TestClassUtilities:
         """
         Test finding cap location.
         """
-        assert os.path.basename(bu.grab_cap()) == "cap-3.11.0.22.dat"
+        assert os.path.dirname(bu.grab_cap()) == os.getcwd()
+
+    def test_grab_json(self):
+        """
+        Test finding JSON file location.
+        """
+        assert os.path.dirname(bu.grab_json()) == os.getcwd()
 
     def test_str2bool_good(self):
         """
@@ -277,6 +284,7 @@ class TestClassUtilitiesUrls:
         Test generating all URLs.
         """
         osu, radu, coru = bu.generate_urls("http://www.qrrbrbirlbel.yu/", "10.3.2.4567", "10.9.8.7654", True)
+        del radu, coru
         assert "http://www.qrrbrbirlbel.yu//qc8960.factory_sfi_hybrid_qc8974.desktop-10.3.2.4567-nto+armle-v7+signed.bar" in osu
 
     def test_bulk_nocore(self):
@@ -284,6 +292,7 @@ class TestClassUtilitiesUrls:
         Test generating only debrick and radio URLs.
         """
         osu, radu, coru = bu.generate_urls("http://www.qrrbrbirlbel.yu/", "10.2.3.4567", "10.9.8.7654", False)
+        del osu, radu
         assert not coru
 
     def test_stl1(self):

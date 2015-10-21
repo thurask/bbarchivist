@@ -4,6 +4,7 @@
 
 import bbarchivist.pseudocap as bp
 import os
+import pytest
 from shutil import rmtree, copyfile
 from hashlib import sha512
 
@@ -161,3 +162,11 @@ class TestClassPseudocap:
                 shahash.update(data)
         thehash = shahash.hexdigest()
         assert thehash == '511b817b00b33c7c2d007d6dfcb77a10ab1ca1be7ba0dadd47a940cdaf7a03948a58f17a24dcbc0bd1b66dc9a2163a5efd1c0a0ecd5c63d5d6a311c844b168fb'
+
+    def test_invalid_filecount(self, capsys):
+        """
+        Test invalid number of files sent to autoloader maker.
+        """
+        with pytest.raises(SystemExit):
+            bp.make_autoloader("loader0.exe", None)
+            assert "Invalid filecount" in capsys.readouterr()[0]
