@@ -13,6 +13,6 @@ env:
 before_script:
     - rm  -rf tests/__init__.py
 script:
-    - py.test --assert=plain --cov=tests
+    - py.test --assert=plain --cov=tests -v
 after_success:
     - COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN coveralls
