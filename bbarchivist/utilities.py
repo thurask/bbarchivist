@@ -606,6 +606,7 @@ def verify_loader_integrity(loaderfile):
     if not is_windows():
         pass
     else:
+        excode = None
         try:
             excode = subprocess.call('{0} fileinfo"'.format(loaderfile),
                                  stdout=subprocess.DEVNULL,
