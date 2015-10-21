@@ -85,7 +85,10 @@ def make_offset(firstfile, secondfile=None, thirdfile=None,
     trailers = binascii.unhexlify(b'00' * (7 - filecount))# 00 repeated between 1 and 6 times
     capfile = str(cap)
     capsize = os.path.getsize(capfile)  # size of cap.exe, in bytes
-    first = str(glob.glob(firstfile)[0])
+    try:
+        first = str(glob.glob(firstfile)[0])
+    except TypeError:  # i.e. first is None
+        raise SystemExit
     firstsize = os.path.getsize(first)  # required
     if filecount >= 2:
         second = str(glob.glob(secondfile)[0])

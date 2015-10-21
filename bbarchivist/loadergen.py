@@ -351,13 +351,17 @@ def generate_lazy_loader(
         osfile = str(glob.glob("*desktop*.signed")[0])
     except IndexError:
         print("No OS found")
-    try:
-        rset = set(glob.glob("*.signed")) - set(glob.glob("*desktop*.signed"))
-        radiofile = str(list(rset)[0])
-    except IndexError:
-        print("No radio found")
-    loadername = generate_lazy_filename(osversion, suffix, device)
-    wrap_pseudocap(loadername, localdir, osfile, radiofile)
+        raise SystemExit
+    else:
+        try:
+            rset = set(glob.glob("*.signed")) - set(glob.glob("*desktop*.signed"))
+            radiofile = str(list(rset)[0])
+        except IndexError:
+            print("No radio found")
+            raise SystemExit
+        else:
+            loadername = generate_lazy_filename(osversion, suffix, device)
+            wrap_pseudocap(loadername, localdir, osfile, radiofile)
 
 
 def generate_lazy_filename(osversion, suffix, device):

@@ -4,7 +4,6 @@
 
 import bbarchivist.barutils as bb
 import os
-import pytest
 from bbarchivist.utilities import prep_seven_zip, get_seven_zip
 from shutil import rmtree, copyfile
 from sys import version_info
@@ -414,7 +413,7 @@ class TestClassBarutilsSha512:
         with mock.patch('zipfile.ZipFile', mock.MagicMock(side_effect=OSError)):
             bb.retrieve_sha512("mfest.bar.dummy")
             assert "EXTRACTION FAILURE" in capsys.readouterr()[0]
-        
+
     def test_sha512_verify(self):
         """
         Test comparison of signed file hash with that from the manifest.

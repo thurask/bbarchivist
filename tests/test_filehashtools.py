@@ -100,8 +100,8 @@ class TestClassFilehashtools:
         """
         with mock.patch("hashlib.new", mock.MagicMock(side_effect=ValueError)):
             bf.md4hash("tempfile.txt")
-            assert "MD4 HASH FAILED" in capsys.readouterr()[0] 
-              
+            assert "MD4 HASH FAILED" in capsys.readouterr()[0]
+
     def test_md5hash(self):
         """
         Test MD5 hash.
@@ -124,7 +124,7 @@ class TestClassFilehashtools:
         with mock.patch("hashlib.new", mock.MagicMock(side_effect=ValueError)):
             bf.ripemd160hash("tempfile.txt")
             assert "RIPEMD160 HASH FAILED" in capsys.readouterr()[0]
-            
+
     def test_whirlpoolhash(self):
         """
         Test Whirlpool hash.
@@ -141,35 +141,6 @@ class TestClassFilehashtools:
         with mock.patch("hashlib.new", mock.MagicMock(side_effect=ValueError)):
             bf.whirlpoolhash("tempfile.txt")
             assert "WHIRLPOOL HASH FAILED" in capsys.readouterr()[0]
-
-    def test_gpgfile(self):
-        """
-        Test GnuPG signing.
-        """
-        if os.getenv("TRAVIS", "false") == "true":
-            pass
-        elif NOGNUPG:
-            pass
-        else:
-            gpgkey, gpgpass = bf.gpg_config_loader()
-            if gpgkey is None or gpgpass is None:
-                pass
-            else:
-                gpginst = gnupg.GPG()
-                # Note: if you get a "Unknown status message 'NEWSIG'" error, then look here:
-                # https://bitbucket.org/vinay.sajip/python-gnupg/issues/35/status-newsig-missing-in-verify
-                bf.gpgfile("tempfile.txt", gpginst, gpgkey, gpgpass)
-                with open("tempfile.txt.asc", "rb") as sig:
-                    try:
-                        verified = gpginst.verify_file(sig, 'tempfile.txt')
-                    except ValueError as exc:
-                        rep = str(exc)
-                        if "NEWSIG" not in rep:
-                            print(rep)
-                        else:
-                            pass
-                    else:
-                        assert verified
 
     def test_escreens(self):
         """
@@ -254,6 +225,40 @@ class TestClassFilehashtools:
         """
         self.test_verifier(True)
 
+
+class TestClassFilehashtoolsGPG:
+    """
+    Test GPG-related tools.
+    """
+    def test_gpgfile(self):
+        """
+        Test GnuPG signing.
+        """
+        if os.getenv("TRAVIS", "false") == "true":
+            pass
+        elif NOGNUPG:
+            pass
+        else:
+            gpgkey, gpgpass = bf.gpg_config_loader()
+            if gpgkey is None or gpgpass is None:
+                pass
+            else:
+                gpginst = gnupg.GPG()
+                # Note: if you get a "Unknown status message 'NEWSIG'" error, then look here:
+                # https://bitbucket.org/vinay.sajip/python-gnupg/issues/35/status-newsig-missing-in-verify
+                bf.gpgfile("tempfile.txt", gpginst, gpgkey, gpgpass)
+                with open("tempfile.txt.asc", "rb") as sig:
+                    try:
+                        verified = gpginst.verify_file(sig, 'tempfile.txt')
+                    except ValueError as exc:
+                        rep = str(exc)
+                        if "NEWSIG" not in rep:
+                            print(rep)
+                        else:
+                            pass
+                    else:
+                        assert verified
+
     def test_gpgrunner(self):
         """
         Test batch GnuPG signing.
@@ -268,9 +273,7 @@ class TestClassFilehashtools:
                 pass
             else:
                 gpginst = gnupg.GPG()
-                # Note: if you get a "Unknown status message 'NEWSIG'" error, then look here:
-                # https://bitbucket.org/vinay.sajip/python-gnupg/issues/35/status-newsig-missing-in-verify
-                bf.gpgrunner(os.getcwd(), gpgkey, gpgpass)
+                bf.gpgrunner(os.getcwd(), gpgkey, gpgpass, False)
                 with open("tempfile.txt.asc", "rb") as sig:
                     try:
                         verified = gpginst.verify_file(sig, 'tempfile.txt')
@@ -302,10 +305,10 @@ class TestClassFilehashtools:
             pass
         else:
             with mock.patch("bbarchivist.filehashtools.gpgfile", mock.MagicMock(side_effect=Exception)):
-                with pytest.raises(SystemExit):    
+                with pytest.raises(SystemExit):
                     bf.gpgrunner(os.getcwd(), "12345678", "hunter2", False)
                     assert "SOMETHING WENT WRONG" in capsys.readouterr()[0]
-                    
+
 
 class TestClassFilehashtoolsConfig:
     """

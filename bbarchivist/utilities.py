@@ -73,10 +73,11 @@ def grab_json():
     """
     Figure out where JSON is, local or system-supplied.
     """
+    jfile = None
     try:
-        jfile = file_exists(bbconstants.JSONFILE)  # system JSON
-    except argparse.ArgumentError:
         jfile = glob.glob(os.path.join(os.getcwd(), "bbconstants.json"))[0]  # local JSON
+    except IndexError:
+        jfile = bbconstants.JSONFILE  # system JSON
     finally:
         return os.path.abspath(jfile)
 

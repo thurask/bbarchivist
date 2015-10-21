@@ -1,5 +1,5 @@
 ﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, C0103
+#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, C0103, W0150
 """This module is used to operate with bar files and other archives."""
 
 __author__ = "Thurask"

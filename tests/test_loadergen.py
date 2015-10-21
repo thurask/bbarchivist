@@ -4,6 +4,11 @@
 
 import bbarchivist.loadergen as bl
 import os
+import pytest
+try:
+    import unittest.mock as mock
+except ImportError:
+    import mock
 from shutil import rmtree, copyfile
 from hashlib import sha512
 
@@ -31,6 +36,18 @@ class TestClassLoadergen:
     """
     Test autoloader generation.
     """
+    def test_read_os_none(self):
+        """
+        Test finding OS filenames when there are no OS files.
+        """
+        assert set(bl.read_os_files(os.getcwd())) == {None}
+
+    def test_read_radio_none(self):
+        """
+        Test finding radio filenames when there are no radio files.
+        """
+        assert set(bl.read_radio_files(os.getcwd())) == {None}
+
     def test_generate_lazy_loader(self):
         """
         Test creating one autoloader (lazyloader).
@@ -48,6 +65,25 @@ class TestClassLoadergen:
         os.remove("desktop.signed")
         os.remove("radio.signed")
         assert thehash == 'd4872a853e19fb8512067f50555827c74ec33da6fd5d71ae3ddd1b0ce98a18e01727eb1f345f476d6d59bcb438be8780e3f1dc7b212dc63b4b7c09914093a730'
+
+    def test_generate_lazy_no_os(self, capsys):
+        """
+        Test creating one autoloader but no OS is given.
+        """
+        with pytest.raises(SystemExit):
+            bl.generate_lazy_loader("TESTING", 0)
+            assert "No OS found" in capsys.readouterr()[0]
+
+    def test_generate_lazy_no_rad(self, capsys):
+        """
+        Test creating one autoloader but no radio is given.
+        """
+        with open("desktop.signed", "w") as targetfile:
+            targetfile.write("Jackdaws love my big sphinx of quartz"*5000)
+        with pytest.raises(SystemExit):
+            bl.generate_lazy_loader("TESTING", 0)
+            assert "No radio found" in capsys.readouterr()[0]
+        os.remove("desktop.signed")
 
     def test_generate_loaders(self):
         """
@@ -104,3 +140,18 @@ class TestClassLoadergen:
         assert bl.pretty_formatter("10.3.2.680",
                                    "10.3.2.681") == ("10.3.02.0680",
                                                      "10.3.02.0681")
+
+    def test_wrap_pseudocap_none(self):
+        """
+        Test wrapping pseudocap when no files are given.
+        """
+        with pytest.raises(SystemError):
+            bl.wrap_pseudocap("filename.exe", os.getcwd(), None, None)
+
+    def test_wrap_pseudocap_error(self, capsys):
+        """
+        Test wrapping pseudocap when an error is raised.
+        """
+        with mock.patch('bbarchivist.pseudocap.make_autoloader', mock.MagicMock(side_effect=IndexError)):
+            bl.wrap_pseudocap("filename.exe", os.getcwd(), "radio.m5730.signed", None)
+            assert "Could not create" in capsys.readouterr()[0]
