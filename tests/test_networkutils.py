@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301
 """Test the networkutils module."""
 
@@ -14,19 +14,17 @@ def setup_module(module):
     """
     Create necessary files.
     """
-    if not os.path.exists("temp"):
-        os.mkdir("temp")
-    os.chdir("temp")
+    if not os.path.exists("temp_networkutils"):
+        os.mkdir("temp_networkutils")
+    os.chdir("temp_networkutils")
 
 
 def teardown_module(module):
     """
     Delete necessary files.
     """
-    if os.path.exists("cacert.pem"):
-        os.remove("cacert.pem")
     os.chdir("..")
-    rmtree("temp")
+    rmtree("temp_networkutils", ignore_errors=True)
 
 
 def cl_good_mock(url, request):

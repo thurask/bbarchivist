@@ -4,6 +4,7 @@
 
 import bbarchivist.barutils as bb
 import os
+import pytest
 from bbarchivist.utilities import prep_seven_zip, get_seven_zip
 from shutil import rmtree, copyfile
 from sys import version_info
@@ -18,9 +19,9 @@ def setup_module(module):
     """
     Create necessary files.
     """
-    if not os.path.exists("temp"):
-        os.mkdir("temp")
-    os.chdir("temp")
+    if not os.path.exists("temp_barutils"):
+        os.mkdir("temp_barutils")
+    os.chdir("temp_barutils")
     with open("testfile.signed", "w") as targetfile:
         targetfile.write("Jackdaws love my big sphinx of quartz")
     with open("Z10_BIGLOADER.exe", "w") as targetfile:
@@ -34,16 +35,8 @@ def teardown_module(module):
     """
     Delete necessary files.
     """
-    if os.path.exists("testfile.bar"):
-        os.remove("testfile.bar")
-    rmtree("bigloaders", ignore_errors=True)
-    rmtree("smallloaders", ignore_errors=True)
-    rmtree("bigzipped", ignore_errors=True)
-    rmtree("smallzipped", ignore_errors=True)
-    rmtree("bigbars", ignore_errors=True)
-    rmtree("smallbars", ignore_errors=True)
     os.chdir("..")
-    rmtree("temp", ignore_errors=True)
+    rmtree("temp_barutils", ignore_errors=True)
 
 
 class TestClassBarutils:
@@ -77,6 +70,14 @@ class TestClassBarutils:
                 shahash2.update(data)
         newhash = shahash2.hexdigest()
         assert orighash == newhash
+
+    def test_extract_bars_fail(self, capsys):
+        """
+        Test extraction failure, raise exception.
+        """
+        with mock.patch('os.listdir', mock.MagicMock(side_effect=OSError)):
+            bb.extract_bars(os.getcwd())
+            assert "EXTRACTION FAILURE" in capsys.readouterr()[0]
 
     def test_compress_sz(self):
         """
@@ -145,8 +146,20 @@ class TestClassBarutils:
         """
         Test removal of empty folders.
         """
+        if not os.path.exists("a_temp_folder"):
+            os.mkdir("a_temp_folder")
         bb.remove_empty_folders(os.getcwd())
         assert "a_temp_folder" not in os.listdir()
+
+    def test_remove_empty_folders_fail(self):
+        """
+        Test failure to remove empty folders.
+        """
+        if not os.path.exists("a_temp_folder"):
+            os.mkdir("a_temp_folder")
+        with mock.patch('os.rmdir', mock.MagicMock(side_effect=NotImplementedError)):
+            bb.remove_empty_folders(os.getcwd())
+        assert "a_temp_folder" in os.listdir()
 
     def test_remove_signed_files(self):
         """
@@ -230,7 +243,7 @@ class TestClassBarutilsVerifier:
         """
         Create compressed loaders to verify.
         """
-        os.mkdir("verifiers")
+        os.makedirs("verifiers", exist_ok=True)
         verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
         aloader = os.path.join(verdir, "Q10.exe")
         with open(aloader, "w") as afile:
@@ -239,41 +252,92 @@ class TestClassBarutilsVerifier:
         if exists:
             szexe = get_seven_zip(False)
             bb.compress(verdir, "7z", szexe, True)
-        else:
+        bb.compress(verdir, "tgz", szexe, True)
+        bb.compress(verdir, "tbz", szexe, True)
+        bb.compress(verdir, "zip", szexe, True)
+        if version_info[1] < 3:
             pass
+        else:
+            bb.compress(verdir, "txz", szexe, True)
 
     def test_verify_sz(self):
         """
         Test 7z verification.
         """
-        verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
-        exists = prep_seven_zip()
-        if not exists:
-            pass
-        else:
-            szexe = get_seven_zip(False)
-            assert bb.verify(verdir, '7z', szexe, True)
+        with mock.patch('subprocess.call', mock.MagicMock(return_value=0)):
+            verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
+            filepath = os.path.join(verdir, "Q10.7z")
+            exists = prep_seven_zip()
+            if not exists:
+                pass
+            else:
+                szexe = get_seven_zip(False)
+                assert bb.sz_verify(filepath, szexe)
+
+    def test_verify_sz_fail(self):
+        """
+        Test 7z verification failure.
+        """
+        with mock.patch('subprocess.call', mock.MagicMock(return_value=255)):
+            verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
+            filepath = os.path.join(verdir, "Q10.7z")
+            exists = prep_seven_zip()
+            if not exists:
+                pass
+            else:
+                szexe = get_seven_zip(False)
+                assert not bb.sz_verify(filepath, szexe)
 
     def test_verify_zip(self):
         """
         Test zip verification.
         """
         verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
-        assert bb.verify(verdir, 'zip', None, True)
+        filepath = os.path.join(verdir, "Q10.zip")
+        assert bb.zip_verify(filepath)
+
+    def test_verify_zip_fail(self):
+        """
+        Test zip verification failure.
+        """
+        with mock.patch('zipfile.is_zipfile', mock.MagicMock(return_value=False)):
+            verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
+            filepath = os.path.join(verdir, "Q10.zip")
+            assert not bb.zip_verify(filepath)
 
     def test_verify_tgz(self):
         """
         Test tar.gz verification.
         """
         verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
-        assert bb.verify(verdir, 'tgz', None, True)
+        filepath = os.path.join(verdir, "Q10.tar.gz")
+        assert bb.tgz_verify(filepath)
+
+    def test_verify_tgz_fail(self):
+        """
+        Test tar.gz verification failure.
+        """
+        with mock.patch('tarfile.is_tarfile', mock.MagicMock(return_value=False)):
+            verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
+            filepath = os.path.join(verdir, "Q10.tar.gz")
+            assert not bb.tgz_verify(filepath)
 
     def test_verify_tbz(self):
         """
         Test tar.bz2 verification.
         """
         verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
-        assert bb.verify(verdir, 'tbz', None, True)
+        filepath = os.path.join(verdir, "Q10.tar.bz2")
+        assert bb.tbz_verify(filepath)
+
+    def test_verify_tbz_fail(self):
+        """
+        Test tar.bz2 verification failure.
+        """
+        with mock.patch('tarfile.is_tarfile', mock.MagicMock(return_value=False)):
+            verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
+            filepath = os.path.join(verdir, "Q10.tar.bz2")
+            assert not bb.tbz_verify(filepath)
 
     def test_verify_txz(self):
         """
@@ -283,7 +347,40 @@ class TestClassBarutilsVerifier:
             pass
         else:
             verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
-            assert bb.verify(verdir, 'txz', None, True)
+            filepath = os.path.join(verdir, "Q10.tar.xz")
+            assert bb.txz_verify(filepath)
+
+    def test_verify_txz_fail(self):
+        """
+        Test tar.xz verification failure.
+        """
+        if version_info[1] < 3:
+            pass
+        else:
+            with mock.patch('tarfile.is_tarfile', mock.MagicMock(return_value=False)):
+                verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
+                filepath = os.path.join(verdir, "Q10.tar.xz")
+                assert not bb.txz_verify(filepath)
+
+    def test_bar_tester(self):
+        """
+        Test bar verification.
+        """
+        verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
+        infile = os.path.join(verdir, "Q10.zip")
+        outfile = os.path.join(verdir, "Q10.bar")
+        copyfile(infile, outfile)
+        assert bb.bar_tester(outfile) is None
+
+    def test_bar_tester_fail(self):
+        """
+        Test bar verification failure.
+        """
+        verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
+        infile = os.path.join(verdir, "Q11.bar")
+        with open(infile, "w") as afile:
+            afile.write("Heartbreakers gonna break")
+        assert "Q11.bar" in bb.bar_tester(infile)
 
 
 class TestClassBarutilsSha512:
@@ -310,6 +407,14 @@ class TestClassBarutilsSha512:
         """
         assert bb.retrieve_sha512("mfest.bar.dummy") == (b"target.signed", b"tmpeiqm5cFdIwu5YWw4aOkEojS2vw74tsS-onS8qPhT53sEd5LqGW7Ueqmws_rKUE5RV402n2CehlQSwkGwBwQ")
 
+    def test_sha512_retrieve_fail(self, capsys):
+        """
+        Test SHA512 hash retrieval failure.
+        """
+        with mock.patch('zipfile.ZipFile', mock.MagicMock(side_effect=OSError)):
+            bb.retrieve_sha512("mfest.bar.dummy")
+            assert "EXTRACTION FAILURE" in capsys.readouterr()[0]
+        
     def test_sha512_verify(self):
         """
         Test comparison of signed file hash with that from the manifest.

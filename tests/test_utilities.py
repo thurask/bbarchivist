@@ -19,9 +19,9 @@ def setup_module(module):
     """
     Create necessary files.
     """
-    if not os.path.exists("temp"):
-        os.mkdir("temp")
-    os.chdir("temp")
+    if not os.path.exists("temp_utilities"):
+        os.mkdir("temp_utilities")
+    os.chdir("temp_utilities")
     with open("cap-3.11.0.22.dat", "w") as targetfile:
         targetfile.write("Jackdaws love my big sphinx of quartz")
     copyfile("cap-3.11.0.22.dat", "7za.exe")
@@ -35,20 +35,8 @@ def teardown_module(module):
     """
     Delete necessary files.
     """
-    if os.path.exists("cap-3.11.0.22.dat"):
-        os.remove("cap-3.11.0.22.dat")
-    if os.path.exists("7za.exe"):
-        os.remove("7za.exe")
-    if os.path.exists("7za64.exe"):
-        os.remove("7za64.exe")
-    if os.path.exists("Z10_loader1.exe"):
-        os.remove("Z10_loader1.exe")
-    if os.path.exists("Z10_loader1.exe"):
-        os.remove("Z10_loader2.exe")
-    if os.path.exists("Z10_loader1.exe"):
-        os.remove("Z10_loader3.exe")
     os.chdir("..")
-    rmtree("temp")
+    rmtree("temp_utilities", ignore_errors=True)
 
 
 class TestClassUtilities7z:
@@ -280,10 +268,24 @@ class TestClassUtilities:
         assert bu.return_and_delete("TEST.txt") == "You can call me Al"
 
 
-class TestClassLazyUrls:
+class TestClassUtilitiesUrls:
     """
-    Test generation of lazyloader URLs.
+    Test generation of URLs.
     """
+    def test_bulk(self):
+        """
+        Test generating all URLs.
+        """
+        osu, radu, coru = bu.generate_urls("http://www.qrrbrbirlbel.yu/", "10.3.2.4567", "10.9.8.7654", True)
+        assert "http://www.qrrbrbirlbel.yu//qc8960.factory_sfi_hybrid_qc8974.desktop-10.3.2.4567-nto+armle-v7+signed.bar" in osu
+
+    def test_bulk_nocore(self):
+        """
+        Test generating only debrick and radio URLs.
+        """
+        osu, radu, coru = bu.generate_urls("http://www.qrrbrbirlbel.yu/", "10.2.3.4567", "10.9.8.7654", False)
+        assert not coru
+
     def test_stl1(self):
         """
         Test STL100-1 URLs.

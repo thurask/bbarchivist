@@ -15,9 +15,9 @@ def setup_module(module):
     """
     Create necessary files.
     """
-    if not os.path.exists("temp"):
-        os.mkdir("temp")
-    os.chdir("temp")
+    if not os.path.exists("temp_scriptutils"):
+        os.mkdir("temp_scriptutils")
+    os.chdir("temp_scriptutils")
     with open("Z10_loader1.exe", "w") as targetfile:
         targetfile.write("Jackdaws love my big sphinx of quartz")
     copyfile("Z10_loader1.exe", "Z10_loader2.exe")
@@ -28,14 +28,8 @@ def teardown_module(module):
     """
     Delete necessary files.
     """
-    if os.path.exists("Z10_loader1.exe"):
-        os.remove("Z10_loader1.exe")
-    if os.path.exists("Z10_loader1.exe"):
-        os.remove("Z10_loader2.exe")
-    if os.path.exists("Z10_loader1.exe"):
-        os.remove("Z10_loader3.exe")
     os.chdir("..")
-    rmtree("temp")
+    rmtree("temp_scriptutils", ignore_errors=True)
 
 
 class TestClassScriptutils:

@@ -12,9 +12,9 @@ def setup_module(module):
     """
     Create necessary files.
     """
-    if not os.path.exists("temp"):
-        os.mkdir("temp")
-    os.chdir("temp")
+    if not os.path.exists("temp_loadergen"):
+        os.mkdir("temp_loadergen")
+    os.chdir("temp_loadergen")
     with open("cap-3.11.0.22.dat", "w") as targetfile:
         targetfile.write("0"*9500000)
 
@@ -23,13 +23,8 @@ def teardown_module(module):
     """
     Delete necessary files.
     """
-    for file in os.listdir():
-        if file.endswith(".signed"):
-            os.remove(file)
-    if os.path.exists("cap-3.11.0.22.dat"):
-        os.remove("cap-3.11.0.22.dat")
     os.chdir("..")
-    rmtree("temp")
+    rmtree("temp_loadergen", ignore_errors=True)
 
 
 class TestClassLoadergen:

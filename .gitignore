@@ -39,3 +39,4 @@ htmlcov/
 /.cache/v/cache
 /.cache/v/cache/lastfailed
 *.user
+/test**

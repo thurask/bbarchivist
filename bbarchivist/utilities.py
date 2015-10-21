@@ -24,9 +24,9 @@ def enum_cpus():
     Backwards compatibility wrapper for CPU count.
     """
     try:
-        from os import cpu_count  #@Unused Import
+        from os import cpu_count
     except ImportError:
-        from multiprocessing import cpu_count #@UnusedImport
+        from multiprocessing import cpu_count
     finally:
         cpus = cpu_count()
     return cpus
@@ -37,10 +37,10 @@ def where_which(path):
     Backwards compatibility wrapper for approximating which/where.
     """
     try:
-        from shutil import which  #@UnusedImport
+        from shutil import which
     except ImportError:
         try:
-            from shutilwhich import which  #@UnusedImport
+            from shutilwhich import which
         except ImportError:
             raise SystemExit
     finally:
