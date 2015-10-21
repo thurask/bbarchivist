@@ -524,49 +524,56 @@
 		"secret":"True"
 	},
 	{
-		"device":"",
-		"family":"UNRELEASED",
+		"device":"PRIV",
+		"family":"PRIV",
 		"name":"STV100-1",
 		"hwid":"",
 		"fccid":"RHK211LW",
-		"ptcrbid":"",
-		"secret":"True"
+		"ptcrbid":"30056"
 	},
 	{
-		"device":"",
-		"family":"UNRELEASED",
+		"device":"PRIV",
+		"family":"PRIV",
 		"name":"STV100-2",
 		"hwid":"",
 		"fccid":"",
 		"ptcrbid":"",
 		"secret":"True"
 	},
-	{
-		"device":"",
-		"family":"UNRELEASED",
-		"name":"STV100-3",
-		"hwid":"",
-		"fccid":"RHL211LW",
-		"ptcrbid":"",
-		"secret":"True"
-	},
     {
-        "device": "",
-        "family": "UNRELEASED",
-        "name": "STV100-5",
-        "hwid": "",
-        "fccid": "",
-        "ptcrbid": "",
-        "secret": "True"
+        "device":"PRIV",
+        "family":"PRIV",
+        "name":"STV100-3",
+        "hwid":"",
+        "fccid":"RHL211LW",
+        "ptcrbid":"31060"
     },
     {
-        "device": "",
-        "family": "UNRELEASED",
-        "name": "STV100-6",
-        "hwid": "",
-        "fccid": "",
-        "ptcrbid": "",
-        "secret": "True"
+	    "device":"PRIV",
+	    "family":"PRIV",
+	    "name":"STV100-4",
+	    "hwid":"",
+	    "fccid":"",
+	    "ptcrbid":"",
+	    "secret":"True"
+	},
+    {
+        "device":"PRIV",
+        "family":"PRIV",
+        "name":"STV100-5",
+        "hwid":"",
+        "fccid":"",
+        "ptcrbid":"",
+        "secret":"True"
+    },
+    {
+        "device":"PRIV",
+        "family":"PRIV",
+        "name":"STV100-6",
+        "hwid":"",
+        "fccid":"",
+        "ptcrbid":"",
+        "secret":"True"
     },
     {
 		"device":"",
