@@ -1,5 +1,5 @@
 ﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
+#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, W0142
 """This module is used for dealing with SQL databases, including CSV export."""
 
 __author__ = "Thurask"
@@ -38,7 +38,7 @@ def prepare_sw_db():
             table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(
                 *(reqid, reqs, reqs2))
             crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
-    except sqlite3.Error as sqerror:  # pragma: no cover
+    except sqlite3.Error as sqerror:
         print(str(sqerror))
 
 
@@ -70,9 +70,9 @@ def insert_sw_release(osversion, swrelease, available, curdate=None):
             except sqlite3.IntegrityError:
                 crsr.execute("UPDATE Swrelease SET Available=? WHERE Os=? AND Software=?",
                              (available, osversion, swrelease))  # update if not new
-    except sqlite3.IntegrityError:  # pragma: no cover
+    except sqlite3.IntegrityError:
         UselessStdout.write("ASDASDASD")  # avoid dupes
-    except sqlite3.Error as sqerror:  # pragma: no cover
+    except sqlite3.Error as sqerror:
         print(str(sqerror))
 
 
@@ -92,7 +92,7 @@ def pop_sw_release(osversion, swrelease):
             crsr = cnxn.cursor()
             crsr.execute("DELETE FROM Swrelease WHERE Os=? AND Software=?",
                          (osversion, swrelease))
-    except sqlite3.Error as sqerror:  # pragma: no cover
+    except sqlite3.Error as sqerror:
         print(str(sqerror))
 
 
@@ -116,7 +116,7 @@ def check_entry_existence(osversion, swrelease):
                 return True
             else:
                 return False
-    except sqlite3.Error as sqerror:  # pragma: no cover
+    except sqlite3.Error as sqerror:
         print(str(sqerror))
 
 
@@ -138,9 +138,9 @@ def export_sql_db():
                 sortedrows = sorted(rows, key=operator.itemgetter(0))
                 csvw.writerow(('OS Version', 'Software Release', 'Available', 'First Added'))
                 csvw.writerows(sortedrows)
-        except sqlite3.Error as sqerror:  # pragma: no cover
+        except sqlite3.Error as sqerror:
             print(str(sqerror))
-    else:  # pragma: no cover
+    else:
         print("NO SQL DATABASE FOUND!")
         raise SystemExit
 
@@ -158,11 +158,11 @@ def list_sw_releases():
                 crsr = cnxn.cursor()
                 crsr.execute("SELECT Os,Software,Available,Date FROM Swrelease")
                 rows = crsr.fetchall()
-        except sqlite3.Error as sqerror:  # pragma: no cover
+        except sqlite3.Error as sqerror:
             print(str(sqerror))
             return None
         else:
             return rows
-    else:  # pragma: no cover
+    else:
         print("NO SQL DATABASE FOUND!")
         raise SystemExit

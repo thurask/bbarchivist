@@ -1,5 +1,5 @@
 ﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301
+#pylint: disable = I0011, R0201, W0613, C0301, W0142
 """Test the sqlutils module."""
 
 import os
@@ -188,7 +188,7 @@ class TestClassSQLUtils:
                         *(reqid, reqs, reqs2))
                     crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
                     crsr.execute("INSERT INTO Swrelease(Os, Software, Available, Date) VALUES (?,?,?,?)",
-                                    ("120.OSVERSION", "130.SWVERSION", "available", "1970 January 1"))
+                                 ("120.OSVERSION", "130.SWVERSION", "available", "1970 January 1"))
             except sqlite3.Error:
                 assert False
             bs.export_sql_db()
@@ -216,7 +216,7 @@ class TestClassSQLUtils:
                         *(reqid, reqs, reqs2))
                     crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
                     crsr.execute("INSERT INTO Swrelease(Os, Software, Available, Date) VALUES (?,?,?,?)",
-                                    ("120.OSVERSION", "130.SWVERSION", "available", "1970 January 1"))
+                                 ("120.OSVERSION", "130.SWVERSION", "available", "1970 January 1"))
             except sqlite3.Error:
                 assert False
             rellist = bs.list_sw_releases()

@@ -205,13 +205,13 @@ def make_autoloader(filename, firstfile, secondfile="", thirdfile="",
                         if not chunk:
                             break
                         autoloader.write(chunk)
-            except IOError as exc:  # pragma: no cover
+            except IOError as exc:
                 print("Operation failed:", exc.strerror)
             try:
                 with open(os.path.join(folder, "offset.hex"), "rb") as offset:
                     print("WRITING MAGIC OFFSET...")
                     autoloader.write(offset.read())
-            except IOError as exc:  # pragma: no cover
+            except IOError as exc:
                 print("Operation failed:", exc.strerror)
             try:
                 with open(firstfile, "rb") as first:
@@ -223,7 +223,7 @@ def make_autoloader(filename, firstfile, secondfile="", thirdfile="",
                         if not chunk:
                             break
                         autoloader.write(chunk)
-            except IOError as exc:  # pragma: no cover
+            except IOError as exc:
                 print("Operation failed:", exc.strerror)
             if filecount >= 2:
                 try:
@@ -236,7 +236,7 @@ def make_autoloader(filename, firstfile, secondfile="", thirdfile="",
                             if not chunk:
                                 break
                             autoloader.write(chunk)
-                except IOError as exc:  # pragma: no cover
+                except IOError as exc:
                     print("Operation failed:", exc.strerror)
             if filecount >= 3:
                 try:
@@ -249,7 +249,7 @@ def make_autoloader(filename, firstfile, secondfile="", thirdfile="",
                             if not chunk:
                                 break
                             autoloader.write(chunk)
-                except IOError as exc:  # pragma: no cover
+                except IOError as exc:
                     print("Operation failed:", exc.strerror)
             if filecount >= 4:
                 try:
@@ -262,7 +262,7 @@ def make_autoloader(filename, firstfile, secondfile="", thirdfile="",
                             if not chunk:
                                 break
                             autoloader.write(chunk)
-                except IOError as exc:  # pragma: no cover
+                except IOError as exc:
                     print("Operation failed:", exc.strerror)
             if filecount >= 5:
                 try:
@@ -275,7 +275,7 @@ def make_autoloader(filename, firstfile, secondfile="", thirdfile="",
                             if not chunk:
                                 break
                             autoloader.write(chunk)
-                except IOError as exc:  # pragma: no cover
+                except IOError as exc:
                     print("Operation failed:", exc.strerror)
             if filecount == 6:
                 try:
@@ -288,12 +288,12 @@ def make_autoloader(filename, firstfile, secondfile="", thirdfile="",
                             if not chunk:
                                 break
                             autoloader.write(chunk)
-                except IOError as exc:  # pragma: no cover
+                except IOError as exc:
                     print("Operation failed:", exc.strerror)
-            if filecount == 0 or filecount > 6:  # pragma: no cover
+            if filecount == 0 or filecount > 6:
                 print("Invalid filecount")
                 return
-    except IOError as exc:  # pragma: no cover
+    except IOError as exc:
         print("Operation failed:", exc.strerror)
     print(filename, "FINISHED!")
     os.remove(os.path.join(folder, "offset.hex"))

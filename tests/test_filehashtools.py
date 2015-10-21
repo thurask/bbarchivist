@@ -1,5 +1,5 @@
 ﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, W0142
+#pylint: disable = I0011, R0201, W0613, C0301, W0142, W0201
 """Test the filehashtools module."""
 
 import os
@@ -262,9 +262,12 @@ class TestClassFilehashtools:
 
 class TestClassFilehashtoolsConfig:
     """
-    Test reading/writing configs with ConfigParser. 
+    Test reading/writing configs with ConfigParser.
     """
     def setup_class(self):
+        """
+        Create dictionaries for self.
+        """
         self.hashdict = {}
         self.hashdict['crc32'] = False
         self.hashdict['adler32'] = False

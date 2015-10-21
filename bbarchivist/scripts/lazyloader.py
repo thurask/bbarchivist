@@ -9,9 +9,7 @@ __copyright__ = "2015 Thurask"
 import argparse  # parse arguments
 import sys  # load arguments
 import os  # path work
-import glob  # filename matching
 import subprocess  # autoloader running
-import json  # db work
 import pprint  # pretty printing
 from bbarchivist import scriptutils  # script stuff
 from bbarchivist import utilities  # input validation

@@ -1,5 +1,5 @@
 ﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, E0611, W0150
+#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, E0611, W0150, C0103
 """This module is used for miscellaneous utilities."""
 
 __author__ = "Thurask"
@@ -25,7 +25,7 @@ def enum_cpus():
     """
     try:
         from os import cpu_count  #@Unused Import
-    except ImportError:  # pragma: no cover
+    except ImportError:
         from multiprocessing import cpu_count #@UnusedImport
     finally:
         cpus = cpu_count()
@@ -36,16 +36,16 @@ def where_which(path):
     """
     Backwards compatibility wrapper for approximating which/where.
     """
-    try:  # pragma: no cover
+    try:
         from shutil import which  #@UnusedImport
-    except ImportError:  # pragma: no cover
+    except ImportError:
         try:
             from shutilwhich import which  #@UnusedImport
         except ImportError:
             raise SystemExit
-    finally:  # pragma: no cover
+    finally:
         thepath = which(path)
-    return thepath  # pragma: no cover
+    return thepath
 
 
 def grab_cap():
@@ -56,7 +56,7 @@ def grab_cap():
         caplo = bbconstants.CAPLOCATION
         here = os.getcwd()
         capfile = glob.glob(os.path.join(here, os.path.basename(caplo)))[0]
-    except IndexError:  # pragma: no cover
+    except IndexError:
         try:
             cappath = cappath_config_loader()
             capfile = glob.glob(cappath)[0]
@@ -75,7 +75,7 @@ def grab_json():
     """
     try:
         jfile = file_exists(bbconstants.JSONFILE)  # system JSON
-    except argparse.ArgumentError:  # pragma: no cover
+    except argparse.ArgumentError:
         jfile = glob.glob(os.path.join(os.getcwd(), "bbconstants.json"))[0]  # local JSON
     finally:
         return os.path.abspath(jfile)
@@ -132,7 +132,7 @@ def valid_method(method):
     :type method: str
     """
     methodlist = bbconstants.METHODS
-    if sys.version_info[1] <= 2:  # pragma: no cover
+    if sys.version_info[1] <= 2:
         methodlist = methodlist[:-1]  # strip last
     if method not in methodlist:
         raise argparse.ArgumentError(argument=None, message="Invalid method {0}.".format(method))
@@ -236,20 +236,20 @@ def win_seven_zip(talkative=False):
     :param talkative: Whether to output to screen. False by default.
     :type talkative: bool
     """
-    if talkative:  # pragma: no cover
+    if talkative:
         print("CHECKING INSTALLED FILES...")
     try:
         import winreg  # windows registry
         hk7z = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\\7-Zip")
         path = winreg.QueryValueEx(hk7z, "Path")
-    except OSError as exc:  # pragma: no cover
-        if talkative:  # pragma: no cover
+    except OSError as exc:
+        if talkative:
             print("SOMETHING WENT WRONG")
             print(str(exc))
             print("TRYING LOCAL FILES...")
-        return win_seven_zip_local(talkative)  # pragma: no cover
+        return win_seven_zip_local(talkative)
     else:
-        if talkative:  # pragma: no cover
+        if talkative:
             print("7ZIP USING INSTALLED FILES")
         return '"' + os.path.join(path[0], "7z.exe") + '"'
 
@@ -262,20 +262,20 @@ def win_seven_zip_local(talkative=False):
     :param talkative: Whether to output to screen. False by default.
     :type talkative: bool
     """
-    listdir = os.listdir(os.getcwd())  # pragma: no cover
-    filecount = 0  # pragma: no cover
-    for i in listdir:  # pragma: no cover
+    listdir = os.listdir(os.getcwd())
+    filecount = 0
+    for i in listdir:
         if i in ["7za.exe", "7za64.exe"]:
             filecount += 1
-    if filecount == 2:  # pragma: no cover
-        if talkative:  # pragma: no cover
+    if filecount == 2:
+        if talkative:
             print("7ZIP USING LOCAL FILES")
         if is_amd64():
             return "7za64.exe"
         else:
             return "7za.exe"
-    else:  # pragma: no cover
-        if talkative:  # pragma: no cover
+    else:
+        if talkative:
             print("NO LOCAL FILES")
         return "error"
 
@@ -286,10 +286,10 @@ def get_core_count():
     """
     try:
         cores = str(enum_cpus())  # 3.4 and up
-    except NotImplementedError:  # pragma: no cover
+    except NotImplementedError:
         cores = "1"  # 3.2-3.3
     else:
-        if enum_cpus() is None:  # pragma: no cover
+        if enum_cpus() is None:
             cores = "1"
     return cores
 
@@ -308,18 +308,18 @@ def prep_seven_zip(talkative=False):
     else:
         try:
             path = where_which("7za")
-        except ImportError:  # pragma: no cover
+        except ImportError:
             if talkative:
                 print("PLEASE INSTALL SHUTILWHICH WITH PIP")
             return False
         else:
             if path is None:
-                if talkative:  # pragma: no cover
+                if talkative:
                     print("NO 7ZIP")
                     print("PLEASE INSTALL p7zip")
                 return False
             else:
-                if talkative:  # pragma: no cover
+                if talkative:
                     print("7ZIP FOUND AT", path)
                 return True
 
@@ -396,15 +396,15 @@ def generate_urls(baseurl, osversion, radioversion, core=False):
     splitos = [int(i) for i in splitos]
     if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):  # 10.3.1+
         osurls[2] = osurls[2].replace("qc8960.factory_sfi",
-                                      "qc8960.factory_sfi_hybrid_qc8x30")  # pragma: no cover
+                                      "qc8960.factory_sfi_hybrid_qc8x30")
         osurls[3] = osurls[3].replace("qc8974.factory_sfi",
-                                      "qc8960.factory_sfi_hybrid_qc8974")  # pragma: no cover
+                                      "qc8960.factory_sfi_hybrid_qc8974")
     for url in osurls:
         coreurls.append(url.replace(".desktop", ""))
     if core:
         target = osurls, radiourls, coreurls
     else:
-        target = osurls, radiourls, []  # pragma: no cover
+        target = osurls, radiourls, []
     return target
 
 
@@ -501,7 +501,7 @@ class Spinner(object):
             self.file.flush()
             self.file.write("\b\r")
             self.file.flush()
-        except (KeyboardInterrupt, SystemExit):  # pragma: no cover
+        except (KeyboardInterrupt, SystemExit):
             self.stop()
 
     def stop(self):
@@ -540,7 +540,7 @@ class SpinManager(object):
             try:
                 line_begin()
                 self.spinner.next()
-            except (KeyboardInterrupt, SystemExit):  # pragma: no cover
+            except (KeyboardInterrupt, SystemExit):
                 self.scanning = False
                 self.stop()
 
@@ -553,7 +553,7 @@ class SpinManager(object):
         spinner_clear()
         line_begin()
         if not is_windows():
-            print("\n")  # pragma: no cover
+            print("\n")
 
 
 class UselessStdout(object):
@@ -579,7 +579,7 @@ class UselessStdout(object):
         """
         Convince module we're in a terminal.
         """
-        return True  # pragma: no cover
+        return True
 
 
 def return_and_delete(target):
@@ -630,7 +630,7 @@ def verify_bulk_loaders(loaderdir):
         files = (file for file in os.listdir(loaderdir) if not os.path.isdir(file))
         brokens = []
         for file in files:
-            if (file.endswith(".exe") and file.startswith(bbconstants.PREFIXES)):
+            if file.endswith(".exe") and file.startswith(bbconstants.PREFIXES):
                 print("TESTING: {0}".format((file)))
                 if not verify_loader_integrity(file):
                     brokens.append(file)
@@ -645,13 +645,13 @@ def cappath_config_loader(homepath=None):
     :type homepath: str
     """
     config = configparser.ConfigParser()
-    if homepath is None:  # pragma: no cover
+    if homepath is None:
         homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
-    if not os.path.exists(conffile):  # pragma: no cover
+    if not os.path.exists(conffile):
         open(conffile, 'w').close()
     config.read(conffile)
-    if not config.has_section('cap'):  # pragma: no cover
+    if not config.has_section('cap'):
         config['cap'] = {}
     capini = config['cap']
     cappath = capini.get('path', fallback=bbconstants.CAPLOCATION)
@@ -668,16 +668,16 @@ def cappath_config_writer(cappath=None, homepath=None):
     :param homepath: Folder containing bbarchivist.ini. Default is user directory.
     :type homepath: str
     """
-    if cappath is None:  # pragma: no cover
+    if cappath is None:
         cappath = grab_cap()
     config = configparser.ConfigParser()
-    if homepath is None:  # pragma: no cover
+    if homepath is None:
         homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
-    if not os.path.exists(conffile):  # pragma: no cover
+    if not os.path.exists(conffile):
         open(conffile, 'w').close()
     config.read(conffile)
-    if not config.has_section('cap'):  # pragma: no cover
+    if not config.has_section('cap'):
         config['cap'] = {}
     config['cap']['path'] = cappath
     with open(conffile, "w") as configfile:

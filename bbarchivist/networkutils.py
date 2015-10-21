@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """This module is used for network connections; APIs, downloading, related tools."""
 
@@ -74,10 +74,10 @@ def download(url, output_directory=None, lazy=False):
                   local_filename,
                   "[" + utilities.filesize_parser(fsize) + "]")
         else:
-            if int(fsize) > 90000000:  # pragma: no cover
+            if int(fsize) > 90000000:
                 print("DOWNLOADING OS",
                       "[" + utilities.filesize_parser(fsize) + "]")
-            else:  # pragma: no cover
+            else:
                 print("DOWNLOADING RADIO",
                       "[" + utilities.filesize_parser(fsize) + "]")
         fname = output_directory + "/" + os.path.basename(url)
@@ -105,14 +105,14 @@ def download_bootstrap(urls, outdir=None, lazy=False, workers=5):
     :type workers: int
     """
     if len(urls) < workers:
-        workers = len(urls)  # pragma: no cover
+        workers = len(urls)
     spinman = utilities.SpinManager()
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as xec:
         try:
             spinman.start()
             for url in urls:
                 xec.submit(download, url, outdir, lazy)
-        except (KeyboardInterrupt, SystemExit):  # pragma: no cover
+        except (KeyboardInterrupt, SystemExit):
             xec.shutdown()
             spinman.stop()
     spinman.stop()
@@ -218,7 +218,7 @@ def carrier_update_request(npc, device,
     :param forced: Force a software release.
     :type forced: str
     """
-    if upgrade:  # pragma: no cover
+    if upgrade:
         upg = "upgrade"
     else:
         upg = "repair"
@@ -296,15 +296,15 @@ def parse_carrier_xml(data, blitz=False):
             else:
                 if child.get("type") not in ["system:radio",
                                              "system:desktop",
-                                             "system:os"]:  # pragma: no cover
+                                             "system:os"]:
                     files.append(baseurl + child.get("path"))
             if child.get("type") == "system:radio":
                 radver = child.get("version")
             if child.get("type") == "system:desktop":
                 osver = child.get("version")
-            if child.get("type") == "system:os":  # pragma: no cover
+            if child.get("type") == "system:os":
                 osver = child.get("version")
-            else:  # pragma: no cover
+            else:
                 pass
     return(swver, osver, radver, files)
 
@@ -374,7 +374,7 @@ def sr_lookup_bootstrap(osv):
             for key in results:
                 results[key] = xec.submit(software_release_lookup, osv, SERVERS[key]).result()
             return results
-        except KeyboardInterrupt:  # pragma: no cover
+        except KeyboardInterrupt:
             xec.shutdown(wait=False)
 
 
@@ -464,7 +464,7 @@ def ptcrb_item_cleaner(item):
     item = item.replace(";", "")
     item = item.replace("version", "Version")
     item = item.replace("Verison", "Version")
-    if item.count("OS") > 1:  # pragma: no cover
+    if item.count("OS") > 1:
         templist = item.split("OS")
         templist[0] = "OS"
         item = "".join([templist[0], templist[1]])

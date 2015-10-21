@@ -23,13 +23,13 @@ def smtp_config_loader(homepath=None):
     """
     resultdict = {}
     config = configparser.ConfigParser()
-    if homepath is None:  # pragma: no cover
+    if homepath is None:
         homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
-    if not os.path.exists(conffile):  # pragma: no cover
+    if not os.path.exists(conffile):
         open(conffile, 'w').close()
     config.read(conffile)
-    if not config.has_section('email'):  # pragma: no cover
+    if not config.has_section('email'):
         config['email'] = {}
     smtpini = config['email']
     resultdict['server'] = smtpini.get('server', fallback=None)
@@ -63,13 +63,13 @@ def smtp_config_writer(server=None, port=None, username=None, password=None, is_
     :type homepath: str
     """
     config = configparser.ConfigParser()
-    if homepath is None:  # pragma: no cover
+    if homepath is None:
         homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
-    if not os.path.exists(conffile):  # pragma: no cover
+    if not os.path.exists(conffile):
         open(conffile, 'w').close()
     config.read(conffile)
-    if not config.has_section('email'):  # pragma: no cover
+    if not config.has_section('email'):
         config['email'] = {}
     if server is not None:
         config['email']['server'] = server
@@ -92,15 +92,15 @@ def smtp_config_generator(results):
     :param results: The results to put in bbarchivist.ini.
     :type results: dict
     """
-    if results['server'] is None:  # pragma: no cover
+    if results['server'] is None:
         results['server'] = input("SMTP SERVER ADDRESS: ")
-    if results['port'] == 0:  # pragma: no cover
+    if results['port'] == 0:
         results['port'] = input("SMTP SERVER PORT: ")
-    if results['username'] is None:  # pragma: no cover
+    if results['username'] is None:
         results['username'] = input("EMAIL ADDRESS: ")
-    if results['password'] is None:  # pragma: no cover
+    if results['password'] is None:
         results['password'] = getpass.getpass(prompt="PASSWORD: ")
-    if results['is_ssl'] is None:  # pragma: no cover
+    if results['is_ssl'] is None:
         use_ssl = utilities.str2bool(input("Y: SSL, N: TLS (Y/N): "))
         if use_ssl:
             results['is_ssl'] = "true"

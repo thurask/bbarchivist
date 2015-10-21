@@ -402,7 +402,7 @@ class TestClassBarutilsBarMover:
 
 class TestClassBarutilsConfig:
     """
-    Test reading/writing configs with ConfigParser. 
+    Test reading/writing configs with ConfigParser.
     """
     def test_compress_loader(self):
         """
