@@ -1,5 +1,5 @@
 ﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301
+#pylint: disable = I0011, R0201, W0613, C0301, W0201, W0142
 """Test the smtputils module."""
 
 import bbarchivist.smtputils as bs
@@ -59,9 +59,12 @@ class TestClassSMTPUtils:
 
 class TestClassSMTPUtilsConfig:
     """
-    Test reading/writing configs with ConfigParser. 
+    Test reading/writing configs with ConfigParser.
     """
     def setup_class(self):
+        """
+        Create dictionaries for self.
+        """
         self.smtpdict = {}
         self.smtpdict['username'] = "butt@butt.butt"
         self.smtpdict['password'] = "hunter2"

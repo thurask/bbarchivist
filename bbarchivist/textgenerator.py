@@ -50,7 +50,7 @@ def write_links(softwareversion, osversion, radioversion,
     thename = softwareversion
     if appendbars:
         thename += "plusapps"
-    if temp:  # pragma: no cover
+    if temp:
         thename = "TEMPFILE"
     with open(thename + ".txt", "w") as target:
         target.write("OS VERSION: " + osversion + "\n")

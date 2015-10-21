@@ -202,10 +202,10 @@ class TestClassScriptutils:
         """
         with mock.patch('platform.system', mock.MagicMock(return_value="Windows")):
             with mock.patch('bbarchivist.utilities.verify_loader_integrity',
-                        mock.MagicMock(return_value=True)):
+                            mock.MagicMock(return_value=True)):
                 bs.test_loader_files(os.getcwd())
                 assert "OK" in capsys.readouterr()[0]
-        
+
     def test_loader_verify_bulk_bad(self):
         """
         Test checking many loaders, worst case.

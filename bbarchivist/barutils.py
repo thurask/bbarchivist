@@ -1,5 +1,5 @@
 ﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
+#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, C0103
 """This module is used to operate with bar files and other archives."""
 
 __author__ = "Thurask"
@@ -38,7 +38,7 @@ def extract_bars(filepath):
                 for name in names:
                     if str(name).endswith(".signed"):
                         zfile.extract(name, filepath)
-            except (RuntimeError, OSError) as exc:  # pragma: no cover
+            except (RuntimeError, OSError) as exc:
                 print("EXTRACTION FAILURE")
                 print(str(exc))
                 print("DID IT DOWNLOAD PROPERLY?")
@@ -59,7 +59,7 @@ def retrieve_sha512(filename):
             if name.endswith("MANIFEST.MF"):
                 manifest = name
                 break
-        if manifest is None:  # pragma: no cover
+        if manifest is None:
             raise SystemExit
         manf = zfile.read(manifest).splitlines()
         alist = []
@@ -70,7 +70,7 @@ def retrieve_sha512(filename):
         assetname = alist[0].split(b": ")[1]
         assethash = alist[1].split(b": ")[1]
         return assetname, assethash  # (b"blabla.signed", b"somehash")
-    except (RuntimeError, OSError, zipfile.BadZipFile) as exc:  # pragma: no cover
+    except (RuntimeError, OSError, zipfile.BadZipFile) as exc:
         print("EXTRACTION FAILURE")
         print(str(exc))
         print("DID IT DOWNLOAD PROPERLY?")
@@ -109,7 +109,7 @@ def bar_tester(filepath):
     with zipfile.ZipFile(filepath, "r") as zfile:
         brokens = zfile.testzip()
         if brokens is not None:
-            return filepath  # pragma: no cover
+            return filepath
         else:
             return None
 
@@ -146,7 +146,7 @@ def sz_compress(filepath, filename, szexe=None, strength=5, errors=False):
     endtime = time.clock() - starttime
     endtime_proper = math.ceil(endtime * 100) / 100
     print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
-    if errors:  # pragma: no cover
+    if errors:
         print(bbconstants.SZCODES[excode])
 
 
@@ -201,11 +201,11 @@ def tgz_verify(filepath):
     if tarfile.is_tarfile(filepath):
         with tarfile.open(filepath, "r:gz") as thefile:
             mems = thefile.getmembers()
-        if not mems:  # pragma: no cover
+        if not mems:
             return False
         else:
             return True
-    else:  # pragma: no cover
+    else:
         return False
 
 
@@ -241,11 +241,11 @@ def tbz_verify(filepath):
     if tarfile.is_tarfile(filepath):
         with tarfile.open(filepath, "r:bz2") as thefile:
             mems = thefile.getmembers()
-        if not mems:  # pragma: no cover
+        if not mems:
             return False
         else:
             return True
-    else:  # pragma: no cover
+    else:
         return False
 
 
@@ -274,17 +274,17 @@ def txz_verify(filepath):
     :param filepath: Filename.
     :type filepath: str
     """
-    if sys.version_info[1] <= 2:  # pragma: no cover
+    if sys.version_info[1] <= 2:
         pass
     else:
         if tarfile.is_tarfile(filepath):
             with tarfile.open(filepath, "r:xz") as thefile:
                 mems = thefile.getmembers()
-            if not mems:  # pragma: no cover
+            if not mems:
                 return False
             else:
                 return True
-        else:  # pragma: no cover
+        else:
             return False
 
 
@@ -318,9 +318,9 @@ def zip_verify(filepath):
         brokens = bar_tester(filepath)
         if brokens is None:
             return True
-        else:  # pragma: no cover
+        else:
             return False
-    else:  # pragma: no cover
+    else:
         return False
 
 
@@ -334,13 +334,13 @@ def filter_method(method, szexe=None):
     :param szexe: Path to 7z executable, if needed.
     :type szexe: str
     """
-    if sys.version_info[1] < 3 and method == "txz":  # pragma: no cover
+    if sys.version_info[1] < 3 and method == "txz":
         method = "zip"  # fallback
     if method == "7z" and szexe is None:
         ifexists = utilities.prep_seven_zip()  # see if 7z exists
         if not ifexists:
             method = "zip"  # fallback
-        else:  # pragma: no cover
+        else:
             szexe = utilities.get_seven_zip(False)
     return method
 
@@ -374,7 +374,7 @@ def compress(filepath, method="7z", szexe=None, selective=False):
     """
     method = filter_method(method, szexe)
     files = [file for file in os.listdir(filepath) if not os.path.isdir(file)]
-    if selective:  # pragma: no cover
+    if selective:
         filt0 = [file for file in files if file.startswith(bbconstants.PREFIXES)]  # loaders
         filt1 = [file for file in filt0 if not file.endswith(bbconstants.ARCS)]  # pop compressed
         filt2 = [file for file in filt1 if file.endswith(".exe")]  # exes only
@@ -421,7 +421,7 @@ def verify(filepath, method="7z", szexe=None, selective=False):
         filt = file.endswith(bbconstants.ARCS)
         if selective:
             filt = filt and file.startswith(bbconstants.PREFIXES)
-        if filt:  # pragma: no cover
+        if filt:
             print("VERIFYING:", file)
             if file.endswith(".7z") and szexe is not None:
                 szver = sz_verify(os.path.abspath(file), szexe)
@@ -483,9 +483,9 @@ def remove_empty_folders(a_folder):
             try:
                 if not subdirs and not files:
                     os.rmdir(curdir)
-            except OSError:  # pragma: no cover
+            except OSError:
                 continue
-            except NotImplementedError:  # pragma: no cover
+            except NotImplementedError:
                 break
             break
 
@@ -599,7 +599,7 @@ def loader_sorter(file, osdir, raddir):
         while True:
             try:
                 shutil.move(file, osdir)
-            except shutil.Error:  # pragma: no cover
+            except shutil.Error:
                 os.remove(file)
                 continue
             break
@@ -607,7 +607,7 @@ def loader_sorter(file, osdir, raddir):
         while True:
             try:
                 shutil.move(file, raddir)
-            except shutil.Error:  # pragma: no cover
+            except shutil.Error:
                 os.remove(file)
                 continue
             break
@@ -635,12 +635,12 @@ def move_bars(localdir, osdir, radiodir):
             if os.path.getsize(os.path.join(localdir, files)) > 90000000:
                 try:
                     shutil.move(os.path.join(localdir, files), osdir)
-                except shutil.Error:  # pragma: no cover
+                except shutil.Error:
                     os.remove(bardest_os)
             else:
                 try:
                     shutil.move(os.path.join(localdir, files), radiodir)
-                except shutil.Error:  # pragma: no cover
+                except shutil.Error:
                     os.remove(bardest_radio)
 
 
@@ -658,7 +658,7 @@ def make_dirs(localdir, osversion, radioversion):
     :type radioversion: str
     """
     if not os.path.exists(localdir):
-        os.makedirs(localdir)  # pragma: no cover
+        os.makedirs(localdir)
 
     if not os.path.exists(os.path.join(localdir, 'bars')):
         os.mkdir(os.path.join(localdir, 'bars'))
@@ -701,17 +701,17 @@ def compress_config_loader(homepath=None):
     :type homepath: str
     """
     config = configparser.ConfigParser()
-    if homepath is None:  # pragma: no cover
+    if homepath is None:
         homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
-    if not os.path.exists(conffile):  # pragma: no cover
+    if not os.path.exists(conffile):
         open(conffile, 'w').close()
     config.read(conffile)
-    if not config.has_section('compression'):  # pragma: no cover
+    if not config.has_section('compression'):
         config['compression'] = {}
     compini = config['compression']
     method = compini.get('method', fallback="7z")
-    if sys.version_info[1] <= 2 and method == "txz":  # pragma: no cover
+    if sys.version_info[1] <= 2 and method == "txz":
         method = "zip"  # for 3.2 compatibility
     return method
 
@@ -726,16 +726,16 @@ def compress_config_writer(method=None, homepath=None):
     :param homepath: Folder containing bbarchivist.ini. Default is user directory.
     :type homepath: str
     """
-    if method is None:  # pragma: no cover
+    if method is None:
         method = compress_config_loader()
     config = configparser.ConfigParser()
-    if homepath is None:  # pragma: no cover
+    if homepath is None:
         homepath = os.path.expanduser("~")
     conffile = os.path.join(homepath, "bbarchivist.ini")
-    if not os.path.exists(conffile):  # pragma: no cover
+    if not os.path.exists(conffile):
         open(conffile, 'w').close()
     config.read(conffile)
-    if not config.has_section('compression'):  # pragma: no cover
+    if not config.has_section('compression'):
         config['compression'] = {}
     config['compression']['method'] = method
     with open(conffile, "w") as configfile:

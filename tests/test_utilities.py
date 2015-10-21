@@ -214,7 +214,7 @@ class TestClassUtilitiesLoaders:
         with mock.patch('platform.system', mock.MagicMock(return_value="Windows")):
             with mock.patch('subprocess.call', mock.MagicMock(return_value=0)):
                 assert not bu.verify_bulk_loaders(os.getcwd())
-        
+
     def test_integrity_bulk_bad(self):
         """
         Test checking return code of all autoloaders, worst case.
@@ -484,7 +484,7 @@ class TestClassUtilitiesArgparse:
 
 class TestClassUtilitiesConfig:
     """
-    Test reading/writing configs with ConfigParser. 
+    Test reading/writing configs with ConfigParser.
     """
     def test_cappath_loader(self):
         """
