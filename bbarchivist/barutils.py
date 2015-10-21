@@ -138,10 +138,11 @@ def sz_compress(filepath, filename, szexe=None, strength=5, errors=False):
     rawname = os.path.dirname(filepath)
     cores = str(utilities.get_core_count())
     initfold = os.path.join(rawname, filename)
-    excode = subprocess.call('{0} a -mx{1} -m0=lzma2 -mmt{2} "{3}.7z" "{4}"'.format(
-        szexe, strength, cores, filepath, initfold),
-                             stdout=utilities.devnull(),
-                             stderr=subprocess.STDOUT)
+    with open(os.devnull, 'wb') as DEVNULL:
+        excode = subprocess.call('{0} a -mx{1} -m0=lzma2 -mmt{2} "{3}.7z" "{4}"'.format(
+            szexe, strength, cores, filepath, initfold),
+                                 stdout=DEVNULL,
+                                 stderr=subprocess.STDOUT)
     endtime = time.clock() - starttime
     endtime_proper = math.ceil(endtime * 100) / 100
     print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
@@ -160,10 +161,11 @@ def sz_verify(filepath, szexe=None):
     :type szexe: str
     """
     filepath = os.path.abspath(filepath)
-    excode = subprocess.call('{0} t "{1}"'.format(
-        szexe, filepath),
-                             stdout=utilities.devnull(),
-                             stderr=subprocess.STDOUT)
+    with open(os.devnull, 'wb') as DEVNULL:
+        excode = subprocess.call('{0} t "{1}"'.format(
+            szexe, filepath),
+                                 stdout=DEVNULL,
+                                 stderr=subprocess.STDOUT)
     return excode == 0
 
 
