@@ -70,6 +70,18 @@ def grab_cap():
         return os.path.abspath(capfile)  # local cap
 
 
+def devnull():
+    """
+    Wrap subprocess.devnull for silly stupid Python 3.2.
+    """
+    try:
+        from subprocess import DEVNULL
+        devnull = DEVNULL
+    except AttributeError:
+        devnull = -3  # that's what it evaluates to
+    finally:
+        return devnull
+
 def grab_json():
     """
     Figure out where JSON is, local or system-supplied.
@@ -609,7 +621,7 @@ def verify_loader_integrity(loaderfile):
         excode = None
         try:
             excode = subprocess.call('{0} fileinfo"'.format(loaderfile),
-                                 stdout=subprocess.DEVNULL,
+                                 stdout=devnull(),
                                  stderr=subprocess.STDOUT)
         except OSError:
             excode = -1
