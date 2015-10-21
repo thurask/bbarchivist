@@ -29,19 +29,19 @@ def extract_bars(filepath):
     :param filepath: Path to bar file directory.
     :type filepath: str
     """
-    for file in os.listdir(filepath):
-        if file.endswith(".bar"):
-            try:
+    try:
+        for file in os.listdir(filepath):
+            if file.endswith(".bar"):
                 print("EXTRACTING:", file)
                 zfile = zipfile.ZipFile(file, 'r')
                 names = zfile.namelist()
                 for name in names:
                     if str(name).endswith(".signed"):
                         zfile.extract(name, filepath)
-            except (RuntimeError, OSError) as exc:
-                print("EXTRACTION FAILURE")
-                print(str(exc))
-                print("DID IT DOWNLOAD PROPERLY?")
+    except (RuntimeError, OSError) as exc:
+        print("EXTRACTION FAILURE")
+        print(str(exc))
+        print("DID IT DOWNLOAD PROPERLY?")
 
 
 def retrieve_sha512(filename):
@@ -103,15 +103,16 @@ def bar_tester(filepath):
     """
     Use zipfile in order to test a bar for errors.
 
-    :param filepath: Path to bar file
+    :param filepath: Path to bar file.
     :type filepath: str
     """
-    with zipfile.ZipFile(filepath, "r") as zfile:
-        brokens = zfile.testzip()
-        if brokens is not None:
-            return filepath
-        else:
-            return None
+    try:
+        with zipfile.ZipFile(filepath, "r") as zfile:
+            brokens = zfile.testzip()
+    except zipfile.BadZipFile:
+        brokens = filepath
+    finally:
+        return brokens
 
 
 def sz_compress(filepath, filename, szexe=None, strength=5, errors=False):
@@ -427,28 +428,27 @@ def verify(filepath, method="7z", szexe=None, selective=False):
                 szver = sz_verify(os.path.abspath(file), szexe)
                 if not szver:
                     print("{0} IS BROKEN!".format((file)))
-                    return False
+                return szver
             elif file.endswith(".tar.gz"):
                 tgver = tgz_verify(file)
                 if not tgver:
                     print("{0} IS BROKEN!".format((file)))
-                    return False
+                return tgver
             elif file.endswith(".tar.xz"):
                 txver = txz_verify(file)
                 if not txver:
                     print("{0} IS BROKEN!".format((file)))
-                    return False
+                return txver
             elif file.endswith(".tar.bz2"):
                 tbver = tbz_verify(file)
                 if not tbver:
                     print("{0} IS BROKEN!".format((file)))
-                    return False
+                return tbver
             elif file.endswith(".zip"):
                 zver = zip_verify(file)
                 if not zver:
                     print("{0} IS BROKEN!".format((file)))
-                    return False
-    return True
+                return zver
 
 
 def compress_suite(filepath, method="7z", szexe=None, selective=False):
@@ -536,7 +536,7 @@ def create_blitz(a_folder, swver):
                          'w',
                          zipfile.ZIP_DEFLATED,
                          allowZip64=True) as zfile:
-        for root, dirs, files in os.walk(a_folder):  # @UnusedVariable
+        for root, dirs, files in os.walk(a_folder):
             del dirs
             for file in files:
                 print("ZIPPING:", utilities.barname_stripper(file))
@@ -657,37 +657,36 @@ def make_dirs(localdir, osversion, radioversion):
     :param radioversion: Radio version.
     :type radioversion: str
     """
-    if not os.path.exists(localdir):
-        os.makedirs(localdir)
+    os.makedirs(localdir, exist_ok=True)
 
     if not os.path.exists(os.path.join(localdir, 'bars')):
-        os.mkdir(os.path.join(localdir, 'bars'))
+        os.makedirs(os.path.join(localdir, 'bars'), exist_ok=True)
     bardir = os.path.join(localdir, 'bars')
     if not os.path.exists(os.path.join(bardir, osversion)):
-        os.mkdir(os.path.join(bardir, osversion))
+        os.makedirs(os.path.join(bardir, osversion), exist_ok=True)
     bardir_os = os.path.join(bardir, osversion)
     if not os.path.exists(os.path.join(bardir, radioversion)):
-        os.mkdir(os.path.join(bardir, radioversion))
+        os.makedirs(os.path.join(bardir, radioversion), exist_ok=True)
     bardir_radio = os.path.join(bardir, radioversion)
 
     if not os.path.exists(os.path.join(localdir, 'loaders')):
-        os.mkdir(os.path.join(localdir, 'loaders'))
+        os.makedirs(os.path.join(localdir, 'loaders'), exist_ok=True)
     loaderdir = os.path.join(localdir, 'loaders')
     if not os.path.exists(os.path.join(loaderdir, osversion)):
-        os.mkdir(os.path.join(loaderdir, osversion))
+        os.makedirs(os.path.join(loaderdir, osversion), exist_ok=True)
     loaderdir_os = os.path.join(loaderdir, osversion)
     if not os.path.exists(os.path.join(loaderdir, radioversion)):
-        os.mkdir(os.path.join(loaderdir, radioversion))
+        os.makedirs(os.path.join(loaderdir, radioversion), exist_ok=True)
     loaderdir_radio = os.path.join(loaderdir, radioversion)
 
     if not os.path.exists(os.path.join(localdir, 'zipped')):
-        os.mkdir(os.path.join(localdir, 'zipped'))
+        os.makedirs(os.path.join(localdir, 'zipped'), exist_ok=True)
     zipdir = os.path.join(localdir, 'zipped')
     if not os.path.exists(os.path.join(zipdir, osversion)):
-        os.mkdir(os.path.join(zipdir, osversion))
+        os.makedirs(os.path.join(zipdir, osversion), exist_ok=True)
     zipdir_os = os.path.join(zipdir, osversion)
     if not os.path.exists(os.path.join(zipdir, radioversion)):
-        os.mkdir(os.path.join(zipdir, radioversion))
+        os.makedirs(os.path.join(zipdir, radioversion), exist_ok=True)
     zipdir_radio = os.path.join(zipdir, radioversion)
 
     return (bardir_os, bardir_radio, loaderdir_os, loaderdir_radio, zipdir_os, zipdir_radio)

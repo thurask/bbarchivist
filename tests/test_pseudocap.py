@@ -12,9 +12,9 @@ def setup_module(module):
     """
     Create necessary files.
     """
-    if not os.path.exists("temp"):
-        os.mkdir("temp")
-    os.chdir("temp")
+    if not os.path.exists("temp_pseudocap"):
+        os.mkdir("temp_pseudocap")
+    os.chdir("temp_pseudocap")
     with open("firstfile", "w") as targetfile:
         targetfile.write("Jackdaws love my big sphinx of quartz")
     with open("cap-3.11.0.22.dat", "w") as targetfile:
@@ -39,12 +39,8 @@ def teardown_module(module):
     """
     Delete necessary files.
     """
-    if os.path.exists("cap-3.11.0.22.dat"):
-        os.remove("cap-3.11.0.22.dat")
-    if os.path.exists("firstfile"):
-        os.remove("firstfile")
     os.chdir("..")
-    rmtree("temp")
+    rmtree("temp_pseudocap", ignore_errors=True)
 
 
 class TestClassPseudocap:

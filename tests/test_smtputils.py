@@ -4,8 +4,27 @@
 
 import bbarchivist.smtputils as bs
 import os
+from shutil import rmtree
 from email.mime.text import MIMEText
 from configparser import ConfigParser
+
+
+def setup_module(module):
+    """
+    Create necessary files.
+    """
+    if not os.path.exists("temp_smtputils"):
+        os.mkdir("temp_smtputils")
+    os.chdir("temp_smtputils")
+
+
+def teardown_module(module):
+    """
+    Delete necessary files.
+    """
+    os.chdir("..")
+    rmtree("temp_smtputils", ignore_errors=True)
+
 
 class TestClassSMTPUtils:
     """

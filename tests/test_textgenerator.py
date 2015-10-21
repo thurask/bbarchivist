@@ -12,19 +12,17 @@ def setup_module(module):
     """
     Create necessary files.
     """
-    if not os.path.exists("temp"):
-        os.mkdir("temp")
-    os.chdir("temp")
+    if not os.path.exists("temp_textgenerator"):
+        os.mkdir("temp_textgenerator")
+    os.chdir("temp_textgenerator")
 
 
 def teardown_module(module):
     """
     Delete necessary files.
     """
-    if os.path.exists("10.3.3000.txt"):
-        os.remove("10.3.3000.txt")
     os.chdir("..")
-    rmtree("temp")
+    rmtree("temp_textgenerator", ignore_errors=True)
 
 
 def cl_good_mock(url, request):

@@ -3,6 +3,7 @@
 """Test the filehashtools module."""
 
 import os
+import pytest
 from shutil import rmtree
 try:
     import gnupg
@@ -13,15 +14,19 @@ else:
 from hashlib import algorithms_available as algos
 from bbarchivist import filehashtools as bf
 from configparser import ConfigParser
+try:
+    import unittest.mock as mock
+except ImportError:
+    import mock
 
 
 def setup_module(module):
     """
     Create necessary files.
     """
-    if not os.path.exists("temp"):
-        os.mkdir("temp")
-    os.chdir("temp")
+    if not os.path.exists("temp_filehashtools"):
+        os.mkdir("temp_filehashtools")
+    os.chdir("temp_filehashtools")
     with open("tempfile.txt", "w") as targetfile:
         targetfile.write("Jackdaws love my big sphinx of quartz")
 
@@ -30,14 +35,8 @@ def teardown_module(module):
     """
     Delete necessary files.
     """
-    if os.path.exists("tempfile.txt"):
-        os.remove("tempfile.txt")
-    if os.path.exists("tempfile.txt.cksum"):
-        os.remove("tempfile.txt.cksum")
-    if not NOGNUPG and os.path.exists("tempfile.txt.asc"):
-        os.remove("tempfile.txt.asc")
     os.chdir("..")
-    rmtree("temp")
+    rmtree("temp_filehashtools", ignore_errors=True)
 
 
 class TestClassFilehashtools:
@@ -95,6 +94,14 @@ class TestClassFilehashtools:
         else:
             assert bf.md4hash("tempfile.txt") == "df26ada1a895f94e1f1257fad984e809"
 
+    def test_md4_unavail(self, capsys):
+        """
+        Test MD4 hash, if not available.
+        """
+        with mock.patch("hashlib.new", mock.MagicMock(side_effect=ValueError)):
+            bf.md4hash("tempfile.txt")
+            assert "MD4 HASH FAILED" in capsys.readouterr()[0] 
+              
     def test_md5hash(self):
         """
         Test MD5 hash.
@@ -110,6 +117,14 @@ class TestClassFilehashtools:
         else:
             assert bf.ripemd160hash("tempfile.txt") == "f3e191024c33768e2589e2efca53d55f4e4945ee"
 
+    def test_ripemd160_unavail(self, capsys):
+        """
+        Test RIPEMD160 hash, if not available.
+        """
+        with mock.patch("hashlib.new", mock.MagicMock(side_effect=ValueError)):
+            bf.ripemd160hash("tempfile.txt")
+            assert "RIPEMD160 HASH FAILED" in capsys.readouterr()[0]
+            
     def test_whirlpoolhash(self):
         """
         Test Whirlpool hash.
@@ -118,6 +133,14 @@ class TestClassFilehashtools:
             pass
         else:
             assert bf.whirlpoolhash("tempfile.txt") == "9835d12f3cb3ea3934635e4a7cc918e489379ed69d894ebc2c09bbf99fe72567bfd26c919ad666e170752abfc4b8c37b376f5102f9e5de59af2b65efc2e01293"
+
+    def test_whirlpool_unavail(self, capsys):
+        """
+        Test Whirlpool hash, if not available.
+        """
+        with mock.patch("hashlib.new", mock.MagicMock(side_effect=ValueError)):
+            bf.whirlpoolhash("tempfile.txt")
+            assert "WHIRLPOOL HASH FAILED" in capsys.readouterr()[0]
 
     def test_gpgfile(self):
         """
@@ -155,7 +178,7 @@ class TestClassFilehashtools:
         pin = "acdcacdc"
         app = "10.3.2.500"
         uptime = "69696969"
-        assert bf.calculate_escreens(pin, app, uptime) == "E23F8E7F"
+        assert bf.calculate_escreens(pin, app, uptime, duration=2) == "E4A25067"
 
     def test_verifier(self, onefile=False):
         """
@@ -259,6 +282,30 @@ class TestClassFilehashtools:
                             pass
                     else:
                         assert verified
+
+    def test_gpgrunner_unavail(self, capsys):
+        """
+        Test GPGRunner raising ValueError, i.e. GnuPG not found.
+        """
+        with mock.patch("gnupg.GPG", mock.MagicMock(side_effect=ValueError)):
+            with pytest.raises(SystemExit):
+                bf.gpgrunner(os.getcwd(), "12345678", "hunter2", False)
+                assert "COULD NOT FIND GnuPG" in capsys.readouterr()[0]
+
+    def test_gpgrunner_failure(self, capsys):
+        """
+        Test GPGRunner going wrong during the process.
+        """
+        if os.getenv("TRAVIS", "false") == "true":
+            pass
+        elif NOGNUPG:
+            pass
+        else:
+            with mock.patch("bbarchivist.filehashtools.gpgfile", mock.MagicMock(side_effect=Exception)):
+                with pytest.raises(SystemExit):    
+                    bf.gpgrunner(os.getcwd(), "12345678", "hunter2", False)
+                    assert "SOMETHING WENT WRONG" in capsys.readouterr()[0]
+                    
 
 class TestClassFilehashtoolsConfig:
     """

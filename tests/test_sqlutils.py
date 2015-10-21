@@ -18,9 +18,9 @@ def setup_module(module):
     """
     Create necessary files.
     """
-    if not os.path.exists("temp"):
-        os.mkdir("temp")
-    os.chdir("temp")
+    if not os.path.exists("temp_sqlutils"):
+        os.mkdir("temp_sqlutils")
+    os.chdir("temp_sqlutils")
     if os.path.exists("bbarchivist.db"):
         os.remove("bbarchivist.db")
 
@@ -29,15 +29,8 @@ def teardown_module(module):
     """
     Delete necessary files.
     """
-    if os.path.exists("bbarchivist.db"):
-        try:
-            os.remove("bbarchivist.db")
-        except PermissionError:
-            UselessStdout.write("ASDASDASD")  # take that
-    if os.path.exists("swrelease.csv"):
-        os.remove("swrelease.csv")
     os.chdir("..")
-    rmtree("temp", ignore_errors=True)
+    rmtree("temp_sqlutils", ignore_errors=True)
 
 
 class TestClassSQLUtils:

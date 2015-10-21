@@ -479,9 +479,9 @@ def ptcrb_item_cleaner(item):
     item = item.replace("Radio ", "Radio: ")
     item = item.replace("Release ", "Release: ")
     spaclist = item.split(" ")
-    while len(spaclist[1]) < 11:# pragma: no cover
+    while len(spaclist[1]) < 11:
         spaclist[1] += " "
-    while len(spaclist[3]) < 11:# pragma: no cover
+    while len(spaclist[3]) < 11:
         spaclist[3] += " "
     item = " ".join(spaclist)
     item = item.strip()
