@@ -252,13 +252,13 @@ class TestClassBarutilsVerifier:
         if exists:
             szexe = get_seven_zip(False)
             bb.compress(verdir, "7z", szexe, True)
-        bb.compress(verdir, "tgz", szexe, True)
-        bb.compress(verdir, "tbz", szexe, True)
-        bb.compress(verdir, "zip", szexe, True)
+        bb.compress(verdir, "tgz", None, True)
+        bb.compress(verdir, "tbz", None, True)
+        bb.compress(verdir, "zip", None, True)
         if version_info[1] < 3:
             pass
         else:
-            bb.compress(verdir, "txz", szexe, True)
+            bb.compress(verdir, "txz", None, True)
 
     def test_verify_sz(self):
         """
