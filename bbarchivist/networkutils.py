@@ -439,6 +439,8 @@ def ptcrb_scraper(ptcrbid):
     text = soup.get_text()
     text = text.replace("\r\n", " ")
     prelimlist = re.findall("OS .+[^\\n]", text, re.IGNORECASE)
+    if not prelimlist:  # Priv
+        prelimlist = re.findall("[A-Z]{3}[0-9]{3}[\s]", text)
     cleanlist = []
     for item in prelimlist:
         if not item.endswith("\r\n"):  # they should hire QC people...
@@ -479,10 +481,11 @@ def ptcrb_item_cleaner(item):
     item = item.replace("Radio ", "Radio: ")
     item = item.replace("Release ", "Release: ")
     spaclist = item.split(" ")
-    while len(spaclist[1]) < 11:
-        spaclist[1] += " "
-    while len(spaclist[3]) < 11:
-        spaclist[3] += " "
+    if len(spaclist) > 1:
+        while len(spaclist[1]) < 11:
+            spaclist[1] += " "
+        while len(spaclist[3]) < 11:
+            spaclist[3] += " "
     item = " ".join(spaclist)
     item = item.strip()
     return item
