@@ -486,6 +486,8 @@ def ptcrb_item_cleaner(item):
             spaclist[1] += " "
         while len(spaclist[3]) < 11:
             spaclist[3] += " "
+    else:
+        spaclist.insert(0, "OS:")
     item = " ".join(spaclist)
     item = item.strip()
     return item
