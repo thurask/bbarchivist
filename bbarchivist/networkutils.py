@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """This module is used for network connections; APIs, downloading, related tools."""
 
@@ -440,7 +440,7 @@ def ptcrb_scraper(ptcrbid):
     text = text.replace("\r\n", " ")
     prelimlist = re.findall("OS .+[^\\n]", text, re.IGNORECASE)
     if not prelimlist:  # Priv
-        prelimlist = re.findall("[A-Z]{3}[0-9]{3}[\s]", text)
+        prelimlist = re.findall(r"[A-Z]{3}[0-9]{3}[\s]", text)
     cleanlist = []
     for item in prelimlist:
         if not item.endswith("\r\n"):  # they should hire QC people...
