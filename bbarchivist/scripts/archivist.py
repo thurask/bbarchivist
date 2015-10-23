@@ -297,9 +297,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
         osurls[vzwindex] = osurls[vzwindex].replace("qc8960.factory_sfi", "qc8960.verizon_sfi")  # fallback
     osurls = list(set(osurls))  # pop duplicates
     if altsw:
-        radiourls2 = []
-        for rad in radiourls:
-            radiourls2.append(rad.replace(baseurl, alturl))
+        radiourls2 = [x.replace(baseurl, alturl) for x in radiourls]
         radiourls = radiourls2
         del radiourls2
 

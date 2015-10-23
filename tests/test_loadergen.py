@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301
 """Test the loadergen module."""
 
@@ -52,7 +52,7 @@ class TestClassLoadergen:
         """
         Test creating one autoloader (lazyloader).
         """
-        with open("desktop.signed", "w") as targetfile:
+        with open("desktop_sfi.signed", "w") as targetfile:
             targetfile.write("Jackdaws love my big sphinx of quartz"*5000)
         with open("radio.signed", "w") as targetfile:
             targetfile.write("Why must I chase the cat?"*5000)
@@ -62,7 +62,7 @@ class TestClassLoadergen:
             data = targetfile.read()
             shahash.update(data)
         thehash = shahash.hexdigest()
-        os.remove("desktop.signed")
+        os.remove("desktop_sfi.signed")
         os.remove("radio.signed")
         assert thehash == 'd4872a853e19fb8512067f50555827c74ec33da6fd5d71ae3ddd1b0ce98a18e01727eb1f345f476d6d59bcb438be8780e3f1dc7b212dc63b4b7c09914093a730'
 
