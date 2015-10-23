@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """This module is used for creation of autoloaders.
 A higher level interface for :mod:`bbarchivist.pseudocap`."""
@@ -14,14 +14,17 @@ from bbarchivist import pseudocap  # implement cap
 from bbarchivist import utilities  # json
 
 
-def read_files(localdir):
+def read_files(localdir, core=False):
     """
     Read list of signed files, return name assignments.
 
     :param localdir: Directory to use.
     :type localdir: str
+
+    :param core: If we're using a core OS image. Default is false.
+    :type core: bool
     """
-    oslist = read_os_files(localdir)
+    oslist = read_os_files(localdir, core)
     radlist = read_radio_files(localdir)
     pairdict = {}
     # [radio_ti, radio_z10, radio_z10_vzw, radio_q10, radio_z30, radio_z3, radio_8974]
@@ -38,19 +41,32 @@ def read_files(localdir):
     return filtdict
 
 
-def read_os_files(localdir):
+def read_os_files(localdir, core=False):
     """
     Read list of OS signed files, return name assignments.
 
     :param localdir: Directory to use.
     :type localdir: str
+
+    :param core: If we're using a core OS image. Default is false.
+    :type core: bool
     """
+    if core:
+        fix8960 = "*qc8960.*_sfi*.signed"
+        fixomap = ""
+        fix8930 = "*qc8x30*.signed"
+        fix8974 = "*qc8974*.signed"
+    else:
+        fix8960 = "*qc8960.*_sfi.desktop*.signed"
+        fixomap = ""
+        fix8930 = "*qc8x30*desktop*.signed"
+        fix8974 = "*qc8974*desktop*.signed"
     # 8960
     try:
         os_8960 = glob.glob(
             os.path.join(
                 localdir,
-                "*qc8960.*_sfi.desktop*.signed"))[0]
+                fix8960))[0]
     except IndexError:
         os_8960 = None
         print("No 8960 image found")
@@ -59,13 +75,13 @@ def read_os_files(localdir):
         os_8x30 = glob.glob(
             os.path.join(
                 localdir,
-                "*qc8x30*desktop*.signed"))[0]
+                fix8930))[0]
     except IndexError:
         try:
             os_8x30 = glob.glob(
                 os.path.join(
                     localdir,
-                    "*qc8960.*_sfi.desktop*.signed"))[0]
+                    fix8960))[0]
         except IndexError:
             os_8x30 = None
             print("No 8x30 image found")
@@ -74,7 +90,7 @@ def read_os_files(localdir):
         os_8974 = glob.glob(
             os.path.join(
                 localdir,
-                "*qc8974*desktop*.signed"))[0]
+                fix8974))[0]
     except IndexError:
         os_8974 = None
         print("No 8974 image found")
@@ -177,7 +193,7 @@ def pretty_formatter(osversion, radioversion):
     return the_os, the_radio
 
 
-def format_suffix(altradio=None, radioversion=None):
+def format_suffix(altradio=None, radioversion=None, core=False):
     """
     Formulate suffix for hybrid autoloaders.
 
@@ -186,17 +202,22 @@ def format_suffix(altradio=None, radioversion=None):
 
     :param radioversion: The hybrid radio version, if applicable.
     :type radioversion: str
+
+    :param core: If we're using a core OS image. Default is false.
+    :type core: bool
     """
     if altradio and radioversion:
         suffix = "_R"+radioversion
     else:
         suffix = ""
+    if core:
+        suffix += "_CORE"
     return suffix
 
 
 def generate_loaders(
         osversion, radioversion, radios=True,
-        localdir=None, altradio=False):
+        localdir=None, altradio=False, core=False):
     """
     Create and label autoloaders for :mod:`bbarchivist.scripts.archivist`.
 
@@ -214,14 +235,17 @@ def generate_loaders(
 
     :param altradio: If we're using an alternate radio. Default is false.
     :type altradio: bool
+
+    :param core: If we're using a core OS image. Default is false.
+    :type core: bool
     """
     # default parsing
     if localdir is None:
         localdir = os.getcwd()
     print("GETTING FILENAMES...")
-    filedict = read_files(localdir)
+    filedict = read_files(localdir, core)
     osversion, radioversion = pretty_formatter(osversion, radioversion)
-    suffix = format_suffix(altradio, radioversion)
+    suffix = format_suffix(altradio, radioversion, core)
     # Generate loaders
     print("CREATING LOADERS...")
     filtrad = [rad for rad in filedict.keys() if rad]  # pop None
@@ -325,7 +349,7 @@ def generate_filename(device, version, suffix=None):
 
 def generate_lazy_loader(
         osversion, device,
-        localdir=None, altradio=None):
+        localdir=None, altradio=None, core=False):
     """
     Create and label autoloaders for :mod:`bbarchivist.scripts.lazyloader`.
     :func:`generate_loaders`, but for making one OS/radio loader.
@@ -341,14 +365,17 @@ def generate_lazy_loader(
 
     :param altradio: The alternate radio in use, if there is one.
     :type altradio: str
+
+    :param core: If we're using a core OS image. Default is false.
+    :type core: bool
     """
     # default parsing
     if localdir is None:
         localdir = os.getcwd()
     print("CREATING LOADER...")
-    suffix = format_suffix(bool(altradio), altradio)
+    suffix = format_suffix(bool(altradio), altradio, core)
     try:
-        osfile = str(glob.glob("*desktop*.signed")[0])
+        osfile = str(glob.glob("*_sfi*.signed")[0])
     except IndexError:
         print("No OS found")
         raise SystemExit

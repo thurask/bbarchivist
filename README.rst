@@ -251,6 +251,7 @@ Help
 							Radio software version; use without software to guess
 	  -m [METHOD], --method [METHOD]
 							Compression method
+	  -c, --core            Make core/radio loaders
 
 	negators:
 	  Disable program functionality
@@ -294,6 +295,7 @@ Help
 	  -n, --no-download     Don't download files
 	  -r [SW], --radiosw [SW]
 							Radio software version; use without software to guess
+	  -c, --core            Make core/radio loader
 
 	devices:
 	  Device to load (one required)

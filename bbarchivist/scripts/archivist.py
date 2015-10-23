@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, W0142
 """Download bar files, create autoloaders."""
 
@@ -140,6 +140,13 @@ def grab_args():
             nargs="?",
             type=utilities.valid_method,
             default=None)
+        parser.add_argument(
+            "-c",
+            "--core",
+            dest="core",
+            help="Make core/radio loaders",
+            default=False,
+            action="store_true")
         parser.set_defaults(compmethod="7z")
         args = parser.parse_args(sys.argv[1:])
         if args.folder is None:
@@ -156,7 +163,7 @@ def grab_args():
                        args.compress, args.delete, args.verify,
                        hashdict, args.download,
                        args.extract, args.signed, compmethod,
-                       args.gpg, args.integrity, args.altsw)
+                       args.gpg, args.integrity, args.altsw, args.core)
     else:
         localdir = os.getcwd()
         osversion = input("OS VERSION: ")
@@ -178,12 +185,13 @@ def grab_args():
         gpg = False
         integrity = True
         altsw = None
+        core = False
         print(" ")
         archivist_main(osversion, radioversion, softwareversion,
                        localdir, radios, compressed, deleted, hashed,
                        hashdict, download,
                        extract, signed, compmethod, gpg,
-                       integrity, altsw)
+                       integrity, altsw, core)
         smeg = input("Press Enter to exit")
         if smeg or not smeg:
             raise SystemExit
@@ -192,9 +200,9 @@ def grab_args():
 def archivist_main(osversion, radioversion=None, softwareversion=None,
                    localdir=None, radios=True, compressed=True, deleted=True,
                    hashed=True, hashdict=None, download=True,
-                   extract=True, signed=True,
-                   compmethod="7z", gpg=False,
-                   integrity=True, altsw=None):
+                   extract=True, signed=True, compmethod="7z",
+                   gpg=False, integrity=True, altsw=None,
+                   core=False):
     """
     Wrap around multi-autoloader creation code.
     Some combination of creating, downloading, hashing,
@@ -247,6 +255,9 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
 
     :param altsw: Radio software release, if not the same as OS.
     :type altsw: str
+
+    :param core: Whether to create a core/radio loader. Default is false.
+    :type core: bool
     """
     starttime = time.clock()
     swchecked = False  # if we checked sw release already
@@ -272,10 +283,18 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     baseurl = networkutils.create_base_url(softwareversion)
     if altsw:
         alturl = networkutils.create_base_url(altsw)
-    osurls, radiourls, cors = utilities.generate_urls(baseurl, osversion, radioversion)
-    del cors
-    if not networkutils.availability(osurls[1]):
-        osurls[1] = osurls[1].replace("qc8960.factory_sfi", "qc8960.verizon_sfi")  # fallback
+    osurls, radiourls, cores = utilities.generate_urls(baseurl, osversion, radioversion, True)
+    if core:
+        osurls = cores
+    else:
+        del cores
+    for idx, url in enumerate(osurls):
+        if "qc8960.factory_sfi" in url:
+            vzwurl = url
+            vzwindex = idx
+            break
+    if not networkutils.availability(vzwurl):
+        osurls[vzwindex] = osurls[vzwindex].replace("qc8960.factory_sfi", "qc8960.verizon_sfi")  # fallback
     osurls = list(set(osurls))  # pop duplicates
     if altsw:
         radiourls2 = []
@@ -325,15 +344,13 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
 
     # Create loaders
     print("GENERATING LOADERS...")
-    if altsw:
-        altradio = True
-    else:
-        altradio = False
+    altradio = (altsw is not None)
     loadergen.generate_loaders(osversion,
                                radioversion,
                                radios,
                                localdir,
-                               altradio)
+                               altradio,
+                               core)
 
     # Test loader files
     if integrity:

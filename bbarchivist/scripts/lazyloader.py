@@ -1,5 +1,5 @@
-﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, W0703
+#!/usr/bin/env python3
+#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, W0703, E1121
 """Create one autoloader for personal use."""
 
 __author__ = "Thurask"
@@ -228,6 +228,13 @@ def grab_args():
             nargs="?",
             const="checkme",
             default=None)
+        parser.add_argument(
+            "-c",
+            "--core",
+            dest="core",
+            help="Make core/radio loader",
+            default=False,
+            action="store_true")
         if getattr(sys, 'frozen', False):
             frozen = True
         else:
@@ -248,7 +255,8 @@ def grab_args():
                       args.autoloader,
                       args.folder,
                       args.download,
-                      args.altsw)
+                      args.altsw,
+                      args.core)
         else:
             if not args.os:
                 raise argparse.ArgumentError(argument=None,
@@ -264,7 +272,8 @@ def grab_args():
                                 args.folder,
                                 args.autoloader,
                                 args.download,
-                                args.altsw)
+                                args.altsw,
+                                args.core)
     else:
         localdir = os.getcwd()
         while True:
@@ -327,7 +336,8 @@ def grab_args():
             localdir,
             autoloader,
             True,
-            altsw)
+            altsw,
+            False)
         smeg = input("Press Enter to exit")
         if smeg or not smeg:
             raise SystemExit
@@ -335,7 +345,7 @@ def grab_args():
 
 def lazyloader_main(device, osversion, radioversion=None,
                     softwareversion=None, localdir=None, autoloader=False,
-                    download=True, altsw=None):
+                    download=True, altsw=None, core=False):
     """
     Wrap the tools necessary to make one autoloader.
 
@@ -354,7 +364,7 @@ def lazyloader_main(device, osversion, radioversion=None,
     :param localdir: Working path. Default is local dir.
     :type localdir: str
 
-    :param autoloader: Whether to run loaders. Default is false. Windows-only.
+    :param autoloader: Whether to run loader. Default is false. Windows-only.
     :type autoloader: bool
 
     :param download: Whether to download files. Default is true.
@@ -362,6 +372,9 @@ def lazyloader_main(device, osversion, radioversion=None,
 
     :param altsw: Radio software release, if not the same as OS.
     :type altsw: str
+
+    :param core: Whether to create a core/radio loader. Default is false.
+    :type core: bool
     """
     if (osversion or device) is None:
         raise SystemExit
@@ -392,6 +405,8 @@ def lazyloader_main(device, osversion, radioversion=None,
         osurl, radiourl = utilities.generate_lazy_urls(baseurl, osversion, radioversion, device)
         if altsw:
             radiourl = radiourl.replace(baseurl, alturl)
+        if core:
+            osurl = osurl.replace(".desktop", "")
 
         # Check availability of software releases
         scriptutils.check_sw(baseurl, softwareversion, swchecked)
@@ -432,10 +447,10 @@ def lazyloader_main(device, osversion, radioversion=None,
     else:
         altradio = None
     loadergen.generate_lazy_loader(osversion, device,
-                                   localdir=localdir, altradio=altradio)
+                                   localdir=localdir, altradio=altradio, core=core)
 
     # Test loader
-    suffix = loadergen.format_suffix(bool(altradio), altradio)
+    suffix = loadergen.format_suffix(bool(altradio), altradio, core)
     loadername = loadergen.generate_filename(device, osversion, suffix)
     scriptutils.test_single_loader(loadername)
 
