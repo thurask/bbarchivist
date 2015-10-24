@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, W0142, W0201
 """Test the filehashtools module."""
 
@@ -341,7 +341,7 @@ class TestClassFilehashtoolsConfig:
         """
         try:
             os.remove("bbarchivist.ini")
-        except FileNotFoundError:
+        except (OSError, FileNotFoundError):
             pass
         with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
             assert bf.verifier_config_loader() == self.hashdict
@@ -354,7 +354,7 @@ class TestClassFilehashtoolsConfig:
         hash2['sha512'] = True
         try:
             os.remove("bbarchivist.ini")
-        except FileNotFoundError:
+        except (OSError, FileNotFoundError):
             pass
         with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
             with mock.patch('bbarchivist.filehashtools.verifier_config_loader',
@@ -368,7 +368,7 @@ class TestClassFilehashtoolsConfig:
         """
         try:
             os.remove("bbarchivist.ini")
-        except FileNotFoundError:
+        except (OSError, FileNotFoundError):
             pass
         with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
             assert bf.gpg_config_loader() == (None, None)
@@ -393,9 +393,8 @@ class TestClassFilehashtoolsConfig:
         """
         try:
             os.remove("bbarchivist.ini")
-        except FileNotFoundError:
+        except (OSError, FileNotFoundError):
             pass
         with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
             bf.gpg_config_writer("0xDEADF00D", "swordfish")
             assert bf.gpg_config_loader() == ("0xDEADF00D", "swordfish")
-

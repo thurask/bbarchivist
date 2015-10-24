@@ -539,7 +539,7 @@ class TestClassUtilitiesConfig:
         """
         try:
             os.remove("bbarchivist.ini")
-        except FileNotFoundError:
+        except (OSError, FileNotFoundError):
             pass
         with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
             with mock.patch('bbarchivist.bbconstants.CAPLOCATION', "cap.dat"):
@@ -551,7 +551,7 @@ class TestClassUtilitiesConfig:
         """
         try:
             os.remove("bbarchivist.ini")
-        except FileNotFoundError:
+        except (OSError, FileNotFoundError):
             pass
         with mock.patch('bbarchivist.utilities.grab_cap',
                         mock.MagicMock(return_value=os.path.abspath(os.path.join(os.getcwd(), "cap.dat")))):
