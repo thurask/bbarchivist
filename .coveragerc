@@ -1,4 +1,5 @@
 [run]
+source = bbarchivist
 omit = bbarchivist/scripts/*
        bbarchivist/__init__.py
 	   tests/__init__.py
