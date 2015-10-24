@@ -15,4 +15,4 @@ before_script:
 script:
     - py.test --assert=plain --cov=tests -v
 after_success:
-    - COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN coveralls
+    - COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN coveralls -b bbarchivist -d .coverage -c .coveragerc
