@@ -162,6 +162,10 @@ class TestClassSMTPUtilsConfig:
         Test writing compression settings.
         """
         try:
+            FileNotFoundError
+        except NameError:
+            FileNotFoundError = IOError
+        try:
             os.remove("bbarchivist.ini")
         except (OSError, FileNotFoundError):
             pass
