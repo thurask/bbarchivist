@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, E0611, W0150, C0103
 """This module is used for miscellaneous utilities."""
 
@@ -134,7 +134,7 @@ def valid_method(method):
     """
     methodlist = bbconstants.METHODS
     if sys.version_info[1] <= 2:
-        methodlist = methodlist[:-1]  # strip last
+        methodlist = [x for x in bbconstants.METHODS if x != "txz"]
     if method not in methodlist:
         raise argparse.ArgumentError(argument=None, message="Invalid method {0}.".format(method))
     return method

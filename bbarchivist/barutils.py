@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, C0103, W0150
 """This module is used to operate with bar files and other archives."""
 
@@ -357,7 +357,7 @@ def calculate_strength():
     return strength
 
 
-def compress(filepath, method="7z", szexe=None, selective=False):
+def compress(filepath, method="7z", szexe=None, selective=False, errors=False):
     """
     Compress all autoloader files in a given folder, with a given method.
 
@@ -372,6 +372,9 @@ def compress(filepath, method="7z", szexe=None, selective=False):
 
     :param selective: Only compress specific files (autoloaders). Default is false.
     :type selective: bool
+
+    :param errors: Print completion status message. Default is false.
+    :type errors: bool
     """
     method = filter_method(method, szexe)
     files = [file for file in os.listdir(filepath) if not os.path.isdir(file)]
@@ -388,7 +391,7 @@ def compress(filepath, method="7z", szexe=None, selective=False):
         print("COMPRESSING: " + filename + ".exe")
         strength = calculate_strength()
         if method == "7z":
-            sz_compress(fileloc, file, szexe, strength)
+            sz_compress(fileloc, file, szexe, strength, errors)
         elif method == "tgz":
             tgz_compress(fileloc, file, strength)
         elif method == "txz":

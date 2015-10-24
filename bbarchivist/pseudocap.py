@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """This module is the Python-ized implementation of cap.exe"""
 
@@ -199,6 +199,9 @@ def make_autoloader(filename, firstfile, secondfile="", thirdfile="",
     for i in filelist:
         if i:
             filecount += 1
+    if filecount == 0 or filecount > 6:
+        print("Invalid filecount")
+        raise SystemExit
     print("CREATING:", filename)
     try:
         with open(os.path.join(os.path.abspath(folder),
@@ -297,9 +300,6 @@ def make_autoloader(filename, firstfile, secondfile="", thirdfile="",
                             autoloader.write(chunk)
                 except IOError as exc:
                     print("Operation failed:", exc.strerror)
-            if filecount == 0 or filecount > 6:
-                print("Invalid filecount")
-                return
     except IOError as exc:
         print("Operation failed:", exc.strerror)
     print(filename, "FINISHED!")

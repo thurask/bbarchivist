@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, W0142
 """This module is used for dealing with SQL databases, including CSV export."""
 
@@ -11,7 +11,7 @@ import csv  # write to csv
 import os  # paths
 import operator  # for sorting
 import time  # current date
-from bbarchivist.utilities import file_exists, UselessStdout  # check if file exists
+from bbarchivist.utilities import UselessStdout  # check if file exists
 
 
 def prepare_path():
@@ -126,7 +126,7 @@ def export_sql_db():
     """
     thepath = os.path.expanduser("~")
     sqlpath = os.path.join(thepath, "bbarchivist.db")
-    if file_exists(sqlpath):
+    if os.path.exists(sqlpath):
         try:
             cnxn = sqlite3.connect(prepare_path())
             with cnxn:
@@ -151,7 +151,7 @@ def list_sw_releases():
     """
     thepath = os.path.expanduser("~")
     sqlpath = os.path.join(thepath, "bbarchivist.db")
-    if file_exists(sqlpath):
+    if os.path.exists(sqlpath):
         try:
             cnxn = sqlite3.connect(prepare_path())
             with cnxn:

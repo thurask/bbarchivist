@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, W0142
 """Applies hash functions to files."""
 
@@ -43,13 +43,13 @@ def filehasher_main():
         if args.folder is None:
             args.folder = os.getcwd()
         filehashtools.verifier(args.folder,
-                               **hashdict)
+                               hashdict)
     else:
         folder = os.getcwd()
         print(" ")
         filehashtools.verifier(
             folder,
-            **hashdict)
+            hashdict)
 
 if __name__ == "__main__":
     filehasher_main()

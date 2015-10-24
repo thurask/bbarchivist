@@ -1,10 +1,14 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301
 """Test the pseudocap module."""
 
 import bbarchivist.pseudocap as bp
 import os
 import pytest
+try:
+    import unittest.mock as mock
+except ImportError:
+    import mock
 from shutil import rmtree, copyfile
 from hashlib import sha512
 
@@ -170,3 +174,67 @@ class TestClassPseudocap:
         with pytest.raises(SystemExit):
             bp.make_autoloader("loader0.exe", None)
             assert "Invalid filecount" in capsys.readouterr()[0]
+
+    def test_type_error(self):
+        """
+        Test file type failure (i.e. file is None).
+        """
+        with mock.patch("glob.glob", mock.MagicMock(side_effect=TypeError)):
+            with pytest.raises(TypeError):
+                bp.make_autoloader("loader0.exe", "zerothfile")
+
+    def test_target_ioerror(self):
+        """
+        Test IOError upon opening target file.
+        """
+        with mock.patch("os.path.join", mock.MagicMock(side_effect=IOError)):
+            with pytest.raises(IOError):
+                bp.make_autoloader("loader0.exe", "firstfile")
+
+    def test_firstfile_ioerror(self):
+        """
+        Test IOError while writing first signed file.
+        """
+        with mock.patch("os.path.normpath", mock.MagicMock(side_effect=IOError)):
+            with pytest.raises(IOError):
+                bp.make_autoloader("loader0.exe", "firstfile")
+
+    def test_secondfile_ioerror(self):
+        """
+        Test IOError while writing second signed file.
+        """
+        with mock.patch("os.path.normpath", mock.MagicMock(side_effect=IOError)):
+            with pytest.raises(IOError):
+                bp.make_autoloader("loader0.exe", "firstfile", "secondfile")
+
+    def test_thirdfile_ioerror(self):
+        """
+        Test IOError while writing third signed file.
+        """
+        with mock.patch("os.path.normpath", mock.MagicMock(side_effect=IOError)):
+            with pytest.raises(IOError):
+                bp.make_autoloader("loader0.exe", "firstfile", "secondfile", "thirdfile")
+
+    def test_fourthfile_ioerror(self):
+        """
+        Test IOError while writing fourth signed file.
+        """
+        with mock.patch("os.path.normpath", mock.MagicMock(side_effect=IOError)):
+            with pytest.raises(IOError):
+                bp.make_autoloader("loader0.exe", "firstfile", "secondfile", "thirdfile", "fourthfile")
+
+    def test_fifthfile_ioerror(self):
+        """
+        Test IOError while writing fifth signed file.
+        """
+        with mock.patch("os.path.normpath", mock.MagicMock(side_effect=IOError)):
+            with pytest.raises(IOError):
+                bp.make_autoloader("loader0.exe", "firstfile", "secondfile", "thirdfile", "fourthfile", "fifthfile")
+
+    def test_sixthfile_ioerror(self):
+        """
+        Test IOError while writing sixth signed file.
+        """
+        with mock.patch("os.path.normpath", mock.MagicMock(side_effect=IOError)):
+            with pytest.raises(IOError):
+                bp.make_autoloader("loader0.exe", "firstfile", "secondfile", "thirdfile", "fourthfile", "fifthfile", "sixthfile")

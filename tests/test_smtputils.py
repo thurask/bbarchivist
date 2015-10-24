@@ -1,9 +1,13 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, W0201, W0142
 """Test the smtputils module."""
 
 import bbarchivist.smtputils as bs
 import os
+try:
+    import unittest.mock as mock
+except ImportError:
+    import mock
 from shutil import rmtree
 from email.mime.text import MIMEText
 from configparser import ConfigParser
@@ -30,16 +34,48 @@ class TestClassSMTPUtils:
     """
     Test SMTP-related tools.
     """
+    def setup_class(self):
+        """
+        Create dictionaries for self.
+        """
+        self.dummy = {"server": None,
+                      "port": 0,
+                      "username": None,
+                      "password": None,
+                      "is_ssl": None}
+        self.results = {"server": "abc.xyz",
+                          "port": 69,
+                          "username": "luser",
+                          "password": "hunter2",
+                          "is_ssl": True}
+        self.results_y = {"server": 1,
+                          "port": 1,
+                          "username": 1,
+                          "password": "pas",
+                          "is_ssl": "true"}
+        self.results_n = {"server": 1,
+                          "port": 1,
+                          "username": 1,
+                          "password": "pas",
+                          "is_ssl": "false"}
+
     def test_smtp_config_generator(self):
         """
         Test config filtering.
         """
-        results = {"server": "abc.xyz",
-                   "port": 69,
-                   "username": "luser",
-                   "password": "hunter2",
-                   "is_ssl": True}
-        assert bs.smtp_config_generator(results) == results
+        assert bs.smtp_config_generator(self.results) == self.results
+
+    def test_smtp_confgen_fback(self):
+        """
+        Test config fallback, all true.
+        """
+        with mock.patch("getpass.getpass", mock.MagicMock(return_value="pas")):
+            with mock.patch("builtins.input", mock.MagicMock(return_value=1)):
+                assert bs.smtp_config_generator(self.dummy) == self.results_y
+                with mock.patch("bbarchivist.utilities.str2bool", mock.MagicMock(return_value=False)):
+                    herpderp = bs.smtp_config_generator(self.dummy)
+                    herpderp["is_ssl"] = "false"
+                    assert herpderp == self.results_n
 
     def test_parse_kwargs(self):
         """
@@ -101,8 +137,8 @@ class TestClassSMTPUtilsConfig:
         """
         Test reading SMTP settings when empty.
         """
-        open("bbarchivist.ini", 'w').close()
-        assert bs.smtp_config_loader(os.getcwd()) == self.bogusdict
+        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
+            assert bs.smtp_config_loader() == self.bogusdict
 
     def test_smtp_loader_completed(self):
         """
@@ -125,8 +161,12 @@ class TestClassSMTPUtilsConfig:
         """
         Test writing compression settings.
         """
-        open("bbarchivist.ini", 'w').close()
+        try:
+            os.remove("bbarchivist.ini")
+        except FileNotFoundError:
+            pass
         dict2 = self.smtpdict
         dict2['port'] = 6969
-        bs.smtp_config_writer(homepath=os.getcwd(), **dict2)
-        assert bs.smtp_config_loader(os.getcwd()) == dict2
+        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
+            bs.smtp_config_writer(homepath=None, **dict2)
+            assert bs.smtp_config_loader() == dict2

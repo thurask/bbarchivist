@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, W0142, W0201
 """Test the filehashtools module."""
 
@@ -158,8 +158,7 @@ class TestClassFilehashtools:
         :param onefile: One file or not. Default is false.
         :type onefile: bool
         """
-        confload = bf.verifier_config_loader()
-        confload = confload.fromkeys(confload, False)
+        confload = {}
         confload['adler32'] = True
         confload['crc32'] = True
         confload['md4'] = True
@@ -171,9 +170,12 @@ class TestClassFilehashtools:
         confload['sha512'] = True
         confload['ripemd160'] = True
         confload['whirlpool'] = True
-        confload['blocksize'] = 16777216
+        confload['blocksize'] = "16777216"
         confload['onefile'] = onefile
-        bf.verifier(os.getcwd(), **confload)
+        print(confload)
+        with mock.patch('bbarchivist.filehashtools.verifier_config_loader',
+                            mock.MagicMock(return_value=confload)):
+            bf.verifier(os.getcwd())
         stocklines = [b"ADLER32",
                       b"02470DCD tempfile.txt",
                       b"CRC32",
@@ -337,7 +339,12 @@ class TestClassFilehashtoolsConfig:
         """
         Test reading hash settings.
         """
-        assert bf.verifier_config_loader(os.getcwd()) == self.hashdict
+        try:
+            os.remove("bbarchivist.ini")
+        except FileNotFoundError:
+            pass
+        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
+            assert bf.verifier_config_loader() == self.hashdict
 
     def test_hash_writer(self):
         """
@@ -345,14 +352,26 @@ class TestClassFilehashtoolsConfig:
         """
         hash2 = self.hashdict
         hash2['sha512'] = True
-        bf.verifier_config_writer(hash2, os.getcwd())
-        assert bf.verifier_config_loader(os.getcwd()) == hash2
+        try:
+            os.remove("bbarchivist.ini")
+        except FileNotFoundError:
+            pass
+        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
+            with mock.patch('bbarchivist.filehashtools.verifier_config_loader',
+                            mock.MagicMock(return_value=hash2)):
+                bf.verifier_config_writer()
+            assert bf.verifier_config_loader() == hash2
 
     def test_gpg_loader_empty(self):
         """
         Test reading GPG settings on empty.
         """
-        assert bf.gpg_config_loader(os.getcwd()) == (None, None)
+        try:
+            os.remove("bbarchivist.ini")
+        except FileNotFoundError:
+            pass
+        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
+            assert bf.gpg_config_loader() == (None, None)
 
     def test_gpg_loader_loaded(self):
         """
@@ -372,6 +391,11 @@ class TestClassFilehashtoolsConfig:
         """
         Test writing GPG settings.
         """
-        bf.gpg_config_writer("0xDEADF00D", "swordfish", os.getcwd())
-        assert bf.gpg_config_loader(os.getcwd()) == ("0xDEADF00D", "swordfish")
+        try:
+            os.remove("bbarchivist.ini")
+        except FileNotFoundError:
+            pass
+        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
+            bf.gpg_config_writer("0xDEADF00D", "swordfish")
+            assert bf.gpg_config_loader() == ("0xDEADF00D", "swordfish")
 

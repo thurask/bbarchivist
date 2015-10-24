@@ -58,9 +58,9 @@ class TestClassUtilities7z:
         if system != "Windows":
             pass
         else:
-            with mock.patch('winreg.OpenKey', mock.MagicMock(return_value=OSError)):
+            with mock.patch('winreg.QueryValueEx', mock.MagicMock(return_value=OSError)):
                 with mock.patch('platform.machine', mock.MagicMock(return_value="AMD69")):
-                    assert bu.win_seven_zip() == "7za.exe"
+                    assert bu.win_seven_zip(True) == "7za.exe"
 
     def test_win_seven_zip_local_6432(self):
         """
@@ -69,13 +69,13 @@ class TestClassUtilities7z:
         if system != "Windows":
             pass
         else:
-            with mock.patch('winreg.OpenKey', mock.MagicMock(return_value=OSError)):
+            with mock.patch('winreg.QueryValueEx', mock.MagicMock(return_value=OSError)):
                 with mock.patch('platform.machine', mock.MagicMock(return_value="AMD64")):
                     if not os.path.exists("7za.exe"):
                         copyfile("cap-3.11.0.22.dat", "7za.exe")
                     if os.path.exists("7za64.exe"):
                         os.remove("7za64.exe")
-                    assert bu.win_seven_zip() == "error"
+                    assert bu.win_seven_zip(True) == "error"
                     if os.path.exists("7za64.exe"):
                         os.remove("7za.exe")
 
@@ -86,11 +86,11 @@ class TestClassUtilities7z:
         if system != "Windows":
             pass
         else:
-            with mock.patch('winreg.OpenKey', mock.MagicMock(return_value=OSError)):
+            with mock.patch('winreg.QueryValueEx', mock.MagicMock(return_value=OSError)):
                 with mock.patch('platform.machine', mock.MagicMock(return_value="AMD64")):
                     if not os.path.exists("7za64.exe"):
                         copyfile("cap-3.11.0.22.dat", "7za64.exe")
-                    assert bu.win_seven_zip() == "7za64.exe"
+                    assert bu.win_seven_zip(True) == "7za64.exe"
                     if os.path.exists("7za64.exe"):
                         os.remove("7za64.exe")
 
@@ -102,7 +102,7 @@ class TestClassUtilities7z:
             pass
         else:
             with mock.patch('winreg.QueryValueEx', mock.MagicMock(return_value="C:\\Program Files\\7-Zip\\")):
-                assert bu.win_seven_zip() == "C:\\Program Files\\7-Zip\\7z.exe"
+                assert bu.win_seven_zip(True) == "C:\\Program Files\\7-Zip\\7z.exe"
 
     def test_prep_seven_zip_good(self):
         """
@@ -110,7 +110,7 @@ class TestClassUtilities7z:
         """
         with mock.patch('platform.system', mock.MagicMock(return_value="Wandows")):
             with mock.patch("bbarchivist.utilities.where_which", mock.MagicMock(return_value="/usr/bin/7za")):
-                assert bu.prep_seven_zip() == True
+                assert bu.prep_seven_zip(True) == True
 
     def test_prep_seven_zip_bad(self):
         """
@@ -118,7 +118,15 @@ class TestClassUtilities7z:
         """
         with mock.patch('platform.system', mock.MagicMock(return_value="Wandows")):
             with mock.patch("bbarchivist.utilities.where_which", mock.MagicMock(return_value=None)):
-                assert bu.prep_seven_zip() == False
+                assert bu.prep_seven_zip(True) == False
+
+    def test_prep_seven_zip_which(self):
+        """
+        Test availability of 7z, no which.
+        """
+        with mock.patch('platform.system', mock.MagicMock(return_value="Wandows")):
+            with mock.patch("bbarchivist.utilities.where_which", mock.MagicMock(side_effect=ImportError)):
+                assert bu.prep_seven_zip(True) == False
 
 
 class TestClassUtilitiesPlatform:
@@ -236,6 +244,13 @@ class TestClassUtilities:
         """
         assert os.path.dirname(bu.grab_json()) == os.getcwd()
 
+    def test_where_which(self):
+        """
+        Test implementation of where.
+        """
+        with mock.patch("shutil.which", mock.MagicMock(return_value="here")):
+            assert bu.where_which("woodo") == "here"
+
     def test_str2bool_good(self):
         """
         Test checking of input parsing, best case.
@@ -273,6 +288,27 @@ class TestClassUtilities:
         with open("TEST.txt", "w") as afile:
             afile.write("You can call me Al")
         assert bu.return_and_delete("TEST.txt") == "You can call me Al"
+
+
+class TestClassUtilitiesStdout:
+    """
+    Test UselessStdout and related things.
+    """
+    def test_uselessstdout_tty(self):
+        """
+        Test if UselessStdout is a terminal.
+        """
+        assert bu.UselessStdout.isatty()
+
+    def test_spinner_interrupt(self):
+        """
+        Test interrupting the Spinner.
+        """
+        with mock.patch("bbarchivist.utilities.Spinner.next",
+                        mock.MagicMock(side_effect=KeyboardInterrupt)):
+            with pytest.raises(KeyboardInterrupt):
+                spin = bu.Spinner()
+                spin.next()
 
 
 class TestClassUtilitiesUrls:
@@ -501,18 +537,27 @@ class TestClassUtilitiesConfig:
         """
         Test reading CAP path settings.
         """
-        config = ConfigParser()
-        open("bbarchivist.ini", 'w').close()
-        config.read("bbarchivist.ini")
-        config['cap'] = {}
-        config['cap']['path'] = "DUMMY.ASD"
-        with open("bbarchivist.ini", "w") as configfile:
-            config.write(configfile)
-        assert bu.cappath_config_loader(os.getcwd()) == "DUMMY.ASD"
+        try:
+            os.remove("bbarchivist.ini")
+        except FileNotFoundError:
+            pass
+        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
+            with mock.patch('bbarchivist.bbconstants.CAPLOCATION', "cap.dat"):
+                assert bu.cappath_config_loader() == "cap.dat"
 
     def test_cappath_writer(self):
         """
         Test writing CAP path settings.
         """
-        bu.cappath_config_writer("DUMMY.ZXC", os.getcwd())
-        assert bu.cappath_config_loader(os.getcwd()) == "DUMMY.ZXC"
+        try:
+            os.remove("bbarchivist.ini")
+        except FileNotFoundError:
+            pass
+        with mock.patch('bbarchivist.utilities.grab_cap',
+                        mock.MagicMock(return_value=os.path.abspath(os.path.join(os.getcwd(), "cap.dat")))):
+            with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
+                bu.cappath_config_writer()
+        with mock.patch('bbarchivist.utilities.grab_cap',
+                        mock.MagicMock(return_value=os.path.abspath(os.path.join(os.getcwd(), "cap.dat")))):
+            with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
+                assert bu.cappath_config_loader() == os.path.join(os.getcwd(), "cap.dat")

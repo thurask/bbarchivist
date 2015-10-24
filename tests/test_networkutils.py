@@ -35,11 +35,13 @@ def cl_good_mock(url, request):
     return httmock.response(status_code=200,
                             headers=headers)
 
+
 def conn_error_mock(url, request):
     """
     HTTMock mock for content_length, connection error.
     """
     raise requests.ConnectionError
+
 
 @httmock.urlmatch(netloc=r'(.*\.)?google\.com$')
 def download_mock(url, request):
@@ -47,6 +49,18 @@ def download_mock(url, request):
     HTTMock mock for downloading.
     """
     content = b"Jackdaws love my big sphinx of quartz"*5000
+    headers = {'content-length': len(content)}
+    return httmock.response(status_code=200,
+                            content=content,
+                            headers=headers)
+
+
+@httmock.urlmatch(netloc=r'(.*\.)?google\.com$')
+def download_mock_huge(url, request):
+    """
+    HTTMock mock for downloading big files.
+    """
+    content = b"Jackdaws love my big sphinx of quartz"*5000000
     headers = {'content-length': len(content)}
     return httmock.response(status_code=200,
                             content=content,
@@ -188,8 +202,8 @@ class TestClassNetworkutils:
         """
         Test downloading.
         """
-        with httmock.HTTMock(download_mock):
-            bn.download("http://google.com/smack.dat")
+        with httmock.HTTMock(download_mock_huge):
+            bn.download("http://google.com/smack.dat", lazy=True)
         shahash = sha512()
         with open("smack.dat", 'rb') as file:
             while True:
@@ -197,7 +211,7 @@ class TestClassNetworkutils:
                 if not data:
                     break
                 shahash.update(data)
-        assert shahash.hexdigest() == "02c25df184ba5ed0eb7faa43b61fc2d0752a8230cc23d3f3085af55919198f83d1664277c6c4c00d78c0f95528fe8ab9f6dc145b8f9cc4b9a0f24482a1630bd9"
+        assert shahash.hexdigest() == "5fc8a2aff4d2a1c84763362dd5d8b18412b8644cfd92a8d400821228c9c9c279aba909f01e9819e0d1a7eb0cc52126fada3545424f8f43a7fa3ec7396769062e"
         if os.path.exists("smack.dat"):
             os.remove("smack.dat")
 
@@ -210,7 +224,7 @@ class TestClassNetworkutils:
         for i in ["idle", "cleese", "gilliam", "jones", "palin", "chapman"]:
             urllist.append(baseurl + i + ".dat")
         with httmock.HTTMock(download_mock):
-            bn.download_bootstrap(urllist, workers=6)
+            bn.download_bootstrap(urllist, workers=7, lazy=True)
         filelist = [x.replace("http://google.com/", "") for x in urllist]
         for file in filelist:
             with open(file, 'rb') as filehandle:
@@ -223,7 +237,13 @@ class TestClassNetworkutils:
                 assert shahash.hexdigest() == "02c25df184ba5ed0eb7faa43b61fc2d0752a8230cc23d3f3085af55919198f83d1664277c6c4c00d78c0f95528fe8ab9f6dc145b8f9cc4b9a0f24482a1630bd9"
         for file in filelist:
             if os.path.exists(file):
-                os.remove(file)
+                while True:
+                    try:
+                        os.remove(file)
+                    except PermissionError:
+                        continue
+                    else:
+                        break
 
     def test_create_base_url(self):
         """

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, W0142
 """Download bar files, create autoloaders."""
 
@@ -380,19 +380,19 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
         if compressed:
             filehashtools.verifier(
                 zd_o,
-                **hashdict)
+                hashdict)
             if radios:
                 filehashtools.verifier(
                     zd_r,
-                    **hashdict)
+                    hashdict)
         if not deleted:
             filehashtools.verifier(
                 ld_o,
-                **hashdict)
+                hashdict)
             if radios:
                 filehashtools.verifier(
                     ld_r,
-                    **hashdict)
+                    hashdict)
     if gpg:
         gpgkey, gpgpass = scriptutils.verify_gpg_credentials()
         if gpgpass is not None and gpgkey is not None:

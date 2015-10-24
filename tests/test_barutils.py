@@ -9,6 +9,7 @@ from shutil import rmtree, copyfile
 from sys import version_info
 from hashlib import sha512
 import zipfile
+import pytest
 try:
     import unittest.mock as mock
 except ImportError:
@@ -93,19 +94,39 @@ class TestClassBarutils:
         else:
             pass
 
+    def test_compress_sz_fail(self, capsys):
+        """
+        Test 7z compresssion failure.
+        """
+        exists = prep_seven_zip()
+        if exists:
+            szexe = get_seven_zip(False)
+            with mock.patch("subprocess.call", mock.MagicMock(return_value=2)):
+                bb.sz_compress(os.getcwd(), "7z", szexe=szexe, errors=True)
+                assert "FATAL ERROR" in capsys.readouterr()[0]
+        else:
+            pass
+
     def test_compress_zip(self):
         """
         Test zip compression.
         """
         bb.compress(os.getcwd(), "zip")
-        assert bb.zip_verify("Z10_BIGLOADER.zip") == True
+        assert bb.zip_verify("Z10_BIGLOADER.zip")
+
+    def test_compress_zip_fail(self):
+        """
+        Test zip compression failure.
+        """
+        with mock.patch("bbarchivist.barutils.bar_tester", mock.MagicMock(return_value=False)):
+            assert not bb.zip_verify("Z10_BIGLOADER.zip")
 
     def test_check_zip(self):
         """
         Test zip verification.
         """
         copyfile("Z10_BIGLOADER.zip", "Z10_BIGLOADER.bar")
-        assert bb.zip_verify("Z10_BIGLOADER.bar") == True
+        assert bb.zip_verify("Z10_BIGLOADER.bar")
         if os.path.exists("Z10_BIGLOADER.bar"):
             os.remove("Z10_BIGLOADER.bar")
         if os.path.exists("Z10_BIGLOADER.zip"):
@@ -116,18 +137,32 @@ class TestClassBarutils:
         Test gzip compression.
         """
         bb.compress(os.getcwd(), "tgz")
-        assert bb.tgz_verify("Z10_BIGLOADER.tar.gz") == True
+        assert bb.tgz_verify("Z10_BIGLOADER.tar.gz")
         if os.path.exists("Z10_BIGLOADER.tar.gz"):
             os.remove("Z10_BIGLOADER.tar.gz")
+
+    def test_compress_gzip_fail(self):
+        """
+        Test gzip compression failure.
+        """
+        with mock.patch("tarfile.TarFile.getmembers", mock.MagicMock(return_value=False)):
+            assert not bb.zip_verify("Z10_BIGLOADER.tar.gz")
 
     def test_compress_bz2(self):
         """
         Test bz2 compression.
         """
         bb.compress(os.getcwd(), "tbz")
-        assert bb.tbz_verify("Z10_BIGLOADER.tar.bz2") == True
+        assert bb.tbz_verify("Z10_BIGLOADER.tar.bz2")
         if os.path.exists("Z10_BIGLOADER.tar.bz2"):
             os.remove("Z10_BIGLOADER.tar.bz2")
+
+    def test_compress_bz2_fail(self):
+        """
+        Test bz2 compression failure.
+        """
+        with mock.patch("tarfile.TarFile.getmembers", mock.MagicMock(return_value=False)):
+            assert not bb.zip_verify("Z10_BIGLOADER.tar.bz2")
 
     def test_compress_lzma(self):
         """
@@ -137,9 +172,19 @@ class TestClassBarutils:
             pass
         else:
             bb.compress(os.getcwd(), "txz")
-            assert bb.txz_verify("Z10_BIGLOADER.tar.xz") == True
+            assert bb.txz_verify("Z10_BIGLOADER.tar.xz")
             if os.path.exists("Z10_BIGLOADER.tar.xz"):
                 os.remove("Z10_BIGLOADER.tar.xz")
+
+    def test_compress_lzma_fail(self):
+        """
+        Test xz compression failure.
+        """
+        if version_info[1] < 3:
+            pass
+        else:
+            with mock.patch("tarfile.TarFile.getmembers", mock.MagicMock(return_value=False)):
+                assert not bb.zip_verify("Z10_BIGLOADER.tar.xz")
 
     def test_remove_empty_folders(self):
         """
@@ -192,11 +237,18 @@ class TestClassBarutils:
         if os.path.exists("Blitz-testing.zip"):
             os.remove("Blitz-testing.zip")
 
+    def test_filter_method_null(self):
+        """
+        Test method checking, null case.
+        """
+        assert bb.filter_method("tbz", None) == "tbz"
+    
     def test_filter_method_good(self):
         """
         Test method checking, best case.
         """
-        assert bb.filter_method("tbz", None) == "tbz"
+        with mock.patch('bbarchivist.utilities.prep_seven_zip', mock.MagicMock(return_value=False)):
+            assert bb.filter_method("7z", "7za") == "7z"
 
     def test_filter_method_bad(self):
         """
@@ -204,6 +256,14 @@ class TestClassBarutils:
         """
         with mock.patch('bbarchivist.utilities.prep_seven_zip', mock.MagicMock(return_value=False)):
             assert bb.filter_method("7z", None) == "zip"
+
+    def test_filter_method_ok(self):
+        """
+        Test method checking, middle case.
+        """
+        with mock.patch('bbarchivist.utilities.prep_seven_zip', mock.MagicMock(return_value=True)):
+            with mock.patch('bbarchivist.utilities.get_seven_zip', mock.MagicMock(return_value='7za')):
+                assert bb.filter_method("7z", None) == "7z"
 
     def test_calculate_strength_32(self):
         """
@@ -397,6 +457,9 @@ class TestClassBarutilsSha512:
                              compression=zipfile.ZIP_DEFLATED) as zfile:
             zfile.writestr("MANIFEST.MF", mstring)
             zfile.writestr("target.signed", fstring)
+        with zipfile.ZipFile("nomfest.bar.dummy", mode="w",
+                             compression=zipfile.ZIP_DEFLATED) as zfile:
+            zfile.writestr("target.signed", fstring)
         with open("target.signed", "wb") as targetfile:
             targetfile.write(fstring)
 
@@ -413,6 +476,13 @@ class TestClassBarutilsSha512:
         with mock.patch('zipfile.ZipFile', mock.MagicMock(side_effect=OSError)):
             bb.retrieve_sha512("mfest.bar.dummy")
             assert "EXTRACTION FAILURE" in capsys.readouterr()[0]
+
+    def test_sha512_retrieve_noman(self):
+        """
+        Test SHA512 manifest read failure.
+        """
+        with pytest.raises(SystemExit):
+            bb.retrieve_sha512("nomfest.bar.dummy")
 
     def test_sha512_verify(self):
         """
@@ -440,7 +510,13 @@ class TestClassBarutilsLoaderMover:
         bdo, bdr, ldo, ldr, zdo, zdr = bb.make_dirs(os.getcwd(), "osversion", "radioversion")
         del bdo
         del bdr
-        bb.move_loaders(os.getcwd(), ldo, ldr, zdo, zdr)
+        while True:
+            try:
+                bb.move_loaders(os.getcwd(), ldo, ldr, zdo, zdr)
+            except PermissionError:
+                continue
+            else:
+                break
 
     def test_move_loaders_smallzip(self):
         """
@@ -512,11 +588,22 @@ class TestClassBarutilsConfig:
         """
         Test reading compression settings.
         """
-        assert bb.compress_config_loader(os.getcwd()) == "7z"
+        try:
+            os.remove("bbarchivist.ini")
+        except FileNotFoundError:
+            pass
+        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
+            assert bb.compress_config_loader(os.getcwd()) == "7z"
 
     def test_compress_writer(self):
         """
         Test writing compression settings.
         """
-        bb.compress_config_writer("tbz", os.getcwd())
-        assert bb.compress_config_loader(os.getcwd()) == "tbz"
+        try:
+            os.remove("bbarchivist.ini")
+        except FileNotFoundError:
+            pass
+        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
+            with mock.patch('bbarchivist.barutils.compress_config_loader', mock.MagicMock(return_value="tbz")):
+                bb.compress_config_writer()
+            assert bb.compress_config_loader() == "tbz"
