@@ -538,6 +538,10 @@ class TestClassUtilitiesConfig:
         Test reading CAP path settings.
         """
         try:
+            FileNotFoundError
+        except NameError:
+            FileNotFoundError = IOError
+        try:
             os.remove("bbarchivist.ini")
         except (OSError, FileNotFoundError):
             pass
@@ -549,6 +553,10 @@ class TestClassUtilitiesConfig:
         """
         Test writing CAP path settings.
         """
+        try:
+            FileNotFoundError
+        except NameError:
+            FileNotFoundError = IOError
         try:
             os.remove("bbarchivist.ini")
         except (OSError, FileNotFoundError):

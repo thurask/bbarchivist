@@ -340,6 +340,10 @@ class TestClassFilehashtoolsConfig:
         Test reading hash settings.
         """
         try:
+            FileNotFoundError
+        except NameError:
+            FileNotFoundError = IOError
+        try:
             os.remove("bbarchivist.ini")
         except (OSError, FileNotFoundError):
             pass
@@ -352,6 +356,10 @@ class TestClassFilehashtoolsConfig:
         """
         hash2 = self.hashdict
         hash2['sha512'] = True
+        try:
+            FileNotFoundError
+        except NameError:
+            FileNotFoundError = IOError
         try:
             os.remove("bbarchivist.ini")
         except (OSError, FileNotFoundError):
@@ -366,6 +374,10 @@ class TestClassFilehashtoolsConfig:
         """
         Test reading GPG settings on empty.
         """
+        try:
+            FileNotFoundError
+        except NameError:
+            FileNotFoundError = IOError
         try:
             os.remove("bbarchivist.ini")
         except (OSError, FileNotFoundError):
@@ -391,6 +403,10 @@ class TestClassFilehashtoolsConfig:
         """
         Test writing GPG settings.
         """
+        try:
+            FileNotFoundError
+        except NameError:
+            FileNotFoundError = IOError
         try:
             os.remove("bbarchivist.ini")
         except (OSError, FileNotFoundError):
