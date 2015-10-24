@@ -8,6 +8,7 @@ install:
     - pip install .
     - pip install -r requirements-devel.txt
     - if [[ $TRAVIS_PYTHON_VERSION == 3.2 ]]; then pip install coverage==3.7.1; else pip install coverage; fi
+	- pip install coveralls
 before_script:
     - rm  -rf tests/__init__.py
 script:
