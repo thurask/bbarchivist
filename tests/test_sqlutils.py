@@ -1,9 +1,10 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, W0142
 """Test the sqlutils module."""
 
 import os
 import csv
+import pytest
 from shutil import rmtree
 import sqlite3
 import bbarchivist.sqlutils as bs
@@ -37,7 +38,7 @@ class TestClassSQLUtils:
     """
     Test SQL-related tools.
     """
-    def test_prepare_sw_db(self):
+    def test_prepare_sw_db(self, capsys):
         """
         Test preparing SQL database.
         """
@@ -46,8 +47,11 @@ class TestClassSQLUtils:
             bs.prepare_sw_db()
         sqlpath = os.path.join(os.path.abspath(os.getcwd()), "bbarchivist.db")
         assert file_exists(sqlpath)
+        with mock.patch("sqlite3.connect", mock.MagicMock(side_effect=sqlite3.Error)):
+            bs.prepare_sw_db()
+            assert "\n" in capsys.readouterr()[0]
 
-    def test_insert_sw_release(self):
+    def test_insert_sw_release(self, capsys):
         """
         Test adding/updating software release to SQL database, including uniqueness.
         """
@@ -68,6 +72,12 @@ class TestClassSQLUtils:
             except sqlite3.Error:
                 assert False
             bs.insert_sw_release("70.OSVERSION", "80.SWVERSION", "unavailable")
+            with mock.patch("bbarchivist.sqlutils.insert_sw_release", mock.MagicMock(return_value=None,
+                                                                                     side_effect=sqlite3.IntegrityError)):
+                with pytest.raises(sqlite3.IntegrityError):
+                    bs.insert_sw_release("70.OSVERSION", "80.SWVERSION", "unavailable")  # update instead of add
+            with mock.patch("sqlite3.connect", mock.MagicMock(side_effect=sqlite3.IntegrityError)):
+                assert bs.insert_sw_release("70.OSVERSION", "80.SWVERSION", "unavailable")  is None # integrity error
             try:
                 cnxn = sqlite3.connect(sqlpath)
                 with cnxn:
@@ -96,8 +106,11 @@ class TestClassSQLUtils:
                 assert ("70.OSVERSION", "80.SWVERSION", "available") in rows
             except sqlite3.IntegrityError:
                 assert True
+            with mock.patch("sqlite3.connect", mock.MagicMock(side_effect=sqlite3.Error)):
+                bs.insert_sw_release("70.OSVERSION", "80.SWVERSION", "available")
+                assert "\n" in capsys.readouterr()[0]
 
-    def test_pop_sw_release(self):
+    def test_pop_sw_release(self, capsys):
         """
         Test removing software release from SQL database.
         """
@@ -137,8 +150,11 @@ class TestClassSQLUtils:
                 assert not rows
             except sqlite3.Error:
                 assert False
+            with mock.patch("sqlite3.connect", mock.MagicMock(side_effect=sqlite3.Error)):
+                bs.pop_sw_release("70.OSVERSION", "80.SWVERSION")
+                assert "\n" in capsys.readouterr()[0]
 
-    def test_entry_existence(self):
+    def test_entry_existence(self, capsys):
         """
         Test recognition of already inserted entries.
         """
@@ -161,8 +177,11 @@ class TestClassSQLUtils:
             assert not bs.check_entry_existence("70.OSVERSION", "80.SWVERSION")
             bs.insert_sw_release("70.OSVERSION", "80.SWVERSION", "available")
             assert bs.check_entry_existence("70.OSVERSION", "80.SWVERSION")
+            with mock.patch("sqlite3.connect", mock.MagicMock(side_effect=sqlite3.Error)):
+                bs.check_entry_existence("70.OSVERSION", "80.SWVERSION")
+                assert "\n" in capsys.readouterr()[0]
 
-    def test_export_sql_db(self):
+    def test_export_sql_db(self, capsys):
         """
         Test exporting SQL database to csv file.
         """
@@ -190,8 +209,14 @@ class TestClassSQLUtils:
                 for idx, row in enumerate(csvr):
                     if idx == 1:
                         assert "120.OSVERSION" in row[0]
+            with mock.patch("sqlite3.connect", mock.MagicMock(side_effect=sqlite3.Error)):
+                bs.export_sql_db()
+                assert "\n" in capsys.readouterr()[0]
+            with mock.patch("os.path.exists", mock.MagicMock(return_value=False)):
+                with pytest.raises(SystemExit):
+                    bs.export_sql_db()
 
-    def test_list_sw_releases(self):
+    def test_list_sw_releases(self, capsys):
         """
         Test returning all rows from SQL database.
         """
@@ -214,3 +239,9 @@ class TestClassSQLUtils:
                 assert False
             rellist = bs.list_sw_releases()
             assert rellist[0] == ("120.OSVERSION", "130.SWVERSION", "available", "1970 January 1")
+            with mock.patch("sqlite3.connect", mock.MagicMock(side_effect=sqlite3.Error)):
+                bs.list_sw_releases()
+                assert "\n" in capsys.readouterr()[0]
+            with mock.patch("os.path.exists", mock.MagicMock(return_value=False)):
+                with pytest.raises(SystemExit):
+                    bs.list_sw_releases()

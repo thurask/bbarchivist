@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301
 """Test the loadergen module."""
 
@@ -131,7 +131,7 @@ class TestClassLoadergen:
         """
         Test suffix formation, if hybrid radio is specified.
         """
-        assert bl.format_suffix(True, "SUFFIX") == "_RSUFFIX"
+        assert bl.format_suffix(True, "SUFFIX", True) == "_RSUFFIX_CORE"
 
     def test_pretty_formatter(self):
         """

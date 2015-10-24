@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """This module is used to generate file hashes/checksums and PGP signatures."""
 
@@ -340,13 +340,16 @@ def hash_resetter(hashlist):
     return [hashlist[0]]
 
 
-def verifier(workingdir, **kwargs):
+def verifier(workingdir, kwargs=None):
     """
     For all files in a directory, perform various hash/checksum functions.
     Take dict to define hashes, write the output to a/individual .cksum file(s).
 
     :param workingdir: Path containing files you wish to verify.
     :type workingdir: str
+
+    :param kwargs: Values. Refer to `:func:verifier_config_loader`.
+    :type kwargs: dict
     """
     if kwargs is None:
         kwargs = verifier_config_loader()
