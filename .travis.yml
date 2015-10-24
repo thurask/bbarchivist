@@ -12,6 +12,6 @@ install:
 before_script:
     - rm  -rf tests/__init__.py
 script:
-    - py.test -v
+    - py.test -v --cov=bbarchivist
 after_success:
     - COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN coveralls
