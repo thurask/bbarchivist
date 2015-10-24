@@ -590,7 +590,7 @@ class TestClassBarutilsConfig:
         """
         try:
             os.remove("bbarchivist.ini")
-        except FileNotFoundError:
+        except (OSError, FileNotFoundError):
             pass
         with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
             assert bb.compress_config_loader(os.getcwd()) == "7z"
@@ -601,7 +601,7 @@ class TestClassBarutilsConfig:
         """
         try:
             os.remove("bbarchivist.ini")
-        except FileNotFoundError:
+        except (OSError, FileNotFoundError):
             pass
         with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
             with mock.patch('bbarchivist.barutils.compress_config_loader', mock.MagicMock(return_value="tbz")):
