@@ -8,11 +8,9 @@ install:
     - pip install .
     - pip install -r requirements-devel.txt
     - pip install python-coveralls
-env:
-    - PYTHONDONTWRITEBYTECODE=true
 before_script:
     - rm  -rf tests/__init__.py
 script:
-    - py.test --assert=plain --cov=tests -v
+    - py.test --cov=tests -v
 after_success:
-    - COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN coveralls -b bbarchivist -d .coverage -c .coveragerc
+    - COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN coveralls
