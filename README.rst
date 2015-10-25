@@ -56,7 +56,7 @@ Using archivist's bulk autoloader creator requires a few dozen GB of hard drive 
 It also requires the
 `requests <http://docs.python-requests.org/en/latest/user/install/>`__
 and `Beautiful Soup 4 <http://www.crummy.com/software/BeautifulSoup/#Download>`__
-libraries installed somehow. Lazyloader's GUI requires `easygui<http://pythonhosted.org/easygui/>`__ as well.
+libraries installed somehow. Lazyloader's GUI requires `easygui <http://pythonhosted.org/easygui/>`__ as well.
 Installation with pip does this automatically, or use your package manager's version.
 
 PGP support requires the
