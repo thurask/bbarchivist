@@ -1,9 +1,10 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301
 """Test the scriptutils module."""
 
 import os
 from shutil import rmtree, copyfile
+import zipfile
 import bbarchivist.scriptutils as bs
 import pytest
 try:
@@ -341,8 +342,75 @@ class TestClassScriptutilsSevenzip:
 
 class TestClassScriptutilsIntegrity:
     """
-    Test checking loader integrity.
+    Test checking file integrity.
     """
+    @classmethod
+    def setup_class(cls):
+        """
+        Create files for testing.
+        """
+        cls.mstring = b"Somestuff\nName: target.signed\nDigest: tmpeiqm5cFdIwu5YWw4aOkEojS2vw74tsS-onS8qPhT53sEd5LqGW7Ueqmws_rKUE5RV402n2CehlQSwkGwBwQ\nmorestuff"
+        cls.estring = cls.mstring + b"HAHAHAFOOLEDYOU"
+        cls.fstring = b"Jackdaws love my big sphinx of quartz"
+        with zipfile.ZipFile("mfest.bar", mode="w",
+                                compression=zipfile.ZIP_DEFLATED) as zfile:
+            zfile.writestr("MANIFEST.MF", cls.mstring)
+            zfile.writestr("target.signed", cls.fstring)
+        with zipfile.ZipFile("bkmfest.bar", mode="w",
+                                compression=zipfile.ZIP_DEFLATED) as zfile:
+            zfile.writestr("MANIFEST.MF", cls.mstring)
+            zfile.writestr("target.signed", cls.estring)
+        copyfile("bkmfest.bar", "bkmfest.bra")
+        with open("target.signed", "wb") as targetfile:
+            targetfile.write(cls.fstring)
+
+    def test_bar_files_good(self, capsys):
+        """
+        Test checking bar file manifest, best case.
+        """
+        if os.path.exists("bkmfest.bar"):
+            os.rename("bkmfest.bar", "bkmfest.bak")
+        bs.test_bar_files(os.getcwd(), ["http://mfest.bar"], False)
+        assert "OK" in capsys.readouterr()[0]
+        if os.path.exists("bkmfest.bak"):
+            os.rename("bkmfest.bak", "bkmfest.bar")
+
+    def test_bar_files_bad(self, capsys):
+        """
+        Test checking bar file manifest, worst case, no download.
+        """
+        if os.path.exists("mfest.bar"):
+            os.rename("mfest.bar", "mfest.bak")
+        with mock.patch("bbarchivist.barutils.bar_tester", mock.MagicMock(return_value="bkmfest.bar")):
+            with pytest.raises(SystemExit):
+                bs.test_bar_files(os.getcwd(), ["http://bkmfest.bar"], False)
+        assert "BROKEN" in capsys.readouterr()[0]
+        if os.path.exists("mfest.bak"):
+            os.rename("mfest.bak", "mfest.bar")
+
+    def test_signed_files_good(self):
+        """
+        Test checking signed files against manifest, best case.
+        """
+        if os.path.exists("bkmfest.bar"):
+            os.rename("bkmfest.bar", "bkmfest.bak")
+        bs.test_signed_files(os.getcwd())
+        if os.path.exists("bkmfest.bak"):
+            os.rename("bkmfest.bak", "bkmfest.bar")
+
+    def test_signed_files_bad(self, capsys):
+        """
+        Test checking signed files against manifest, worst case.
+        """
+        if os.path.exists("mfest.bar"):
+            os.rename("mfest.bar", "mfest.bak")
+        os.rename("bkmfest.bra", "bkmfest.bar")
+        with mock.patch("bbarchivist.barutils.verify_sha512", mock.MagicMock(return_value=False)):
+            bs.test_signed_files(os.getcwd())
+            assert "IS BROKEN" in capsys.readouterr()[0]
+        if os.path.exists("mfest.bak"):
+            os.rename("mfest.bak", "mfest.bar")
+
     def test_loader_single_good(self, capsys):
         """
         Test checking one loader, best case.

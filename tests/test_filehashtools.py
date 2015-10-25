@@ -316,24 +316,25 @@ class TestClassFilehashtoolsConfig:
     """
     Test reading/writing configs with ConfigParser.
     """
-    def setup_class(self):
+    @classmethod
+    def setup_class(cls):
         """
         Create dictionaries for self.
         """
-        self.hashdict = {}
-        self.hashdict['crc32'] = False
-        self.hashdict['adler32'] = False
-        self.hashdict['sha1'] = True
-        self.hashdict['sha224'] = False
-        self.hashdict['sha256'] = True
-        self.hashdict['sha384'] = False
-        self.hashdict['sha512'] = False
-        self.hashdict['md5'] = True
-        self.hashdict['md4'] = False
-        self.hashdict['ripemd160'] = False
-        self.hashdict['whirlpool'] = False
-        self.hashdict['onefile'] = False
-        self.hashdict['blocksize'] = 16777216
+        cls.hashdict = {}
+        cls.hashdict['crc32'] = False
+        cls.hashdict['adler32'] = False
+        cls.hashdict['sha1'] = True
+        cls.hashdict['sha224'] = False
+        cls.hashdict['sha256'] = True
+        cls.hashdict['sha384'] = False
+        cls.hashdict['sha512'] = False
+        cls.hashdict['md5'] = True
+        cls.hashdict['md4'] = False
+        cls.hashdict['ripemd160'] = False
+        cls.hashdict['whirlpool'] = False
+        cls.hashdict['onefile'] = False
+        cls.hashdict['blocksize'] = 16777216
 
     def test_hash_loader(self):
         """
