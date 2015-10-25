@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, W0703, E1121
 """Create one autoloader for personal use."""
 
@@ -26,7 +26,7 @@ else:
 
 
 def start_gui(osv=None, radv=None, swv=None, dev=None, aut=None,
-              fol=None, dow=None, alt=None):
+              fol=None, dow=None, alt=None, cor=None):
     """
     Either passes straight through to the main function,
     or uses the GUI to prompt for variables.
@@ -54,6 +54,9 @@ def start_gui(osv=None, radv=None, swv=None, dev=None, aut=None,
 
     :param alt: Alternate software release, for alternate radio.
     :type alt: str
+
+    :param cor: Core autoloader or debrick autoloader.
+    :type cor: bool
     """
     if osv is None:
         while True:
@@ -85,6 +88,11 @@ def start_gui(osv=None, radv=None, swv=None, dev=None, aut=None,
             altentry = None
     else:
         altentry = alt
+    if cor is None:
+        corentry = eg.boolbox(msg="Are you making a core image autoloader?",
+                              default_choice="No")
+    else:
+        corentry = cor
     if dev is None:
         deventry = eg.choicebox(msg="Device", choices=bbconstants.DEVICES)
         for idx, device in enumerate(bbconstants.DEVICES):
@@ -104,7 +112,7 @@ def start_gui(osv=None, radv=None, swv=None, dev=None, aut=None,
     if dow is None:
         dow = True
     lazyloader_main(devint, osentry, radentry, swentry,
-                    fol, autoentry, dow, altentry)
+                    fol, autoentry, dow, altentry, corentry)
 
 
 def grab_args():

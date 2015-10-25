@@ -45,8 +45,6 @@ chdir(localdir)
 executables = [
     Executable('lazyloader.py',
                base=base,
-               appendScriptToExe=True,
-               appendScriptToLibrary=True,
                targetName="lazyloader.exe")
 ]
 
