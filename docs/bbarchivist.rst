@@ -1,13 +1,6 @@
 bbarchivist package
 ===================
 
-Subpackages
------------
-
-.. toctree::
-
-    bbarchivist.scripts
-
 Submodules
 ----------
 
