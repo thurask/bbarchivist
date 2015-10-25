@@ -1,12 +1,5 @@
 README
 ======
-.. image:: https://img.shields.io/pypi/dd/bbarchivist.svg
-    :target: https://pypi.python.org/pypi/bbarchivist
-    :alt: Downloads/day
-
-.. image:: https://img.shields.io/pypi/v/bbarchivist.svg?label=release
-    :target: https://pypi.python.org/pypi/bbarchivist
-    :alt: Pypi version
     
 .. image:: https://travis-ci.org/thurask/bbarchivist.svg?branch=master
     :target: https://travis-ci.org/thurask/bbarchivist
@@ -15,30 +8,13 @@ README
 .. image:: https://coveralls.io/repos/thurask/bbarchivist/badge.svg?branch=master&service=github
     :target: https://coveralls.io/github/thurask/bbarchivist?branch=master
     :alt: Coveralls.io
-    
-.. image:: https://img.shields.io/github/forks/thurask/bbarchivist.svg
-    :target: https://github.com/thurask/bbarchivist
-    :alt: GitHub forks
-    
-.. image:: https://img.shields.io/github/stars/thurask/bbarchivist.svg
-    :target: https://github.com/thurask/bbarchivist
-    :alt: GitHub stars
-    
-.. image:: http://www.quantifiedcode.com/api/v1/project/b4f0ae406aea484587534740c91800cb/badge.svg
-    :target: http://www.quantifiedcode.com/app/project/b4f0ae406aea484587534740c91800cb
-    :alt: QuantifiedCode
 
-A Python 3 package to download bars and turn them into autoloaders.
+A Python 3.2+ package for various BlackBerry 10-related functions.
 Includes support scripts.
-Subsumes `archivist <https://github.com/thurask/archivist>`__ and
+Replaces `archivist <https://github.com/thurask/archivist>`__ and
 `lazyloader <https://github.com/thurask/lazyloader>`__. Don't use those anymore.
 
-With command line arguments, it proceeds as directed. Without command
-line arguments, it queries the user as to OS version, radio version,
-software version, etc. Most arguments are assumed with the
-questionnaire, so if you want fine control, use arguments.
-
-This can be used either as importing the bbarchivist module, or the scripts from a command line.
+This can be used either as importing the bbarchivist library, or a variety of command-line scripts.
 
 Requirements
 ------------
@@ -46,7 +22,7 @@ Requirements
 Just Lazyloader
 ~~~~~~~~~~~~~~~
 
-As of version 1.7.1 (12 June 2015), lazyloader is also provided by itself on `GitHub <https://github.com/thurask/bbarchivist/releases>`__.
+As of version 1.7.1 (12 June 2015), lazyloader is also provided by itself for Windows on `GitHub <https://github.com/thurask/bbarchivist/releases>`__.
 
 To use, just download the archive attached to the latest release, unpack somewhere and double click the executable.
 
@@ -55,7 +31,7 @@ Lazyloader is still included within the pip package.
 Universal
 ~~~~~~~~~
 
-Requires Python >=3.2. Install the latest, though.
+Requires Python >=3.2. Install the latest possible, though.
 
 To get this package, install with pip:
 
@@ -63,19 +39,24 @@ To get this package, install with pip:
 
     $ pip install bbarchivist
 
-On POSIX, type that in your command line. For Windows, I recommend
-`pip-win <https://sites.google.com/site/pydatalog/python/pip-for-windows>`__.
+On non-Windows systems, type that in your command line. It may be a different
+command depending on how your system maintainer has organized pip, such as
+
+::
+
+	$ pip3 install bbarchivist
+	
+For Windows, I recommend `pip-win <https://sites.google.com/site/pydatalog/python/pip-for-windows>`__.
 
 A copy of cap.exe is included with this script.
 
-Since archivist does the entire autoloader process for all devices from start
-to finish, make sure to have A LOT of hard drive space. 40GB at least,
-even more if you aren't using 7-Zip compression. Other processes require less, of course.
+Compression with 7-Zip requires a fairly hefty CPU/RAM setup.
+Using archivist's bulk autoloader creator requires a few dozen GB of hard drive space.
 
 It also requires the
 `requests <http://docs.python-requests.org/en/latest/user/install/>`__
 and `Beautiful Soup 4 <http://www.crummy.com/software/BeautifulSoup/#Download>`__
-libraries installed somehow. Lazyloader requires `easygui<http://pythonhosted.org/easygui/>`__ as well.
+libraries installed somehow. Lazyloader's GUI requires `easygui<http://pythonhosted.org/easygui/>`__ as well.
 Installation with pip does this automatically, or use your package manager's version.
 
 PGP support requires the
@@ -83,19 +64,28 @@ PGP support requires the
 library installed somehow. Installation with pip does this
 automatically, or use your package manager's version.
 
+Note, python-gnupg also requires some form of GPG client installed.
+For Windows, get `Gpg4Win <http://www.gpg4win.org>`__.
+For Mac, get `GPGTools <https://gpgtools.org>`__.
+For Linux/BSD, you probably already have `GnuPG <https://www.gnupg.org>`__ installed.
+If not, install it from the link above, or your package manager.
+
+Python 3.2 further requires `shutilwhich <https://pypi.python.org/pypi/shutilwhich/>`__.
+Installation of shutilwhich on Python 3.3+ has no effect, so it's harmless.
+
 7-Zip compression (default) uses
 `p7zip <http://sourceforge.net/projects/p7zip/>`__
-(Linux/Mac)/`7-Zip <http://www.7-zip.org/download.html>`__ (Windows).
+(Linux/Mac/BSD)/`7-Zip <http://www.7-zip.org/download.html>`__ (Windows).
 Zip and tar.xxx compression don't require external programs.
 
 Windows
 ~~~~~~~
 
 To use 7-Zip compression, have 7-Zip installed. If not, make sure to
-specify a non-7-Zip compression method when invoking the script.
+specify a non-7-Zip compression method when compressing.
 
-Linux
-~~~~~
+Linux/BSD
+~~~~~~~~~
 
 If you're using 7z compression, this requires p7zip (look through your
 package manager, or install from source) in your path. I.e.:
@@ -106,9 +96,8 @@ package manager, or install from source) in your path. I.e.:
 
 resolves to something.
 
-Your package manager should also have a python-requests package
-available. If not, or if you want the latest, compile from source. Or
-use pip.
+Your package manager should also have requests, beautifulsoup4 and easygui packages
+available. If not, or if you want the latest, compile from source. Or use pip.
 
 Other than that, install this with pip.
 
@@ -125,101 +114,9 @@ Testing
 If you want to run the unit tests yourself, you'll also need mock, pytest
 and httmock installed via pip. Install from the requirements-devel file with pip.
 
-Testing of GnuPG-related functions requires setting up GnuPG in the first place.
+Coverage requires installation of pytest-cov.
 
-What It Does
-------------
-
-Archivist
-~~~~~~~~~
-
-1. Ask for OS/radio/software versions (if not specified)
-2. Ask for compression of loaders/deletion of uncompressed
-   loaders/verification of loaders (if not specified)
-3. Download all bars
-4. Extract all bars
-5. Make OS + radio (and radio-only loaders if specified) for each
-   recognized signed file
-6. Compress them (optional)
-7. Sort bars and loaders into subfolders
-8. Delete uncompressed loaders (optional)
-9. Verify loaders (optional)
-
-Lazyloader
-~~~~~~~~~~
-
-1. Ask for OS/radio/software versions, device type (if not specified)
-2. Download the right OS/radio bar based on above input/specification
-3. Extract bars
-4. Create autoloader
-5. Ask to load autoloader (Windows only)
-
-CarrierChecker
-~~~~~~~~~~~~~~
-
-1. Ask for MCC, MNC, devicename (if not specified)
-2. Check which OS release is available with given conditions
-3. Download (if specified)
-
-FileHasher
-~~~~~~~~~~
-
-1. Ask for hash types (if not specified)
-2. Apply given hash functions for all files in local/a given directory
-3. Output results to an "all.cksum" file
-
-EScreens
-~~~~~~~~
-
-1. Ask for PIN, OS version, uptime, duration (if not specified)
-2. Return EScreens key for given values
-
-LinkGen
-~~~~~~~
-
-1. Ask for OS version, radio version, software version (if not specified)
-2. Write debrick/core/radio links to file
-
-GPGRunner
-~~~~~~~~~
-
-1. Ask for PGP key ID, passphrase (if not specified)
-2. Verify all files in local/given folder
-
-Autolookup
-~~~~~~~~~~
-
-1. Ask for OS version, whether to loop (if not specified)
-2. Return lookup/availability for given OS (if lookup is valid)
-3. Export valid links to text file/SQL database/email (if specified)
-
-Certchecker
-~~~~~~~~~~~
-
-1. Ask for hardware/FCC ID or model number (if not specified)
-2. Return certified OS versions for that device
-
-Pseudocap
-~~~~~~~~~
-
-1. Take in filename, signed file locations
-2. Produce an autoloader from those
-
-SQLExport
-~~~~~~~~~
-
-1. Convert ~\bbarchivist.db into ~\swrelease.csv
-2. Remove an OS/software pair from ~\bbarchivist.db
-
-Kompressor
-~~~~~~~~~~
-
-1. Compress all files in a directory
-
-Downloader
-~~~~~~~~~~
-
-1. The same download function as in Archivist, but in isolation.
+Testing of GnuPG/7-Zip functions requires setting up GnuPG/7-Zip in the first place.
 
 Command Line Arguments
 ----------------------
@@ -570,102 +467,6 @@ Help
 	  -ni, --no-integrity   Don't test bar files after download
 
 	http://github.com/thurask/bbarchivist
-
-Example
-~~~~~~~
-
-::
-
-    > bb-archivist 10.3.1.2726 10.3.1.2727 10.3.1.1877 -nr
-
-would make only OS+radio autoloaders for OS 10.3.1.2726/radio 10.3.1.2727
-(software release 10.3.1.1877), compress them, delete uncompressed
-loaders and verify with default options (SHA1, SHA512, MD5)
-
-::
-
-    > bb-lazyloader 10.3.1.1955 10.3.1.1956 10.3.1.1372 --passport --run-autoloader
-
-would create a Passport autoloader for OS 10.3.1.1955/radio 10.3.1.1956
-(software release 10.3.1.1372), and run it (Windows only).
-
-::
-
-    > bb-cchecker 311 480 STA100-3
-
-would check the latest OS for the Z30 STA100-3 on Verizon Wireless.
-
-::
-
-    > bb-filehasher -a
-    
-would use all available methods to hash all files in the local directory.
-
-::
-
-    > bb-escreens acdcacdc 10.3.2.6969 69696969 30
-    
-would generate the code for that PIN, OS version and uptime and for 30 days.
-
-::
-
-    > bb-linkgen 10.3.1.2726 10.3.1.2727 10.3.1.1877
-    
-would generate the URLs for that given OS/radio/software release combination.
-
-::
-
-    > bb-gpgrunner "~/some_stuff"
-    
-would create ASCII signature files for all files in the given folder.
-Make sure to have bbarchivist.ini in ~ or \Users\<your username> configured like so:
-
-::
-
-    [gpgrunner]
-    key = 0xACDCACDC
-    pass = yourpass (or leave this line blank to ask every time)
-    
-If not, it'll ask you while running the script and make the file.
-More importantly, MAKE SURE TO HAVE GnuPG SET UP BEFOREHAND!
-
-::
-
-    > bb-autolookup 10.3.1.2726 -l -o
-    
-would start a lookup loop from OS 10.3.1.2726, outputting results to screen and to a log file.
-Location is in your home directory.
-
-::
-
-    > bb-certchecker STA100-5
-    
-would print a list of all of the OSs that were ever certified for the Z30 STA100-5.
-
-::
-
-    > bb-pseudocap Autoload-10.3.2.2339-SQN100-X.exe QC8960_10.3.2.2339.signed QC8960.WTR_10.3.2340.signed
-    
-would create an autoloader with the name Autoloader-10.3.2.2339-SQN100-X.exe, from those two signed files,
-in the current folder.
-
-::
-
-    > bb-sqlexport
-
-exports the SQL database to a CSV file.
-
- ::
-
-	> bb-kompressor -m zip
-
-would compress all files in the local directory to zip archives, since you specified zip.
-
-::
-
-	> bb-downloader 10.3.2.798 -r
-
-would download the guessed radios (10.3.2.799) for OS 10.3.2.798.
 
 Credits/Software Used
 ---------------------
