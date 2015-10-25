@@ -49,7 +49,7 @@ class TestClassUtilities7z:
         Test checking of 7z.
         """
         with mock.patch('platform.system', mock.MagicMock(return_value="Wandows")):
-            assert bu.get_seven_zip() == "7za"
+            assert bu.get_seven_zip(True) == "7za"
 
     def test_win_seven_zip_local_32(self):
         """

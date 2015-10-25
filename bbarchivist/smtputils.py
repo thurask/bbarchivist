@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, W0142
 """This module is used for dealing with SMTP email sending."""
 
@@ -139,10 +139,19 @@ def send_email(kwargs):
     """
     if kwargs['password'] is None:
         kwargs['password'] = getpass.getpass(prompt="PASSWORD: ")
+    server, username, port, password = parse_kwargs(kwargs)
+    subject = generate_subject(kwargs['software'], kwargs['os'])
+    message = generate_message(kwargs['body'], username, subject)
     if utilities.str2bool(kwargs['is_ssl']):
-        send_email_ssl(kwargs)
+        smt = smtplib.SMTP_SSL(server, port)
     else:
-        send_email_tls(kwargs)
+        smt = smtplib.SMTP(server, port)
+    smt.ehlo()
+    if not utilities.str2bool(kwargs['is_ssl']):
+        smt.starttls()
+    smt.login(username, password)
+    smt.sendmail(username, username, message.as_string())
+    smt.quit()
 
 
 def parse_kwargs(kwargs):
@@ -199,83 +208,6 @@ def generate_subject(softwarerelease, osversion):
     :type osversion: str
     """
     return "SW {0} - OS {1} available!".format(softwarerelease, osversion)
-
-
-def send_email_ssl(kwargs):
-    """
-    Send email with SSL (Gmail, Fastmail, etc.) over SMTP.
-
-    :param server: SMTP email server.
-    :type server: str
-
-    :param port: Port to use.
-    :type port: int
-
-    :param username: Email address.
-    :type username: str
-
-    :param password: Email password, optional.
-    :type password: str
-
-    :param is_ssl: True if server uses SSL, False if TLS only.
-    :type is_ssl: bool
-
-    :param software: Software release.
-    :type software: str
-
-    :param os: OS version.
-    :type os: str
-
-    :param body: Email message body.
-    :type body: str
-    """
-    server, username, port, password = parse_kwargs(kwargs)
-    subject = generate_subject(kwargs['software'], kwargs['os'])
-    message = generate_message(kwargs['body'], username, subject)
-    smt = smtplib.SMTP_SSL(server, port)
-    smt.ehlo()
-    smt.login(username, password)
-    smt.sendmail(username, username, message.as_string())
-    smt.quit()
-
-
-def send_email_tls(kwargs):
-    """
-    Send email without SSL (Outlook) over SMTP.
-
-    :param server: SMTP email server.
-    :type server: str
-
-    :param port: Port to use.
-    :type port: int
-
-    :param username: Email address.
-    :type username: str
-
-    :param password: Email password, optional.
-    :type password: str
-
-    :param is_ssl: True if server uses SSL, False if TLS only.
-    :type is_ssl: bool
-
-    :param software: Software release.
-    :type software: str
-
-    :param os: OS version.
-    :type os: str
-
-    :param body: Email message body.
-    :type body: str
-    """
-    server, username, port, password = parse_kwargs(kwargs)
-    subject = generate_subject(kwargs['software'], kwargs['os'])
-    message = generate_message(kwargs['body'], username, subject)
-    smt = smtplib.SMTP(server, port)
-    smt.ehlo()
-    smt.starttls()
-    smt.login(username, password)
-    smt.sendmail(username, username, message.as_string())
-    smt.quit()
 
 
 def prep_email(osversion, softwarerelease, password=None):

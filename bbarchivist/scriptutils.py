@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """This module contains various utilities for the scripts folder."""
 
@@ -112,9 +112,7 @@ def check_sw(baseurl, softwareversion, swchecked):
         else:
             print("SOFTWARE RELEASE", softwareversion, "NOT FOUND")
             cont = utilities.str2bool(input("CONTINUE? Y/N: "))
-            if cont:
-                pass
-            else:
+            if not cont:
                 print("\nEXITING...")
                 raise SystemExit
     else:
@@ -142,9 +140,7 @@ def check_radio_sw(alturl, altsw, altchecked):
         else:
             print("SOFTWARE RELEASE", altsw, "NOT FOUND")
             cont = utilities.str2bool(input("CONTINUE? Y/N: "))
-            if cont:
-                pass
-            else:
+            if not cont:
                 print("\nEXITING...")
                 raise SystemExit
     else:
@@ -168,9 +164,7 @@ def check_os_single(osurl, osversion, device):
     if not osav:
         print(osversion, "NOT AVAILABLE FOR", bbconstants.DEVICES[device])
         cont = utilities.str2bool(input("CONTINUE? Y/N: "))
-        if cont:
-            pass
-        else:
+        if not cont:
             print("\nEXITING...")
             raise SystemExit
 
@@ -192,9 +186,7 @@ def check_os_bulk(osurls, osversion):
     else:
         print("OS VERSION NOT FOUND")
         cont = utilities.str2bool(input("CONTINUE? Y/N: "))
-        if cont:
-            pass
-        else:
+        if not cont:
             print("\nEXITING...")
             raise SystemExit
 
@@ -219,9 +211,7 @@ def check_radio_single(radiourl, radioversion):
             radioversion = rad2
         else:
             going = utilities.str2bool(input("KEEP GOING? Y/N: "))
-            if going:
-                pass
-            else:
+            if not going:
                 print("\nEXITING...")
                 raise SystemExit
     return radiourl, radioversion
@@ -250,9 +240,7 @@ def check_radio_bulk(radiourls, radioversion):
             radioversion = rad2
         else:
             going = utilities.str2bool(input("KEEP GOING? Y/N: "))
-            if going:
-                pass
-            else:
+            if not going:
                 print("\nEXITING...")
                 raise SystemExit
     return radiourls, radioversion
