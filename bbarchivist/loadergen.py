@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """This module is used for creation of autoloaders.
 A higher level interface for :mod:`bbarchivist.pseudocap`."""
@@ -9,9 +9,8 @@ __copyright__ = "2015 Thurask"
 
 import os  # path work
 import glob  # filename matching
-import json  # db work
 from bbarchivist import pseudocap  # implement cap
-from bbarchivist import utilities  # json
+from bbarchivist import jsonutils  # json
 
 
 def read_files(localdir, core=False):
@@ -292,9 +291,7 @@ def generate_skeletons():
     namelist = {}
     for idx in range(0, 7):
         namelist[idx] = None
-    with open(utilities.grab_json()) as thefile:
-        data = json.load(thefile)
-    data = data['integermap']
+    data = jsonutils.load_json('integermap')
     for key in data:
         if key['id'] in namelist:
             namelist[key['id']] = key['parts']
@@ -309,9 +306,7 @@ def generate_device(radio):
     :param radio: The radio filename to look up.
     :type radio: str
     """
-    with open(utilities.grab_json()) as thefile:
-        data = json.load(thefile)
-    data = data['integermap']
+    data = jsonutils.load_json('integermap')
     for key in data:
         if not key['special'] and key['radtype'] in radio:
             idx = int(key['id'])
@@ -404,9 +399,7 @@ def generate_lazy_filename(osversion, suffix, device):
     :param device: Device to use.
     :type device: int
     """
-    with open(utilities.grab_json()) as thefile:
-        data = json.load(thefile)
-    data = data['integermap']
+    data = jsonutils.load_json('integermap')
     for key in data:
         if key['id'] == device:
             fname = key['parts']

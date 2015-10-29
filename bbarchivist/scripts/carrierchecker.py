@@ -11,11 +11,11 @@ from bbarchivist import networkutils  # check function
 from bbarchivist import barutils  # file/folder operations
 from bbarchivist import textgenerator  # text work
 from bbarchivist import utilities  # input validation
+from bbarchivist import jsonutils  # json
 import argparse  # parse arguments
 import sys  # load arguments
 import os  # file/path operations
 import shutil  # folder removal
-import json  # db work
 
 
 def grab_args():
@@ -210,9 +210,7 @@ def carrierchecker_main(mcc, mnc, device,
     device = device.upper()
     if directory is None:
         directory = os.getcwd()
-    with open(utilities.grab_json()) as thefile:
-        data = json.load(thefile)
-    data = data['devices']
+    data = jsonutils.load_json('devices')
     for key in data:
         if 'secret' not in key and key['name'] == device:
             model = key['device']

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, E0611, W0150, C0103
 """This module is used for miscellaneous utilities."""
 
@@ -68,18 +68,6 @@ def grab_cap():
             return os.path.abspath(capfile)  # ini cap
     else:
         return os.path.abspath(capfile)  # local cap
-
-def grab_json():
-    """
-    Figure out where JSON is, local or system-supplied.
-    """
-    jfile = None
-    try:
-        jfile = glob.glob(os.path.join(os.getcwd(), "bbconstants.json"))[0]  # local JSON
-    except IndexError:
-        jfile = bbconstants.JSONFILE  # system JSON
-    finally:
-        return os.path.abspath(jfile)
 
 
 def filesize_parser(file_size):

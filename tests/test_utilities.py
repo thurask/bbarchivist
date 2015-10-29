@@ -24,7 +24,6 @@ def setup_module(module):
     os.chdir("temp_utilities")
     with open("cap-3.11.0.22.dat", "w") as targetfile:
         targetfile.write("Jackdaws love my big sphinx of quartz")
-    copyfile("cap-3.11.0.22.dat", "bbconstants.json")
     copyfile("cap-3.11.0.22.dat", "7za.exe")
     copyfile("cap-3.11.0.22.dat", "7za64.exe")
     copyfile("cap-3.11.0.22.dat", "Z10_loader1.exe")
@@ -237,12 +236,6 @@ class TestClassUtilities:
         Test finding cap location.
         """
         assert os.path.dirname(bu.grab_cap()) == os.getcwd()
-
-    def test_grab_json(self):
-        """
-        Test finding JSON file location.
-        """
-        assert os.path.dirname(bu.grab_json()) == os.getcwd()
 
     def test_where_which(self):
         """

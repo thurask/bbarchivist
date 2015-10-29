@@ -576,7 +576,7 @@
             "secret": "True"
         },
         {
-            "device": "",
+            "device": "UNKNOWN",
             "family": "UNRELEASED",
             "name": "SQE100-1",
             "hwid": "",
