@@ -114,6 +114,31 @@ class TestClassLoadergen:
                         shahash.update(data)
                     assert shahash.hexdigest() in ("3143a5bdfffbab199fe071d720b374d8678e5a2baafaeaf375f747c578a314cdf10059ccfac51fbe992d6d473106c2ba18bb8a80026269b046c3e299c33adaf3",
                                                    "d4872a853e19fb8512067f50555827c74ec33da6fd5d71ae3ddd1b0ce98a18e01727eb1f345f476d6d59bcb438be8780e3f1dc7b212dc63b4b7c09914093a730")
+        for item in os.listdir():
+            if item.endswith("desktop.signed"):
+                os.remove(item)
+
+    def test_generate_cores(self):
+        """
+        Test creating multiple core autoloaders.
+        """
+        with open("qc8960.factory_sfi.signed", "w") as targetfile:
+            targetfile.write("Jackdaws love my big sphinx of quartz"*5000)
+        copyfile("qc8960.factory_sfi.signed", "qc8x30.factory_sfi.signed")
+        copyfile("qc8960.factory_sfi.signed", "qc8974.factory_sfi.signed")
+        copyfile("qc8960.factory_sfi.signed", "winchester.factory_sfi.signed")
+        bl.generate_loaders("10.1.2.3000", "10.3.2.1000", True, core=True)
+        for file in os.listdir():
+            if file.endswith(".exe"):
+                with open(file, 'rb') as filehandle:
+                    shahash = sha512()
+                    while True:
+                        data = filehandle.read(16777216)
+                        if not data:
+                            break
+                        shahash.update(data)
+                    assert shahash.hexdigest() in ("3143a5bdfffbab199fe071d720b374d8678e5a2baafaeaf375f747c578a314cdf10059ccfac51fbe992d6d473106c2ba18bb8a80026269b046c3e299c33adaf3",
+                                                   "d4872a853e19fb8512067f50555827c74ec33da6fd5d71ae3ddd1b0ce98a18e01727eb1f345f476d6d59bcb438be8780e3f1dc7b212dc63b4b7c09914093a730")
 
     def test_filename_malformed(self):
         """
@@ -153,5 +178,5 @@ class TestClassLoadergen:
         Test wrapping pseudocap when an error is raised.
         """
         with mock.patch('bbarchivist.pseudocap.make_autoloader', mock.MagicMock(side_effect=IndexError)):
-            bl.wrap_pseudocap("filename.exe", os.getcwd(), "radio.m5730.signed", None)
+            bl.wrap_pseudocap("filename.exe", os.getcwd(), "qc8960.factory_sfi.signed", None)
             assert "Could not create" in capsys.readouterr()[0]

@@ -51,15 +51,17 @@ def read_os_files(localdir, core=False):
     :type core: bool
     """
     if core:
-        fix8960 = "*qc8960.*_sfi*.signed"
-        fixomap = ""
-        fix8930 = "*qc8x30*.signed"
-        fix8974 = "*qc8974*.signed"
+        fix8960 = "*qc8960.*_sfi.BB*.signed"
+        fixomap_new = "*winchester.BB*.signed"
+        fixomap_old = "*os.factory_sfi.BB.*.signed"
+        fix8930 = "*qc8x30*.signed.BB"
+        fix8974 = "*qc8974*.signed.BB"
     else:
-        fix8960 = "*qc8960.*_sfi.desktop*.signed"
-        fixomap = ""
-        fix8930 = "*qc8x30*desktop*.signed"
-        fix8974 = "*qc8974*desktop*.signed"
+        fix8960 = "*qc8960.*_sfi.desktop.BB*.signed"
+        fixomap_new = "*winchester*desktop.BB*.signed"
+        fixomap_old = "*os.factory_sfi.desktop.BB*.signed"
+        fix8930 = "*qc8x30*desktop.BB*.signed"
+        fix8974 = "*qc8974*desktop.BB*.signed"
     # 8960
     try:
         os_8960 = glob.glob(
@@ -95,10 +97,10 @@ def read_os_files(localdir, core=False):
         print("No 8974 image found")
     # OMAP
     try:
-        os_ti = glob.glob(os.path.join(localdir, "*winchester*.signed"))[0]
+        os_ti = glob.glob(os.path.join(localdir, fixomap_new))[0]
     except IndexError:
         try:
-            os_ti = glob.glob(os.path.join(localdir, "*os.factory_sfi.*.signed"))[0]
+            os_ti = glob.glob(os.path.join(localdir, fixomap_old))[0]
         except IndexError:
             os_ti = None
             print("No OMAP image found")

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301, W0142
 """Test the sqlutils module."""
 
@@ -97,15 +97,6 @@ class TestClassSQLUtils:
                 assert ("70.OSVERSION", "80.SWVERSION", "available") in rows
             except sqlite3.Error:
                 assert False
-            try:
-                cnxn = sqlite3.connect(sqlpath)
-                with cnxn:
-                    crsr = cnxn.cursor()
-                    crsr.execute("SELECT Os,Software,Available FROM Swrelease")
-                    rows = crsr.fetchall()
-                assert ("70.OSVERSION", "80.SWVERSION", "available") in rows
-            except sqlite3.IntegrityError:
-                assert True
             with mock.patch("sqlite3.connect", mock.MagicMock(side_effect=sqlite3.Error)):
                 bs.insert_sw_release("70.OSVERSION", "80.SWVERSION", "available")
                 assert "\n" in capsys.readouterr()[0]

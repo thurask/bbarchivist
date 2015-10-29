@@ -1,5 +1,5 @@
 ﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301
+#pylint: disable = I0011, R0201, W0613, C0301, W0622, C0103
 """Test the utilities module."""
 
 import bbarchivist.utilities as bu
@@ -12,7 +12,6 @@ except ImportError:
 from shutil import rmtree, copyfile
 from argparse import ArgumentError
 from platform import system
-from configparser import ConfigParser
 
 
 def setup_module(module):

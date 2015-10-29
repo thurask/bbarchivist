@@ -20,8 +20,7 @@ def grab_json():
         jfile = glob.glob(os.path.join(os.getcwd(), "bbconstants.json"))[0]  # local JSON
     except IndexError:
         jfile = bbconstants.JSONFILE  # system JSON
-    finally:
-        return os.path.abspath(jfile)
+    return os.path.abspath(jfile)
 
 
 def load_json(table, jfile=None):
@@ -30,7 +29,7 @@ def load_json(table, jfile=None):
 
     :param table: Name of sub-structure to return
     :type table: str
-    
+
     :param jfile: Path to JSON file.
     :type jfile: str
     """

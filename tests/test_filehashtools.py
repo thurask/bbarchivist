@@ -1,5 +1,5 @@
 ﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, W0142, W0201
+#pylint: disable = I0011, R0201, W0613, C0301, W0142, W0201, W0622, C0103
 """Test the filehashtools module."""
 
 import os
@@ -174,7 +174,7 @@ class TestClassFilehashtools:
         confload['onefile'] = onefile
         print(confload)
         with mock.patch('bbarchivist.filehashtools.verifier_config_loader',
-                            mock.MagicMock(return_value=confload)):
+                        mock.MagicMock(return_value=confload)):
             bf.verifier(os.getcwd())
         stocklines = [b"ADLER32",
                       b"02470DCD tempfile.txt",

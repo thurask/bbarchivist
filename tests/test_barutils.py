@@ -1,5 +1,5 @@
 ﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301
+#pylint: disable = I0011, R0201, W0613, C0301, W0622, C0103
 """Test the barutils module."""
 
 import bbarchivist.barutils as bb
@@ -186,6 +186,47 @@ class TestClassBarutils:
             with mock.patch("tarfile.TarFile.getmembers", mock.MagicMock(return_value=False)):
                 assert not bb.zip_verify("Z10_BIGLOADER.tar.xz")
 
+    def test_create_blitz(self):
+        """
+        Test blitz package creation.
+        """
+        bb.create_blitz(os.getcwd(), "testing")
+        assert bb.zip_verify("Blitz-testing.zip") == True
+        if os.path.exists("Blitz-testing.zip"):
+            os.remove("Blitz-testing.zip")
+
+    def test_calculate_strength_32(self):
+        """
+        Test compression strength for 32-bit systems.
+        """
+        with mock.patch('bbarchivist.utilities.is_amd64', mock.MagicMock(return_value=False)):
+            assert bb.calculate_strength() == 5
+
+    def test_calculate_strength_64(self):
+        """
+        Test compression strength for 64-bit systems.
+        """
+        with mock.patch('bbarchivist.utilities.is_amd64', mock.MagicMock(return_value=True)):
+            assert bb.calculate_strength() == 9
+
+    def test_compress_suite(self):
+        """
+        Test the bulk compression/verification suite.
+        """
+        os.mkdir("suite")
+        suitedir = os.path.abspath(os.path.join(os.getcwd(), "suite"))
+        with open(os.path.join(suitedir, "Z10.exe"), "w") as afile:
+            afile.write("Haters gonna hate")
+        with open(os.path.join(suitedir, "Z30.exe"), "w") as afile:
+            afile.write("I'm just gonna shake")
+        bb.compress_suite(suitedir, "zip", None, True)
+        rmtree(suitedir, ignore_errors=True)
+
+
+class TestClassBarutilsRemovers:
+    """
+    Test file/folder removal.
+    """
     def test_remove_empty_folders(self):
         """
         Test removal of empty folders.
@@ -228,21 +269,17 @@ class TestClassBarutils:
         bb.remove_unpacked_loaders("uncompL", "uncompR", True)
         assert not any(["uncompL", "uncompR"]) in os.listdir()
 
-    def test_create_blitz(self):
-        """
-        Test blitz package creation.
-        """
-        bb.create_blitz(os.getcwd(), "testing")
-        assert bb.zip_verify("Blitz-testing.zip") == True
-        if os.path.exists("Blitz-testing.zip"):
-            os.remove("Blitz-testing.zip")
 
+class TestClassBarutilsMethods:
+    """
+    Test method filtering.
+    """
     def test_filter_method_null(self):
         """
         Test method checking, null case.
         """
         assert bb.filter_method("tbz", None) == "tbz"
-    
+
     def test_filter_method_good(self):
         """
         Test method checking, best case.
@@ -264,33 +301,6 @@ class TestClassBarutils:
         with mock.patch('bbarchivist.utilities.prep_seven_zip', mock.MagicMock(return_value=True)):
             with mock.patch('bbarchivist.utilities.get_seven_zip', mock.MagicMock(return_value='7za')):
                 assert bb.filter_method("7z", None) == "7z"
-
-    def test_calculate_strength_32(self):
-        """
-        Test compression strength for 32-bit systems.
-        """
-        with mock.patch('bbarchivist.utilities.is_amd64', mock.MagicMock(return_value=False)):
-            assert bb.calculate_strength() == 5
-
-    def test_calculate_strength_64(self):
-        """
-        Test compression strength for 64-bit systems.
-        """
-        with mock.patch('bbarchivist.utilities.is_amd64', mock.MagicMock(return_value=True)):
-            assert bb.calculate_strength() == 9
-
-    def test_compress_suite(self):
-        """
-        Test the bulk compression/verification suite.
-        """
-        os.mkdir("suite")
-        suitedir = os.path.abspath(os.path.join(os.getcwd(), "suite"))
-        with open(os.path.join(suitedir, "Z10.exe"), "w") as afile:
-            afile.write("Haters gonna hate")
-        with open(os.path.join(suitedir, "Z30.exe"), "w") as afile:
-            afile.write("I'm just gonna shake")
-        bb.compress_suite(suitedir, "zip", None, True)
-        rmtree(suitedir, ignore_errors=True)
 
 
 class TestClassBarutilsVerifier:

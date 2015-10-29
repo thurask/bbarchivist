@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 #pylint: disable = I0011, R0201, W0613, C0301
 """Test the scriptutils module."""
 
@@ -353,11 +353,11 @@ class TestClassScriptutilsIntegrity:
         cls.estring = cls.mstring + b"HAHAHAFOOLEDYOU"
         cls.fstring = b"Jackdaws love my big sphinx of quartz"
         with zipfile.ZipFile("mfest.bar", mode="w",
-                                compression=zipfile.ZIP_DEFLATED) as zfile:
+                             compression=zipfile.ZIP_DEFLATED) as zfile:
             zfile.writestr("MANIFEST.MF", cls.mstring)
             zfile.writestr("target.signed", cls.fstring)
         with zipfile.ZipFile("bkmfest.bar", mode="w",
-                                compression=zipfile.ZIP_DEFLATED) as zfile:
+                             compression=zipfile.ZIP_DEFLATED) as zfile:
             zfile.writestr("MANIFEST.MF", cls.mstring)
             zfile.writestr("target.signed", cls.estring)
         copyfile("bkmfest.bar", "bkmfest.bra")

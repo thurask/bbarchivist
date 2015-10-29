@@ -1,5 +1,5 @@
 ﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, W0201, W0142
+#pylint: disable = I0011, R0201, W0613, C0301, W0201, W0142, W0622, C0103
 """Test the smtputils module."""
 
 import bbarchivist.smtputils as bs
@@ -50,10 +50,10 @@ class TestClassSMTPUtils:
         Test config fallback.
         """
         dummy = {"server": None,
-                "port": 0,
-                "username": None,
-                "password": None,
-                "is_ssl": None}
+                 "port": 0,
+                 "username": None,
+                 "password": None,
+                 "is_ssl": None}
         results_y = {"server": "yes",
                      "port": "yes",
                      "username": "yes",
@@ -68,10 +68,10 @@ class TestClassSMTPUtils:
         Test SSL fallback, specifically.
         """
         dummy = {"server": None,
-                "port": 0,
-                "username": None,
-                "password": None,
-                "is_ssl": None}
+                 "port": 0,
+                 "username": None,
+                 "password": None,
+                 "is_ssl": None}
         results_n = {"server": "no",
                      "port": "no",
                      "username": "no",
@@ -150,10 +150,10 @@ class TestClassSMTPUtils:
                   "os": "10.2.3.4567",
                   "body": "Hey! Listen!"}
         kwargsmin = {"server": "abc.xyz",
-                    "port": 69,
-                    "username": "luser",
-                    "password": None,
-                    "is_ssl": False}
+                     "port": 69,
+                     "username": "luser",
+                     "password": None,
+                     "is_ssl": False}
         with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
             with mock.patch('bbarchivist.smtputils.smtp_config_loader', mock.MagicMock(return_value=kwargsmin)):
                 with mock.patch('bbarchivist.utilities.return_and_delete', mock.MagicMock(return_value="Hey! Listen!")):
