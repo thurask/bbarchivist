@@ -1,15 +1,15 @@
-#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
+﻿#!/usr/bin/env python3
 """This module is used for JSON tools."""
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2015 Thurask"
+__copyright__ = "Copyright 2015 Thurask"
 
 import os  # path work
 import json  # duh
 import glob  # filenames
 from bbarchivist import bbconstants  # file location
+
 
 def grab_json():
     """
@@ -17,9 +17,9 @@ def grab_json():
     """
     jfile = None
     try:
-        jfile = glob.glob(os.path.join(os.getcwd(), "bbconstants.json"))[0]  # local JSON
+        jfile = glob.glob(os.path.join(os.getcwd(), "bbconstants.json"))[0]
     except IndexError:
-        jfile = bbconstants.JSONFILE  # system JSON
+        jfile = bbconstants.JSONFILE
     return os.path.abspath(jfile)
 
 
@@ -52,7 +52,8 @@ def extract_cert(table, device):
     """
     for key in table:
         keylist = key['hwid'], key['fccid'], key['ptcrbid']
-        if (device in (keylist) or (device in key['name'] and 'secret' not in key)) and key['ptcrbid']:
+        not_secret = device in key['name'] and 'secret' not in key
+        if (device in keylist or not_secret) and key['ptcrbid']:
             device = key['device']
             name = key['name']
             ptcrbid = key['ptcrbid']
@@ -78,7 +79,10 @@ def list_available_certs(table):
                 hwid = "NO HWID"
             else:
                 hwid = key['hwid']
-            print("{0} {1} - {2} - {3}".format(key['device'], key['name'], hwid, key['fccid']))
+            print("{0} {1} - {2} - {3}".format(key['device'],
+                                               key['name'],
+                                               hwid,
+                                               key['fccid']))
 
 
 def list_devices(table):
@@ -97,4 +101,7 @@ def list_devices(table):
             fccid = "NO FCCID"
         else:
             fccid = key['fccid']
-        print("{0} {1} - {2} - {3}".format(key['device'], key['name'], hwid, fccid))
+        print("{0} {1} - {2} - {3}".format(key['device'],
+                                           key['name'],
+                                           hwid,
+                                           fccid))

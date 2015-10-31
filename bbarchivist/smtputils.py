@@ -1,10 +1,9 @@
-#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, W0142
+﻿#!/usr/bin/env python3
 """This module is used for dealing with SMTP email sending."""
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2015 Thurask"
+__copyright__ = "Copyright 2015 Thurask"
 
 import smtplib  # smtp connection
 import configparser  # reading config files
@@ -18,7 +17,7 @@ def smtp_config_loader(homepath=None):
     """
     Read a ConfigParser file to get email preferences.
 
-    :param homepath: Folder containing bbarchivist.ini. Default is user directory.
+    :param homepath: Folder containing ini file. Default is user directory.
     :type homepath: str
     """
     resultdict = {}
@@ -40,7 +39,8 @@ def smtp_config_loader(homepath=None):
     return resultdict
 
 
-def smtp_config_writer(server=None, port=None, username=None, password=None, is_ssl=True, homepath=None):
+def smtp_config_writer(server=None, port=None, username=None,
+                       password=None, is_ssl=True, homepath=None):
     """
     Write a ConfigParser file to store email server details.
 
@@ -59,7 +59,7 @@ def smtp_config_writer(server=None, port=None, username=None, password=None, is_
     :param is_ssl: True if server uses SSL, False if TLS only.
     :type is_ssl: bool
 
-    :param homepath: Folder containing bbarchivist.ini. Default is user directory.
+    :param homepath: Folder containing ini file. Default is user directory.
     :type homepath: str
     """
     config = configparser.ConfigParser()
@@ -101,7 +101,7 @@ def smtp_config_generator(results):
     if results['password'] is None:
         results['password'] = getpass.getpass(prompt="PASSWORD: ")
     if results['is_ssl'] is None:
-        use_ssl = utilities.str2bool(input("Y: SSL, N: TLS (Y/N): "))
+        use_ssl = utilities.s2b(input("Y: SSL, N: TLS (Y/N): "))
         if use_ssl:
             results['is_ssl'] = "true"
         else:
@@ -142,12 +142,12 @@ def send_email(kwargs):
     server, username, port, password = parse_kwargs(kwargs)
     subject = generate_subject(kwargs['software'], kwargs['os'])
     message = generate_message(kwargs['body'], username, subject)
-    if utilities.str2bool(kwargs['is_ssl']):
+    if utilities.s2b(kwargs['is_ssl']):
         smt = smtplib.SMTP_SSL(server, port)
     else:
         smt = smtplib.SMTP(server, port)
     smt.ehlo()
-    if not utilities.str2bool(kwargs['is_ssl']):
+    if not utilities.s2b(kwargs['is_ssl']):
         smt.starttls()
     smt.login(username, password)
     smt.sendmail(username, username, message.as_string())

@@ -1,10 +1,9 @@
 ﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """Only download OS/radio bar files."""
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2015 Thurask"
+__copyright__ = "Copyright 2015 Thurask"
 
 import os  # filesystem read
 import sys  # load arguments
@@ -19,7 +18,7 @@ def grab_args():
     """
     Parse arguments from argparse/questionnaire.
 
-    Invoke downloader from :func:`archivist.archivist_main` with those arguments.
+    Invoke downloader from :func:`archivist.archivist_main` with arguments.
     """
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(
@@ -99,11 +98,11 @@ def grab_args():
         osversion = input("OS VERSION: ")
         radioversion = input("RADIO VERSION: ")
         softwareversion = input("SOFTWARE RELEASE: ")
-        debricks = utilities.str2bool(input("DOWNLOAD DEBRICKS? Y/N: "))
-        radios = utilities.str2bool(input("DOWNLOAD RADIOS? Y/N: "))
+        debricks = utilities.s2b(input("DOWNLOAD DEBRICKS? Y/N: "))
+        radios = utilities.s2b(input("DOWNLOAD RADIOS? Y/N: "))
         if not radios:
             radios = False
-        cores = utilities.str2bool(input("DOWNLOAD CORES? Y/N: "))
+        cores = utilities.s2b(input("DOWNLOAD CORES? Y/N: "))
         if not cores:
             cores = False
         integrity = True
@@ -152,9 +151,11 @@ def downloader_main(osversion, radioversion=None, softwareversion=None,
     """
     swchecked = False  # if we checked sw release already
     radioversion = scriptutils.return_radio_version(osversion, radioversion)
-    softwareversion, swchecked = scriptutils.return_sw_checked(softwareversion, osversion)
+    softwareversion, swchecked = scriptutils.return_sw_checked(softwareversion,
+                                                               osversion)
     if altsw:
-        altsw, altchecked = scriptutils.return_radio_sw_checked(altsw, radioversion)
+        altsw, altchecked = scriptutils.return_radio_sw_checked(altsw,
+                                                                radioversion)
     if localdir is None:
         localdir = os.getcwd()
     print("~~~DOWNLOADER VERSION", bbconstants.VERSION + "~~~")
@@ -167,15 +168,22 @@ def downloader_main(osversion, radioversion=None, softwareversion=None,
     baseurl = networkutils.create_base_url(softwareversion)
     if altsw:
         alturl = networkutils.create_base_url(altsw)
-    osurls, radiourls, coreurls = utilities.generate_urls(baseurl, osversion, radioversion)
-    vzwos, vzwrad = utilities.generate_lazy_urls(baseurl, osversion, radioversion, 2)  # Verizon
+    osurls, radiourls, coreurls = utilities.generate_urls(baseurl,
+                                                          osversion,
+                                                          radioversion)
+    vzwos, vzwrad = utilities.generate_lazy_urls(baseurl,
+                                                 osversion,
+                                                 radioversion,
+                                                 2)  # Verizon
     osurls.append(vzwos)
     radiourls.append(vzwrad)
     vzwcore = vzwos.replace("sfi.desktop", "sfi")
     coreurls.append(vzwcore)
     if not networkutils.availability(osurls[1]):
-        osurls[1] = osurls[1].replace("qc8960.factory_sfi", "qc8960.verizon_sfi")  # fallback
-        coreurls[1] = coreurls[1].replace("qc8960.factory_sfi", "qc8960.verizon_sfi")
+        osurls[1] = osurls[1].replace("qc8960.factory_sfi",
+                                      "qc8960.verizon_sfi")  # fallback
+        coreurls[1] = coreurls[1].replace("qc8960.factory_sfi",
+                                          "qc8960.verizon_sfi")
     osurls = list(set(osurls))  # pop duplicates
     radiourls = list(set(radiourls))
     coreurls = list(set(coreurls))
@@ -193,11 +201,12 @@ def downloader_main(osversion, radioversion=None, softwareversion=None,
 
     # Check availability of OS, radio
     if debricks:
-        scriptutils.check_os_bulk(osurls, osversion)
+        scriptutils.check_os_bulk(osurls)
     if cores:
-        scriptutils.check_os_bulk(coreurls, osversion)
+        scriptutils.check_os_bulk(coreurls)
     if radios:
-        radiourls, radioversion = scriptutils.check_radio_bulk(radiourls, radioversion)
+        radiourls, radioversion = scriptutils.check_radio_bulk(radiourls,
+                                                               radioversion)
 
     # Download files
     print("BEGIN DOWNLOADING...")

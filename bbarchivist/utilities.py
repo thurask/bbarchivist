@@ -1,10 +1,9 @@
 ﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, E0611, W0150, C0103
 """This module is used for miscellaneous utilities."""
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2015 Thurask"
+__copyright__ = "Copyright 2015 Thurask"
 
 import os  # path work
 import argparse  # argument parser for filters
@@ -70,7 +69,7 @@ def grab_cap():
         return os.path.abspath(capfile)  # local cap
 
 
-def filesize_parser(file_size):
+def fsizer(file_size):
     """
     Raw byte file size to human-readable string.
 
@@ -82,9 +81,9 @@ def filesize_parser(file_size):
     file_size = float(file_size)
     for sfix in ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB']:
         if file_size < 1024.0:
-            return "{:3.2f}{}".format(file_size, sfix)
+            return "{0:3.2f}{1}".format(file_size, sfix)
         file_size /= 1024.0
-    return "{:3.2f}{}".format(file_size, 'YB')
+    return "{0:3.2f}{1}".format(file_size, 'YB')
 
 
 def file_exists(file):
@@ -108,8 +107,9 @@ def positive_integer(input_int):
     :type input_int: str
     """
     if int(input_int) <= 0:
+        info = "{0} is not >=0.".format(str(input_int))
         raise argparse.ArgumentError(argument=None,
-                                     message="{0} is not >=0.".format(str(input_int)))
+                                     message=info)
     return int(input_int)
 
 
@@ -124,7 +124,8 @@ def valid_method(method):
     if sys.version_info[1] <= 2:
         methodlist = [x for x in bbconstants.METHODS if x != "txz"]
     if method not in methodlist:
-        raise argparse.ArgumentError(argument=None, message="Invalid method {0}.".format(method))
+        info = "Invalid method {0}.".format(method)
+        raise argparse.ArgumentError(argument=None, message=info)
     return method
 
 
@@ -136,16 +137,18 @@ def valid_carrier(mcc_mnc):
     :type mcc_mnc: str
     """
     if not str(mcc_mnc).isdecimal():
-        raise argparse.ArgumentError(argument=None, message="Non-integer {0}.".format(str(mcc_mnc)))
+        infod = "Non-integer {0}.".format(str(mcc_mnc))
+        raise argparse.ArgumentError(argument=None, message=infod)
     if len(str(mcc_mnc)) > 3 or len(str(mcc_mnc)) == 0:
-        raise argparse.ArgumentError(argument=None, message="{0} is invalid.".format(str(mcc_mnc)))
+        infol = "{0} is invalid.".format(str(mcc_mnc))
+        raise argparse.ArgumentError(argument=None, message=infol)
     else:
         return mcc_mnc
 
 
 def escreens_pin(pin):
     """
-    Check if given PIN is valid (8 character hexadecimal, raise argparse error if it isn't.
+    Check if given PIN is valid, raise argparse error if it isn't.
 
     :param pin: PIN to check.
     :type pin: str
@@ -177,7 +180,7 @@ def escreens_duration(duration):
                                      message="Invalid duration.")
 
 
-def str2bool(input_check):
+def s2b(input_check):
     """
     Return Boolean interpretation of string input.
 
@@ -313,7 +316,7 @@ def prep_seven_zip(talkative=False):
                 return True
 
 
-def version_incrementer(version, increment=3):
+def increment(version, increment=3):
     """
     Increment version by given number. For repeated lookups.
 
@@ -332,7 +335,7 @@ def version_incrementer(version, increment=3):
     return ".".join(splitos)
 
 
-def barname_stripper(name):
+def stripper(name):
     """
     Strip fluff from bar filename.
 
@@ -446,14 +449,16 @@ def generate_lazy_urls(baseurl, osversion, radioversion, device):
         radiourl = baseurl + "/qc8930.wtr5-"
         radiourl += radioversion + "-nto+armle-v7+signed.bar"
         if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):
-            osurl = osurl.replace("qc8960.factory_sfi", "qc8960.factory_sfi_hybrid_qc8x30")
+            osurl = osurl.replace("qc8960.factory_sfi",
+                                  "qc8960.factory_sfi_hybrid_qc8x30")
     elif device == 6:
         osurl = baseurl + "/qc8974.factory_sfi.desktop-"
         osurl += osversion + "-nto+armle-v7+signed.bar"
         radiourl = baseurl + "/qc8974.wtr2-"
         radiourl += radioversion + "-nto+armle-v7+signed.bar"
         if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):
-            osurl = osurl.replace("qc8974.factory_sfi", "qc8960.factory_sfi_hybrid_qc8974")
+            osurl = osurl.replace("qc8974.factory_sfi",
+                                  "qc8960.factory_sfi_hybrid_qc8974")
     return osurl, radiourl
 
 
@@ -596,9 +601,9 @@ def verify_loader_integrity(loaderfile):
     else:
         excode = None
         try:
-            with open(os.devnull, 'rb') as DEVNULL:
+            with open(os.devnull, 'rb') as dnull:
                 excode = subprocess.call('{0} fileinfo"'.format(loaderfile),
-                                         stdout=DEVNULL,
+                                         stdout=dnull,
                                          stderr=subprocess.STDOUT)
         except OSError:
             excode = -1
@@ -606,17 +611,17 @@ def verify_loader_integrity(loaderfile):
             return excode == 0  # 0 if OK, non-zero if something broke
 
 
-def verify_bulk_loaders(loaderdir):
+def verify_bulk_loaders(a_dir):
     """
     Run :func:`verify_loader_integrity` for all files in a dir.
 
-    :param loaderdir: Directory to use.
-    :type loaderdir: str
+    :param a_dir: Directory to use.
+    :type a_dir: str
     """
     if not is_windows():
         pass
     else:
-        files = (file for file in os.listdir(loaderdir) if not os.path.isdir(file))
+        files = (file for file in os.listdir(a_dir) if not os.path.isdir(file))
         brokens = []
         for file in files:
             if file.endswith(".exe") and file.startswith(bbconstants.PREFIXES):
@@ -630,7 +635,7 @@ def cappath_config_loader(homepath=None):
     """
     Read a ConfigParser file to get cap preferences.
 
-    :param homepath: Folder containing bbarchivist.ini. Default is user directory.
+    :param homepath: Folder containing ini file. Default is user directory.
     :type homepath: str
     """
     config = configparser.ConfigParser()
@@ -654,7 +659,7 @@ def cappath_config_writer(cappath=None, homepath=None):
     :param cappath: Method to use.
     :type cappath: str
 
-    :param homepath: Folder containing bbarchivist.ini. Default is user directory.
+    :param homepath: Folder containing ini file. Default is user directory.
     :type homepath: str
     """
     if cappath is None:

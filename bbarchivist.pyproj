@@ -51,6 +51,7 @@
     <Content Include="README.rst" />
     <Content Include="requirements-devel.txt" />
     <Content Include="requirements-user.txt" />
+    <Content Include="run_flake.bat" />
     <Content Include="test_coverage.bat" />
     <Content Include="upload.bat" />
   </ItemGroup>

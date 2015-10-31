@@ -8,3 +8,4 @@ pytest>0.0
 pytest-cov>0.0
 httmock>0.0
 cx_freeze>0.0
+flake8>0.0

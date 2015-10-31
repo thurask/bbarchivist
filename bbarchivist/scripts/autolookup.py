@@ -1,10 +1,9 @@
 ﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, W0142
 """Get software release for one/many OS versions."""
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2015 Thurask"
+__copyright__ = "Copyright 2015 Thurask"
 
 import argparse  # parse arguments
 import sys  # load arguments
@@ -99,7 +98,7 @@ def grab_args():
             args.email)
     else:
         osversion = input("OS VERSION: ")
-        recurse = utilities.str2bool(input("LOOP?: "))
+        recurse = utilities.s2b(input("LOOP?: "))
         print(" ")
         autolookup_main(
             osversion,
@@ -140,21 +139,21 @@ def autolookup_main(osversion, loop=False, log=False,
     :param sql: Whether to add valid lookups to a database. Default is false.
     :type sql: bool
 
-    :param quiet: Whether to only output if the release exists. Default is false.
+    :param quiet: Whether to only output if release exists. Default is false.
     :type quiet: bool
 
     :param ceiling: When to stop loop. Default is 9996 (i.e. 10.x.y.9996).
     :type ceiling: int
 
-    :param mailer: Whether to send new valid links through email. Default is false.
+    :param mailer: Whether to email new valid links. Default is false.
     :type mailer: bool
     """
     if mailer:
         sql = True
-        smtpsetup = smtputils.smtp_config_loader()
-        smtpsetup = smtputils.smtp_config_generator(smtpsetup)
-        smtpsetup['homepath'] = None
-        smtputils.smtp_config_writer(**smtpsetup)
+        smtpc = smtputils.smtp_config_loader()
+        smtpc = smtputils.smtp_config_generator(smtpc)
+        smtpc['homepath'] = None
+        smtputils.smtp_config_writer(**smtpc)
     print("~~~AUTOLOOKUP VERSION", bbconstants.VERSION + "~~~")
     print("")
     if log:
@@ -195,21 +194,26 @@ def autolookup_main(osversion, loop=False, log=False,
                 # Check availability of software release
                 avail = networkutils.availability(baseurl)
                 if avail:
-                    available = "Available"
+                    is_avail = "Available"
                     if autogen:
-                        rad = utilities.version_incrementer(osversion, 1)
+                        rad = utilities.increment(osversion, 1)
                         linkgen.linkgen_main(osversion, rad, prel)
                     if mailer:
                         sqlutils.prepare_sw_db()
-                        if not sqlutils.check_entry_existence(osversion, prel):
-                            rad = utilities.version_incrementer(osversion, 1)
-                            linkgen.linkgen_main(osversion, rad, prel, temp=True)
-                            smtputils.prep_email(osversion, prel, smtpsetup['password'])
+                        if not sqlutils.check_exists(osversion, prel):
+                            rad = utilities.increment(osversion, 1)
+                            linkgen.linkgen_main(osversion,
+                                                 rad,
+                                                 prel,
+                                                 temp=True)
+                            smtputils.prep_email(osversion,
+                                                 prel,
+                                                 smtpc['password'])
                 else:
-                    available = "Unavailable"
+                    is_avail = "Unavailable"
             else:
                 pav = "  "
-                available = "Unavailable"
+                is_avail = "Unavailable"
             swrelset = set([a1rel, b1rel, b2rel, prel])
             for i in swrelset:
                 if i != "SR not in system" and i is not None:
@@ -220,34 +224,35 @@ def autolookup_main(osversion, loop=False, log=False,
             if swrelease != "":
                 if sql:
                     sqlutils.prepare_sw_db()
-                    if not sqlutils.check_entry_existence(osversion, swrelease):
-                        sqlutils.insert_sw_release(osversion, swrelease, available.lower())
-                out = "OS {} - SR {} - [{}|{}|{}|{}|{}] - {}".format(osversion,
-                                                                     swrelease,
-                                                                     pav,
-                                                                     a1av,
-                                                                     a2av,
-                                                                     b1av,
-                                                                     b2av,
-                                                                     available)
+                    if not sqlutils.check_exists(osversion, swrelease):
+                        sqlutils.insert(osversion, swrelease, is_avail.lower())
+                avblok = "[{0}|{1}|{2}|{3}|{4}]".format(pav,
+                                                        a1av,
+                                                        a2av,
+                                                        b1av,
+                                                        b2av)
+                out = "OS {0} - SR {1} - {2} - {3}".format(osversion,
+                                                           swrelease,
+                                                           avblok,
+                                                           is_avail)
                 if not quiet:
                     if log:
                         with open(record, "a") as rec:
                             rec.write(out+"\n")
                     print(out)
                 else:
-                    if available == "Available":
+                    if is_avail == "Available":
                         if log:
                             with open(record, "a") as rec:
                                 rec.write(out+"\n")
                         print(out)
             if not loop:
-                raise KeyboardInterrupt  # hack, but whateva, I do what I want
+                raise KeyboardInterrupt  # hack, but whatever
             else:
                 if int(osversion.split(".")[3]) > ceiling:
                     raise KeyboardInterrupt
                 else:
-                    osversion = utilities.version_incrementer(osversion, inc)
+                    osversion = utilities.increment(osversion, inc)
                     swrelease = ""
                     continue
     except KeyboardInterrupt:

@@ -1,11 +1,10 @@
 ﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """This module is used for creation of autoloaders.
 A higher level interface for :mod:`bbarchivist.pseudocap`."""
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2015 Thurask"
+__copyright__ = "Copyright 2015 Thurask"
 
 import os  # path work
 import glob  # filename matching
@@ -26,7 +25,7 @@ def read_files(localdir, core=False):
     oslist = read_os_files(localdir, core)
     radlist = read_radio_files(localdir)
     pairdict = {}
-    # [radio_ti, radio_z10, radio_z10_vzw, radio_q10, radio_z30, radio_z3, radio_8974]
+    # [ti, z10, z10_vzw, q10, z30, z3, 8974]
     for idx, rad in enumerate(radlist):
         if idx == 0:
             pairdict[rad] = oslist[3]
@@ -143,29 +142,34 @@ def read_radio_files(localdir):
         print("No Verizon 8960 radio found")
     # Q10/Q5
     try:
-        radio_q10 = glob.glob(os.path.join(localdir, "*radio.qc8960*wtr.*signed"))[0]
+        radio_q10 = glob.glob(os.path.join(localdir,
+                                           "*radio.qc8960*wtr.*signed"))[0]
     except IndexError:
         radio_q10 = None
         print("No Q10/Q5 radio found")
     # Z30/Classic
     try:
-        radio_z30 = glob.glob(os.path.join(localdir, "*radio.qc8960*wtr5*.signed"))[0]
+        radio_z30 = glob.glob(os.path.join(localdir,
+                                           "*radio.qc8960*wtr5*.signed"))[0]
     except IndexError:
         radio_z30 = None
         print("No Z30/Classic radio found")
     # Z3
     try:
-        radio_z3 = glob.glob(os.path.join(localdir, "*radio.qc8930*wtr5*.signed"))[0]
+        radio_z3 = glob.glob(os.path.join(localdir,
+                                          "*radio.qc8930*wtr5*.signed"))[0]
     except IndexError:
         radio_z3 = None
         print("No Z3 radio found")
     # Passport
     try:
-        radio_8974 = glob.glob(os.path.join(localdir, "*radio.qc8974*wtr2*.signed"))[0]
+        radio_8974 = glob.glob(os.path.join(localdir,
+                                            "*radio.qc8974*wtr2*.signed"))[0]
     except IndexError:
         radio_8974 = None
         print("No Passport radio found")
-    return [radio_ti, radio_z10, radio_z10_vzw, radio_q10, radio_z30, radio_z3, radio_8974]
+    return [radio_ti, radio_z10, radio_z10_vzw,
+            radio_q10, radio_z30, radio_z3, radio_8974]
 
 
 def pretty_formatter(osversion, radioversion):
@@ -343,7 +347,6 @@ def generate_filename(device, version, suffix=None):
     return dev[0] + version + suffix + dev[1] + dev[2]
 
 
-
 def generate_lazy_loader(
         osversion, device,
         localdir=None, altradio=None, core=False):
@@ -378,7 +381,8 @@ def generate_lazy_loader(
         raise SystemExit
     else:
         try:
-            rset = set(glob.glob("*.signed")) - set(glob.glob("*desktop*.signed"))
+            sset = set(glob.glob("*.signed"))
+            rset = sset - set(glob.glob("*desktop*.signed"))
             radiofile = str(list(rset)[0])
         except IndexError:
             print("No radio found")

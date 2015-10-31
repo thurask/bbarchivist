@@ -1,10 +1,9 @@
-#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, W0142
+﻿#!/usr/bin/env python3
 """This module is used for dealing with SQL databases, including CSV export."""
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2015 Thurask"
+__copyright__ = "Copyright 2015 Thurask"
 
 import sqlite3  # the sql library
 import csv  # write to csv
@@ -12,6 +11,7 @@ import os  # paths
 import operator  # for sorting
 import time  # current date
 from bbarchivist.utilities import UselessStdout  # check if file exists
+# flake8: noqa
 
 
 def prepare_path():
@@ -31,7 +31,6 @@ def prepare_sw_db():
         cnxn = sqlite3.connect(prepare_path())
         with cnxn:
             crsr = cnxn.cursor()
-            # Filter OS/software, including uniqueness, case-insensitivity, existence, etc.
             reqid = "INTEGER PRIMARY KEY"
             reqs = "TEXT NOT NULL UNIQUE COLLATE NOCASE"
             reqs2 = "TEXT NOT NULL"
@@ -42,7 +41,7 @@ def prepare_sw_db():
         print(str(sqerror))
 
 
-def insert_sw_release(osversion, swrelease, available, curdate=None):
+def insert(osversion, swrelease, available, curdate=None):
     """
     Insert values into main SQLite database.
 
@@ -96,7 +95,7 @@ def pop_sw_release(osversion, swrelease):
         print(str(sqerror))
 
 
-def check_entry_existence(osversion, swrelease):
+def check_exists(osversion, swrelease):
     """
     Check if we did this one already.
 

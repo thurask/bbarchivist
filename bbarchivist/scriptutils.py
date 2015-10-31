@@ -1,10 +1,9 @@
-#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
+﻿#!/usr/bin/env python3
 """This module contains various utilities for the scripts folder."""
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2015 Thurask"
+__copyright__ = "Copyright 2015 Thurask"
 
 
 import os  # path work
@@ -28,7 +27,7 @@ def return_radio_version(osversion, radioversion=None):
     :type radioversion: str
     """
     if radioversion is None:
-        radioversion = utilities.version_incrementer(osversion, 1)
+        radioversion = utilities.increment(osversion, 1)
     return radioversion
 
 
@@ -44,10 +43,10 @@ def return_sw_checked(softwareversion, osversion):
     """
     if softwareversion is None:
         serv = bbconstants.SERVERS["p"]
-        softwareversion = networkutils.software_release_lookup(osversion, serv)
+        softwareversion = networkutils.sr_lookup(osversion, serv)
         if softwareversion == "SR not in system":
             print("SOFTWARE RELEASE NOT FOUND")
-            cont = utilities.str2bool(input("INPUT MANUALLY? Y/N: "))
+            cont = utilities.s2b(input("INPUT MANUALLY? Y/N: "))
             if cont:
                 softwareversion = input("SOFTWARE RELEASE: ")
                 swchecked = False
@@ -73,11 +72,11 @@ def return_radio_sw_checked(altsw, radioversion):
     """
     if altsw == "checkme":
         serv = bbconstants.SERVERS["p"]
-        testos = utilities.version_incrementer(radioversion, -1)
-        altsw = networkutils.software_release_lookup(testos, serv)
+        testos = utilities.increment(radioversion, -1)
+        altsw = networkutils.sr_lookup(testos, serv)
         if altsw == "SR not in system":
             print("RADIO SOFTWARE RELEASE NOT FOUND")
-            cont = utilities.str2bool(input("INPUT MANUALLY? Y/N: "))
+            cont = utilities.s2b(input("INPUT MANUALLY? Y/N: "))
             if cont:
                 altsw = input("SOFTWARE RELEASE: ")
                 altchecked = False
@@ -111,7 +110,7 @@ def check_sw(baseurl, softwareversion, swchecked):
             print("SOFTWARE RELEASE", softwareversion, "EXISTS")
         else:
             print("SOFTWARE RELEASE", softwareversion, "NOT FOUND")
-            cont = utilities.str2bool(input("CONTINUE? Y/N: "))
+            cont = utilities.s2b(input("CONTINUE? Y/N: "))
             if not cont:
                 print("\nEXITING...")
                 raise SystemExit
@@ -139,7 +138,7 @@ def check_radio_sw(alturl, altsw, altchecked):
             print("SOFTWARE RELEASE", altsw, "EXISTS")
         else:
             print("SOFTWARE RELEASE", altsw, "NOT FOUND")
-            cont = utilities.str2bool(input("CONTINUE? Y/N: "))
+            cont = utilities.s2b(input("CONTINUE? Y/N: "))
             if not cont:
                 print("\nEXITING...")
                 raise SystemExit
@@ -163,21 +162,18 @@ def check_os_single(osurl, osversion, device):
     osav = networkutils.availability(osurl)
     if not osav:
         print(osversion, "NOT AVAILABLE FOR", bbconstants.DEVICES[device])
-        cont = utilities.str2bool(input("CONTINUE? Y/N: "))
+        cont = utilities.s2b(input("CONTINUE? Y/N: "))
         if not cont:
             print("\nEXITING...")
             raise SystemExit
 
 
-def check_os_bulk(osurls, osversion):
+def check_os_bulk(osurls):
     """
     Check existence of list of OS links.
 
     :param osurls: OS URLs to check.
     :type osurls: list(str)
-
-    :param osversion: OS version.
-    :type osversion: str
     """
     for url in osurls:
         osav = networkutils.availability(url)
@@ -185,7 +181,7 @@ def check_os_bulk(osurls, osversion):
             break
     else:
         print("OS VERSION NOT FOUND")
-        cont = utilities.str2bool(input("CONTINUE? Y/N: "))
+        cont = utilities.s2b(input("CONTINUE? Y/N: "))
         if not cont:
             print("\nEXITING...")
             raise SystemExit
@@ -204,13 +200,13 @@ def check_radio_single(radiourl, radioversion):
     radav = networkutils.availability(radiourl)
     if not radav:
         print("RADIO VERSION NOT FOUND")
-        cont = utilities.str2bool(input("INPUT MANUALLY? Y/N: "))
+        cont = utilities.s2b(input("INPUT MANUALLY? Y/N: "))
         if cont:
             rad2 = input("RADIO VERSION: ")
             radiourl = radiourl.replace(radioversion, rad2)
             radioversion = rad2
         else:
-            going = utilities.str2bool(input("KEEP GOING? Y/N: "))
+            going = utilities.s2b(input("KEEP GOING? Y/N: "))
             if not going:
                 print("\nEXITING...")
                 raise SystemExit
@@ -233,13 +229,13 @@ def check_radio_bulk(radiourls, radioversion):
             break
     else:
         print("RADIO VERSION NOT FOUND")
-        cont = utilities.str2bool(input("INPUT MANUALLY? Y/N: "))
+        cont = utilities.s2b(input("INPUT MANUALLY? Y/N: "))
         if cont:
             rad2 = input("RADIO VERSION: ")
             radiourls = [url.replace(radioversion, rad2) for url in radiourls]
             radioversion = rad2
         else:
-            going = utilities.str2bool(input("KEEP GOING? Y/N: "))
+            going = utilities.s2b(input("KEEP GOING? Y/N: "))
             if not going:
                 print("\nEXITING...")
                 raise SystemExit
@@ -264,7 +260,7 @@ def get_sz_executable(compmethod):
         else:
             szexe = ""
             print("7ZIP NOT FOUND")
-            cont = utilities.str2bool(input("CONTINUE? Y/N "))
+            cont = utilities.s2b(input("CONTINUE? Y/N "))
             if cont:
                 print("FALLING BACK TO ZIP...")
                 compmethod = "zip"
@@ -390,7 +386,7 @@ def verify_gpg_credentials():
     gpgkey, gpgpass = filehashtools.gpg_config_loader()
     if gpgkey is None or gpgpass is None:
         print("NO PGP KEY/PASS FOUND")
-        cont = utilities.str2bool(input("CONTINUE (Y/N)?: "))
+        cont = utilities.s2b(input("CONTINUE (Y/N)?: "))
         if cont:
             if gpgkey is None:
                 gpgkey = input("PGP KEY (0x12345678): ")
@@ -398,7 +394,7 @@ def verify_gpg_credentials():
                     gpgkey = "0x" + gpgkey  # add preceding 0x
             if gpgpass is None:
                 gpgpass = getpass.getpass(prompt="PGP PASSPHRASE: ")
-                writebool = utilities.str2bool(input("WRITE PASSWORD TO FILE (Y/N)?:"))
+                writebool = utilities.s2b(input("SAVE PASSPHRASE (Y/N)?:"))
             else:
                 writebool = False
             if writebool:

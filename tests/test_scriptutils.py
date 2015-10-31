@@ -1,5 +1,4 @@
 ﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301
 """Test the scriptutils module."""
 
 import os
@@ -65,7 +64,7 @@ class TestClassScriptutilsSoftware:
         """
         Test software release checking.
         """
-        with mock.patch('bbarchivist.networkutils.software_release_lookup',
+        with mock.patch('bbarchivist.networkutils.sr_lookup',
                         mock.MagicMock(return_value="10.3.2.2474")):
             assert bs.return_sw_checked(None, "10.3.2.2639") == ("10.3.2.2474", True)
 
@@ -73,7 +72,7 @@ class TestClassScriptutilsSoftware:
         """
         Test exiting upon software release check failure.
         """
-        with mock.patch('bbarchivist.networkutils.software_release_lookup',
+        with mock.patch('bbarchivist.networkutils.sr_lookup',
                         mock.MagicMock(return_value="SR not in system")):
             with mock.patch('builtins.input', mock.MagicMock(return_value="n")):
                 with pytest.raises(SystemExit):
@@ -89,7 +88,7 @@ class TestClassScriptutilsSoftware:
         """
         Test radio software release checking.
         """
-        with mock.patch('bbarchivist.networkutils.software_release_lookup',
+        with mock.patch('bbarchivist.networkutils.sr_lookup',
                         mock.MagicMock(return_value="10.3.2.2474")):
             assert bs.return_radio_sw_checked("checkme", "10.3.2.2640") == ("10.3.2.2474", True)
 
@@ -97,7 +96,7 @@ class TestClassScriptutilsSoftware:
         """
         Test exiting upon radio software release check failure.
         """
-        with mock.patch('bbarchivist.networkutils.software_release_lookup',
+        with mock.patch('bbarchivist.networkutils.sr_lookup',
                         mock.MagicMock(return_value="SR not in system")):
             with mock.patch('builtins.input', mock.MagicMock(return_value="n")):
                 with pytest.raises(SystemExit):
@@ -213,7 +212,7 @@ class TestClassScriptutilsURLCheck:
         osurls = ["http://qrrbrbirlbel.yu/", "http://zeekyboogydoog.su/"]
         with mock.patch('bbarchivist.networkutils.availability',
                         mock.MagicMock(return_value=True)):
-            bs.check_os_bulk(osurls, "10.3.2.2639")
+            bs.check_os_bulk(osurls)
             assert "NOT FOUND" not in capsys.readouterr()[0]
 
     def test_os_bulk_fail(self):
@@ -225,7 +224,7 @@ class TestClassScriptutilsURLCheck:
                         mock.MagicMock(return_value=False)):
             with mock.patch('builtins.input', mock.MagicMock(return_value="n")):
                 with pytest.raises(SystemExit):
-                    bs.check_os_bulk(osurls, "10.3.2.2639")
+                    bs.check_os_bulk(osurls)
 
     def test_os_bulk_go(self):
         """
@@ -235,7 +234,7 @@ class TestClassScriptutilsURLCheck:
         with mock.patch('bbarchivist.networkutils.availability',
                         mock.MagicMock(return_value=False)):
             with mock.patch('builtins.input', mock.MagicMock(return_value="y")):
-                assert bs.check_os_bulk(osurls, "10.3.2.2639") is None
+                assert bs.check_os_bulk(osurls) is None
 
     def test_radio_single(self, capsys):
         """

@@ -1,5 +1,4 @@
-﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, W0201, W0142, W0622, C0103
+#!/usr/bin/env python3
 """Test the smtputils module."""
 
 import bbarchivist.smtputils as bs

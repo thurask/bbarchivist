@@ -1,14 +1,13 @@
 ﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """This module is used for generation of URLs and related text files."""
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2015 Thurask"
+__copyright__ = "Copyright 2015 Thurask"
 
 
-from bbarchivist.networkutils import create_base_url, get_content_length  # base url, get filesize
-from bbarchivist.utilities import filesize_parser, generate_urls, barname_stripper  # url creation, filesize mapping, barname cleaning
+from bbarchivist.networkutils import create_base_url, get_length  # network
+from bbarchivist.utilities import fsizer, generate_urls, stripper  # utils
 
 
 def write_links(softwareversion, osversion, radioversion,
@@ -38,7 +37,7 @@ def write_links(softwareversion, osversion, radioversion,
     :param avlty: Availability of links to download. Default is false.
     :type avlty: bool
 
-    :param appendbars: Whether to add app bars to this file. Default is false.
+    :param appendbars: Whether to add app bars to file. Default is false.
     :type appendbars: bool
 
     :param appurls: App bar URLs to add.
@@ -61,36 +60,44 @@ def write_links(softwareversion, osversion, radioversion,
         target.write("\nDEBRICK URLS:\n")
         for key, value in osurls.items():
             if avlty:
-                thesize = get_content_length(value)
+                thesize = get_length(value)
             else:
                 thesize = None
-            target.write(key + " [" + filesize_parser(thesize) + "] " + value + "\n")
+            target.write("{0} [{1}] {2}\n".format(key,
+                                                  fsizer(thesize),
+                                                  value))
         target.write("\nCORE URLS:\n")
         for key, value in coreurls.items():
             if avlty:
-                thesize = get_content_length(value)
+                thesize = get_length(value)
             else:
                 thesize = None
-            target.write(key + " [" + filesize_parser(thesize) + "] " + value + "\n")
+            target.write("{0} [{1}] {2}\n".format(key,
+                                                  fsizer(thesize),
+                                                  value))
         target.write("\nRADIO URLS:\n")
         for key, value in radiourls.items():
             if avlty:
-                thesize = get_content_length(value)
+                thesize = get_length(value)
             else:
                 thesize = None
-            target.write(key + " [" + filesize_parser(thesize) + "] " + value + "\n")
+            target.write("{0} [{1}] {2}\n".format(key,
+                                                  fsizer(thesize),
+                                                  value))
         if appendbars:
             target.write("\nAPP URLS:\n")
             for app in appurls:
                 stoppers = ["8960", "8930", "8974", "m5730", "winchester"]
                 if all(word not in app for word in stoppers):
-                    thesize = get_content_length(app)
+                    thesize = get_length(app)
                     base = app.split('/')[-1]
-                    base = barname_stripper(base)
-                    target.write(base + " [" + filesize_parser(thesize) + "] " + app + "\n")
+                    base = stripper(base)
+                    target.write("{0} [{1}] {2}\n".format(base,
+                                                          fsizer(thesize),
+                                                          app))
 
 
-def url_generator(osversion, radioversion, softwareversion):
+def url_gen(osversion, radioversion, softwareversion):
     """
     Return all debrick, core and radio URLs from given OS, radio software.
 
@@ -108,8 +115,11 @@ def url_generator(osversion, radioversion, softwareversion):
                "Z30/LEAP/CLASSIC", "Z3", "PASSPORT"]
     oslist = ["STL100-1", "QC8960", "VERIZON QC8960", "Z3", "PASSPORT"]
     oses, radios, cores = generate_urls(baseurl, osversion, radioversion, True)
+    vzw = "/{0}-{1}-{2}".format("qc8960.verizon_sfi.desktop",
+                                osversion,
+                                "nto+armle-v7+signed.bar")
     oses.insert(2,
-                baseurl + "/qc8960.verizon_sfi.desktop-" + osversion + "-nto+armle-v7+signed.bar")
+                baseurl + vzw)
     cores.insert(2, oses[2].replace(".desktop", ""))
     ospairs = {}
     for title, url in zip(oslist, oses):

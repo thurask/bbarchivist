@@ -1,10 +1,9 @@
-#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
+﻿#!/usr/bin/env python3
 """This module is the Python-ized implementation of cap.exe"""
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2015 Thurask"
+__copyright__ = "Copyright 2015 Thurask"
 
 import os  # path work
 import binascii  # to hex and back again
@@ -75,16 +74,17 @@ def make_offset(firstfile, secondfile=None, thirdfile=None,
     filecount = len([file for file in filelist if file])
     fcount = b'0' + bytes(str(filecount), 'ascii')
     # immutable things
-    scaff = b'at9dFE5LTEdOT0hHR0lTCxcKDR4MFFMtPiU6LT0zPjs6Ui88U05GTVFOSUdRTlFOT3BwcJzVxZec1cWXnNXFlw=='
+    scaff = b'at9dFE5LTEdOT0hHR0lTCxcKDR4MFFMtPiU6LT0zPj'
+    scaff += b's6Ui88U05GTVFOSUdRTlFOT3BwcJzVxZec1cWXnNXFlw=='
     separator = base64.b64decode(scaff)
     password = binascii.unhexlify(b'0'*160)
     singlepad = b'\x00'
     doublepad = b'\x00\x00'
     signedpad = b'\x00\x00\x00\x00\x00\x00\x00\x00'
     filepad = binascii.unhexlify(fcount)  # 01-06
-    trailers = binascii.unhexlify(b'00' * (7 - filecount))# 00 repeated between 1 and 6 times
+    trailers = binascii.unhexlify(b'00' * (7 - filecount))  # 00, 1-6x
     capfile = str(cap)
-    capsize = os.path.getsize(capfile)  # size of cap.exe, in bytes
+    capsize = os.path.getsize(capfile)
     if firstfile is None:
         raise SystemExit
     if filecount == 0 or filecount > 6:
@@ -110,7 +110,8 @@ def make_offset(firstfile, secondfile=None, thirdfile=None,
     beginlength = len(separator) + len(password) + 64
     firstoffset = beginlength + capsize
     firststart = ghetto_convert(firstoffset)
-    secondstart = thirdstart = fourthstart = fifthstart = sixthstart = signedpad
+    secondstart = thirdstart = fourthstart = signedpad
+    fifthstart = sixthstart = signedpad
     if filecount >= 2:
         secondoffset = firstoffset + firstsize  # start of second file
         secondstart = ghetto_convert(secondoffset)
@@ -126,8 +127,12 @@ def make_offset(firstfile, secondfile=None, thirdfile=None,
     if filecount == 6:
         sixthoffset = fifthoffset + fifthsize  # start of sixth file
         sixthstart = ghetto_convert(sixthoffset)
-    makeuplen = 64 - (6*len(signedpad) + 2*len(doublepad) + len(filepad) + 2*len(singlepad) + len(trailers))
-    makeup = b'\x00'*makeuplen  # pad to match offset begin and actual first file start
+    makeuplen = 64 - 6*len(signedpad)
+    makeuplen -= 2*len(doublepad)
+    makeuplen -= len(filepad)
+    makeuplen -= 2*len(singlepad)
+    makeuplen -= len(trailers)
+    makeup = b'\x00'*makeuplen  # pad to match offset begin
     with open(os.path.join(folder, "offset.hex"), "wb") as file:
         file.write(separator)
         file.write(password)

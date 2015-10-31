@@ -40,3 +40,4 @@ htmlcov/
 /.cache/v/cache/lastfailed
 *.user
 /test**
+flake8.txt

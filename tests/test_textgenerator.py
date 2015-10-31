@@ -1,5 +1,4 @@
 ﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301
 """Test the textgenerator module."""
 
 import bbarchivist.textgenerator as bt
@@ -43,7 +42,7 @@ class TestClassTextGenerator:
         """
         Create necessary links.
         """
-        deb, cor, rad = bt.url_generator("10.1.1000", "10.2.2000", "10.3.3000")
+        deb, cor, rad = bt.url_gen("10.1.1000", "10.2.2000", "10.3.3000")
         cls.deb = deb
         cls.cor = cor
         cls.rad = rad

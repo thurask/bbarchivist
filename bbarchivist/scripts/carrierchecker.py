@@ -1,10 +1,9 @@
 ﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """Checks a carrier for an OS version, can download."""
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2015 Thurask"
+__copyright__ = "Copyright 2015 Thurask"
 
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import networkutils  # check function
@@ -102,7 +101,8 @@ def grab_args():
             args.export = False
             args.blitz = False
         if args.forcedos is not None and args.forcedsw is None:
-            avail = networkutils.software_release_lookup(args.forcedos, bbconstants.SERVERS['p'])
+            avail = networkutils.sr_lookup(args.forcedos,
+                                           bbconstants.SERVERS['p'])
             if avail != "SR not in system":
                 forced = avail
             else:
@@ -132,19 +132,19 @@ def grab_args():
             if mnc == utilities.valid_carrier(mnc):
                 break
         device = input("DEVICE (SXX100-#): ")
-        bundles = utilities.str2bool(input("CHECK BUNDLES?: "))
+        bundles = utilities.s2b(input("CHECK BUNDLES?: "))
         if bundles:
             download = False
             upgrade = False
             export = False
             blitz = False
         else:
-            export = utilities.str2bool(input("EXPORT TO FILE?: "))
-            download = utilities.str2bool(input("DOWNLOAD?: "))
+            export = utilities.s2b(input("EXPORT TO FILE?: "))
+            download = utilities.s2b(input("DOWNLOAD?: "))
             if download:
-                upgrade = utilities.str2bool(input("UPGRADE BARS?: "))
+                upgrade = utilities.s2b(input("UPGRADE BARS?: "))
                 if upgrade:
-                    blitz = utilities.str2bool(input("CREATE BLITZ?: "))
+                    blitz = utilities.s2b(input("CREATE BLITZ?: "))
                 else:
                     blitz = False
             else:
@@ -249,11 +249,17 @@ def carrierchecker_main(mcc, mnc, device,
             if files:
                 if not upgrade:
                     npc = networkutils.return_npc(mcc, mnc)
-                    newfiles = networkutils.carrier_update_request(npc, hwid, True, False, forced)
+                    newfiles = networkutils.carrier_update_request(npc,
+                                                                   hwid,
+                                                                   True,
+                                                                   False,
+                                                                   forced)
                     newfiles = newfiles[3]
                 else:
                     newfiles = files
-                osurls, coreurls, radiourls = textgenerator.url_generator(osv, radv, swv)
+                osurls, coreurls, radiourls = textgenerator.url_gen(osv,
+                                                                    radv,
+                                                                    swv)
                 finalfiles = []
                 stoppers = ["8960", "8930", "8974", "m5730", "winchester"]
                 for link in newfiles:

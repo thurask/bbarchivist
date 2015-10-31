@@ -1,10 +1,9 @@
-#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
+﻿#!/usr/bin/env python3
 """This module is used to generate file hashes/checksums and PGP signatures."""
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2015 Thurask"
+__copyright__ = "Copyright 2015 Thurask"
 
 import zlib  # crc32/adler32
 import hashlib  # all other hashes
@@ -13,9 +12,10 @@ import os  # path work
 import gnupg  # interface b/w Python, GPG
 import configparser  # config parsing, duh
 from bbarchivist import bbconstants  # premade stuff
+from bbarchivist.barutils import prepends  # file parsing
 
 
-def crc32hash(filepath, blocksize=16 * 1024 * 1024):
+def hc32(filepath, blocksize=16 * 1024 * 1024):
     """
     Return CRC32 checksum of a file.
 
@@ -33,7 +33,7 @@ def crc32hash(filepath, blocksize=16 * 1024 * 1024):
     return final
 
 
-def adler32hash(filepath, blocksize=16 * 1024 * 1024):
+def ha32(filepath, blocksize=16 * 1024 * 1024):
     """
     Return Adler32 checksum of a file.
 
@@ -56,7 +56,7 @@ def adler32hash(filepath, blocksize=16 * 1024 * 1024):
     return final
 
 
-def sha1hash(filepath, blocksize=16 * 1024 * 1024):
+def hs1(filepath, blocksize=16 * 1024 * 1024):
     """
     Return SHA-1 hash of a file.
 
@@ -76,7 +76,7 @@ def sha1hash(filepath, blocksize=16 * 1024 * 1024):
     return sha1.hexdigest()
 
 
-def sha224hash(filepath, blocksize=16 * 1024 * 1024):
+def hs224(filepath, blocksize=16 * 1024 * 1024):
     """
     Return SHA-224 hash of a file.
 
@@ -96,7 +96,7 @@ def sha224hash(filepath, blocksize=16 * 1024 * 1024):
     return sha224.hexdigest()
 
 
-def sha256hash(filepath, blocksize=16 * 1024 * 1024):
+def hs256(filepath, blocksize=16 * 1024 * 1024):
     """
     Return SHA-256 hash of a file.
 
@@ -116,7 +116,7 @@ def sha256hash(filepath, blocksize=16 * 1024 * 1024):
     return sha256.hexdigest()
 
 
-def sha384hash(filepath, blocksize=16 * 1024 * 1024):
+def hs384(filepath, blocksize=16 * 1024 * 1024):
     """
     Return SHA-384 hash of a file.
 
@@ -136,7 +136,7 @@ def sha384hash(filepath, blocksize=16 * 1024 * 1024):
     return sha384.hexdigest()
 
 
-def sha512hash(filepath, blocksize=16 * 1024 * 1024):
+def hs512(filepath, blocksize=16 * 1024 * 1024):
     """
     Return SHA-512 hash of a file.
 
@@ -156,7 +156,7 @@ def sha512hash(filepath, blocksize=16 * 1024 * 1024):
     return sha512.hexdigest()
 
 
-def md4hash(filepath, blocksize=16 * 1024 * 1024):
+def hm4(filepath, blocksize=16 * 1024 * 1024):
     """
     Return MD4 hash of a file; depends on system SSL library.
 
@@ -180,7 +180,7 @@ def md4hash(filepath, blocksize=16 * 1024 * 1024):
         print("MD4 HASH FAILED:\nIS IT AVAILABLE?")
 
 
-def md5hash(filepath, blocksize=16 * 1024 * 1024):
+def hm5(filepath, blocksize=16 * 1024 * 1024):
     """
     Return MD5 hash of a file.
 
@@ -200,7 +200,7 @@ def md5hash(filepath, blocksize=16 * 1024 * 1024):
     return md5.hexdigest()
 
 
-def ripemd160hash(filepath, blocksize=16 * 1024 * 1024):
+def hr160(filepath, blocksize=16 * 1024 * 1024):
     """
     Return RIPEMD160 hash of a file; depends on system SSL library.
 
@@ -224,7 +224,7 @@ def ripemd160hash(filepath, blocksize=16 * 1024 * 1024):
         print("RIPEMD160 HASH FAILED:\nIS IT AVAILABLE?")
 
 
-def whirlpoolhash(filepath, blocksize=16 * 1024 * 1024):
+def hwp(filepath, blocksize=16 * 1024 * 1024):
     """
     Return Whirlpool hash of a file; depends on system SSL library.
 
@@ -295,8 +295,9 @@ def calculate_escreens(pin, app, uptime, duration=30):
         3: "Hello my baby, hello my honey, hello my rag time gal",
         7: "He was a boy, and she was a girl, can I make it any more obvious?",
         15: "So am I, still waiting, for this world to stop hating?",
-        30: "I love myself today, not like yesterday. I'm cool, I'm calm, I'm gonna be okay"
+        30: "I love myself today, not like yesterday. "
     }
+    lifetimes[30] += "I'm cool, I'm calm, I'm gonna be okay"
     #: Escreens magic HMAC secret.
     secret = 'Up the time stream without a TARDIS'
     duration = int(duration)
@@ -310,7 +311,7 @@ def calculate_escreens(pin, app, uptime, duration=30):
     return key.upper()
 
 
-def hash_formatter(filename, hashfunc, workingdir, blocksize=16777216):
+def hash_get(filename, hashfunc, workingdir, blocksize=16777216):
     """
     Generate and pretty format the hash result for a file.
 
@@ -330,7 +331,7 @@ def hash_formatter(filename, hashfunc, workingdir, blocksize=16777216):
     return "{0} {1}\n".format(result.upper(), filename)
 
 
-def hash_resetter(hashlist):
+def hash_reset(hashlist):
     """
     Reset list by returning only the first item.
 
@@ -343,7 +344,7 @@ def hash_resetter(hashlist):
 def verifier(workingdir, kwargs=None):
     """
     For all files in a directory, perform various hash/checksum functions.
-    Take dict to define hashes, write the output to a/individual .cksum file(s).
+    Take dict to define hashes, write output to a/individual .cksum file(s).
 
     :param workingdir: Path containing files you wish to verify.
     :type workingdir: str
@@ -353,17 +354,17 @@ def verifier(workingdir, kwargs=None):
     """
     if kwargs is None:
         kwargs = verifier_config_loader()
-    hashoutput_crc32 = ["CRC32"]
-    hashoutput_adler32 = ["ADLER32"]
-    hashoutput_sha1 = ["SHA1"]
-    hashoutput_sha224 = ["SHA224"]
-    hashoutput_sha256 = ["SHA256"]
-    hashoutput_sha384 = ["SHA384"]
-    hashoutput_sha512 = ["SHA512"]
-    hashoutput_md5 = ["MD5"]
-    hashoutput_md4 = ["MD4"]
-    hashoutput_ripemd160 = ["RIPEMD160"]
-    hashoutput_whirlpool = ["WHIRLPOOL"]
+    h_c32 = ["CRC32"]
+    h_a32 = ["ADLER32"]
+    h_s1 = ["SHA1"]
+    h_s224 = ["SHA224"]
+    h_s256 = ["SHA256"]
+    h_s384 = ["SHA384"]
+    h_s512 = ["SHA512"]
+    h_m5 = ["MD5"]
+    h_m4 = ["MD4"]
+    h_r160 = ["RIPEMD160"]
+    h_wp = ["WHIRLPOOL"]
     block = int(kwargs['blocksize'])
     if os.listdir(workingdir):
         for file in os.listdir(workingdir):
@@ -374,92 +375,92 @@ def verifier(workingdir, kwargs=None):
             else:
                 print("HASHING:", str(file))
                 if kwargs['adler32']:
-                    hashoutput_adler32.append(hash_formatter(file, adler32hash, workingdir, block))
+                    h_a32.append(hash_get(file, ha32, workingdir, block))
                 if kwargs['crc32']:
-                    hashoutput_crc32.append(hash_formatter(file, crc32hash, workingdir, block))
+                    h_c32.append(hash_get(file, hc32, workingdir, block))
                 if kwargs['md4']:
-                    hashoutput_md4.append(hash_formatter(file, md4hash, workingdir, block))
+                    h_m4.append(hash_get(file, hm4, workingdir, block))
                 if kwargs['md5']:
-                    hashoutput_md5.append(hash_formatter(file, md5hash, workingdir, block))
+                    h_m5.append(hash_get(file, hm5, workingdir, block))
                 if kwargs['sha1']:
-                    hashoutput_sha1.append(hash_formatter(file, sha1hash, workingdir, block))
+                    h_s1.append(hash_get(file, hs1, workingdir, block))
                 if kwargs['sha224']:
-                    hashoutput_sha224.append(hash_formatter(file, sha224hash, workingdir, block))
+                    h_s224.append(hash_get(file, hs224, workingdir, block))
                 if kwargs['sha256']:
-                    hashoutput_sha256.append(hash_formatter(file, sha256hash, workingdir, block))
+                    h_s256.append(hash_get(file, hs256, workingdir, block))
                 if kwargs['sha384']:
-                    hashoutput_sha384.append(hash_formatter(file, sha384hash, workingdir, block))
+                    h_s384.append(hash_get(file, hs384, workingdir, block))
                 if kwargs['sha512']:
-                    hashoutput_sha512.append(hash_formatter(file, sha512hash, workingdir, block))
+                    h_s512.append(hash_get(file, hs512, workingdir, block))
                 if kwargs['ripemd160']:
-                    hashoutput_ripemd160.append(hash_formatter(file, ripemd160hash, workingdir, block))
+                    h_r160.append(hash_get(file, hr160, workingdir, block))
                 if kwargs['whirlpool']:
-                    hashoutput_whirlpool.append(hash_formatter(file, whirlpoolhash, workingdir, block))
+                    h_wp.append(hash_get(file, hwp, workingdir, block))
                 if not kwargs['onefile']:
                     basename = file + ".cksum"
                     targetname = os.path.join(workingdir, basename)
                     with open(targetname, 'w') as target:
                         if kwargs['adler32']:
-                            target.write("\n".join(hashoutput_adler32))
+                            target.write("\n".join(h_a32))
                         if kwargs['crc32']:
-                            target.write("\n".join(hashoutput_crc32))
+                            target.write("\n".join(h_c32))
                         if kwargs['md4']:
-                            target.write("\n".join(hashoutput_md4))
+                            target.write("\n".join(h_m4))
                         if kwargs['md5']:
-                            target.write("\n".join(hashoutput_md5))
+                            target.write("\n".join(h_m5))
                         if kwargs['sha1']:
-                            target.write("\n".join(hashoutput_sha1))
+                            target.write("\n".join(h_s1))
                         if kwargs['sha224']:
-                            target.write("\n".join(hashoutput_sha224))
+                            target.write("\n".join(h_s224))
                         if kwargs['sha256']:
-                            target.write("\n".join(hashoutput_sha256))
+                            target.write("\n".join(h_s256))
                         if kwargs['sha384']:
-                            target.write("\n".join(hashoutput_sha384))
+                            target.write("\n".join(h_s384))
                         if kwargs['sha512']:
-                            target.write("\n".join(hashoutput_sha512))
+                            target.write("\n".join(h_s512))
                         if kwargs['ripemd160']:
-                            target.write("\n".join(hashoutput_ripemd160))
+                            target.write("\n".join(h_r160))
                         if kwargs['whirlpool']:
-                            target.write("\n".join(hashoutput_whirlpool))
+                            target.write("\n".join(h_wp))
                     # reset hashes
-                    hashoutput_crc32 = hash_resetter(hashoutput_crc32)
-                    hashoutput_adler32 = hash_resetter(hashoutput_adler32)
-                    hashoutput_sha1 = hash_resetter(hashoutput_sha1)
-                    hashoutput_sha224 = hash_resetter(hashoutput_sha224)
-                    hashoutput_sha256 = hash_resetter(hashoutput_sha256)
-                    hashoutput_sha384 = hash_resetter(hashoutput_sha384)
-                    hashoutput_sha512 = hash_resetter(hashoutput_sha512)
-                    hashoutput_md5 = hash_resetter(hashoutput_md5)
-                    hashoutput_md4 = hash_resetter(hashoutput_md4)
-                    hashoutput_ripemd160 = hash_resetter(hashoutput_ripemd160)
-                    hashoutput_whirlpool = hash_resetter(hashoutput_whirlpool)
+                    h_c32 = hash_reset(h_c32)
+                    h_a32 = hash_reset(h_a32)
+                    h_s1 = hash_reset(h_s1)
+                    h_s224 = hash_reset(h_s224)
+                    h_s256 = hash_reset(h_s256)
+                    h_s384 = hash_reset(h_s384)
+                    h_s512 = hash_reset(h_s512)
+                    h_m5 = hash_reset(h_m5)
+                    h_m4 = hash_reset(h_m4)
+                    h_r160 = hash_reset(h_r160)
+                    h_wp = hash_reset(h_wp)
         if kwargs['onefile']:
             with open(os.path.join(workingdir, 'all.cksum'), 'w') as target:
                 if kwargs['adler32']:
-                    target.write("\n".join(hashoutput_adler32))
+                    target.write("\n".join(h_a32))
                 if kwargs['crc32']:
-                    target.write("\n".join(hashoutput_crc32))
+                    target.write("\n".join(h_c32))
                 if kwargs['md4']:
-                    target.write("\n".join(hashoutput_md4))
+                    target.write("\n".join(h_m4))
                 if kwargs['md5']:
-                    target.write("\n".join(hashoutput_md5))
+                    target.write("\n".join(h_m5))
                 if kwargs['sha1']:
-                    target.write("\n".join(hashoutput_sha1))
+                    target.write("\n".join(h_s1))
                 if kwargs['sha224']:
-                    target.write("\n".join(hashoutput_sha224))
+                    target.write("\n".join(h_s224))
                 if kwargs['sha256']:
-                    target.write("\n".join(hashoutput_sha256))
+                    target.write("\n".join(h_s256))
                 if kwargs['sha384']:
-                    target.write("\n".join(hashoutput_sha384))
+                    target.write("\n".join(h_s384))
                 if kwargs['sha512']:
-                    target.write("\n".join(hashoutput_sha512))
+                    target.write("\n".join(h_s512))
                 if kwargs['ripemd160']:
-                    target.write("\n".join(hashoutput_ripemd160))
+                    target.write("\n".join(h_r160))
                 if kwargs['whirlpool']:
-                    target.write("\n".join(hashoutput_whirlpool))
+                    target.write("\n".join(h_wp))
 
 
-def gpgrunner(workingdir, keyid=None, passphrase=None, selective=False):
+def gpgrunner(workingdir, keyid=None, pword=None, selective=False):
     """
     Create ASCII-armored PGP signatures for all files in a given directory.
 
@@ -469,8 +470,8 @@ def gpgrunner(workingdir, keyid=None, passphrase=None, selective=False):
     :param keyid: Key to use. 8-character hexadecimal, with or without 0x.
     :type keyid: str
 
-    :param passphrase: Passphrase for given key.
-    :type passphrase: str
+    :param pword: Passphrase for given key.
+    :type pword: str
 
     :param selective: Filtering filenames/extensions. Default is false.
     :type selective: bool
@@ -483,17 +484,18 @@ def gpgrunner(workingdir, keyid=None, passphrase=None, selective=False):
     else:
         if not keyid.startswith("0x"):
             keyid = "0x" + keyid.upper()
-        files = (file for file in os.listdir(workingdir) if not os.path.isdir(file))
+        dirlist = os.listdir(workingdir)
+        files = (file for file in dirlist if not os.path.isdir(file))
         for file in files:
             sup = bbconstants.SUPPS
             if not file.endswith(sup):
                 aps = bbconstants.ARCSPLUS
                 pfx = bbconstants.PREFIXES
-                if (file.endswith(aps) and file.startswith(pfx)) if selective else True:
+                if (prepends(file, pfx, aps)) if selective else True:
                     print("VERIFYING:", str(file))
                     thepath = os.path.join(workingdir, file)
                     try:
-                        gpgfile(thepath, gpg, keyid=keyid, passphrase=passphrase)
+                        gpgfile(thepath, gpg, keyid=keyid, passphrase=pword)
                     except Exception as exc:
                         print("SOMETHING WENT WRONG")
                         print(str(exc))
@@ -504,7 +506,7 @@ def gpg_config_loader(homepath=None):
     """
     Read a ConfigParser file to get PGP key, password (optional)
 
-    :param homepath: Folder containing bbarchivist.ini. Default is user directory.
+    :param homepath: Folder containing ini file. Default is user directory.
     :type homepath: str
     """
     config = configparser.ConfigParser()
@@ -531,7 +533,7 @@ def gpg_config_writer(key=None, password=None, homepath=None):
     :param password: Key password, leave as None to not write.
     :type password: str
 
-    :param homepath: Folder containing bbarchivist.ini. Default is user directory.
+    :param homepath: Folder containing ini file. Default is user directory.
     :type homepath: str
     """
     config = configparser.ConfigParser()
@@ -555,10 +557,10 @@ def verifier_config_loader(homepath=None):
     """
     Read a ConfigParser file to get hash preferences.
 
-    :param homepath: Folder containing bbarchivist.ini. Default is user directory.
+    :param homepath: Folder containing ini file. Default is user directory.
     :type homepath: str
     """
-    resultdict = {}
+    results = {}
     config = configparser.ConfigParser()
     if homepath is None:
         homepath = os.path.expanduser("~")
@@ -568,21 +570,21 @@ def verifier_config_loader(homepath=None):
     config.read(conffile)
     if not config.has_section('hashmodes'):
         config['hashmodes'] = {}
-    hashini = config['hashmodes']
-    resultdict['crc32'] = bool(hashini.getboolean('crc32', fallback=False))
-    resultdict['adler32'] = bool(hashini.getboolean('adler32', fallback=False))
-    resultdict['sha1'] = bool(hashini.getboolean('sha1', fallback=True))
-    resultdict['sha224'] = bool(hashini.getboolean('sha224', fallback=False))
-    resultdict['sha256'] = bool(hashini.getboolean('sha256', fallback=True))
-    resultdict['sha384'] = bool(hashini.getboolean('sha384', fallback=False))
-    resultdict['sha512'] = bool(hashini.getboolean('sha512', fallback=False))
-    resultdict['md5'] = bool(hashini.getboolean('md5', fallback=True))
-    resultdict['md4'] = bool(hashini.getboolean('md4', fallback=False))
-    resultdict['ripemd160'] = bool(hashini.getboolean('ripemd160', fallback=False))
-    resultdict['whirlpool'] = bool(hashini.getboolean('whirlpool', fallback=False))
-    resultdict['onefile'] = bool(hashini.getboolean('onefile', fallback=False))
-    resultdict['blocksize'] = int(hashini.getint('blocksize', fallback=16777216))
-    return resultdict
+    ini = config['hashmodes']
+    results['crc32'] = bool(ini.getboolean('crc32', fallback=False))
+    results['adler32'] = bool(ini.getboolean('adler32', fallback=False))
+    results['sha1'] = bool(ini.getboolean('sha1', fallback=True))
+    results['sha224'] = bool(ini.getboolean('sha224', fallback=False))
+    results['sha256'] = bool(ini.getboolean('sha256', fallback=True))
+    results['sha384'] = bool(ini.getboolean('sha384', fallback=False))
+    results['sha512'] = bool(ini.getboolean('sha512', fallback=False))
+    results['md5'] = bool(ini.getboolean('md5', fallback=True))
+    results['md4'] = bool(ini.getboolean('md4', fallback=False))
+    results['ripemd160'] = bool(ini.getboolean('ripemd160', fallback=False))
+    results['whirlpool'] = bool(ini.getboolean('whirlpool', fallback=False))
+    results['onefile'] = bool(ini.getboolean('onefile', fallback=False))
+    results['blocksize'] = int(ini.getint('blocksize', fallback=16777216))
+    return results
 
 
 def verifier_config_writer(resultdict=None, homepath=None):
@@ -592,7 +594,7 @@ def verifier_config_writer(resultdict=None, homepath=None):
     :param resultdict: Dictionary of results: {method, bool}
     :type resultdict: dict({str, bool})
 
-    :param homepath: Folder containing bbarchivist.ini. Default is user directory.
+    :param homepath: Folder containing ini file. Default is user directory.
     :type homepath: str
     """
     if resultdict is None:

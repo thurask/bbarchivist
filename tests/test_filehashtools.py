@@ -1,5 +1,4 @@
 ﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, W0142, W0201, W0622, C0103
 """Test the filehashtools module."""
 
 import os
@@ -47,43 +46,43 @@ class TestClassFilehashtools:
         """
         Test CRC32 checksum.
         """
-        assert bf.crc32hash("tempfile.txt") == "ed5d3f26"
+        assert bf.hc32("tempfile.txt") == "ed5d3f26"
 
     def test_adler32hash(self):
         """
         Test Adler32 checksum.
         """
-        assert bf.adler32hash("tempfile.txt") == "02470dcd"
+        assert bf.ha32("tempfile.txt") == "02470dcd"
 
     def test_sha1hash(self):
         """
         Test SHA-1 hash.
         """
-        assert bf.sha1hash("tempfile.txt") == "71dc7ce8f27c11b792be3f169ecf985865e276d0"
+        assert bf.hs1("tempfile.txt") == "71dc7ce8f27c11b792be3f169ecf985865e276d0"
 
     def test_sha224hash(self):
         """
         Test SHA-224 hash.
         """
-        assert bf.sha224hash("tempfile.txt") == "7bcd7b77f63633bf0f7db181106f08eb630a58c521b109be1cc4a404"
+        assert bf.hs224("tempfile.txt") == "7bcd7b77f63633bf0f7db181106f08eb630a58c521b109be1cc4a404"
 
     def test_sha256hash(self):
         """
         Test SHA-256 hash.
         """
-        assert bf.sha256hash("tempfile.txt") == "f118871c45171d5fe4e9049980959e033eeeabcfa12046c243fda310580e8a0b"
+        assert bf.hs256("tempfile.txt") == "f118871c45171d5fe4e9049980959e033eeeabcfa12046c243fda310580e8a0b"
 
     def test_sha384hash(self):
         """
         Test SHA-384 hash.
         """
-        assert bf.sha384hash("tempfile.txt") == "76620873c0d27873c137b082425c6e87e3d601c4b19241a1f2222f7f700a2fe8d3c648b26f62325a411cb020bff527be"
+        assert bf.hs384("tempfile.txt") == "76620873c0d27873c137b082425c6e87e3d601c4b19241a1f2222f7f700a2fe8d3c648b26f62325a411cb020bff527be"
 
     def test_sha512hash(self):
         """
         Test SHA-512 hash.
         """
-        assert bf.sha512hash("tempfile.txt") == "b66a5e8aa9b9705748c2ee585b0e1a3a41288d2dafc3be2db12fa89d2f2a3e14f9dec11de4ba865bb51eaa6c2cfeb294139455e34da7d827a19504b0906c01c1"
+        assert bf.hs512("tempfile.txt") == "b66a5e8aa9b9705748c2ee585b0e1a3a41288d2dafc3be2db12fa89d2f2a3e14f9dec11de4ba865bb51eaa6c2cfeb294139455e34da7d827a19504b0906c01c1"
 
     def test_md4hash(self):
         """
@@ -92,21 +91,21 @@ class TestClassFilehashtools:
         if "md4" not in algos:
             pass
         else:
-            assert bf.md4hash("tempfile.txt") == "df26ada1a895f94e1f1257fad984e809"
+            assert bf.hm4("tempfile.txt") == "df26ada1a895f94e1f1257fad984e809"
 
     def test_md4_unavail(self, capsys):
         """
         Test MD4 hash, if not available.
         """
         with mock.patch("hashlib.new", mock.MagicMock(side_effect=ValueError)):
-            bf.md4hash("tempfile.txt")
+            bf.hm4("tempfile.txt")
             assert "MD4 HASH FAILED" in capsys.readouterr()[0]
 
     def test_md5hash(self):
         """
         Test MD5 hash.
         """
-        assert bf.md5hash("tempfile.txt") == "822e1187fde7c8d55aff8cc688701650"
+        assert bf.hm5("tempfile.txt") == "822e1187fde7c8d55aff8cc688701650"
 
     def test_ripemd160hash(self):
         """
@@ -115,14 +114,14 @@ class TestClassFilehashtools:
         if "ripemd160" not in algos:
             pass
         else:
-            assert bf.ripemd160hash("tempfile.txt") == "f3e191024c33768e2589e2efca53d55f4e4945ee"
+            assert bf.hr160("tempfile.txt") == "f3e191024c33768e2589e2efca53d55f4e4945ee"
 
     def test_ripemd160_unavail(self, capsys):
         """
         Test RIPEMD160 hash, if not available.
         """
         with mock.patch("hashlib.new", mock.MagicMock(side_effect=ValueError)):
-            bf.ripemd160hash("tempfile.txt")
+            bf.hr160("tempfile.txt")
             assert "RIPEMD160 HASH FAILED" in capsys.readouterr()[0]
 
     def test_whirlpoolhash(self):
@@ -132,14 +131,14 @@ class TestClassFilehashtools:
         if "whirlpool" not in algos:
             pass
         else:
-            assert bf.whirlpoolhash("tempfile.txt") == "9835d12f3cb3ea3934635e4a7cc918e489379ed69d894ebc2c09bbf99fe72567bfd26c919ad666e170752abfc4b8c37b376f5102f9e5de59af2b65efc2e01293"
+            assert bf.hwp("tempfile.txt") == "9835d12f3cb3ea3934635e4a7cc918e489379ed69d894ebc2c09bbf99fe72567bfd26c919ad666e170752abfc4b8c37b376f5102f9e5de59af2b65efc2e01293"
 
     def test_whirlpool_unavail(self, capsys):
         """
         Test Whirlpool hash, if not available.
         """
         with mock.patch("hashlib.new", mock.MagicMock(side_effect=ValueError)):
-            bf.whirlpoolhash("tempfile.txt")
+            bf.hwp("tempfile.txt")
             assert "WHIRLPOOL HASH FAILED" in capsys.readouterr()[0]
 
     def test_escreens(self):

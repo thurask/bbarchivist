@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 
 """The script portion of bbarchivist."""
 
@@ -8,4 +8,4 @@ __title__ = "bbarchivist.scripts"
 __version__ = bbconstants.VERSION
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2015 Thurask"
+__copyright__ = "Copyright 2015 Thurask"

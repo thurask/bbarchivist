@@ -1,10 +1,9 @@
 ﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
 """Generate links from OS/radio/software."""
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2015 Thurask"
+__copyright__ = "Copyright 2015 Thurask"
 
 import argparse  # parse arguments
 import sys  # load arguments
@@ -68,7 +67,7 @@ def grab_args():
             radioversion = None
         if not softwareversion:
             softwareversion = None
-        usealt = utilities.str2bool(input("USE ALTERNATE RADIO? Y/N: "))
+        usealt = utilities.s2b(input("USE ALTERNATE RADIO? Y/N: "))
         if usealt:
             altsw = input("RADIO SOFTWARE RELEASE: ")
         else:
@@ -104,16 +103,21 @@ def linkgen_main(osversion, radioversion=None,
     :type temp: bool
     """
     radioversion = scriptutils.return_radio_version(osversion, radioversion)
-    softwareversion, swchecked = scriptutils.return_sw_checked(softwareversion, osversion)
-    del swchecked
+    softwareversion, swc = scriptutils.return_sw_checked(softwareversion,
+                                                         osversion)
+    del swc
     baseurl = networkutils.create_base_url(softwareversion)
 
     # List of debrick urls
-    oses, cores, radios = textgenerator.url_generator(osversion, radioversion, softwareversion)
+    oses, cores, radios = textgenerator.url_gen(osversion,
+                                                radioversion,
+                                                softwareversion)
 
     if altsw:
         del radios
-        dbks, cors, radios = textgenerator.url_generator(osversion, radioversion, altsw)
+        dbks, cors, radios = textgenerator.url_gen(osversion,
+                                                   radioversion,
+                                                   altsw)
         del dbks
         del cors
 

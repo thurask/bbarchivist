@@ -1,5 +1,4 @@
 ﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301
 """Test the networkutils module."""
 
 import bbarchivist.networkutils as bn
@@ -182,13 +181,13 @@ class TestClassNetworkutils:
         """
         theurl = "http://cdn.fs.sl.blackberry.com/fs/qnx/production/7d1bb9fefe23b1c3123f748ff9e0f80cc78f006c"
         with httmock.HTTMock(cl_good_mock):
-            assert bn.get_content_length(theurl) == 525600
+            assert bn.get_length(theurl) == 525600
 
     def test_content_length_null(self):
         """
         Test content-length header checking, no URL given.
         """
-        assert bn.get_content_length(None) == 0
+        assert bn.get_length(None) == 0
 
     def test_content_length_bad(self):
         """
@@ -196,7 +195,7 @@ class TestClassNetworkutils:
         """
         someurl = "http://www.qrrbrbirlbel.yu"
         with httmock.HTTMock(conn_error_mock):
-            assert bn.get_content_length(someurl) == 0
+            assert bn.get_length(someurl) == 0
 
     def test_download(self):
         """
@@ -213,7 +212,13 @@ class TestClassNetworkutils:
                 shahash.update(data)
         assert shahash.hexdigest() == "5fc8a2aff4d2a1c84763362dd5d8b18412b8644cfd92a8d400821228c9c9c279aba909f01e9819e0d1a7eb0cc52126fada3545424f8f43a7fa3ec7396769062e"
         if os.path.exists("smack.dat"):
-            os.remove("smack.dat")
+            while True:
+                try:
+                    os.remove("smack.dat")
+                except PermissionError:
+                    continue
+                else:
+                    break
 
     def test_download_bootstrap(self):
         """
@@ -332,7 +337,7 @@ class TestClassNetworkutilsParsing:
         """
         server = "https://cs.sl.blackberry.com/cse/srVersionLookup/2.0.0/"
         with httmock.HTTMock(sr_good_mock):
-            assert bn.software_release_lookup("10.3.2.798", server) == "10.3.2.516"
+            assert bn.sr_lookup("10.3.2.798", server) == "10.3.2.516"
 
     def test_sr_lookup_bad(self):
         """
@@ -340,7 +345,7 @@ class TestClassNetworkutilsParsing:
         """
         server = "https://cs.sl.blackberry.com/cse/srVersionLookup/2.0.0/"
         with httmock.HTTMock(sr_bad_mock):
-            assert bn.software_release_lookup("10.3.2.798", server) == "SR not in system"
+            assert bn.sr_lookup("10.3.2.798", server) == "SR not in system"
 
     def test_sr_lookup_timeout(self):
         """
@@ -348,7 +353,7 @@ class TestClassNetworkutilsParsing:
         """
         server = "https://cs.sl.blackberry.com/cse/srVersionLookup/2.0.0/"
         with httmock.HTTMock(timeout_mock):
-            assert bn.software_release_lookup("10.3.2.798", server) == "SR not in system"
+            assert bn.sr_lookup("10.3.2.798", server) == "SR not in system"
 
     def test_sr_lookup_bootstrap(self):
         """

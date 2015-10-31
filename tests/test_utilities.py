@@ -1,5 +1,4 @@
 ﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, W0622, C0103
 """Test the utilities module."""
 
 import bbarchivist.utilities as bu
@@ -247,31 +246,31 @@ class TestClassUtilities:
         """
         Test checking of input parsing, best case.
         """
-        assert bu.str2bool("YES") == True
+        assert bu.s2b("YES") == True
 
     def test_str2bool_bad(self):
         """
         Test checking of input parsing, worst case.
         """
-        assert bu.str2bool("BANANA") == False
+        assert bu.s2b("BANANA") == False
 
     def test_version_incrementer_good(self):
         """
         Test version incrementing, best case.
         """
-        assert bu.version_incrementer("10.3.2.2000", 1000) == "10.3.2.3000"
+        assert bu.increment("10.3.2.2000", 1000) == "10.3.2.3000"
 
     def test_version_incrementer_bad(self):
         """
         Test version incrementing, worst case.
         """
-        assert bu.version_incrementer("10.3.2.9999", 3) == "10.3.2.3"
+        assert bu.increment("10.3.2.9999", 3) == "10.3.2.3"
 
     def test_barname_stripper(self):
         """
         Test bar name cleaning.
         """
-        assert bu.barname_stripper("base-nto+armle-v7+signed.bar") == "base"
+        assert bu.stripper("base-nto+armle-v7+signed.bar") == "base"
 
     def test_return_and_delete(self):
         """
@@ -404,19 +403,19 @@ class TestClassUtilitiesArgparse:
         """
         Test parsing of filesize, ideal case.
         """
-        assert bu.filesize_parser(987654321) == "941.90MB"
+        assert bu.fsizer(987654321) == "941.90MB"
 
     def test_filesize_parser_none(self):
         """
         Test parsing of filesize, None given.
         """
-        assert bu.filesize_parser(None) == "0.00B"
+        assert bu.fsizer(None) == "0.00B"
 
     def test_filesize_parser_huge(self):
         """
         Test parsing of filesize, large number given.
         """
-        assert bu.filesize_parser(pow(2, 80)) == "1.00YB"
+        assert bu.fsizer(pow(2, 80)) == "1.00YB"
 
     def test_file_exists_good(self):
         """

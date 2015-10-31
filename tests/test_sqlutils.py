@@ -1,5 +1,4 @@
 ﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, W0142
 """Test the sqlutils module."""
 
 import os
@@ -71,13 +70,13 @@ class TestClassSQLUtils:
                     crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
             except sqlite3.Error:
                 assert False
-            bs.insert_sw_release("70.OSVERSION", "80.SWVERSION", "unavailable")
-            with mock.patch("bbarchivist.sqlutils.insert_sw_release", mock.MagicMock(return_value=None,
-                                                                                     side_effect=sqlite3.IntegrityError)):
+            bs.insert("70.OSVERSION", "80.SWVERSION", "unavailable")
+            with mock.patch("bbarchivist.sqlutils.insert", mock.MagicMock(return_value=None,
+                                                                          side_effect=sqlite3.IntegrityError)):
                 with pytest.raises(sqlite3.IntegrityError):
-                    bs.insert_sw_release("70.OSVERSION", "80.SWVERSION", "unavailable")  # update instead of add
+                    bs.insert("70.OSVERSION", "80.SWVERSION", "unavailable")  # update instead of add
             with mock.patch("sqlite3.connect", mock.MagicMock(side_effect=sqlite3.IntegrityError)):
-                assert bs.insert_sw_release("70.OSVERSION", "80.SWVERSION", "unavailable")  is None # integrity error
+                assert bs.insert("70.OSVERSION", "80.SWVERSION", "unavailable")  is None # integrity error
             try:
                 cnxn = sqlite3.connect(sqlpath)
                 with cnxn:
@@ -87,7 +86,7 @@ class TestClassSQLUtils:
                 assert ("70.OSVERSION", "80.SWVERSION", "unavailable") in rows
             except sqlite3.Error:
                 assert False
-            bs.insert_sw_release("70.OSVERSION", "80.SWVERSION", "available")
+            bs.insert("70.OSVERSION", "80.SWVERSION", "available")
             try:
                 cnxn = sqlite3.connect(sqlpath)
                 with cnxn:
@@ -98,7 +97,7 @@ class TestClassSQLUtils:
             except sqlite3.Error:
                 assert False
             with mock.patch("sqlite3.connect", mock.MagicMock(side_effect=sqlite3.Error)):
-                bs.insert_sw_release("70.OSVERSION", "80.SWVERSION", "available")
+                bs.insert("70.OSVERSION", "80.SWVERSION", "available")
                 assert "\n" in capsys.readouterr()[0]
 
     def test_pop_sw_release(self, capsys):
@@ -121,7 +120,7 @@ class TestClassSQLUtils:
                     crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
             except sqlite3.Error:
                 assert False
-            bs.insert_sw_release("70.OSVERSION", "80.SWVERSION", "available")
+            bs.insert("70.OSVERSION", "80.SWVERSION", "available")
             try:
                 cnxn = sqlite3.connect(sqlpath)
                 with cnxn:
@@ -165,11 +164,11 @@ class TestClassSQLUtils:
                     crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
             except sqlite3.Error:
                 assert False
-            assert not bs.check_entry_existence("70.OSVERSION", "80.SWVERSION")
-            bs.insert_sw_release("70.OSVERSION", "80.SWVERSION", "available")
-            assert bs.check_entry_existence("70.OSVERSION", "80.SWVERSION")
+            assert not bs.check_exists("70.OSVERSION", "80.SWVERSION")
+            bs.insert("70.OSVERSION", "80.SWVERSION", "available")
+            assert bs.check_exists("70.OSVERSION", "80.SWVERSION")
             with mock.patch("sqlite3.connect", mock.MagicMock(side_effect=sqlite3.Error)):
-                bs.check_entry_existence("70.OSVERSION", "80.SWVERSION")
+                bs.check_exists("70.OSVERSION", "80.SWVERSION")
                 assert "\n" in capsys.readouterr()[0]
 
     def test_export_sql_db(self, capsys):

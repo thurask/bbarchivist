@@ -1,5 +1,4 @@
 ﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, W0622, C0103
 """Test the barutils module."""
 
 import bbarchivist.barutils as bb
@@ -251,13 +250,13 @@ class TestClassBarutilsRemovers:
         Test removal of signed files.
         """
         os.mkdir("signeds")
-        signeddir = os.path.abspath(os.path.join(os.getcwd(), "signeds"))
+        signeddir = os.path.abspath("signeds")
         with open(os.path.join(signeddir, "something.signed"), "w") as afile:
             afile.write("Haters gonna hate")
         with open(os.path.join(signeddir, "something.else"), "w") as afile:
             afile.write("I'm just gonna shake")
         bb.remove_signed_files(signeddir)
-        assert len(os.listdir("signeds")) == 1
+        assert len(os.listdir(signeddir)) == 1
         rmtree(signeddir, ignore_errors=True)
 
     def test_remove_uncomps(self):

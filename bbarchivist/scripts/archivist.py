@@ -1,10 +1,9 @@
 ﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, W0142
 """Download bar files, create autoloaders."""
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2015 Thurask"
+__copyright__ = "Copyright 2015 Thurask"
 
 import os  # filesystem read
 import time  # time for downloader
@@ -169,13 +168,13 @@ def grab_args():
         osversion = input("OS VERSION: ")
         radioversion = input("RADIO VERSION: ")
         softwareversion = input("SOFTWARE RELEASE: ")
-        radios = utilities.str2bool(input("CREATE RADIO LOADERS? Y/N: "))
-        compressed = utilities.str2bool(input("COMPRESS LOADERS? Y/N: "))
+        radios = utilities.s2b(input("CREATE RADIO LOADERS? Y/N: "))
+        compressed = utilities.s2b(input("COMPRESS LOADERS? Y/N: "))
         if compressed:
-            deleted = utilities.str2bool(input("DELETE UNCOMPRESSED? Y/N: "))
+            deleted = utilities.s2b(input("DELETE UNCOMPRESSED? Y/N: "))
         else:
             deleted = False
-        hashed = utilities.str2bool(input("GENERATE HASHES? Y/N: "))
+        hashed = utilities.s2b(input("GENERATE HASHES? Y/N: "))
         hashdict = filehashtools.verifier_config_loader()
         filehashtools.verifier_config_writer(hashdict)
         compmethod = barutils.compress_config_loader()
@@ -244,7 +243,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     :param signed: Whether to delete signed files. True by default.
     :type signed: bool
 
-    :param compmethod: Compression method. Default is "7z" with fallback "zip".
+    :param compmethod: Compression method. Default is "7z", fallback "zip".
     :type compmethod: str
 
     :param gpg: Whether to use GnuPG verification. False by default.
@@ -264,9 +263,11 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     if altsw:
         altchecked = False
     radioversion = scriptutils.return_radio_version(osversion, radioversion)
-    softwareversion, swchecked = scriptutils.return_sw_checked(softwareversion, osversion)
+    softwareversion, swchecked = scriptutils.return_sw_checked(softwareversion,
+                                                               osversion)
     if altsw == "checkme":
-        altsw, altchecked = scriptutils.return_radio_sw_checked(altsw, radioversion)
+        altsw, altchecked = scriptutils.return_radio_sw_checked(altsw,
+                                                                radioversion)
     if localdir is None:
         localdir = os.getcwd()
     if hashdict is None:
@@ -283,7 +284,8 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     baseurl = networkutils.create_base_url(softwareversion)
     if altsw:
         alturl = networkutils.create_base_url(altsw)
-    osurls, radiourls, cores = utilities.generate_urls(baseurl, osversion, radioversion, True)
+    osurls, radiourls, cores = utilities.generate_urls(baseurl, osversion,
+                                                       radioversion, True)
     if core:
         osurls = cores
     else:
@@ -294,7 +296,8 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
             vzwindex = idx
             break
     if not networkutils.availability(vzwurl):
-        osurls[vzwindex] = osurls[vzwindex].replace("qc8960.factory_sfi", "qc8960.verizon_sfi")  # fallback
+        osurls[vzwindex] = osurls[vzwindex].replace("qc8960.factory_sfi",
+                                                    "qc8960.verizon_sfi")
     osurls = list(set(osurls))  # pop duplicates
     if altsw:
         radiourls2 = [x.replace(baseurl, alturl) for x in radiourls]
@@ -307,19 +310,24 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
         scriptutils.check_radio_sw(alturl, altsw, altchecked)
 
     # Check availability of OS, radio
-    scriptutils.check_os_bulk(osurls, osversion)
-    radiourls, radioversion = scriptutils.check_radio_bulk(radiourls, radioversion)
+    scriptutils.check_os_bulk(osurls)
+    radiourls, radioversion = scriptutils.check_radio_bulk(radiourls,
+                                                           radioversion)
 
     # Get 7z executable
     compmethod, szexe = scriptutils.get_sz_executable(compmethod)
 
     # Make dirs
-    bd_o, bd_r, ld_o, ld_r, zd_o, zd_r = barutils.make_dirs(localdir, osversion, radioversion)
+    bd_o, bd_r, ld_o, ld_r, zd_o, zd_r = barutils.make_dirs(localdir,
+                                                            osversion,
+                                                            radioversion)
 
     # Download files
     if download:
         print("BEGIN DOWNLOADING...")
-        networkutils.download_bootstrap(radiourls+osurls, localdir, workers=3)
+        networkutils.download_bootstrap(radiourls+osurls,
+                                        localdir,
+                                        workers=3)
         print("ALL FILES DOWNLOADED")
 
     # Test bar files

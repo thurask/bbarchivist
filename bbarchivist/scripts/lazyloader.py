@@ -1,10 +1,9 @@
 ﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, W0703, E1121
 """Create one autoloader for personal use."""
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2015 Thurask"
+__copyright__ = "Copyright 2015 Thurask"
 
 import argparse  # parse arguments
 import sys  # load arguments
@@ -66,13 +65,13 @@ def start_gui(osv=None, radv=None, swv=None, dev=None, aut=None,
     else:
         osentry = osv
     if swv is None:
-        swentry = eg.enterbox(msg="Software version, click Cancel to guess")
+        swentry = eg.enterbox(msg="Software version, Cancel to guess")
         if not swentry:
             swentry = None
     else:
         swentry = swv
     if radv is None:
-        radentry = eg.enterbox(msg="Radio version, click Cancel to guess")
+        radentry = eg.enterbox(msg="Radio version, Cancel to guess")
         if not radentry:
             radentry = None
     else:
@@ -81,15 +80,15 @@ def start_gui(osv=None, radv=None, swv=None, dev=None, aut=None,
         altcheck = eg.boolbox(msg="Are you making a hybrid autoloader?",
                               default_choice="No")
         if altcheck:
-            altentry = eg.enterbox(msg="Software version for radio, click Cancel to guess")
-            if not altentry:
-                altentry = "checkme"
+            altn = eg.enterbox(msg="Radio software version, Cancel to guess")
+            if not altn:
+                altn = "checkme"
         else:
-            altentry = None
+            altn = None
     else:
-        altentry = alt
+        altn = alt
     if cor is None:
-        corentry = eg.boolbox(msg="Are you making a core image autoloader?",
+        corentry = eg.boolbox(msg="Are you making a core autoloader?",
                               default_choice="No")
     else:
         corentry = cor
@@ -112,7 +111,7 @@ def start_gui(osv=None, radv=None, swv=None, dev=None, aut=None,
     if dow is None:
         dow = True
     lazyloader_main(devint, osentry, radentry, swentry,
-                    fol, autoentry, dow, altentry, corentry)
+                    fol, autoentry, dow, altn, corentry)
 
 
 def grab_args():
@@ -299,7 +298,7 @@ def grab_args():
             softwareversion = None
         else:
             print("SOFTWARE RELEASE:", softwareversion)
-        altcheck = utilities.str2bool(input("HYBRID AUTOLOADER (Y/N)?: "))
+        altcheck = utilities.s2b(input("HYBRID AUTOLOADER (Y/N)?: "))
         if altcheck:
             print("CREATING HYBRID AUTOLOADER")
             altsw = input("RADIO SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
@@ -319,17 +318,14 @@ def grab_args():
                      "6=PASSPORT"]
         pprint.pprint(inputlist)
         while True:
-            try:
-                device = int(input("SELECTED DEVICE: "))
-                derp = inputlist[device]
-            except (ValueError, IndexError):
+            device = int(input("SELECTED DEVICE: "))
+            if device < 0 or device > len(inputlist):
                 continue
             else:
                 print("DEVICE:", bbconstants.DEVICES[device])
-                del derp
                 break
         if utilities.is_windows():
-            autoloader = utilities.str2bool(
+            autoloader = utilities.s2b(
                 input("RUN AUTOLOADER (WILL WIPE YOUR DEVICE!)(Y/N)?: "))
             if autoloader:
                 print("RUN AUTOLOADER AFTER CREATION")
@@ -386,13 +382,16 @@ def lazyloader_main(device, osversion, radioversion=None,
     """
     if (osversion or device) is None:
         raise SystemExit
-    swchecked = False  # if we checked SW release already
+    swc = False  # if we checked SW release already
     if altsw:
         altchecked = False
-    radioversion = scriptutils.return_radio_version(osversion, radioversion)
-    softwareversion, swchecked = scriptutils.return_sw_checked(softwareversion, osversion)
+    radioversion = scriptutils.return_radio_version(osversion,
+                                                    radioversion)
+    softwareversion, swc = scriptutils.return_sw_checked(softwareversion,
+                                                         osversion)
     if altsw == "checkme":
-        altsw, altchecked = scriptutils.return_radio_sw_checked(altsw, radioversion)
+        altsw, altchecked = scriptutils.return_radio_sw_checked(altsw,
+                                                                radioversion)
     print("~~~LAZYLOADER VERSION", bbconstants.VERSION + "~~~")
     print("OS VERSION:", osversion)
     print("SOFTWARE VERSION:", softwareversion)
@@ -402,7 +401,9 @@ def lazyloader_main(device, osversion, radioversion=None,
     print("DEVICE:", bbconstants.DEVICES[device])
 
     # Make dirs
-    bd_o, bd_r, ld_o, ld_r, zd_o, zd_r = barutils.make_dirs(localdir, osversion, radioversion)
+    bd_o, bd_r, ld_o, ld_r, zd_o, zd_r = barutils.make_dirs(localdir,
+                                                            osversion,
+                                                            radioversion)
     osurl = radiourl = None
 
     # Create download URLs
@@ -410,20 +411,24 @@ def lazyloader_main(device, osversion, radioversion=None,
         baseurl = networkutils.create_base_url(softwareversion)
         if altsw:
             alturl = networkutils.create_base_url(altsw)
-        osurl, radiourl = utilities.generate_lazy_urls(baseurl, osversion, radioversion, device)
+        osurl, radiourl = utilities.generate_lazy_urls(baseurl,
+                                                       osversion,
+                                                       radioversion,
+                                                       device)
         if altsw:
             radiourl = radiourl.replace(baseurl, alturl)
         if core:
             osurl = osurl.replace(".desktop", "")
 
         # Check availability of software releases
-        scriptutils.check_sw(baseurl, softwareversion, swchecked)
+        scriptutils.check_sw(baseurl, softwareversion, swc)
         if altsw:
             scriptutils.check_radio_sw(alturl, altsw, altchecked)
 
         # Check availability of OS, radio
         scriptutils.check_os_single(osurl, osversion, device)
-        radiourl, radioversion = scriptutils.check_radio_single(radiourl, radioversion)
+        radiourl, radioversion = scriptutils.check_radio_single(radiourl,
+                                                                radioversion)
 
     dllist = [osurl, radiourl]
 
@@ -455,7 +460,9 @@ def lazyloader_main(device, osversion, radioversion=None,
     else:
         altradio = None
     loadergen.generate_lazy_loader(osversion, device,
-                                   localdir=localdir, altradio=altradio, core=core)
+                                   localdir=localdir,
+                                   altradio=altradio,
+                                   core=core)
 
     # Test loader
     suffix = loadergen.format_suffix(bool(altradio), altradio, core)

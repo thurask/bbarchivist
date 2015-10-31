@@ -1,5 +1,4 @@
-﻿#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301
+#!/usr/bin/env python3
 """Test the loadergen module."""
 
 import bbarchivist.loadergen as bl

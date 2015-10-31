@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 
 """This module is used to define constants for the program."""
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2015 Thurask"
+__copyright__ = "Copyright 2015 Thurask"
 
 import os.path  # for producing cap location constant
 
@@ -45,9 +45,9 @@ SUPPS = (".asc", ".cksum")
 DEVICES = ("STL100-1", "STL100-2/3/P9982", "STL100-4",
            "Q10/Q5/P9983", "Z30/CLASSIC/LEAP", "Z3", "PASSPORT")
 #: 7z exit codes.
-SZCODES = {0:"NO ERRORS",
-           1:"COMPLETED WITH WARNINGS",
-           2:"FATAL ERROR",
-           7:"COMMAND LINE ERROR",
-           8:"OUT OF MEMORY ERROR",
-           255:"USER STOPPED PROCESS"}
+SZCODES = {0: "NO ERRORS",
+           1: "COMPLETED WITH WARNINGS",
+           2: "FATAL ERROR",
+           7: "COMMAND LINE ERROR",
+           8: "OUT OF MEMORY ERROR",
+           255: "USER STOPPED PROCESS"}

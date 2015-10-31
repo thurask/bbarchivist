@@ -1,10 +1,9 @@
-#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915
-"""This module is used for network connections; APIs, downloading, related tools."""
+﻿#!/usr/bin/env python3
+"""This module is used for network connections; APIs, downloading, etc."""
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2015 Thurask"
+__copyright__ = "Copyright 2015 Thurask"
 
 import os  # filesystem read
 import requests  # downloading
@@ -30,7 +29,7 @@ def grab_pem():
         return os.path.abspath(pemfile)  # local cacerts
 
 
-def get_content_length(url):
+def get_length(url):
     """
     Get content-length header from some URL.
 
@@ -64,7 +63,7 @@ def download(url, output_directory=None, lazy=False):
     if output_directory is None:
         output_directory = os.getcwd()
     local_filename = url.split('/')[-1]
-    local_filename = utilities.barname_stripper(local_filename)
+    local_filename = utilities.stripper(local_filename)
     os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
     req = requests.get(url, stream=True)
     fsize = req.headers['content-length']
@@ -72,14 +71,14 @@ def download(url, output_directory=None, lazy=False):
         if not lazy:
             print("DOWNLOADING:",
                   local_filename,
-                  "[" + utilities.filesize_parser(fsize) + "]")
+                  "[" + utilities.fsizer(fsize) + "]")
         else:
             if int(fsize) > 90000000:
                 print("DOWNLOADING OS",
-                      "[" + utilities.filesize_parser(fsize) + "]")
+                      "[" + utilities.fsizer(fsize) + "]")
             else:
                 print("DOWNLOADING RADIO",
-                      "[" + utilities.filesize_parser(fsize) + "]")
+                      "[" + utilities.fsizer(fsize) + "]")
         fname = output_directory + "/" + os.path.basename(url)
         with open(fname, "wb") as file:
             for chunk in req.iter_content(chunk_size=1024):
@@ -309,7 +308,7 @@ def parse_carrier_xml(data, blitz=False):
     return(swver, osver, radver, files)
 
 
-def software_release_lookup(osver, server):
+def sr_lookup(osver, server):
     """
     Software release lookup, with choice of server.
     :data:`bbarchivist.bbconstants.SERVERLIST` for server list.
@@ -372,7 +371,9 @@ def sr_lookup_bootstrap(osv):
                        "b1": None,
                        "b2": None}
             for key in results:
-                results[key] = xec.submit(software_release_lookup, osv, SERVERS[key]).result()
+                results[key] = xec.submit(sr_lookup,
+                                          osv,
+                                          SERVERS[key]).result()
             return results
         except KeyboardInterrupt:
             xec.shutdown(wait=False)
@@ -431,8 +432,8 @@ def ptcrb_scraper(ptcrbid):
     :param ptcrbid: Numerical ID from PTCRB (end of URL).
     :type ptcrbid: str
     """
-    baseurl = "https://ptcrb.com/vendor/complete/view_complete_request_guest.cfm?modelid="
-    baseurl += ptcrbid
+    baseurl = "https://ptcrb.com/vendor/complete/"
+    baseurl += "view_complete_request_guest.cfm?modelid=" + ptcrbid
     os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
     req = requests.get(baseurl)
     soup = BeautifulSoup(req.content, 'html.parser')

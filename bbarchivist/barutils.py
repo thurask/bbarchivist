@@ -1,10 +1,9 @@
-#!/usr/bin/env python3
-#pylint: disable = I0011, R0201, W0613, C0301, R0913, R0912, R0914, R0915, C0103, W0150
+﻿#!/usr/bin/env python3
 """This module is used to operate with bar files and other archives."""
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2015 Thurask"
+__copyright__ = "Copyright 2015 Thurask"
 
 import os  # filesystem read
 import time  # time for downloader
@@ -111,8 +110,7 @@ def bar_tester(filepath):
             brokens = zfile.testzip()
     except zipfile.BadZipFile:
         brokens = filepath
-    finally:
-        return brokens
+    return brokens
 
 
 def sz_compress(filepath, filename, szexe=None, strength=5, errors=False):
@@ -139,11 +137,13 @@ def sz_compress(filepath, filename, szexe=None, strength=5, errors=False):
     rawname = os.path.dirname(filepath)
     cores = str(utilities.get_core_count())
     initfold = os.path.join(rawname, filename)
-    with open(os.devnull, 'wb') as DEVNULL:
-        excode = subprocess.call('{0} a -mx{1} -m0=lzma2 -mmt{2} "{3}.7z" "{4}"'.format(
-            szexe, strength, cores, filepath, initfold),
-                                 stdout=DEVNULL,
-                                 stderr=subprocess.STDOUT)
+    cmd = '{0} a -mx{1} -m0=lzma2 -mmt{2} "{3}.7z" "{4}"'.format(szexe,
+                                                                 strength,
+                                                                 cores,
+                                                                 filepath,
+                                                                 initfold)
+    with open(os.devnull, 'wb') as dnull:
+        excode = subprocess.call(cmd, stdout=dnull, stderr=subprocess.STDOUT)
     endtime = time.clock() - starttime
     endtime_proper = math.ceil(endtime * 100) / 100
     print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
@@ -162,11 +162,9 @@ def sz_verify(filepath, szexe=None):
     :type szexe: str
     """
     filepath = os.path.abspath(filepath)
-    with open(os.devnull, 'wb') as DEVNULL:
-        excode = subprocess.call('{0} t "{1}"'.format(
-            szexe, filepath),
-                                 stdout=DEVNULL,
-                                 stderr=subprocess.STDOUT)
+    cmd = '{0} t "{1}"'.format(szexe, filepath)
+    with open(os.devnull, 'wb') as dnull:
+        excode = subprocess.call(cmd, stdout=dnull, stderr=subprocess.STDOUT)
     return excode == 0
 
 
@@ -364,26 +362,28 @@ def compress(filepath, method="7z", szexe=None, selective=False, errors=False):
     :param filepath: Working directory. Required.
     :type filepath: str
 
-    :param method: Compression type. Default is "7z". Defined in source.
+    :param method: Compression type. Default is "7z".
     :type method: str
 
     :param szexe: Path to 7z executable, if needed.
     :type szexe: str
 
-    :param selective: Only compress specific files (autoloaders). Default is false.
+    :param selective: Only compress autoloaders. Default is false.
     :type selective: bool
 
     :param errors: Print completion status message. Default is false.
     :type errors: bool
     """
     method = filter_method(method, szexe)
+    arx = bbconstants.ARCS
+    pfx = bbconstants.PREFIXES
     files = [file for file in os.listdir(filepath) if not os.path.isdir(file)]
     if selective:
-        filt0 = [file for file in files if file.startswith(bbconstants.PREFIXES)]  # loaders
-        filt1 = [file for file in filt0 if not file.endswith(bbconstants.ARCS)]  # pop compressed
-        filt2 = [file for file in filt1 if file.endswith(".exe")]  # exes only
+        filt0 = [file for file in files if prepends(file, pfx, "")]
+        filt1 = [file for file in filt0 if not prepends(file, "", arx)]
+        filt2 = [file for file in filt1 if prepends(file, "", ".exe")]
     else:
-        filt2 = [file for file in files if not file.endswith(bbconstants.ARCS)]  # pop compressed
+        filt2 = [file for file in files if not prepends(file, "", arx)]
     filt3 = [os.path.join(filepath, file) for file in filt2]
     for file in filt3:
         filename = os.path.splitext(os.path.basename(file))[0]
@@ -403,12 +403,12 @@ def compress(filepath, method="7z", szexe=None, selective=False, errors=False):
     return True
 
 
-def verify(filepath, method="7z", szexe=None, selective=False):
+def verify(thepath, method="7z", szexe=None, selective=False):
     """
     Verify specific archive files in a given folder.
 
-    :param filepath: Working directory. Required.
-    :type filepath: str
+    :param thepath: Working directory. Required.
+    :type thepath: str
 
     :param method: Compression type. Default is "7z". Defined in source.
     :type method: str
@@ -416,11 +416,12 @@ def verify(filepath, method="7z", szexe=None, selective=False):
     :param szexe: Path to 7z executable, if needed.
     :type szexe: str
 
-    :param selective: Only compress specific files (autoloaders). Default is false.
+    :param selective: Only verify autoloaders. Default is false.
     :type selective: bool
     """
     method = filter_method(method, szexe)
-    files = (os.path.join(filepath, file) for file in os.listdir(filepath) if not os.path.isdir(file))
+    pathlist = [os.path.join(thepath, file) for file in os.listdir(thepath)]
+    files = (file for file in pathlist if not os.path.isdir(file))
     for file in files:
         filt = file.endswith(bbconstants.ARCS)
         if selective:
@@ -467,7 +468,7 @@ def compress_suite(filepath, method="7z", szexe=None, selective=False):
     :param szexe: Path to 7z executable, if needed.
     :type szexe: str
 
-    :param selective: Only compress specific files (autoloaders). Default is false.
+    :param selective: Only compress autoloaders. Default is false.
     :type selective: bool
     """
     compress(filepath, method, szexe, selective)
@@ -500,11 +501,18 @@ def remove_signed_files(a_folder):
     :param a_folder: Target folder.
     :type a_folder: str
     """
-    files = [os.path.join(os.path.abspath(a_folder), file) for file in os.listdir(a_folder)]
+    files = [os.path.join(a_folder, file) for file in os.listdir(a_folder)]
+    files = [os.path.abspath(file) for file in files]
     for file in files:
         if file.endswith(".signed") and os.path.exists(file):
             print("REMOVING: " + os.path.basename(file))
-            os.remove(os.path.abspath(file))
+            while True:
+                try:
+                    os.remove(os.path.abspath(file))
+                except PermissionError:
+                    continue
+                else:
+                    break
 
 
 def remove_unpacked_loaders(osdir, raddir, radios):
@@ -542,10 +550,26 @@ def create_blitz(a_folder, swver):
         for root, dirs, files in os.walk(a_folder):
             del dirs
             for file in files:
-                print("ZIPPING:", utilities.barname_stripper(file))
+                print("ZIPPING:", utilities.stripper(file))
                 abs_filename = os.path.join(root, file)
                 abs_arcname = os.path.basename(abs_filename)
                 zfile.write(abs_filename, abs_arcname)
+
+
+def prepends(file, pre, suf):
+    """
+    Check if filename starts with/ends with stuff.
+
+    :param file: File to check.
+    :type file: str
+
+    :param pre: Prefix(es) to check.
+    :type pre: str or list or tuple
+
+    :param suf: Suffix(es) to check.
+    :type suf: str or list or tuple
+    """
+    return file.startswith(pre) and file.endswith(suf)
 
 
 def move_loaders(a_dir,
@@ -571,13 +595,17 @@ def move_loaders(a_dir,
     """
     arx = bbconstants.ARCS
     pfx = bbconstants.PREFIXES
-    loaders = (file for file in os.listdir(a_dir) if file.endswith(".exe") and file.startswith(pfx))
+    loaders = (file for file in os.listdir(a_dir) if prepends(file,
+                                                              pfx,
+                                                              ".exe"))
     for file in loaders:
         print("MOVING: " + file)
         exedest_os = os.path.join(exedir_os, file)
         exedest_rad = os.path.join(exedir_rad, file)
         loader_sorter(file, exedest_os, exedest_rad)
-    zippeds = (file for file in os.listdir(a_dir) if file.endswith(arx) and file.startswith(pfx))
+    zippeds = (file for file in os.listdir(a_dir) if prepends(file,
+                                                              pfx,
+                                                              arx))
     for file in zippeds:
         print("MOVING: " + file)
         zipdest_os = os.path.join(zipdir_os, file)
@@ -692,14 +720,19 @@ def make_dirs(localdir, osversion, radioversion):
         os.makedirs(os.path.join(zipdir, radioversion), exist_ok=True)
     zipdir_radio = os.path.join(zipdir, radioversion)
 
-    return (bardir_os, bardir_radio, loaderdir_os, loaderdir_radio, zipdir_os, zipdir_radio)
+    return (bardir_os,
+            bardir_radio,
+            loaderdir_os,
+            loaderdir_radio,
+            zipdir_os,
+            zipdir_radio)
 
 
 def compress_config_loader(homepath=None):
     """
     Read a ConfigParser file to get compression preferences.
 
-    :param homepath: Folder containing bbarchivist.ini. Default is user directory.
+    :param homepath: Folder containing ini file. Default is user directory.
     :type homepath: str
     """
     config = configparser.ConfigParser()
@@ -725,7 +758,7 @@ def compress_config_writer(method=None, homepath=None):
     :param method: Method to use.
     :type method: str
 
-    :param homepath: Folder containing bbarchivist.ini. Default is user directory.
+    :param homepath: Folder containing ini file. Default is user directory.
     :type homepath: str
     """
     if method is None:
