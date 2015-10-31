@@ -301,6 +301,15 @@ class TestClassBarutilsMethods:
             with mock.patch('bbarchivist.utilities.get_seven_zip', mock.MagicMock(return_value='7za')):
                 assert bb.filter_method("7z", None) == "7z"
 
+    def test_filter_method_legacy(self):
+        """
+        Test method checking, Python 3.2.
+        """
+        if version_info[1] > 2:
+            pass
+        else:
+            assert bb.filter_method("txz", None) == "zip"
+
 
 class TestClassBarutilsVerifier:
     """

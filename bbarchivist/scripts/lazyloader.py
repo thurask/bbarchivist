@@ -319,7 +319,7 @@ def grab_args():
         pprint.pprint(inputlist)
         while True:
             device = int(input("SELECTED DEVICE: "))
-            if device < 0 or device > len(inputlist):
+            if not (0 <= device <= len(inputlist) - 1):
                 continue
             else:
                 print("DEVICE:", bbconstants.DEVICES[device])
