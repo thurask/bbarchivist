@@ -85,7 +85,7 @@ class TestClassBarutils:
         exists = prep_seven_zip()
         if exists:
             szexe = get_seven_zip(False)
-            bb.compress(os.getcwd(), "7z", szexe=szexe)
+            bb.compress(os.getcwd(), method="7z", szexe=szexe)
             result = bb.sz_verify("Z10_BIGLOADER.7z", szexe)
             if os.path.exists("Z10_BIGLOADER.7z"):
                 os.remove("Z10_BIGLOADER.7z")
@@ -320,22 +320,12 @@ class TestClassBarutilsVerifier:
         """
         Create compressed loaders to verify.
         """
-        os.makedirs("verifiers", exist_ok=True)
+        if not os.path.exists("verifiers"):
+            os.makedirs("verifiers", exist_ok=True)
         verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
         aloader = os.path.join(verdir, "Q10.exe")
         with open(aloader, "w") as afile:
             afile.write("Haters gonna hate")
-        exists = prep_seven_zip()
-        if exists:
-            szexe = get_seven_zip(False)
-            bb.compress(verdir, "7z", szexe, True)
-        bb.compress(verdir, "tgz", None, True)
-        bb.compress(verdir, "tbz", None, True)
-        bb.compress(verdir, "zip", None, True)
-        if version_info[1] < 3:
-            pass
-        else:
-            bb.compress(verdir, "txz", None, True)
 
     def test_verify_sz(self):
         """
@@ -349,6 +339,8 @@ class TestClassBarutilsVerifier:
                 pass
             else:
                 szexe = get_seven_zip(False)
+                if not os.path.exists("Q10.7z"):
+                    bb.compress(verdir, "7z", szexe, True)
                 assert bb.sz_verify(filepath, szexe)
 
     def test_verify_sz_fail(self):
@@ -370,6 +362,8 @@ class TestClassBarutilsVerifier:
         Test zip verification.
         """
         verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
+        if not os.path.exists("Q10.zip"):
+            bb.compress(verdir, "zip", None, True)
         filepath = os.path.join(verdir, "Q10.zip")
         assert bb.zip_verify(filepath)
 
@@ -387,6 +381,8 @@ class TestClassBarutilsVerifier:
         Test tar.gz verification.
         """
         verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
+        if not os.path.exists("Q10.tar.gz"):
+            bb.compress(verdir, "tgz", None, True)
         filepath = os.path.join(verdir, "Q10.tar.gz")
         assert bb.tgz_verify(filepath)
 
@@ -404,6 +400,8 @@ class TestClassBarutilsVerifier:
         Test tar.bz2 verification.
         """
         verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
+        if not os.path.exists("Q10.tar.bz2"):
+            bb.compress(verdir, "tbz", None, True)
         filepath = os.path.join(verdir, "Q10.tar.bz2")
         assert bb.tbz_verify(filepath)
 
@@ -424,6 +422,8 @@ class TestClassBarutilsVerifier:
             pass
         else:
             verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
+            if not os.path.exists("Q10.tar.xz"):
+                bb.compress(verdir, "txz", None, True)
             filepath = os.path.join(verdir, "Q10.tar.xz")
             assert bb.txz_verify(filepath)
 
