@@ -628,7 +628,7 @@ class TestClassBarutilsConfig:
         """
         Test reading compression settings, Python 3.2.
         """
-        if version_info[1] > 3:
+        if version_info[1] > 2:
             pass
         else:
             try:
