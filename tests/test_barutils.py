@@ -78,6 +78,48 @@ class TestClassBarutils:
             bb.extract_bars(os.getcwd())
             assert "EXTRACTION FAILURE" in capsys.readouterr()[0]
 
+    def test_check_bar(self):
+        """
+        Test zip verification.
+        """
+        if not os.path.exists("testfile.bar"):
+            if not os.path.exists("testfile.signed"):
+                with open("testfile.signed", "w") as targetfile:
+                    targetfile.write("Jackdaws love my big sphinx of quartz")
+            with zipfile.ZipFile('testfile.bar',
+                             'w',
+                             zipfile.ZIP_DEFLATED) as zfile:
+                zfile.write("testfile.signed")
+        assert bb.zip_verify("testfile.bar") == True
+
+    def test_create_blitz(self):
+        """
+        Test blitz package creation.
+        """
+        bb.create_blitz(os.getcwd(), "testing")
+        assert bb.zip_verify("Blitz-testing.zip") == True
+        if os.path.exists("Blitz-testing.zip"):
+            os.remove("Blitz-testing.zip")
+
+    def test_calculate_strength_32(self):
+        """
+        Test compression strength for 32-bit systems.
+        """
+        with mock.patch('bbarchivist.utilities.is_amd64', mock.MagicMock(return_value=False)):
+            assert bb.calculate_strength() == 5
+
+    def test_calculate_strength_64(self):
+        """
+        Test compression strength for 64-bit systems.
+        """
+        with mock.patch('bbarchivist.utilities.is_amd64', mock.MagicMock(return_value=True)):
+            assert bb.calculate_strength() == 9
+
+
+class TestClassBarutilsCompression:
+    """
+    Test file compression.
+    """
     def test_compress_sz(self):
         """
         Test 7z compression.
@@ -119,17 +161,6 @@ class TestClassBarutils:
         """
         with mock.patch("bbarchivist.barutils.bar_tester", mock.MagicMock(return_value=False)):
             assert not bb.zip_verify("Z10_BIGLOADER.zip")
-
-    def test_check_zip(self):
-        """
-        Test zip verification.
-        """
-        copyfile("Z10_BIGLOADER.zip", "Z10_BIGLOADER.bar")
-        assert bb.zip_verify("Z10_BIGLOADER.bar")
-        if os.path.exists("Z10_BIGLOADER.bar"):
-            os.remove("Z10_BIGLOADER.bar")
-        if os.path.exists("Z10_BIGLOADER.zip"):
-            os.remove("Z10_BIGLOADER.zip")
 
     def test_compress_gzip(self):
         """
@@ -185,29 +216,6 @@ class TestClassBarutils:
             with mock.patch("tarfile.TarFile.getmembers", mock.MagicMock(return_value=False)):
                 assert not bb.zip_verify("Z10_BIGLOADER.tar.xz")
 
-    def test_create_blitz(self):
-        """
-        Test blitz package creation.
-        """
-        bb.create_blitz(os.getcwd(), "testing")
-        assert bb.zip_verify("Blitz-testing.zip") == True
-        if os.path.exists("Blitz-testing.zip"):
-            os.remove("Blitz-testing.zip")
-
-    def test_calculate_strength_32(self):
-        """
-        Test compression strength for 32-bit systems.
-        """
-        with mock.patch('bbarchivist.utilities.is_amd64', mock.MagicMock(return_value=False)):
-            assert bb.calculate_strength() == 5
-
-    def test_calculate_strength_64(self):
-        """
-        Test compression strength for 64-bit systems.
-        """
-        with mock.patch('bbarchivist.utilities.is_amd64', mock.MagicMock(return_value=True)):
-            assert bb.calculate_strength() == 9
-
     def test_compress_suite(self):
         """
         Test the bulk compression/verification suite.
@@ -220,7 +228,6 @@ class TestClassBarutils:
             afile.write("I'm just gonna shake")
         bb.compress_suite(suitedir, "zip", None, True)
         rmtree(suitedir, ignore_errors=True)
-
 
 class TestClassBarutilsRemovers:
     """
@@ -616,6 +623,26 @@ class TestClassBarutilsConfig:
             pass
         with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
             assert bb.compress_config_loader(os.getcwd()) == "7z"
+
+    def test_compress_loader_legacy(self):
+        """
+        Test reading compression settings, Python 3.2.
+        """
+        if version_info[1] > 3:
+            pass
+        else:
+            try:
+                FileNotFoundError
+            except NameError:
+                FileNotFoundError = IOError
+            try:
+                os.remove("bbarchivist.ini")
+            except (OSError, FileNotFoundError):
+                pass
+            with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
+                bb.compress_config_writer("txz")
+                print(bb.compress_config_loader())
+                assert bb.compress_config_loader(os.getcwd()) == "zip"
 
     def test_compress_writer(self):
         """

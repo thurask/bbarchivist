@@ -279,7 +279,7 @@ def txz_verify(filepath):
     :param filepath: Filename.
     :type filepath: str
     """
-    if sys.version_info[1] <= 2:
+    if sys.version_info[1] < 3:
         pass
     else:
         if tarfile.is_tarfile(filepath):
