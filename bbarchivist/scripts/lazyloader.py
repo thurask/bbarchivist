@@ -16,102 +16,6 @@ from bbarchivist import barutils  # file operations
 from bbarchivist import bbconstants  # constants/versions
 from bbarchivist import networkutils  # download/lookup
 from bbarchivist import loadergen  # cap wrapper
-try:
-    import easygui as eg  # gui
-except Exception:
-    GUI_AVAILABLE = False
-else:
-    GUI_AVAILABLE = True
-
-
-def start_gui(osv=None, radv=None, swv=None, dev=None, aut=None,
-              fol=None, dow=None, alt=None, cor=None):
-    """
-    Either passes straight through to the main function,
-    or uses the GUI to prompt for variables.
-
-    :param osv: OS version.
-    :type osv: str
-
-    :param radv: Radio version.
-    :type radv: str
-
-    :param swv: Software version.
-    :type swv: str
-
-    :param dev: Device index, as an integer.
-    :type dev: int
-
-    :param aut: Run autoloader or not. Windows only.
-    :type aut: bool
-
-    :param fol: Folder to download to.
-    :type fol: str
-
-    :param dow: Download files or not.
-    :type dow: bool
-
-    :param alt: Alternate software release, for alternate radio.
-    :type alt: str
-
-    :param cor: Core autoloader or debrick autoloader.
-    :type cor: bool
-    """
-    if osv is None:
-        while True:
-            osentry = eg.enterbox(msg="OS version")
-            if osentry:
-                break
-    else:
-        osentry = osv
-    if swv is None:
-        swentry = eg.enterbox(msg="Software version, Cancel to guess")
-        if not swentry:
-            swentry = None
-    else:
-        swentry = swv
-    if radv is None:
-        radentry = eg.enterbox(msg="Radio version, Cancel to guess")
-        if not radentry:
-            radentry = None
-    else:
-        radentry = radv
-    if alt is None:
-        altcheck = eg.boolbox(msg="Are you making a hybrid autoloader?",
-                              default_choice="No")
-        if altcheck:
-            altn = eg.enterbox(msg="Radio software version, Cancel to guess")
-            if not altn:
-                altn = "checkme"
-        else:
-            altn = None
-    else:
-        altn = alt
-    if cor is None:
-        corentry = eg.boolbox(msg="Are you making a core autoloader?",
-                              default_choice="No")
-    else:
-        corentry = cor
-    if dev is None:
-        deventry = eg.choicebox(msg="Device", choices=bbconstants.DEVICES)
-        for idx, device in enumerate(bbconstants.DEVICES):
-            if device == deventry:
-                devint = idx
-    else:
-        devint = dev
-    if utilities.is_windows():
-        if aut is None:
-            autoentry = eg.boolbox(msg="Run autoloader?")
-        else:
-            autoentry = aut
-    else:
-        autoentry = False
-    if fol is None:
-        fol = os.getcwd()
-    if dow is None:
-        dow = True
-    lazyloader_main(devint, osentry, radentry, swentry,
-                    fol, autoentry, dow, altn, corentry)
 
 
 def grab_args():
@@ -120,7 +24,7 @@ def grab_args():
 
     Invoke :func:`lazyloader.lazyloader_main` with arguments.
     """
-    if len(sys.argv) > 1 or getattr(sys, 'frozen', False):
+    if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(
             prog="bb-lazyloader",
             description="Create one autoloader for personal use.",
@@ -197,21 +101,6 @@ def grab_args():
             help="Run autoloader after creation",
             action="store_true",
             default=False)
-        guigroup = parser.add_mutually_exclusive_group()
-        guigroup.add_argument(
-            "-g",
-            "--gui",
-            dest="gui",
-            help="Use GUI",
-            default=False,
-            action="store_true")
-        guigroup.add_argument(
-            "-ng",
-            "--no-gui",
-            dest="gui",
-            help="Don't use GUI",
-            default=False,
-            action="store_false")
         parser.add_argument(
             "-f",
             "--folder",
@@ -242,30 +131,14 @@ def grab_args():
             help="Make core/radio loader",
             default=False,
             action="store_true")
-        if getattr(sys, 'frozen', False):
-            frozen = True
-        else:
-            frozen = False
-        parser.set_defaults(device=None, gui=frozen)
+        parser.set_defaults(device=None)
         args = parser.parse_args(sys.argv[1:])
         if args.folder is None:
             args.folder = os.getcwd()
         if not utilities.is_windows():
             args.autoloader = False
-        if not GUI_AVAILABLE:
-            args.gui = False
-        if args.gui:
-            start_gui(args.os,
-                      args.radio,
-                      args.swrelease,
-                      args.device,
-                      args.autoloader,
-                      args.folder,
-                      args.download,
-                      args.altsw,
-                      args.core)
         else:
-            if not args.os:
+            if args.os is None:
                 raise argparse.ArgumentError(argument=None,
                                              message="No OS specified!")
             if args.device is None:
@@ -282,69 +155,76 @@ def grab_args():
                                 args.altsw,
                                 args.core)
     else:
-        localdir = os.getcwd()
-        while True:
-            osversion = input("OS VERSION: ")
-            if osversion:
-                break
-        print("OS:", osversion)
-        radioversion = input("RADIO VERSION (PRESS ENTER TO GUESS): ")
-        if not radioversion:
-            radioversion = None
+        questionnaire()
+
+
+def questionnaire():
+    """
+    Questions to ask if no arguments given.
+    """
+    localdir = os.getcwd()
+    while True:
+        osversion = input("OS VERSION: ")
+        if osversion:
+            break
+    print("OS:", osversion)
+    radioversion = input("RADIO VERSION (PRESS ENTER TO GUESS): ")
+    if not radioversion:
+        radioversion = None
+    else:
+        print("RADIO:", radioversion)
+    softwareversion = input("SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
+    if not softwareversion:
+        softwareversion = None
+    else:
+        print("SOFTWARE RELEASE:", softwareversion)
+    altcheck = utilities.s2b(input("HYBRID AUTOLOADER (Y/N)?: "))
+    if altcheck:
+        print("CREATING HYBRID AUTOLOADER")
+        altsw = input("RADIO SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
+        if altsw:
+            print("RADIO SOFTWARE RELEASE:", altsw)
         else:
-            print("RADIO:", radioversion)
-        softwareversion = input("SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
-        if not softwareversion:
-            softwareversion = None
+            altsw = "checkme"
+    else:
+        altsw = None
+    print("DEVICES:")
+    inputlist = ["0=STL100-1",
+                    "1=STL100-2/3/P9982",
+                    "2=STL100-4",
+                    "3=Q10/Q5/P9983",
+                    "4=Z30/CLASSIC/LEAP",
+                    "5=Z3",
+                    "6=PASSPORT"]
+    pprint.pprint(inputlist)
+    while True:
+        device = int(input("SELECTED DEVICE: "))
+        if not (0 <= device <= len(inputlist) - 1):
+            continue
         else:
-            print("SOFTWARE RELEASE:", softwareversion)
-        altcheck = utilities.s2b(input("HYBRID AUTOLOADER (Y/N)?: "))
-        if altcheck:
-            print("CREATING HYBRID AUTOLOADER")
-            altsw = input("RADIO SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
-            if altsw:
-                print("RADIO SOFTWARE RELEASE:", altsw)
-            else:
-                altsw = "checkme"
-        else:
-            altsw = None
-        print("DEVICES:")
-        inputlist = ["0=STL100-1",
-                     "1=STL100-2/3/P9982",
-                     "2=STL100-4",
-                     "3=Q10/Q5/P9983",
-                     "4=Z30/CLASSIC/LEAP",
-                     "5=Z3",
-                     "6=PASSPORT"]
-        pprint.pprint(inputlist)
-        while True:
-            device = int(input("SELECTED DEVICE: "))
-            if not (0 <= device <= len(inputlist) - 1):
-                continue
-            else:
-                print("DEVICE:", bbconstants.DEVICES[device])
-                break
-        if utilities.is_windows():
-            autoloader = utilities.s2b(
-                input("RUN AUTOLOADER (WILL WIPE YOUR DEVICE!)(Y/N)?: "))
-            if autoloader:
-                print("RUN AUTOLOADER AFTER CREATION")
-        else:
-            autoloader = False
-        print(" ")
-        lazyloader_main(
-            device,
-            osversion,
-            radioversion,
-            softwareversion,
-            localdir,
-            autoloader,
-            True,
-            altsw,
-            False)
-        smeg = input("Press Enter to exit")
-        if smeg or not smeg:
-            raise SystemExit
+            print("DEVICE:", bbconstants.DEVICES[device])
+            break
+    if utilities.is_windows():
+        autoloader = utilities.s2b(
+            input("RUN AUTOLOADER (WILL WIPE YOUR DEVICE!)(Y/N)?: "))
+        if autoloader:
+            print("RUN AUTOLOADER AFTER CREATION")
+    else:
+        autoloader = False
+    print(" ")
+    lazyloader_main(
+        device,
+        osversion,
+        radioversion,
+        softwareversion,
+        localdir,
+        autoloader,
+        True,
+        altsw,
+        False)
+    smeg = input("Press Enter to exit")
+    if smeg or not smeg:
+        raise SystemExit
 
 
 def lazyloader_main(device, osversion, radioversion=None,

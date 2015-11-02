@@ -56,8 +56,7 @@ Using archivist's bulk autoloader creator requires a few dozen GB of hard drive 
 It also requires the
 `requests <http://docs.python-requests.org/en/latest/user/install/>`__
 and `Beautiful Soup 4 <http://www.crummy.com/software/BeautifulSoup/#Download>`__
-libraries installed somehow. Lazyloader's GUI requires `easygui <http://pythonhosted.org/easygui/>`__ as well.
-Installation with pip does this automatically, or use your package manager's version.
+libraries installed somehow. Installation with pip does this automatically, or use your package manager's version.
 
 PGP support requires the
 `python-gnupg <https://pythonhosted.org/python-gnupg/index.html>`__
@@ -96,7 +95,7 @@ package manager, or install from source) in your path. I.e.:
 
 resolves to something.
 
-Your package manager should also have requests, beautifulsoup4 and easygui packages
+Your package manager should also have requests and beautifulsoup4 packages
 available. If not, or if you want the latest, compile from source. Or use pip.
 
 Other than that, install this with pip.
@@ -186,12 +185,10 @@ Help
 	  -h, --help            show this help message and exit
 	  -v, --version         show program's version number and exit
 	  --run-loader          Run autoloader after creation
-	  -g, --gui             Use GUI
-	  -ng, --no-gui         Don't use GUI
 	  -f DIR, --folder DIR  Working folder
 	  -n, --no-download     Don't download files
 	  -r [SW], --radiosw [SW]
-							Radio software version; use without software to guess
+	                        Radio software version; use without software to guess
 	  -c, --core            Make core/radio loader
 
 	devices:
@@ -476,7 +473,6 @@ Credits/Software Used
 -  Requests: `Kenneth Reitz et al. <http://docs.python-requests.org/en/latest/dev/authors/>`__
 -  Beautiful Soup: `Leonard Richardson et al. <http://www.crummy.com/software/BeautifulSoup/>`__
 -  Python-GnuPG: `Vinay Sajip et al. <https://pythonhosted.org/python-gnupg/index.html#acknowledgements>`__
--  easygui: `easygui dev team <https://pythonhosted.org/easygui/support.html>`__
 -  Visual Studio Community 2015: `Microsoft <https://www.visualstudio.com>`__
 -  Python Tools for Visual Studio: `Microsoft <http://microsoft.github.io/PTVS/>`__
 -  Integration: `Travis CI <https://travis-ci.org>`__, `Coveralls.io <https://coveralls.io>`__

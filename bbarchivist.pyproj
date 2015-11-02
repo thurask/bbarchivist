@@ -46,7 +46,6 @@
     <Content Include="lfsbat.bat" />
     <Content Include="LICENSE" />
     <Content Include="MANIFEST.in" />
-    <Content Include="pylint.rc" />
     <Content Include="pytest.ini" />
     <Content Include="README.rst" />
     <Content Include="requirements-devel.txt" />

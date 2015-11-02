@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 #pylint: disable = I0011, C0111, C0103, W0622
 
 from cx_Freeze import setup, Executable
@@ -12,9 +12,7 @@ from bbarchivist.bbconstants import VERSION, CAPLOCATION, CAPVERSION, JSONFILE
 localdir = dirname(abspath(__file__))
 localdir = join(localdir, r"bbarchivist\scripts")
 build_options = dict(packages=["requests",
-                               "bbarchivist",
-                               "easygui",
-                               "bs4"],
+                               "bbarchivist"],
                      includes=[],
                      include_files=[
                          (certs.where(), 'cacert.pem'),

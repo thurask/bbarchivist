@@ -1,11 +1,12 @@
 requests>0.0
 python-gnupg>0.0
 shutilwhich>0.0
-easygui>0.0
 beautifulsoup4>0.0
 mock>0.0
 pytest>0.0
 pytest-cov>0.0
 httmock>0.0
 cx_freeze>0.0
+#For py3.5, with some Mercurial client installed:
+#pip install hg+https://bitbucket.org/anthony_tuininga/cx_freeze
 flake8>0.0
