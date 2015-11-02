@@ -5,11 +5,10 @@ __author__ = "Thurask"
 __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015 Thurask"
 
-import argparse  # parse arguments
 import sys  # load arguments
 from bbarchivist import filehashtools  # main program
-from bbarchivist import bbconstants  # constants/versions
 from bbarchivist import utilities  # input validation
+from bbarchivist import scriptutils  # default parser
 
 
 def escreens_main():
@@ -19,15 +18,8 @@ def escreens_main():
     Invoke :func:`bbarchivist.filehashtools.calculate_escreens` with arguments.
     """
     if len(sys.argv) > 1:
-        parser = argparse.ArgumentParser(
-            prog="bb-escreens",
-            description="Calculates escreens codes.",
-            epilog="http://github.com/thurask/bbarchivist")
-        parser.add_argument(
-            "-v",
-            "--version",
-            action="version",
-            version="%(prog)s " + bbconstants.VERSION)
+        parser = scriptutils.default_parser("bb-escreens",
+                                            "Calculate escrens codes")
         parser.add_argument("pin",
                             help="PIN, 8 characters",
                             type=utilities.escreens_pin)

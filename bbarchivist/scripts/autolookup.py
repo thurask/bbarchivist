@@ -5,16 +5,16 @@ __author__ = "Thurask"
 __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015 Thurask"
 
-import argparse  # parse arguments
 import sys  # load arguments
+import time  # get datestamp for lookup
+import os  # path work
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import networkutils  # lookup
 from bbarchivist import utilities  # incrementer
 from bbarchivist import sqlutils  # sql db work
-from bbarchivist.scripts import linkgen  # link generator @UnresolvedImport
+from bbarchivist.scripts import linkgen  # link generator
 from bbarchivist import smtputils  # email
-import time  # get datestamp for lookup
-import os  # path work
+from bbarchivist import scriptutils  # default parser
 
 
 def grab_args():
@@ -23,15 +23,8 @@ def grab_args():
 
     Invoke :func:`autolookup.autolookup_main` with those arguments."""
     if len(sys.argv) > 1:
-        parser = argparse.ArgumentParser(
-            prog="bb-autolookup",
-            description="Get software release for one/many OS versions.",
-            epilog="http://github.com/thurask/bbarchivist")
-        parser.add_argument(
-            "-v",
-            "--version",
-            action="version",
-            version="%(prog)s " + bbconstants.VERSION)
+        parser = scriptutils.default_parser("bb-autolookup",
+                                            "Get software releases")
         parser.add_argument("os", help="OS version, 10.x.y.zzzz")
         parser.add_argument(
             "-l", "--loop",

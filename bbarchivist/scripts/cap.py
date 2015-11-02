@@ -5,12 +5,11 @@ __author__ = "Thurask"
 __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015 Thurask"
 
-import argparse  # parse arguments
 import sys  # load arguments
-from os import getcwd  # local dir
-from bbarchivist import bbconstants  # versions/constants
+import os  # local dir
 from bbarchivist import utilities  # path checking
 from bbarchivist import pseudocap  # actually making the loader
+from bbarchivist import scriptutils  # default parser
 
 
 def cap_main():
@@ -19,15 +18,8 @@ def cap_main():
 
     Invoke :func:`bbarchivist.pseudocap.make_autoloader` with arguments.
     """
-    parser = argparse.ArgumentParser(
-        prog="bb-pseudocap",
-        description="cap.exe, implemented in Python.",
-        epilog="http://github.com/thurask/bbarchivist")
-    parser.add_argument(
-        "-v",
-        "--version",
-        action="version",
-        version="%(prog)s " + bbconstants.VERSION)
+    parser = scriptutils.default_parser("bb-pseudocap",
+                                        "BlackBerry CAP, in Python")
     parser.add_argument("filename",
                         help="Filename")
     files = parser.add_argument_group()
@@ -64,7 +56,7 @@ def cap_main():
     parser.set_defaults()
     args = parser.parse_args(sys.argv[1:])
     if args.folder is None:
-        args.folder = getcwd()
+        args.folder = os.getcwd()
     if not args.filename.endswith(".exe"):
         args.filename += ".exe"
     pseudocap.make_autoloader(args.filename,

@@ -9,7 +9,6 @@ import os  # filesystem read
 import time  # time for downloader
 import math  # rounding of floats
 import sys  # load arguments
-import argparse  # parse arguments
 from bbarchivist import scriptutils  # script stuff
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import utilities  # input validation
@@ -26,15 +25,8 @@ def grab_args():
     Invoke :func:`archivist.archivist_main` with those arguments.
     """
     if len(sys.argv) > 1:
-        parser = argparse.ArgumentParser(
-            prog="bb-archivist",
-            description="Download bar files, create autoloaders.",
-            epilog="http://github.com/thurask/bbarchivist")
-        parser.add_argument(
-            "-v",
-            "--version",
-            action="version",
-            version="%(prog)s " + bbconstants.VERSION)
+        parser = scriptutils.default_parser("bb-archivist",
+                                            "Create many autoloaders")
         parser.add_argument(
             "os",
             help="OS version, 10.x.y.zzzz")
@@ -164,36 +156,43 @@ def grab_args():
                        args.extract, args.signed, compmethod,
                        args.gpg, args.integrity, args.altsw, args.core)
     else:
-        localdir = os.getcwd()
-        osversion = input("OS VERSION: ")
-        radioversion = input("RADIO VERSION: ")
-        softwareversion = input("SOFTWARE RELEASE: ")
-        radios = utilities.s2b(input("CREATE RADIO LOADERS? Y/N: "))
-        compressed = utilities.s2b(input("COMPRESS LOADERS? Y/N: "))
-        if compressed:
-            deleted = utilities.s2b(input("DELETE UNCOMPRESSED? Y/N: "))
-        else:
-            deleted = False
-        hashed = utilities.s2b(input("GENERATE HASHES? Y/N: "))
-        hashdict = filehashtools.verifier_config_loader()
-        filehashtools.verifier_config_writer(hashdict)
-        compmethod = barutils.compress_config_loader()
-        download = True
-        extract = True
-        signed = True
-        gpg = False
-        integrity = True
-        altsw = None
-        core = False
-        print(" ")
-        archivist_main(osversion, radioversion, softwareversion,
-                       localdir, radios, compressed, deleted, hashed,
-                       hashdict, download,
-                       extract, signed, compmethod, gpg,
-                       integrity, altsw, core)
-        smeg = input("Press Enter to exit")
-        if smeg or not smeg:
-            raise SystemExit
+        questionnaire()
+
+
+def questionnaire():
+    """
+    Questions to ask if no arguments given.
+    """
+    localdir = os.getcwd()
+    osversion = input("OS VERSION: ")
+    radioversion = input("RADIO VERSION: ")
+    softwareversion = input("SOFTWARE RELEASE: ")
+    radios = utilities.s2b(input("CREATE RADIO LOADERS? Y/N: "))
+    compressed = utilities.s2b(input("COMPRESS LOADERS? Y/N: "))
+    if compressed:
+        deleted = utilities.s2b(input("DELETE UNCOMPRESSED? Y/N: "))
+    else:
+        deleted = False
+    hashed = utilities.s2b(input("GENERATE HASHES? Y/N: "))
+    hashdict = filehashtools.verifier_config_loader()
+    filehashtools.verifier_config_writer(hashdict)
+    compmethod = barutils.compress_config_loader()
+    download = True
+    extract = True
+    signed = True
+    gpg = False
+    integrity = True
+    altsw = None
+    core = False
+    print(" ")
+    archivist_main(osversion, radioversion, softwareversion,
+                   localdir, radios, compressed, deleted, hashed,
+                   hashdict, download,
+                   extract, signed, compmethod, gpg,
+                   integrity, altsw, core)
+    smeg = input("Press Enter to exit")
+    if smeg or not smeg:
+        raise SystemExit
 
 
 def archivist_main(osversion, radioversion=None, softwareversion=None,

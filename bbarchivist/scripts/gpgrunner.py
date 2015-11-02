@@ -5,13 +5,12 @@ __author__ = "Thurask"
 __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015 Thurask"
 
-import argparse  # parse arguments
 import sys  # load arguments
 import os  # path operations
 import getpass  # invisible passwords (cf. sudo)
 from bbarchivist import filehashtools  # main program
-from bbarchivist import bbconstants  # constants/versions
 from bbarchivist import utilities  # bool parsing
+from bbarchivist import scriptutils  # default parser
 
 
 def gpgrunner_main():
@@ -20,15 +19,8 @@ def gpgrunner_main():
 
     Invoke :func:`bbarchivist.filehashtools.gpgrunner` with those arguments.
     """
-    parser = argparse.ArgumentParser(
-        prog="bb-gpgrunner",
-        description="Use GPG to sign all files in a directory.",
-        epilog="http://github.com/thurask/bbarchivist")
-    parser.add_argument(
-        "-v",
-        "--version",
-        action="version",
-        version="%(prog)s " + bbconstants.VERSION)
+    parser = scriptutils.default_parser("bb-gpgrunner",
+                                        "GPG-sign files")
     parser.add_argument(
         "folder",
         help="Working directory, default is local",

@@ -9,11 +9,28 @@ __copyright__ = "Copyright 2015 Thurask"
 import os  # path work
 import pprint  # pretty printing
 import getpass  # invisible password
+import argparse  # generic parser
 from bbarchivist import utilities  # little things
 from bbarchivist import barutils  # file system work
 from bbarchivist import bbconstants  # constants
 from bbarchivist import filehashtools  # gpg
 from bbarchivist import networkutils  # network tools
+
+
+def default_parser(name=None, desc=None):
+    """
+    A generic form of argparse's ArgumentParser.
+    """
+    parser = argparse.ArgumentParser(
+        prog=name,
+        description=desc,
+        epilog="http://github.com/thurask/bbarchivist")
+    parser.add_argument(
+        "-v",
+        "--version",
+        action="version",
+        version="%(prog)s " + bbconstants.VERSION)
+    return parser
 
 
 def return_radio_version(osversion, radioversion=None):

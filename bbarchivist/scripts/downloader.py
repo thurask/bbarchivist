@@ -7,7 +7,6 @@ __copyright__ = "Copyright 2015 Thurask"
 
 import os  # filesystem read
 import sys  # load arguments
-import argparse  # parse arguments
 from bbarchivist import scriptutils  # script stuff
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import utilities  # input validation
@@ -21,15 +20,8 @@ def grab_args():
     Invoke downloader from :func:`archivist.archivist_main` with arguments.
     """
     if len(sys.argv) > 1:
-        parser = argparse.ArgumentParser(
-            prog="bb-downloader",
-            description="Download bar files.",
-            epilog="http://github.com/thurask/bbarchivist")
-        parser.add_argument(
-            "-v",
-            "--version",
-            action="version",
-            version="%(prog)s " + bbconstants.VERSION)
+        parser = scriptutils.default_parser("bb-downloader",
+                                            "Download bar files")
         parser.add_argument(
             "os",
             help="OS version, 10.x.y.zzzz")

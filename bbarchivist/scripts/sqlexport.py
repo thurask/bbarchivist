@@ -5,10 +5,9 @@ __author__ = "Thurask"
 __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015 Thurask"
 
-import argparse  # parse arguments
 import sys  # load arguments
-from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import sqlutils  # the export function
+from bbarchivist import scriptutils  # default parser
 
 
 def sqlexport_main():
@@ -17,15 +16,8 @@ def sqlexport_main():
 
     Invoke :func:`bbarchivist.sqlutils.export_sql_db`.
     """
-    parser = argparse.ArgumentParser(
-        prog="bb-sqlexport",
-        description="Export SQL database to CSV.",
-        epilog="http://github.com/thurask/bbarchivist")
-    parser.add_argument(
-        "-v",
-        "--version",
-        action="version",
-        version="%(prog)s " + bbconstants.VERSION)
+    parser = scriptutils.default_parser("bb-sqlexport",
+                                        "SQL-related tools")
     parser.add_argument(
         "-p",
         "--pop",

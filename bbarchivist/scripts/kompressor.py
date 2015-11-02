@@ -5,12 +5,11 @@ __author__ = "Thurask"
 __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015 Thurask"
 
-import argparse  # parse arguments
 import sys  # load arguments
 import os  # path operations
 from bbarchivist import barutils  # main program
-from bbarchivist import bbconstants  # constants/versions
 from bbarchivist import utilities  # bool parsing
+from bbarchivist import scriptutils  # default parser
 
 
 def kompressor_main():
@@ -19,15 +18,8 @@ def kompressor_main():
 
     Invoke :func:`bbarchivist.barutils.compress` with those arguments.
     """
-    parser = argparse.ArgumentParser(
-        prog="bb-kompressor",
-        description="Compress all files in a directory.",
-        epilog="http://github.com/thurask/bbarchivist")
-    parser.add_argument(
-        "-v",
-        "--version",
-        action="version",
-        version="%(prog)s " + bbconstants.VERSION)
+    parser = scriptutils.default_parser("bb-kompressor",
+                                        "Compress files")
     parser.add_argument(
         "-m"
         "--method",

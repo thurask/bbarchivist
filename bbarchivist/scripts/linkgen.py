@@ -5,12 +5,10 @@ __author__ = "Thurask"
 __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015 Thurask"
 
-import argparse  # parse arguments
 import sys  # load arguments
 from bbarchivist import scriptutils  # script stuff
 from bbarchivist import networkutils  # lookup, if sw not specified
 from bbarchivist import utilities  # increment version, if radio not specified
-from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import textgenerator  # actually writing
 
 
@@ -21,15 +19,8 @@ def grab_args():
     Invoke :func:`linkgen.linkgen_main` with those arguments.
     """
     if len(sys.argv) > 1:
-        parser = argparse.ArgumentParser(
-            prog="bb-linkgen",
-            description="Generate links from OS/radio/software.",
-            epilog="http://github.com/thurask/bbarchivist")
-        parser.add_argument(
-            "-v",
-            "--version",
-            action="version",
-            version="%(prog)s " + bbconstants.VERSION)
+        parser = scriptutils.default_parser("bb-linkgen",
+                                            "Bar link generation")
         parser.add_argument(
             "os",
             help="OS version, 10.x.y.zzzz")

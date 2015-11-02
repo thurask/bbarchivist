@@ -41,7 +41,7 @@ class TestClassScriptutils:
         """
         Test radio version non-incrementing.
         """
-        assert bs.return_radio_version("10.3.2.2639", "10.3.2.2640") == "10.3.2.2640"
+        assert bs.return_radio_version("10.3.2.2639", "10.3.2.5460") == "10.3.2.5460"
 
     def test_radio_version_inc(self):
         """
@@ -338,6 +338,36 @@ class TestClassScriptutilsSevenzip:
                         mock.MagicMock(return_value=False)):
             with mock.patch('builtins.input', mock.MagicMock(return_value="y")):
                 assert bs.get_sz_executable("7z") == ("zip", "")
+
+class TestClassScriptutilsArguments:
+    """
+    Test argparse parser generation.
+    """
+    @classmethod
+    def setup_class(cls):
+        """
+        Create parser for testing.
+        """
+        cls.parser = bs.default_parser("name", "Formats C:")
+
+    def test_parser_name(self):
+        """
+        Test if parser has the name set.
+        """
+        assert self.parser.prog == "name"
+
+    def test_parser_desc(self):
+        """
+        Test if parser has the desc set.
+        """
+        assert self.parser.description == "Formats C:"
+
+    def test_parser_epilog(self):
+        """
+        Test if parser has the epilog set.
+        """
+        assert self.parser.epilog == "http://github.com/thurask/bbarchivist"
+
 
 class TestClassScriptutilsIntegrity:
     """

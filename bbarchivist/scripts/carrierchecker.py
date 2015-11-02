@@ -5,16 +5,16 @@ __author__ = "Thurask"
 __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015 Thurask"
 
+import sys  # load arguments
+import os  # file/path operations
+import shutil  # folder removal
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import networkutils  # check function
 from bbarchivist import barutils  # file/folder operations
 from bbarchivist import textgenerator  # text work
 from bbarchivist import utilities  # input validation
 from bbarchivist import jsonutils  # json
-import argparse  # parse arguments
-import sys  # load arguments
-import os  # file/path operations
-import shutil  # folder removal
+from bbarchivist import scriptutils  # default parser
 
 
 def grab_args():
@@ -23,15 +23,8 @@ def grab_args():
 
     Invoke :func:`carrierchecker.carrierchecker_main` with those arguments."""
     if len(sys.argv) > 1:
-        parser = argparse.ArgumentParser(
-            prog="bb-cchecker",
-            description="Checks a carrier for an OS version, can download.",
-            epilog="http://github.com/thurask/bbarchivist")
-        parser.add_argument(
-            "-v",
-            "--version",
-            action="version",
-            version="%(prog)s " + bbconstants.VERSION)
+        parser = scriptutils.default_parser("bb-cchecker",
+                                            "Carrier info checking")
         parser.add_argument("mcc",
                             help="1-3 digit country code",
                             type=utilities.valid_carrier)

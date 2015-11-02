@@ -25,15 +25,8 @@ def grab_args():
     Invoke :func:`lazyloader.lazyloader_main` with arguments.
     """
     if len(sys.argv) > 1:
-        parser = argparse.ArgumentParser(
-            prog="bb-lazyloader",
-            description="Create one autoloader for personal use.",
-            epilog="http://github.com/thurask/bbarchivist")
-        parser.add_argument(
-            "-v",
-            "--version",
-            action="version",
-            version="%(prog)s " + bbconstants.VERSION)
+        parser = scriptutils.default_parser("bb-lazyloader",
+                                            "Create one autoloader")
         parser.add_argument(
             "os",
             help="OS version, 10.x.y.zzzz",
@@ -190,12 +183,12 @@ def questionnaire():
         altsw = None
     print("DEVICES:")
     inputlist = ["0=STL100-1",
-                    "1=STL100-2/3/P9982",
-                    "2=STL100-4",
-                    "3=Q10/Q5/P9983",
-                    "4=Z30/CLASSIC/LEAP",
-                    "5=Z3",
-                    "6=PASSPORT"]
+                 "1=STL100-2/3/P9982",
+                 "2=STL100-4",
+                 "3=Q10/Q5/P9983",
+                 "4=Z30/CLASSIC/LEAP",
+                 "5=Z3",
+                 "6=PASSPORT"]
     pprint.pprint(inputlist)
     while True:
         device = int(input("SELECTED DEVICE: "))

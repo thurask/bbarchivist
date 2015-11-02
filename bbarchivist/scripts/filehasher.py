@@ -5,12 +5,11 @@ __author__ = "Thurask"
 __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015 Thurask"
 
-import argparse  # parse arguments
 import sys  # load arguments
 import os  # path operations
 from bbarchivist import filehashtools  # main program
-from bbarchivist import bbconstants  # constants/versions
 from bbarchivist import utilities  # input validation
+from bbarchivist import scriptutils  # default parser
 
 
 def filehasher_main():
@@ -22,15 +21,8 @@ def filehasher_main():
     hashdict = filehashtools.verifier_config_loader()
     filehashtools.verifier_config_writer(hashdict)
     if len(sys.argv) > 1:
-        parser = argparse.ArgumentParser(
-            prog="bb-filehasher",
-            description="Applies hash functions to files.",
-            epilog="http://github.com/thurask/bbarchivist")
-        parser.add_argument(
-            "-v",
-            "--version",
-            action="version",
-            version="%(prog)s " + bbconstants.VERSION)
+        parser = scriptutils.default_parser("bb-filehasher",
+                                            "Hash files")
         parser.add_argument(
             "folder",
             help="Working directory, default is local",

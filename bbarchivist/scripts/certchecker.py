@@ -5,11 +5,11 @@ __author__ = "Thurask"
 __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015 Thurask"
 
+import sys  # load arguments
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import networkutils  # check function
 from bbarchivist import jsonutils  # json
-import argparse  # parse arguments
-import sys  # load arguments
+from bbarchivist import scriptutils  # default parser
 
 
 def grab_args():
@@ -19,15 +19,8 @@ def grab_args():
     Invoke :func:`certchecker.certchecker_main` with arguments.
     """
     if len(sys.argv) > 1:
-        parser = argparse.ArgumentParser(
-            prog="bb-certchecker",
-            description="Checks certifications for a given device.",
-            epilog="http://github.com/thurask/bbarchivist")
-        parser.add_argument(
-            "-v",
-            "--version",
-            action="version",
-            version="%(prog)s " + bbconstants.VERSION)
+        parser = scriptutils.default_parser("bb-certchecker",
+                                            "Certification scraper")
         parser.add_argument(
             "device",
             help="FCCID/HWID/model number",
