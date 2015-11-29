@@ -164,6 +164,7 @@ def write_4k(infile, outfile):
                 break
             outfile.write(chunk)
 
+
 def make_autoloader(filename, firstfile, secondfile="", thirdfile="",
                     fourthfile="", fifthfile="", sixthfile="",
                     folder=None):
@@ -213,7 +214,7 @@ def make_autoloader(filename, firstfile, secondfile="", thirdfile="",
         fourthfile,
         fifthfile,
         sixthfile]
-    filelist = [os.path.abspath(file) for file in filelist]
+    filelist = [os.path.abspath(file) for file in filelist if file]
     print("CREATING:", filename)
     try:
         with open(os.path.join(os.path.abspath(folder),
