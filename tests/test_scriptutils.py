@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """Test the scriptutils module."""
 
 import os
@@ -68,6 +68,16 @@ class TestClassScriptutilsSoftware:
                         mock.MagicMock(return_value="10.3.2.2474")):
             assert bs.return_sw_checked(None, "10.3.2.2639") == ("10.3.2.2474", True)
 
+    def test_return_swc_explicit(self):
+        """
+        Test software release checking, failure and definition.
+        """
+        with mock.patch('bbarchivist.networkutils.sr_lookup',
+                        mock.MagicMock(return_value="SR not in system")):
+            with mock.patch('builtins.input', mock.MagicMock(return_value="10.3.2.9999")):
+                with mock.patch('bbarchivist.utilities.s2b', mock.MagicMock(return_value=True)):
+                    assert bs.return_sw_checked(None, "10.3.2.2639") == ("10.3.2.9999", False)
+
     def test_return_swc_exit(self):
         """
         Test exiting upon software release check failure.
@@ -91,6 +101,16 @@ class TestClassScriptutilsSoftware:
         with mock.patch('bbarchivist.networkutils.sr_lookup',
                         mock.MagicMock(return_value="10.3.2.2474")):
             assert bs.return_radio_sw_checked("checkme", "10.3.2.2640") == ("10.3.2.2474", True)
+
+    def test_return_rswc_explicit(self):
+        """
+        Test radio software release checking, failure and definition.
+        """
+        with mock.patch('bbarchivist.networkutils.sr_lookup',
+                        mock.MagicMock(return_value="SR not in system")):
+            with mock.patch('builtins.input', mock.MagicMock(return_value="10.3.2.2474")):
+                with mock.patch('bbarchivist.utilities.s2b', mock.MagicMock(return_value=True)):
+                    assert bs.return_radio_sw_checked("checkme", "10.3.2.2640") == ("10.3.2.2474", False)
 
     def test_return_rswc_exit(self):
         """

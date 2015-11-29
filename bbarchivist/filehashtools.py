@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """This module is used to generate file hashes/checksums and PGP signatures."""
 
 __author__ = "Thurask"
@@ -303,7 +303,7 @@ def calculate_escreens(pin, app, uptime, duration=30):
     duration = int(duration)
     if duration not in [1, 3, 6, 15, 30]:
         duration = 1
-    data = pin.lower() + app + uptime + lifetimes[duration]
+    data = pin.lower() + app + str(uptime) + lifetimes[duration]
     newhmac = hmac.new(secret.encode(),
                        data.encode(),
                        digestmod=hashlib.sha1)

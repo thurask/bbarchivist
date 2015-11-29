@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """Test the pseudocap module."""
 
 import bbarchivist.pseudocap as bp
@@ -19,21 +19,19 @@ def setup_module(module):
     if not os.path.exists("temp_pseudocap"):
         os.mkdir("temp_pseudocap")
     os.chdir("temp_pseudocap")
-    with open("firstfile", "w") as targetfile:
+    with open("firstfile.signed", "w") as targetfile:
         targetfile.write("Jackdaws love my big sphinx of quartz")
     with open("cap-3.11.0.22.dat", "w") as targetfile:
         targetfile.write("0"*9500000)
-    bp.make_offset("firstfile")
+    bp.make_offset("firstfile.signed")
     copyfile("offset.hex", "offset.tmp")
-    bp.make_autoloader("loader1.exe", "firstfile")
-    bp.make_autoloader("loader2.exe", "firstfile", "firstfile")
-    bp.make_autoloader("loader3.exe", "firstfile", "firstfile", "firstfile")
-    bp.make_autoloader("loader4.exe", "firstfile", "firstfile", "firstfile",
-                       "firstfile")
-    bp.make_autoloader("loader5.exe", "firstfile", "firstfile", "firstfile",
-                       "firstfile", "firstfile")
-    bp.make_autoloader("loader6.exe", "firstfile", "firstfile", "firstfile",
-                       "firstfile", "firstfile", "firstfile")
+    fpath = os.path.abspath("firstfile.signed")
+    bp.make_autoloader("loader1.exe", fpath)
+    bp.make_autoloader("loader2.exe", fpath, fpath)
+    bp.make_autoloader("loader3.exe", fpath, fpath, fpath)
+    bp.make_autoloader("loader4.exe", fpath, fpath, fpath, fpath)
+    bp.make_autoloader("loader5.exe", fpath, fpath, fpath, fpath, fpath)
+    bp.make_autoloader("loader6.exe", fpath, fpath, fpath, fpath, fpath, fpath)
     copyfile("offset.tmp", "offset.hex")
     if os.path.exists("offset.tmp"):
         os.remove("offset.tmp")

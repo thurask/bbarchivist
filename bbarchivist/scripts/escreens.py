@@ -35,7 +35,7 @@ def escreens_main():
         key = filehashtools.calculate_escreens(
             args.pin,
             args.app,
-            args.uptime,
+            str(args.uptime),
             args.duration)
         print(key)
     else:

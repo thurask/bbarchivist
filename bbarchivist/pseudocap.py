@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """This module is the Python-ized implementation of cap.exe"""
 
 __author__ = "Thurask"
@@ -85,14 +85,9 @@ def make_offset(firstfile, secondfile=None, thirdfile=None,
     trailers = binascii.unhexlify(b'00' * (7 - filecount))  # 00, 1-6x
     capfile = str(cap)
     capsize = os.path.getsize(capfile)
-    if firstfile is None:
+    if firstfile is None:  # we need at least one file
         raise SystemExit
-    if filecount == 0 or filecount > 6:
-        raise SystemExit
-    try:
-        first = str(glob.glob(firstfile)[0])
-    except TypeError:  # i.e. first is None
-        raise SystemExit
+    first = str(glob.glob(firstfile)[0])
     firstsize = os.path.getsize(first)  # required
     if filecount >= 2:
         second = str(glob.glob(secondfile)[0])
@@ -151,6 +146,24 @@ def make_offset(firstfile, secondfile=None, thirdfile=None,
         file.write(makeup)
 
 
+def write_4k(infile, outfile):
+    """
+    Write a file from another file, 4k bytes at a time.
+
+    :param infile: Filename. Input file.
+    :type infile: str
+
+    :param outfile: Open (!!!) file handle. Output file.
+    :type outfile: str
+    """
+    with open(os.path.abspath(infile), "rb") as afile:
+        print("WRITING FILE...\n{0}".format(os.path.basename(infile)))
+        while True:
+            chunk = afile.read(4096)  # 4k chunks
+            if not chunk:
+                break
+            outfile.write(chunk)
+
 def make_autoloader(filename, firstfile, secondfile="", thirdfile="",
                     fourthfile="", fifthfile="", sixthfile="",
                     folder=None):
@@ -193,7 +206,6 @@ def make_autoloader(filename, firstfile, secondfile="", thirdfile="",
         fifthfile,
         sixthfile,
         folder)
-    filecount = 0
     filelist = [
         firstfile,
         secondfile,
@@ -201,111 +213,26 @@ def make_autoloader(filename, firstfile, secondfile="", thirdfile="",
         fourthfile,
         fifthfile,
         sixthfile]
-    for i in filelist:
-        if i:
-            filecount += 1
-    if filecount == 0 or filecount > 6:
-        print("Invalid filecount")
-        raise SystemExit
+    filelist = [os.path.abspath(file) for file in filelist]
     print("CREATING:", filename)
     try:
         with open(os.path.join(os.path.abspath(folder),
-                               filename), "wb") as autoloader:
-            try:
-                with open(os.path.normpath(cap), "rb") as capfile:
-                    print("WRITING CAP VERSION",
-                          bbconstants.CAPVERSION + "...")
-                    while True:
-                        chunk = capfile.read(4096)  # 4k chunks
-                        if not chunk:
-                            break
-                        autoloader.write(chunk)
-            except IOError as exc:
-                print("Operation failed:", exc.strerror)
-            try:
-                with open(os.path.join(folder, "offset.hex"), "rb") as offset:
-                    print("WRITING MAGIC OFFSET...")
-                    autoloader.write(offset.read())
-            except IOError as exc:
-                print("Operation failed:", exc.strerror)
-            try:
-                with open(firstfile, "rb") as first:
-                    print(
-                        "WRITING SIGNED FILE #1...\n",
-                        os.path.basename(firstfile))
-                    while True:
-                        chunk = first.read(4096)  # 4k chunks
-                        if not chunk:
-                            break
-                        autoloader.write(chunk)
-            except IOError as exc:
-                print("Operation failed:", exc.strerror)
-            if filecount >= 2:
-                try:
-                    print(
-                        "WRITING SIGNED FILE #2...\n",
-                        os.path.basename(secondfile))
-                    with open(secondfile, "rb") as second:
-                        while True:
-                            chunk = second.read(4096)  # 4k chunks
-                            if not chunk:
-                                break
-                            autoloader.write(chunk)
-                except IOError as exc:
-                    print("Operation failed:", exc.strerror)
-            if filecount >= 3:
-                try:
-                    print(
-                        "WRITING SIGNED FILE #3...\n",
-                        os.path.basename(thirdfile))
-                    with open(thirdfile, "rb") as third:
-                        while True:
-                            chunk = third.read(4096)  # 4k chunks
-                            if not chunk:
-                                break
-                            autoloader.write(chunk)
-                except IOError as exc:
-                    print("Operation failed:", exc.strerror)
-            if filecount >= 4:
-                try:
-                    print(
-                        "WRITING SIGNED FILE #5...\n",
-                        os.path.basename(fourthfile))
-                    with open(fourthfile, "rb") as fourth:
-                        while True:
-                            chunk = fourth.read(4096)  # 4k chunks
-                            if not chunk:
-                                break
-                            autoloader.write(chunk)
-                except IOError as exc:
-                    print("Operation failed:", exc.strerror)
-            if filecount >= 5:
-                try:
-                    print(
-                        "WRITING SIGNED FILE #5...\n",
-                        os.path.basename(fifthfile))
-                    with open(fifthfile, "rb") as fifth:
-                        while True:
-                            chunk = fifth.read(4096)  # 4k chunks
-                            if not chunk:
-                                break
-                            autoloader.write(chunk)
-                except IOError as exc:
-                    print("Operation failed:", exc.strerror)
-            if filecount == 6:
-                try:
-                    print(
-                        "WRITING SIGNED FILE #6...\n",
-                        os.path.basename(sixthfile))
-                    with open(sixthfile, "rb") as sixth:
-                        while True:
-                            chunk = sixth.read(4096)  # 4k chunks
-                            if not chunk:
-                                break
-                            autoloader.write(chunk)
-                except IOError as exc:
-                    print("Operation failed:", exc.strerror)
+                                filename), "wb") as autoloader:
+            with open(os.path.normpath(cap), "rb") as capfile:
+                print("WRITING CAP VERSION",
+                        bbconstants.CAPVERSION + "...")
+                while True:
+                    chunk = capfile.read(4096)  # 4k chunks
+                    if not chunk:
+                        break
+                    autoloader.write(chunk)
+            with open(os.path.join(folder, "offset.hex"), "rb") as offset:
+                print("WRITING MAGIC OFFSET...")
+                autoloader.write(offset.read())
+            for file in filelist:
+                write_4k(file, autoloader)
     except IOError as exc:
         print("Operation failed:", exc.strerror)
-    print(filename, "FINISHED!")
+    else:
+        print(filename, "FINISHED!")
     os.remove(os.path.join(folder, "offset.hex"))
