@@ -71,12 +71,13 @@ class TestClassSQLUtils:
             except sqlite3.Error:
                 assert False
             bs.insert("70.OSVERSION", "80.SWVERSION", "unavailable")
-            with mock.patch("bbarchivist.sqlutils.insert", mock.MagicMock(return_value=None,
-                                                                          side_effect=sqlite3.IntegrityError)):
+            with mock.patch("bbarchivist.sqlutils.insert",
+                            mock.MagicMock(return_value=None,
+                                           side_effect=sqlite3.IntegrityError)):
                 with pytest.raises(sqlite3.IntegrityError):
-                    bs.insert("70.OSVERSION", "80.SWVERSION", "unavailable")  # update instead of add
+                    bs.insert("70.OSVERSION", "80.SWVERSION", "unavailable")  # update, not add
             with mock.patch("sqlite3.connect", mock.MagicMock(side_effect=sqlite3.IntegrityError)):
-                assert bs.insert("70.OSVERSION", "80.SWVERSION", "unavailable")  is None # integrity error
+                assert bs.insert("70.OSVERSION", "80.SWVERSION", "unavailable") is None # integrity error
             try:
                 cnxn = sqlite3.connect(sqlpath)
                 with cnxn:

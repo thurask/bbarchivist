@@ -89,14 +89,16 @@ class TestClassBarutils:
                     targetfile.write("Jackdaws love my big sphinx of quartz")
             with zipfile.ZipFile('testfile.bar', 'w', zipfile.ZIP_DEFLATED) as zfile:
                 zfile.write("testfile.signed")
-        assert bb.zip_verify("testfile.bar")
+        smeg = bb.zip_verify("testfile.bar")
+        assert smeg
 
     def test_create_blitz(self):
         """
         Test blitz package creation.
         """
         bb.create_blitz(os.getcwd(), "testing")
-        assert bb.zip_verify("Blitz-testing.zip")
+        smeg = bb.zip_verify("Blitz-testing.zip")
+        assert smeg
         if os.path.exists("Blitz-testing.zip"):
             os.remove("Blitz-testing.zip")
 
@@ -152,14 +154,17 @@ class TestClassBarutilsCompression:
         Test zip compression.
         """
         bb.compress(os.getcwd(), "zip")
-        assert bb.zip_verify("Z10_BIGLOADER.zip")
+        smeg = bb.zip_verify("Z10_BIGLOADER.zip")
+        assert smeg
 
     def test_compress_zip_fail(self):
         """
         Test zip compression failure.
         """
-        with mock.patch("bbarchivist.barutils.bar_tester", mock.MagicMock(return_value=False)):
-            assert not bb.zip_verify("Z10_BIGLOADER.zip")
+        with mock.patch("bbarchivist.barutils.bar_tester",
+                        mock.MagicMock(return_value="Z10_BIGLOADER.zip")):
+            smeg = bb.zip_verify("Z10_BIGLOADER.zip")
+            assert not smeg
 
     def test_compress_gzip(self):
         """
@@ -371,7 +376,8 @@ class TestClassBarutilsVerifier:
         if not os.path.exists("Q10.zip"):
             bb.compress(verdir, "zip", None, True)
         filepath = os.path.join(verdir, "Q10.zip")
-        assert bb.zip_verify(filepath)
+        smeg = bb.zip_verify(filepath)
+        assert smeg
 
     def test_verify_zip_fail(self):
         """

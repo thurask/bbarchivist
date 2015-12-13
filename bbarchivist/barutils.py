@@ -321,7 +321,7 @@ def zip_verify(filepath):
     """
     if zipfile.is_zipfile(filepath):
         brokens = bar_tester(filepath)
-        return bool(brokens)
+        return brokens != filepath
     else:
         return False
 
