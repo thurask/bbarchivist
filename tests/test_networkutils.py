@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """Test the networkutils module."""
 
 import bbarchivist.networkutils as bn
@@ -103,6 +103,14 @@ def ps_mock(url, request):
     Mock for PTCRB lookup, best case.
     """
     thebody = "CER-59665-001 - Rev2-x05-05\nOS Version: 10.3.0.1052 Radio Version: 10.3.0.1053 SW Release Version: 10.3.0.675\nInitial\nAug 18, 2014"
+    return {'status_code': 200, 'content': thebody}
+
+
+def gh_mock(url, request):
+    """
+    Mock for kernel lookup.
+    """
+    thebody = '<a href="/blackberry/android-linux-kernel/tree/msm8992/AAC724" class="branch-name css-truncate-target">msm8992/AAC724</a>'
     return {'status_code': 200, 'content': thebody}
 
 
@@ -396,3 +404,11 @@ class TestClassNetworkutilsParsing:
         with httmock.HTTMock(ps_mock):
             results = bn.ptcrb_scraper("RGY181LW")
             assert "10.3.0.1052" in results[0]
+
+    def test_kernel_scraper(self):
+        """
+        Test kernel checking.
+        """
+        with httmock.HTTMock(gh_mock):
+            results = bn.kernel_scraper()
+            assert "msm8992/AAC724" in results[0]

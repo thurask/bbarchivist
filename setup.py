@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 #pylint: disable = I0011, C0111, C0103, W0622, R0801
 from setuptools import setup, find_packages
 from bbarchivist import bbconstants
@@ -71,5 +71,6 @@ setup(name='bbarchivist',
               'bb-pseudocap=bbarchivist.scripts.cap:cap_main',
               'bb-sqlexport=bbarchivist.scripts.sqlexport:sqlexport_main',
               'bb-kompressor=bbarchivist.scripts.kompressor:kompressor_main',
-              'bb-downloader=bbarchivist.scripts.downloader:grab_args']
+              'bb-downloader=bbarchivist.scripts.downloader:grab_args',
+              'bb-kernchecker=bbarchivist.scripts.kernchecker:kernchecker_main']
           })

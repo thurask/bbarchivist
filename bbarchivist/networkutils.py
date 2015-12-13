@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """This module is used for network connections; APIs, downloading, etc."""
 
 __author__ = "Thurask"
@@ -492,3 +492,16 @@ def ptcrb_item_cleaner(item):
     item = " ".join(spaclist)
     item = item.strip()
     return item
+
+
+def kernel_scraper():
+    """
+    Scrape BlackBerry's GitHub kernel repo for available branches.
+    """
+    url = "https://github.com/blackberry/android-linux-kernel/branches/all"
+    os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
+    req = requests.get(url)
+    soup = BeautifulSoup(req.content, 'html.parser')
+    text = soup.get_text()
+    kernlist = re.findall(r"msm[0-9]{4}\/[A-Z0-9]{6}", text, re.IGNORECASE)
+    return kernlist

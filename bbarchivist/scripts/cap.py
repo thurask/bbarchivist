@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """cap.exe, implemented in Python."""
 
 __author__ = "Thurask"
@@ -19,7 +19,7 @@ def cap_main():
     Invoke :func:`bbarchivist.pseudocap.make_autoloader` with arguments.
     """
     parser = scriptutils.default_parser("bb-pseudocap",
-                                        "BlackBerry CAP, in Python")
+                                        "BlackBerry CAP, in Python.")
     parser.add_argument("filename",
                         help="Filename")
     files = parser.add_argument_group()

@@ -378,7 +378,7 @@ Help
 	usage: bb-pseudocap [-h] [-v] [-f DIR]
 						filename first [second] [third] [fourth] [fifth] [sixth]
 
-	cap.exe, implemented in Python
+	BlackBerry CAP, in Python.
 
 	positional arguments:
 	  filename              Filename
@@ -462,6 +462,22 @@ Help
 	  -c, --cores           Download debricks
 	  -r, --radios          Download radios
 	  -ni, --no-integrity   Don't test bar files after download
+
+	http://github.com/thurask/bbarchivist
+
+----------------------------------------
+
+::
+
+	> bb-kernchecker -h
+
+	usage: bb-kernchecker [-h] [-v]
+
+	Kernel version scraper.
+
+	optional arguments:
+	  -h, --help     show this help message and exit
+	  -v, --version  show program's version number and exit
 
 	http://github.com/thurask/bbarchivist
 
