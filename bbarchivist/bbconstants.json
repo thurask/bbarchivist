@@ -527,7 +527,7 @@
             "device": "PRIV",
             "family": "PRIV",
             "name": "STV100-1",
-            "hwid": "",
+            "hwid": "F339299A",
             "fccid": "RHK211LW",
             "ptcrbid": "30056"
         },
@@ -536,7 +536,7 @@
             "family": "PRIV",
             "name": "STV100-2",
             "hwid": "",
-            "fccid": "",
+            "fccid": "RHT181LW",
             "ptcrbid": "",
             "secret": "True"
         },
@@ -544,7 +544,7 @@
             "device": "PRIV",
             "family": "PRIV",
             "name": "STV100-3",
-            "hwid": "",
+            "hwid": "F33929AC",
             "fccid": "RHL211LW",
             "ptcrbid": "31060"
         },
