@@ -1,9 +1,5 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """Create one autoloader for personal use."""
-
-__author__ = "Thurask"
-__license__ = "WTFPL v2"
-__copyright__ = "Copyright 2015 Thurask"
 
 import argparse  # parse arguments
 import sys  # load arguments
@@ -16,6 +12,10 @@ from bbarchivist import barutils  # file operations
 from bbarchivist import bbconstants  # constants/versions
 from bbarchivist import networkutils  # download/lookup
 from bbarchivist import loadergen  # cap wrapper
+
+__author__ = "Thurask"
+__license__ = "WTFPL v2"
+__copyright__ = "Copyright 2015 Thurask"
 
 
 def grab_args():
@@ -192,7 +192,7 @@ def questionnaire():
     pprint.pprint(inputlist)
     while True:
         device = int(input("SELECTED DEVICE: "))
-        if not (0 <= device <= len(inputlist) - 1):
+        if not 0 <= device <= len(inputlist) - 1:
             continue
         else:
             print("DEVICE:", bbconstants.DEVICES[device])

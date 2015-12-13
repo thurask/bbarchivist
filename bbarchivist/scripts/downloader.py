@@ -1,9 +1,5 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """Only download OS/radio bar files."""
-
-__author__ = "Thurask"
-__license__ = "WTFPL v2"
-__copyright__ = "Copyright 2015 Thurask"
 
 import os  # filesystem read
 import sys  # load arguments
@@ -11,6 +7,10 @@ from bbarchivist import scriptutils  # script stuff
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import utilities  # input validation
 from bbarchivist import networkutils  # download/lookup
+
+__author__ = "Thurask"
+__license__ = "WTFPL v2"
+__copyright__ = "Copyright 2015 Thurask"
 
 
 def grab_args():

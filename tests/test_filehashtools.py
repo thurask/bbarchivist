@@ -1,22 +1,22 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """Test the filehashtools module."""
 
-import os
-import pytest
 from shutil import rmtree
+from hashlib import algorithms_available as algos
+from configparser import ConfigParser
+import os
+try:
+    import unittest.mock as mock
+except ImportError:
+    import mock
+import pytest
 try:
     import gnupg
 except ImportError:
     NOGNUPG = True
 else:
     NOGNUPG = False
-from hashlib import algorithms_available as algos
 from bbarchivist import filehashtools as bf
-from configparser import ConfigParser
-try:
-    import unittest.mock as mock
-except ImportError:
-    import mock
 
 
 def setup_module(module):

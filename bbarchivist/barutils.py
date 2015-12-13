@@ -1,9 +1,5 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """This module is used to operate with bar files and other archives."""
-
-__author__ = "Thurask"
-__license__ = "WTFPL v2"
-__copyright__ = "Copyright 2015 Thurask"
 
 import os  # filesystem read
 import time  # time for downloader
@@ -18,6 +14,10 @@ import hashlib   # get hashes
 import configparser  # config parsing, duh
 from bbarchivist import utilities  # platform determination
 from bbarchivist import bbconstants  # premade stuff
+
+__author__ = "Thurask"
+__license__ = "WTFPL v2"
+__copyright__ = "Copyright 2015 Thurask"
 
 
 def extract_bars(filepath):
@@ -321,10 +321,7 @@ def zip_verify(filepath):
     """
     if zipfile.is_zipfile(filepath):
         brokens = bar_tester(filepath)
-        if brokens is None:
-            return True
-        else:
-            return False
+        return bool(brokens)
     else:
         return False
 

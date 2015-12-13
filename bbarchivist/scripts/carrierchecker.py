@@ -1,9 +1,5 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """Checks a carrier for an OS version, can download."""
-
-__author__ = "Thurask"
-__license__ = "WTFPL v2"
-__copyright__ = "Copyright 2015 Thurask"
 
 import sys  # load arguments
 import os  # file/path operations
@@ -15,6 +11,10 @@ from bbarchivist import textgenerator  # text work
 from bbarchivist import utilities  # input validation
 from bbarchivist import jsonutils  # json
 from bbarchivist import scriptutils  # default parser
+
+__author__ = "Thurask"
+__license__ = "WTFPL v2"
+__copyright__ = "Copyright 2015 Thurask"
 
 
 def grab_args():
@@ -247,15 +247,15 @@ def carrierchecker_main(mcc, mnc, device,
                                                                    True,
                                                                    False,
                                                                    forced)
-                    newfiles = newfiles[3]
+                    cleanfiles = newfiles[3]
                 else:
-                    newfiles = files
+                    cleanfiles = files
                 osurls, coreurls, radiourls = textgenerator.url_gen(osv,
                                                                     radv,
                                                                     swv)
                 finalfiles = []
                 stoppers = ["8960", "8930", "8974", "m5730", "winchester"]
-                for link in newfiles:
+                for link in cleanfiles:
                     if all(word not in link for word in stoppers):
                         finalfiles.append(link)
                 textgenerator.write_links(swv, osv, radv,

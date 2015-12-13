@@ -1,9 +1,5 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """Get software release for one/many OS versions."""
-
-__author__ = "Thurask"
-__license__ = "WTFPL v2"
-__copyright__ = "Copyright 2015 Thurask"
 
 import sys  # load arguments
 import time  # get datestamp for lookup
@@ -15,6 +11,10 @@ from bbarchivist import sqlutils  # sql db work
 from bbarchivist.scripts import linkgen  # link generator
 from bbarchivist import smtputils  # email
 from bbarchivist import scriptutils  # default parser
+
+__author__ = "Thurask"
+__license__ = "WTFPL v2"
+__copyright__ = "Copyright 2015 Thurask"
 
 
 def grab_args():

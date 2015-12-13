@@ -1,15 +1,15 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """Generate links from OS/radio/software."""
-
-__author__ = "Thurask"
-__license__ = "WTFPL v2"
-__copyright__ = "Copyright 2015 Thurask"
 
 import sys  # load arguments
 from bbarchivist import scriptutils  # script stuff
 from bbarchivist import networkutils  # lookup, if sw not specified
 from bbarchivist import utilities  # increment version, if radio not specified
 from bbarchivist import textgenerator  # actually writing
+
+__author__ = "Thurask"
+__license__ = "WTFPL v2"
+__copyright__ = "Copyright 2015 Thurask"
 
 
 def grab_args():

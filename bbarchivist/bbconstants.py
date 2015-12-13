@@ -1,12 +1,12 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 
 """This module is used to define constants for the program."""
+
+import os.path  # for producing cap location constant
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015 Thurask"
-
-import os.path  # for producing cap location constant
 
 #: App version.
 VERSION = "2.2.2"

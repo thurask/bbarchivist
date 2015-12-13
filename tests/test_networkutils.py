@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """Test the networkutils module."""
 
-import bbarchivist.networkutils as bn
-import httmock
 import os
 from shutil import rmtree
 from hashlib import sha512
+import httmock
 import requests
+import bbarchivist.networkutils as bn
 
 
 def setup_module(module):

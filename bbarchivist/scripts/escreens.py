@@ -1,14 +1,14 @@
 ﻿#!/usr/bin/env python3
 """Calculates escreens codes."""
 
-__author__ = "Thurask"
-__license__ = "WTFPL v2"
-__copyright__ = "Copyright 2015 Thurask"
-
 import sys  # load arguments
 from bbarchivist import filehashtools  # main program
 from bbarchivist import utilities  # input validation
 from bbarchivist import scriptutils  # default parser
+
+__author__ = "Thurask"
+__license__ = "WTFPL v2"
+__copyright__ = "Copyright 2015 Thurask"
 
 
 def escreens_main():
@@ -44,13 +44,13 @@ def escreens_main():
         uptime = int(input("UPTIME: "))
         duration = int(input("1/3/6/15/30 DAYS: "))
         pin = utilities.escreens_pin(pin)
-        uptime = str(utilities.positive_integer(uptime))
+        uptime = utilities.positive_integer(uptime)
         duration = utilities.escreens_duration(duration)
         print(" ")
         key = filehashtools.calculate_escreens(
             pin.lower(),
             app,
-            uptime,
+            str(uptime),
             duration)
         print(key)
         smeg = input("Press Enter to exit")

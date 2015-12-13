@@ -1,9 +1,5 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """Use GPG to sign all files in a directory."""
-
-__author__ = "Thurask"
-__license__ = "WTFPL v2"
-__copyright__ = "Copyright 2015 Thurask"
 
 import sys  # load arguments
 import os  # path operations
@@ -11,6 +7,10 @@ import getpass  # invisible passwords (cf. sudo)
 from bbarchivist import filehashtools  # main program
 from bbarchivist import utilities  # bool parsing
 from bbarchivist import scriptutils  # default parser
+
+__author__ = "Thurask"
+__license__ = "WTFPL v2"
+__copyright__ = "Copyright 2015 Thurask"
 
 
 def gpgrunner_main():

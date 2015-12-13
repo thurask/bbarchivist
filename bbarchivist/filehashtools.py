@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 """This module is used to generate file hashes/checksums and PGP signatures."""
 
-__author__ = "Thurask"
-__license__ = "WTFPL v2"
-__copyright__ = "Copyright 2015 Thurask"
-
 import zlib  # crc32/adler32
 import hashlib  # all other hashes
 import hmac  # escreens is a hmac, news at 11
+import configparser  # config parsing, duh
 import os  # path work
 import gnupg  # interface b/w Python, GPG
-import configparser  # config parsing, duh
 from bbarchivist import bbconstants  # premade stuff
 from bbarchivist.barutils import prepends  # file parsing
+
+__author__ = "Thurask"
+__license__ = "WTFPL v2"
+__copyright__ = "Copyright 2015 Thurask"
 
 
 def hc32(filepath, blocksize=16 * 1024 * 1024):

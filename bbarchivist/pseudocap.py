@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """This module is the Python-ized implementation of cap.exe"""
 
-__author__ = "Thurask"
-__license__ = "WTFPL v2"
-__copyright__ = "Copyright 2015 Thurask"
-
 import os  # path work
 import binascii  # to hex and back again
 import glob  # filename matching
 import base64  # storage
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import utilities  # finding cap
+
+__author__ = "Thurask"
+__license__ = "WTFPL v2"
+__copyright__ = "Copyright 2015 Thurask"
 
 
 def ghetto_convert(intsize):
@@ -218,10 +218,10 @@ def make_autoloader(filename, firstfile, secondfile="", thirdfile="",
     print("CREATING:", filename)
     try:
         with open(os.path.join(os.path.abspath(folder),
-                                filename), "wb") as autoloader:
+                               filename), "wb") as autoloader:
             with open(os.path.normpath(cap), "rb") as capfile:
                 print("WRITING CAP VERSION",
-                        bbconstants.CAPVERSION + "...")
+                      bbconstants.CAPVERSION + "...")
                 while True:
                     chunk = capfile.read(4096)  # 4k chunks
                     if not chunk:

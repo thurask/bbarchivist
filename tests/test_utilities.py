@@ -1,16 +1,16 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """Test the utilities module."""
 
-import bbarchivist.utilities as bu
 import os
-import pytest
+from shutil import rmtree, copyfile
+from argparse import ArgumentError
+from platform import system
 try:
     import unittest.mock as mock
 except ImportError:
     import mock
-from shutil import rmtree, copyfile
-from argparse import ArgumentError
-from platform import system
+import pytest
+import bbarchivist.utilities as bu
 
 
 def setup_module(module):
@@ -107,7 +107,7 @@ class TestClassUtilities7z:
         """
         with mock.patch('platform.system', mock.MagicMock(return_value="Wandows")):
             with mock.patch("bbarchivist.utilities.where_which", mock.MagicMock(return_value="/usr/bin/7za")):
-                assert bu.prep_seven_zip(True) == True
+                assert bu.prep_seven_zip(True)
 
     def test_prep_seven_zip_bad(self):
         """
@@ -115,7 +115,7 @@ class TestClassUtilities7z:
         """
         with mock.patch('platform.system', mock.MagicMock(return_value="Wandows")):
             with mock.patch("bbarchivist.utilities.where_which", mock.MagicMock(return_value=None)):
-                assert bu.prep_seven_zip(True) == False
+                assert not bu.prep_seven_zip(True)
 
     def test_prep_seven_zip_which(self):
         """
@@ -123,7 +123,7 @@ class TestClassUtilities7z:
         """
         with mock.patch('platform.system', mock.MagicMock(return_value="Wandows")):
             with mock.patch("bbarchivist.utilities.where_which", mock.MagicMock(side_effect=ImportError)):
-                assert bu.prep_seven_zip(True) == False
+                assert not bu.prep_seven_zip(True)
 
 
 class TestClassUtilitiesPlatform:
@@ -246,13 +246,13 @@ class TestClassUtilities:
         """
         Test checking of input parsing, best case.
         """
-        assert bu.s2b("YES") == True
+        assert bu.s2b("YES")
 
     def test_str2bool_bad(self):
         """
         Test checking of input parsing, worst case.
         """
-        assert bu.s2b("BANANA") == False
+        assert not bu.s2b("BANANA")
 
     def test_version_incrementer_good(self):
         """

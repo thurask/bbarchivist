@@ -1,10 +1,10 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """Test the textgenerator module."""
 
-import bbarchivist.textgenerator as bt
 from shutil import rmtree
 import os
 import httmock
+import bbarchivist.textgenerator as bt
 
 
 def setup_module(module):

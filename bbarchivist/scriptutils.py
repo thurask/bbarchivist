@@ -1,10 +1,5 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """This module contains various utilities for the scripts folder."""
-
-__author__ = "Thurask"
-__license__ = "WTFPL v2"
-__copyright__ = "Copyright 2015 Thurask"
-
 
 import os  # path work
 import pprint  # pretty printing
@@ -15,6 +10,10 @@ from bbarchivist import barutils  # file system work
 from bbarchivist import bbconstants  # constants
 from bbarchivist import filehashtools  # gpg
 from bbarchivist import networkutils  # network tools
+
+__author__ = "Thurask"
+__license__ = "WTFPL v2"
+__copyright__ = "Copyright 2015 Thurask"
 
 
 def default_parser(name=None, desc=None):
@@ -266,7 +265,7 @@ def get_sz_executable(compmethod):
     :param compmethod: Compression method.
     :type compmethod: str
     """
-    if not compmethod == "7z":
+    if compmethod != "7z":
         szexe = ""
     else:
         print("CHECKING PRESENCE OF 7ZIP...")

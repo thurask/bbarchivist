@@ -1,9 +1,5 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """This module is used for dealing with SMTP email sending."""
-
-__author__ = "Thurask"
-__license__ = "WTFPL v2"
-__copyright__ = "Copyright 2015 Thurask"
 
 import smtplib  # smtp connection
 import configparser  # reading config files
@@ -11,6 +7,10 @@ import getpass  # passwords
 import os  # paths
 from email.mime.text import MIMEText  # email formatting
 from bbarchivist import utilities  # file work
+
+__author__ = "Thurask"
+__license__ = "WTFPL v2"
+__copyright__ = "Copyright 2015 Thurask"
 
 
 def smtp_config_loader(homepath=None):

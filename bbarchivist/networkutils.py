@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 """This module is used for network connections; APIs, downloading, etc."""
 
-__author__ = "Thurask"
-__license__ = "WTFPL v2"
-__copyright__ = "Copyright 2015 Thurask"
-
 import os  # filesystem read
-import requests  # downloading
 import xml.etree.ElementTree  # XML parsing
 import re  # regexes
 import hashlib  # base url creation
-from bbarchivist import utilities  # parse filesize
-from bbarchivist.bbconstants import SERVERS  # lookup servers
-from bs4 import BeautifulSoup  # scraping
 import concurrent.futures  # multiprocessing/threading
 import glob  # pem file lookup
+import requests  # downloading
+from bs4 import BeautifulSoup  # scraping
+from bbarchivist import utilities  # parse filesize
+from bbarchivist.bbconstants import SERVERS  # lookup servers
+
+__author__ = "Thurask"
+__license__ = "WTFPL v2"
+__copyright__ = "Copyright 2015 Thurask"
 
 
 def grab_pem():
@@ -147,10 +147,7 @@ def availability(url):
     try:
         avlty = requests.head(url)
         status = int(avlty.status_code)
-        if (status == 200) or (300 < status <= 308):
-            return True
-        else:
-            return False
+        return (status == 200) or (300 < status <= 308)
     except requests.ConnectionError:
         return False
 

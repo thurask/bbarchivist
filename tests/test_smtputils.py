@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """Test the smtputils module."""
 
-import bbarchivist.smtputils as bs
 import os
+from shutil import rmtree
+from email.mime.text import MIMEText
+from configparser import ConfigParser
 try:
     import unittest.mock as mock
 except ImportError:
     import mock
-from shutil import rmtree
-from email.mime.text import MIMEText
-from configparser import ConfigParser
+import bbarchivist.smtputils as bs
 
 
 def setup_module(module):

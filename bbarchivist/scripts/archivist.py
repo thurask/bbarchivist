@@ -1,9 +1,5 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """Download bar files, create autoloaders."""
-
-__author__ = "Thurask"
-__license__ = "WTFPL v2"
-__copyright__ = "Copyright 2015 Thurask"
 
 import os  # filesystem read
 import time  # time for downloader
@@ -16,6 +12,10 @@ from bbarchivist import barutils  # file/folder work
 from bbarchivist import networkutils  # download/lookup
 from bbarchivist import loadergen  # cap, in Python
 from bbarchivist import filehashtools  # hashes, GPG
+
+__author__ = "Thurask"
+__license__ = "WTFPL v2"
+__copyright__ = "Copyright 2015 Thurask"
 
 
 def grab_args():

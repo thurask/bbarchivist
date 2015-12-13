@@ -1,15 +1,15 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """Applies hash functions to files."""
-
-__author__ = "Thurask"
-__license__ = "WTFPL v2"
-__copyright__ = "Copyright 2015 Thurask"
 
 import sys  # load arguments
 import os  # path operations
 from bbarchivist import filehashtools  # main program
 from bbarchivist import utilities  # input validation
 from bbarchivist import scriptutils  # default parser
+
+__author__ = "Thurask"
+__license__ = "WTFPL v2"
+__copyright__ = "Copyright 2015 Thurask"
 
 
 def filehasher_main():

@@ -1,18 +1,19 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """Test the barutils module."""
 
-import bbarchivist.barutils as bb
 import os
-from bbarchivist.utilities import prep_seven_zip, get_seven_zip
 from shutil import rmtree, copyfile
 from sys import version_info
 from hashlib import sha512
 import zipfile
-import pytest
 try:
     import unittest.mock as mock
 except ImportError:
     import mock
+import pytest
+import bbarchivist.barutils as bb
+from bbarchivist.utilities import prep_seven_zip, get_seven_zip
+
 
 def setup_module(module):
     """
@@ -86,18 +87,16 @@ class TestClassBarutils:
             if not os.path.exists("testfile.signed"):
                 with open("testfile.signed", "w") as targetfile:
                     targetfile.write("Jackdaws love my big sphinx of quartz")
-            with zipfile.ZipFile('testfile.bar',
-                             'w',
-                             zipfile.ZIP_DEFLATED) as zfile:
+            with zipfile.ZipFile('testfile.bar', 'w', zipfile.ZIP_DEFLATED) as zfile:
                 zfile.write("testfile.signed")
-        assert bb.zip_verify("testfile.bar") == True
+        assert bb.zip_verify("testfile.bar")
 
     def test_create_blitz(self):
         """
         Test blitz package creation.
         """
         bb.create_blitz(os.getcwd(), "testing")
-        assert bb.zip_verify("Blitz-testing.zip") == True
+        assert bb.zip_verify("Blitz-testing.zip")
         if os.path.exists("Blitz-testing.zip"):
             os.remove("Blitz-testing.zip")
 
@@ -273,7 +272,7 @@ class TestClassBarutilsRemovers:
         os.mkdir("uncompL")
         os.mkdir("uncompR")
         bb.remove_unpacked_loaders("uncompL", "uncompR", True)
-        assert not any(["uncompL", "uncompR"]) in os.listdir()
+        assert any(["uncompL", "uncompR"]) not in os.listdir()
 
 
 class TestClassBarutilsMethods:

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 #pylint: disable = I0011, C0111, C0103, W0622, R0801
+from sys import version_info
 from setuptools import setup, find_packages
 from bbarchivist import bbconstants
-from sys import version_info
 
 
 def readme():

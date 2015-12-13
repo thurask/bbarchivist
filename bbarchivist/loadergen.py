@@ -1,15 +1,15 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """This module is used for creation of autoloaders.
 A higher level interface for :mod:`bbarchivist.pseudocap`."""
-
-__author__ = "Thurask"
-__license__ = "WTFPL v2"
-__copyright__ = "Copyright 2015 Thurask"
 
 import os  # path work
 import glob  # filename matching
 from bbarchivist import pseudocap  # implement cap
 from bbarchivist import jsonutils  # json
+
+__author__ = "Thurask"
+__license__ = "WTFPL v2"
+__copyright__ = "Copyright 2015 Thurask"
 
 
 def read_files(localdir, core=False):

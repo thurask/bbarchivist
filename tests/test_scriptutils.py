@@ -4,12 +4,12 @@
 import os
 from shutil import rmtree, copyfile
 import zipfile
-import bbarchivist.scriptutils as bs
-import pytest
 try:
     import unittest.mock as mock
 except ImportError:
     import mock
+import pytest
+import bbarchivist.scriptutils as bs
 
 
 def setup_module(module):

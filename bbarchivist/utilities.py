@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 """This module is used for miscellaneous utilities."""
 
-__author__ = "Thurask"
-__license__ = "WTFPL v2"
-__copyright__ = "Copyright 2015 Thurask"
-
 import os  # path work
 import argparse  # argument parser for filters
 import platform  # platform info
@@ -16,6 +12,10 @@ import sys  # streams, version info
 import itertools  # spinners gonna spin
 import subprocess  # loader verification
 from bbarchivist import bbconstants  # cap location, version, filename bits
+
+__author__ = "Thurask"
+__license__ = "WTFPL v2"
+__copyright__ = "Copyright 2015 Thurask"
 
 
 def enum_cpus():
@@ -78,7 +78,6 @@ def fsizer(file_size):
     """
     if file_size is None:
         file_size = 0
-    file_size = float(file_size)
     for sfix in ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB']:
         if file_size < 1024.0:
             return "{0:3.2f}{1}".format(file_size, sfix)
@@ -316,21 +315,21 @@ def prep_seven_zip(talkative=False):
                 return True
 
 
-def increment(version, increment=3):
+def increment(version, inc=3):
     """
     Increment version by given number. For repeated lookups.
 
     :param version: w.x.y.ZZZZ, becomes w.x.y.(ZZZZ+increment).
     :type version: str
 
-    :param increment: What to increment by. Default is 3.
-    :type increment: str
+    :param inc: What to increment by. Default is 3.
+    :type inc: str
     """
     splitos = version.split(".")
     splitos[3] = int(splitos[3])
     if splitos[3] > 9996:  # prevent overflow
         splitos[3] = 0
-    splitos[3] += int(increment)
+    splitos[3] += int(inc)
     splitos[3] = str(splitos[3])
     return ".".join(splitos)
 

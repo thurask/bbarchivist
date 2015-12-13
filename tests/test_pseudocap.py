@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """Test the pseudocap module."""
 
-import bbarchivist.pseudocap as bp
 import os
-import pytest
+from shutil import rmtree, copyfile
+from hashlib import sha512
 try:
     import unittest.mock as mock
 except ImportError:
     import mock
-from shutil import rmtree, copyfile
-from hashlib import sha512
+import pytest
+import bbarchivist.pseudocap as bp
 
 
 def setup_module(module):

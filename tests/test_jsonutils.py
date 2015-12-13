@@ -1,12 +1,11 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """Test the jsonutils module."""
 
-
-import bbarchivist.jsonutils as bj
 import os
-import pytest
 import json
 from shutil import rmtree
+import pytest
+import bbarchivist.jsonutils as bj
 
 
 def setup_module(module):

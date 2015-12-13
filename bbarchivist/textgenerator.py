@@ -1,13 +1,12 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """This module is used for generation of URLs and related text files."""
+
+from bbarchivist.networkutils import create_base_url, get_length  # network
+from bbarchivist.utilities import fsizer, generate_urls, stripper  # utils
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015 Thurask"
-
-
-from bbarchivist.networkutils import create_base_url, get_length  # network
-from bbarchivist.utilities import fsizer, generate_urls, stripper  # utils
 
 
 def write_links(softwareversion, osversion, radioversion,
