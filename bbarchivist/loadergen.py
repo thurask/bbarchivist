@@ -51,16 +51,16 @@ def read_os_files(localdir, core=False):
     """
     if core:
         fix8960 = "*qc8960.*_sfi.BB*.signed"
-        fixomap_new = "*winchester.BB*.signed"
-        fixomap_old = "*os.factory_sfi.BB.*.signed"
-        fix8930 = "*qc8x30*.signed.BB"
-        fix8974 = "*qc8974*.signed.BB"
+        fixomap_new = "*winchester.*_sfi.BB*.signed"
+        fixomap_old = "*os.factory_sfi.BB*.signed"
+        fix8930 = "*qc8x30*_sfi.BB*.signed"
+        fix8974 = "*qc8974*_sfi.BB*.signed"
     else:
         fix8960 = "*qc8960.*_sfi.desktop.BB*.signed"
-        fixomap_new = "*winchester*desktop.BB*.signed"
+        fixomap_new = "*winchester.*_sfi.desktop.BB*.signed"
         fixomap_old = "*os.factory_sfi.desktop.BB*.signed"
-        fix8930 = "*qc8x30*desktop.BB*.signed"
-        fix8974 = "*qc8974*desktop.BB*.signed"
+        fix8930 = "*qc8x30*_sfi.desktop.BB*.signed"
+        fix8974 = "*qc8974*_sfi.desktop.BB*.signed"
     # 8960
     try:
         os_8960 = glob.glob(
@@ -258,8 +258,7 @@ def generate_loaders(
         device = generate_device(radval)
         osname = generate_filename(device, osversion, suffix)
         osfile = filedict[radval]
-        if osfile is not None:
-            wrap_pseudocap(osname, localdir, osfile, radval)
+        wrap_pseudocap(osname, localdir, osfile, radval)
         if radios:
             radname = generate_filename(device, radioversion, "")
             wrap_pseudocap(radname, localdir, radval)
@@ -282,6 +281,7 @@ def wrap_pseudocap(filename, folder, first, second=None):
     :type second: str
     """
     if first is None:
+        print("No OS!")
         raise SystemError
     try:
         pseudocap.make_autoloader(filename, first, second, folder=folder)
@@ -374,11 +374,11 @@ def generate_lazy_loader(
         localdir = os.getcwd()
     print("CREATING LOADER...")
     suffix = format_suffix(bool(altradio), altradio, core)
+    osfile = radiofile = None
     try:
         osfile = str(glob.glob("*_sfi*.signed")[0])
     except IndexError:
         print("No OS found")
-        raise SystemExit
     else:
         try:
             sset = set(glob.glob("*.signed"))
@@ -386,7 +386,6 @@ def generate_lazy_loader(
             radiofile = str(list(rset)[0])
         except IndexError:
             print("No radio found")
-            raise SystemExit
         else:
             loadername = generate_lazy_filename(osversion, suffix, device)
             wrap_pseudocap(loadername, localdir, osfile, radiofile)

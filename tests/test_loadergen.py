@@ -69,30 +69,28 @@ class TestClassLoadergen:
         """
         Test creating one autoloader but no OS is given.
         """
-        with pytest.raises(SystemExit):
-            bl.generate_lazy_loader("TESTING", 0)
-            assert "No OS found" in capsys.readouterr()[0]
+        bl.generate_lazy_loader("TESTING", 0)
+        assert "No OS found" in capsys.readouterr()[0]
 
     def test_generate_lazy_no_rad(self, capsys):
         """
         Test creating one autoloader but no radio is given.
         """
-        with open("desktop.signed", "w") as targetfile:
+        with open("desktop_sfi.signed", "w") as targetfile:
             targetfile.write("Jackdaws love my big sphinx of quartz"*5000)
-        with pytest.raises(SystemExit):
-            bl.generate_lazy_loader("TESTING", 0)
-            assert "No radio found" in capsys.readouterr()[0]
-        os.remove("desktop.signed")
+        bl.generate_lazy_loader("TESTING", 0)
+        assert "No radio found" in capsys.readouterr()[0]
+        os.remove("desktop_sfi.signed")
 
     def test_generate_loaders(self):
         """
         Test creating multiple autoloaders (archivist).
         """
-        with open("qc8960.factory_sfi.desktop.signed", "w") as targetfile:
+        with open("qc8960.factory_sfi.desktop.BB.signed", "w") as targetfile:
             targetfile.write("Jackdaws love my big sphinx of quartz"*5000)
-        copyfile("qc8960.factory_sfi.desktop.signed", "qc8x30.factory_sfi.desktop.signed")
-        copyfile("qc8960.factory_sfi.desktop.signed", "qc8974.factory_sfi.desktop.signed")
-        copyfile("qc8960.factory_sfi.desktop.signed", "winchester.factory_sfi.desktop.signed")
+        copyfile("qc8960.factory_sfi.desktop.BB.signed", "qc8x30.factory_sfi.desktop.BB.signed")
+        copyfile("qc8960.factory_sfi.desktop.BB.signed", "qc8974.factory_sfi.desktop.BB.signed")
+        copyfile("qc8960.factory_sfi.desktop.BB.signed", "winchester.factory_sfi.desktop.BB.signed")
         with open("radio.m5730.signed", "w") as targetfile:
             targetfile.write("Why must I chase the cat?"*5000)
         copyfile("radio.m5730.signed", "radio.qc8960.BB.signed")
@@ -121,11 +119,11 @@ class TestClassLoadergen:
         """
         Test creating multiple core autoloaders.
         """
-        with open("qc8960.factory_sfi.signed", "w") as targetfile:
+        with open("qc8960.factory_sfi.BB.signed", "w") as targetfile:
             targetfile.write("Jackdaws love my big sphinx of quartz"*5000)
-        copyfile("qc8960.factory_sfi.signed", "qc8x30.factory_sfi.signed")
-        copyfile("qc8960.factory_sfi.signed", "qc8974.factory_sfi.signed")
-        copyfile("qc8960.factory_sfi.signed", "winchester.factory_sfi.signed")
+        copyfile("qc8960.factory_sfi.BB.signed", "qc8x30.factory_sfi.BB.signed")
+        copyfile("qc8960.factory_sfi.BB.signed", "qc8974.factory_sfi.BB.signed")
+        copyfile("qc8960.factory_sfi.BB.signed", "winchester.factory_sfi.BB.signed")
         bl.generate_loaders("10.1.2.3000", "10.3.2.1000", True, core=True)
         for file in os.listdir():
             if file.endswith(".exe"):

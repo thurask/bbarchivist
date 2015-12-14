@@ -172,6 +172,14 @@ class TestClassPseudocap:
             bp.make_autoloader("loader0.exe", None)
             assert "Invalid filecount" in capsys.readouterr()[0]
 
+    def test_write4k_ioerror(self, capsys):
+        """
+        Test error incurred by writing 4096 bytes at a time.
+        """
+        with mock.patch("bbarchivist.pseudocap.write_4k", mock.MagicMock(side_effect=IOError)):
+            bp.make_autoloader("loader0.exe", "firstfile.signed")
+            assert "Operation failed" in capsys.readouterr()[0]
+
     def test_type_error(self):
         """
         Test file type failure (i.e. file is None).
