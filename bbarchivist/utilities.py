@@ -485,7 +485,7 @@ class Spinner(object):
         self.wheel = itertools.cycle(['-', '/', '|', '\\'])
         self.file = UselessStdout()
 
-    def next(self):
+    def after(self):
         """
         Iterate over itertools.cycle, write to file.
         """
@@ -494,7 +494,7 @@ class Spinner(object):
             self.file.flush()
             self.file.write("\b\r")
             self.file.flush()
-        except (KeyboardInterrupt, SystemExit):
+        except (KeyboardInterrupt, SystemExit):  # pragma: no cover
             self.stop()
 
     def stop(self):
@@ -532,8 +532,8 @@ class SpinManager(object):
             time.sleep(0.5)
             try:
                 line_begin()
-                self.spinner.next()
-            except (KeyboardInterrupt, SystemExit):
+                self.spinner.after()
+            except (KeyboardInterrupt, SystemExit):  # pragma: no cover
                 self.scanning = False
                 self.stop()
 
@@ -545,7 +545,7 @@ class SpinManager(object):
         self.scanning = False
         spinner_clear()
         line_begin()
-        if not is_windows():
+        if not is_windows():  # pragma: no cover
             print("\n")
 
 

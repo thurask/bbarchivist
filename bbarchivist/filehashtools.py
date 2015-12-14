@@ -50,7 +50,7 @@ def ha32(filepath, blocksize=16 * 1024 * 1024):
             if not data:
                 break
             asum = zlib.adler32(data, asum)
-            if asum < 0:
+            if asum < 0:  # pragma: no cover
                 asum += 2 ** 32
     final = format(asum & 0xFFFFFFFF, "08x")
     return final

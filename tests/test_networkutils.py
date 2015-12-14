@@ -98,11 +98,27 @@ def av_bad_mock(url, request):
     return {'status_code': 404, 'text': 'Dark side'}
 
 
-def ps_mock(url, request):
+def ps_good_mock(url, request):
     """
     Mock for PTCRB lookup, best case.
     """
     thebody = "CER-59665-001 - Rev2-x05-05\nOS Version: 10.3.0.1052 Radio Version: 10.3.0.1053 SW Release Version: 10.3.0.675\nInitial\nAug 18, 2014"
+    return {'status_code': 200, 'content': thebody}
+
+
+def ps_bad_mock(url, request):
+    """
+    Mock for PTCRB lookup, worst case.
+    """
+    thebody = "CER-59665-001 - Rev2-x05-05\nOS Version: 10.3.2.698 Radio Version: 10.3.2.699 SW Release Version: 10.3.2.700 OS Version: 10.3.2.698 Radio Version: 10.3.2.699 SW Release Version: 10.3.2.700\nInitial\nSma 1, 2016"
+    return {'status_code': 200, 'content': thebody}
+
+
+def ps_priv_mock(url, request):
+    """
+    Mock for PTCRB lookup, Android cert.
+    """
+    thebody = "HW Version CER-62542-001 Rev 7-x08-01	AAD027\nInitial\nAug 18, 2014"
     return {'status_code': 200, 'content': thebody}
 
 
@@ -397,13 +413,29 @@ class TestClassNetworkutilsParsing:
         with httmock.HTTMock(bl_little_mock):
             assert bn.available_bundle_lookup(302, 220, "6002E0A") == ["10.3.1.2726"]
 
-    def test_ptcrb_scraper(self):
+    def test_ptcrb_scraper_good(self):
+        """
+        Test certification checking, best case.
+        """
+        with httmock.HTTMock(ps_good_mock):
+            results = bn.ptcrb_scraper("RGY181LW")
+            assert "10.3.0.1052" in results[0]
+
+    def test_ptcrb_scraper_bad(self):
+        """
+        Test certification checking, worst case.
+        """
+        with httmock.HTTMock(ps_bad_mock):
+            results = bn.ptcrb_scraper("RGY181LW")
+            assert "10.3.2.698" in results[0]
+
+    def test_ptcrb_scraper_priv(self):
         """
         Test certification checking.
         """
-        with httmock.HTTMock(ps_mock):
-            results = bn.ptcrb_scraper("RGY181LW")
-            assert "10.3.0.1052" in results[0]
+        with httmock.HTTMock(ps_priv_mock):
+            results = bn.ptcrb_scraper("STV100-3")
+            assert "AAD027" in results[0]
 
     def test_kernel_scraper(self):
         """

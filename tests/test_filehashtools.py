@@ -28,6 +28,7 @@ def setup_module(module):
     os.chdir("temp_filehashtools")
     with open("tempfile.txt", "w") as targetfile:
         targetfile.write("Jackdaws love my big sphinx of quartz")
+    os.mkdir("skipme")
 
 
 def teardown_module(module):

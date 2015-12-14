@@ -68,7 +68,7 @@ def download(url, output_directory=None, lazy=False):
     req = requests.get(url, stream=True)
     fsize = req.headers['content-length']
     if req.status_code != 404:  # 200 OK
-        if not lazy:
+        if not lazy:  # pragma: no cover
             print("DOWNLOADING:",
                   local_filename,
                   "[" + utilities.fsizer(fsize) + "]")
@@ -111,7 +111,7 @@ def download_bootstrap(urls, outdir=None, lazy=False, workers=5):
             spinman.start()
             for url in urls:
                 xec.submit(download, url, outdir, lazy)
-        except (KeyboardInterrupt, SystemExit):
+        except (KeyboardInterrupt, SystemExit):  # pragma: no cover
             xec.shutdown()
             spinman.stop()
     spinman.stop()
@@ -372,7 +372,7 @@ def sr_lookup_bootstrap(osv):
                                           osv,
                                           SERVERS[key]).result()
             return results
-        except KeyboardInterrupt:
+        except KeyboardInterrupt:  # pragma: no cover
             xec.shutdown(wait=False)
 
 
