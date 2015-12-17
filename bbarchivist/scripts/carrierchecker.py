@@ -321,7 +321,6 @@ def carrierchecker_main(mcc, mnc, device,
                 print("\nREDOWNLOADING BROKEN FILES...")
                 networkutils.download_bootstrap(brokenlist,
                                                 outdir=bardir,
-                                                lazy=False,
                                                 workers=workers)
                 for file in os.listdir(bardir):
                     if file.endswith(".bar"):

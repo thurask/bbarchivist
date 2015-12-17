@@ -317,10 +317,7 @@ def test_bar_files(localdir, urllist, download):
             workers = 5
         else:
             workers = len(brokenlist)
-        networkutils.download_bootstrap(brokenlist,
-                                        outdir=localdir,
-                                        lazy=False,
-                                        workers=workers)
+        networkutils.download_bootstrap(brokenlist, outdir=localdir, workers=workers)
         for file in os.listdir(localdir):
             if file.endswith(".bar"):
                 thepath = os.path.abspath(os.path.join(localdir, file))

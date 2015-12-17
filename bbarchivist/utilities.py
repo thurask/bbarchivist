@@ -78,11 +78,13 @@ def fsizer(file_size):
     """
     if file_size is None:
         file_size = 0
+    fsize = float(file_size)
     for sfix in ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB']:
-        if file_size < 1024.0:
-            return "{0:3.2f}{1}".format(file_size, sfix)
-        file_size /= 1024.0
-    return "{0:3.2f}{1}".format(file_size, 'YB')
+        if fsize < 1024.0:
+            return "{0:3.2f}{1}".format(fsize, sfix)
+        fsize /= 1024.0
+    else:
+        return "{0:3.2f}{1}".format(fsize, 'YB')
 
 
 def file_exists(file):

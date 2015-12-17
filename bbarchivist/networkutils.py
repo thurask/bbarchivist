@@ -47,7 +47,7 @@ def get_length(url):
         return 0
 
 
-def download(url, output_directory=None, lazy=False):
+def download(url, output_directory=None):
     """
     Download file from given URL.
 
@@ -56,38 +56,26 @@ def download(url, output_directory=None, lazy=False):
 
     :param output_directory: Download folder. Default is local.
     :type output_directory: str
-
-    :param lazy: Whether or not to have simple output. False by default.
-    :type lazy: bool
     """
     if output_directory is None:
         output_directory = os.getcwd()
-    local_filename = url.split('/')[-1]
-    local_filename = utilities.stripper(local_filename)
+    lfname = url.split('/')[-1]
+    sname = utilities.stripper(lfname)
     os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
-    req = requests.get(url, stream=True)
-    fsize = req.headers['content-length']
-    if req.status_code != 404:  # 200 OK
-        if not lazy:  # pragma: no cover
-            print("DOWNLOADING:",
-                  local_filename,
-                  "[" + utilities.fsizer(fsize) + "]")
-        else:
-            if int(fsize) > 90000000:
-                print("DOWNLOADING OS",
-                      "[" + utilities.fsizer(fsize) + "]")
-            else:
-                print("DOWNLOADING RADIO",
-                      "[" + utilities.fsizer(fsize) + "]")
-        fname = output_directory + "/" + os.path.basename(url)
-        with open(fname, "wb") as file:
+    fname = os.path.join(output_directory, lfname)
+    with open(fname, "wb") as file:
+        req = requests.get(url, stream=True)
+        clength = req.headers['content-length']
+        fsize = utilities.fsizer(clength)
+        if req.status_code == 200:  # 200 OK
+            print("DOWNLOADING {0} [{1}]".format(sname, fsize))
             for chunk in req.iter_content(chunk_size=1024):
-                if chunk:  # filter out keep-alive new chunks
-                    file.write(chunk)
-                    file.flush()
+                file.write(chunk)
+        else:
+            print("ERROR: HTTP {0} IN {1}".format(req.status_code, lfname))
 
 
-def download_bootstrap(urls, outdir=None, lazy=False, workers=5):
+def download_bootstrap(urls, outdir=None, workers=5):
     """
     Run downloaders for each file in given URL iterable.
 
@@ -96,9 +84,6 @@ def download_bootstrap(urls, outdir=None, lazy=False, workers=5):
 
     :param outdir: Download folder. Default is handled in :func:`download`.
     :type outdir: str
-
-    :param lazy: Whether or not to have simple output. False by default.
-    :type lazy: bool
 
     :param workers: Number of worker processes. Default is 5.
     :type workers: int
@@ -110,7 +95,7 @@ def download_bootstrap(urls, outdir=None, lazy=False, workers=5):
         try:
             spinman.start()
             for url in urls:
-                xec.submit(download, url, outdir, lazy)
+                xec.submit(download, url, outdir)
         except (KeyboardInterrupt, SystemExit):  # pragma: no cover
             xec.shutdown()
             spinman.stop()
@@ -147,7 +132,7 @@ def availability(url):
     try:
         avlty = requests.head(url)
         status = int(avlty.status_code)
-        return (status == 200) or (300 < status <= 308)
+        return (status == 200 or 300 < status <= 308)
     except requests.ConnectionError:
         return False
 

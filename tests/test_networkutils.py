@@ -226,7 +226,7 @@ class TestClassNetworkutils:
         Test downloading.
         """
         with httmock.HTTMock(download_mock_huge):
-            bn.download("http://google.com/smack.dat", lazy=True)
+            bn.download("http://google.com/smack.dat")
         shahash = sha512()
         with open("smack.dat", 'rb') as file:
             while True:
@@ -253,7 +253,7 @@ class TestClassNetworkutils:
         for i in ["idle", "cleese", "gilliam", "jones", "palin", "chapman"]:
             urllist.append(baseurl + i + ".dat")
         with httmock.HTTMock(download_mock):
-            bn.download_bootstrap(urllist, workers=7, lazy=True)
+            bn.download_bootstrap(urllist, workers=7)
         filelist = [x.replace("http://google.com/", "") for x in urllist]
         for file in filelist:
             with open(file, 'rb') as filehandle:

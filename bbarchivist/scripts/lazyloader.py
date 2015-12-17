@@ -308,10 +308,7 @@ def lazyloader_main(device, osversion, radioversion=None,
     # Download files
     if download:
         print("DOWNLOADING...")
-        networkutils.download_bootstrap(dllist,
-                                        outdir=localdir,
-                                        lazy=True,
-                                        workers=2)
+        networkutils.download_bootstrap(dllist, outdir=localdir, workers=2)
 
     # Test bar files
     scriptutils.test_bar_files(localdir, dllist, download)
