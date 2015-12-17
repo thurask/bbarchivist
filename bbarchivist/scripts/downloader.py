@@ -162,7 +162,8 @@ def downloader_main(osversion, radioversion=None, softwareversion=None,
         alturl = networkutils.create_base_url(altsw)
     osurls, radiourls, coreurls = utilities.generate_urls(baseurl,
                                                           osversion,
-                                                          radioversion)
+                                                          radioversion,
+                                                          cores)
     vzwos, vzwrad = utilities.generate_lazy_urls(baseurl,
                                                  osversion,
                                                  radioversion,
@@ -171,11 +172,9 @@ def downloader_main(osversion, radioversion=None, softwareversion=None,
     radiourls.append(vzwrad)
     vzwcore = vzwos.replace("sfi.desktop", "sfi")
     coreurls.append(vzwcore)
-    if not networkutils.availability(osurls[1]):
-        osurls[1] = osurls[1].replace("qc8960.factory_sfi",
-                                      "qc8960.verizon_sfi")  # fallback
-        coreurls[1] = coreurls[1].replace("qc8960.factory_sfi",
-                                          "qc8960.verizon_sfi")
+    if not networkutils.availability(osurls[1]):  # fallback to VZW
+        osurls[1] = vzwos
+        coreurls[1] = vzwcore
     osurls = list(set(osurls))  # pop duplicates
     radiourls = list(set(radiourls))
     coreurls = list(set(coreurls))
