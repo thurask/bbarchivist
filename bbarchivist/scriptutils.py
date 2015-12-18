@@ -5,6 +5,7 @@ import os  # path work
 import pprint  # pretty printing
 import getpass  # invisible password
 import argparse  # generic parser
+import sys  # getattr
 from bbarchivist import utilities  # little things
 from bbarchivist import barutils  # file system work
 from bbarchivist import bbconstants  # constants
@@ -390,6 +391,24 @@ def test_single_loader(loaderfile):
             raise SystemExit
         else:
             print("LOADER CREATED OK")
+
+
+def enter_to_exit(checkfreeze=True):
+    """
+    Press enter to exit a script.
+    
+    :param checkfreeze: If we need to check if we're frozen. Default is true.
+    :type checkfreeze: bool
+    """
+    if checkfreeze:
+        greenlight = bool(getattr(sys, 'frozen', False))
+    else:
+        greenlight = True
+    if greenlight:
+        print("")
+        smeg = input("Press Enter to exit")
+        if smeg or not smeg:
+            raise SystemExit
 
 
 def verify_gpg_credentials():

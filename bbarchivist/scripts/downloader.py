@@ -86,26 +86,31 @@ def grab_args():
                         args.folder, args.debricks, args.radios,
                         args.cores, args.integrity, args.altsw)
     else:
-        localdir = os.getcwd()
-        osversion = input("OS VERSION: ")
-        radioversion = input("RADIO VERSION: ")
-        softwareversion = input("SOFTWARE RELEASE: ")
-        debricks = utilities.s2b(input("DOWNLOAD DEBRICKS? Y/N: "))
-        radios = utilities.s2b(input("DOWNLOAD RADIOS? Y/N: "))
-        if not radios:
-            radios = False
-        cores = utilities.s2b(input("DOWNLOAD CORES? Y/N: "))
-        if not cores:
-            cores = False
-        integrity = True
-        altsw = None
-        print(" ")
-        downloader_main(osversion, radioversion, softwareversion,
-                        localdir, debricks, radios, cores,
-                        integrity, altsw)
-        smeg = input("Press Enter to exit")
-        if smeg or not smeg:
-            raise SystemExit
+        questionnaire()
+
+
+def questionnaire():
+    """
+    Questions to ask if no arguments given.
+    """
+    localdir = os.getcwd()
+    osversion = input("OS VERSION: ")
+    radioversion = input("RADIO VERSION: ")
+    softwareversion = input("SOFTWARE RELEASE: ")
+    debricks = utilities.s2b(input("DOWNLOAD DEBRICKS? Y/N: "))
+    radios = utilities.s2b(input("DOWNLOAD RADIOS? Y/N: "))
+    if not radios:
+        radios = False
+    cores = utilities.s2b(input("DOWNLOAD CORES? Y/N: "))
+    if not cores:
+        cores = False
+    integrity = True
+    altsw = None
+    print(" ")
+    downloader_main(osversion, radioversion, softwareversion,
+                    localdir, debricks, radios, cores,
+                    integrity, altsw)
+    scriptutils.enter_to_exit(True)
 
 
 def downloader_main(osversion, radioversion=None, softwareversion=None,
@@ -218,3 +223,7 @@ def downloader_main(osversion, radioversion=None, softwareversion=None,
     # Test bar files
     if integrity:
         scriptutils.test_bar_files(localdir, urllist, True)
+
+
+if __name__ == "__main__":
+    grab_args()

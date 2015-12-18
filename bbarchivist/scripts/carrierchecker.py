@@ -155,9 +155,7 @@ def grab_args():
             export,
             blitz,
             None)
-        smeg = input("Press Enter to exit")
-        if smeg or not smeg:
-            raise SystemExit
+    scriptutils.enter_to_exit(True)
 
 
 def carrierchecker_main(mcc, mnc, device,
@@ -342,6 +340,7 @@ def carrierchecker_main(mcc, mnc, device,
                 else:
                     shutil.rmtree(bardir)
             print("\nFINISHED!!!")
+
 
 if __name__ == "__main__":
     grab_args()

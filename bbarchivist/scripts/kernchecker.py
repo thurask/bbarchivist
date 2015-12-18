@@ -10,6 +10,7 @@ __author__ = "Thurask"
 __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015 Thurask"
 
+
 def kernchecker_main():
     """
     Wrap around :mod:`bbarchivist.networkutils` kernel checking.
@@ -18,9 +19,12 @@ def kernchecker_main():
                                         "Kernel version scraper.")
     parser.parse_args(sys.argv[1:])
     print("~~~KERNCHECKER VERSION", bbconstants.VERSION + "~~~")
+    print("\nCHECKING KERNELS...\n")
     kernlist = networkutils.kernel_scraper()
     for item in kernlist:
         print(item)
+    scriptutils.enter_to_exit(True)
+
 
 if __name__ == "__main__":
     kernchecker_main()

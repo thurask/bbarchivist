@@ -215,9 +215,6 @@ def questionnaire():
         True,
         altsw,
         False)
-    smeg = input("Press Enter to exit")
-    if smeg or not smeg:
-        raise SystemExit
 
 
 def lazyloader_main(device, osversion, radioversion=None,
@@ -356,5 +353,7 @@ def lazyloader_main(device, osversion, radioversion=None,
         subprocess.call(loadername)
     print("\nFINISHED!!!")
 
+
 if __name__ == "__main__":
     grab_args()
+    scriptutils.enter_to_exit(True)

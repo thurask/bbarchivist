@@ -14,6 +14,7 @@ build/
 *.asc
 docs/_build
 .settings/
+lazyloader/
 bbarchivist/__pycache__
 bbarchivist/lazyloader
 bbarchivist/scripts/__pycache__

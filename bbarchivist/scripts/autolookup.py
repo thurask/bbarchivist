@@ -57,12 +57,13 @@ def grab_args():
             default=3,
             type=utilities.positive_integer,
             metavar="INT")
-        parser.add_argument(
-            "-s", "--sql",
-            dest="sql",
-            help="Add valid links to database",
-            action="store_true",
-            default=False)
+        if not hasattr(sys, 'frozen', False):
+            parser.add_argument(
+                "-s", "--sql",
+                dest="sql",
+                help="Add valid links to database",
+                action="store_true",
+                default=False)
         parser.add_argument(
             "-e", "--email",
             dest="email",
@@ -79,6 +80,8 @@ def grab_args():
             metavar="INT")
         args = parser.parse_args(sys.argv[1:])
         parser.set_defaults()
+        if hasattr(sys, 'frozen', False):
+            args.sql = False
         autolookup_main(
             args.os,
             args.recurse,
@@ -103,9 +106,7 @@ def grab_args():
             False,
             9996,
             False)
-        smeg = input("Press Enter to exit")
-        if smeg or not smeg:
-            raise SystemExit
+        scriptutils.enter_to_exit(True)
 
 
 def autolookup_main(osversion, loop=False, log=False,
@@ -249,7 +250,8 @@ def autolookup_main(osversion, loop=False, log=False,
                     swrelease = ""
                     continue
     except KeyboardInterrupt:
-        raise SystemExit
+        pass
+
 
 if __name__ == "__main__":
     grab_args()

@@ -54,5 +54,7 @@ def kompressor_main():
                             method,
                             szexe,
                             False)
+
+
 if __name__ == "__main__":
     kompressor_main()

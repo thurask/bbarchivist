@@ -52,9 +52,7 @@ def grab_cap():
     Figure out where cap is, local, specified or system-supplied.
     """
     try:
-        caplo = bbconstants.CAPLOCATION
-        here = os.getcwd()
-        capfile = glob.glob(os.path.join(here, os.path.basename(caplo)))[0]
+        capfile = glob.glob(os.path.join(os.getcwd(), bbconstants.CAPFILENAME))[0]
     except IndexError:
         try:
             cappath = cappath_config_loader()
@@ -67,6 +65,18 @@ def grab_cap():
             return os.path.abspath(capfile)  # ini cap
     else:
         return os.path.abspath(capfile)  # local cap
+
+
+def grab_cfp():
+    """
+    Figure out where cfp is, local or system-supplied.
+    """
+    try:
+        cfpfile = glob.glob(os.path.join(os.getcwd(), bbconstants.CFPFILENAME))[0]
+    except IndexError:
+        cfpfile = bbconstants.CFPLOCATION  # system cfp
+    finally:
+        return os.path.abspath(cfpfile)  # local cfp
 
 
 def fsizer(file_size):

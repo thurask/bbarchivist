@@ -190,9 +190,6 @@ def questionnaire():
                    hashdict, download,
                    extract, signed, compmethod, gpg,
                    integrity, altsw, core)
-    smeg = input("Press Enter to exit")
-    if smeg or not smeg:
-        raise SystemExit
 
 
 def archivist_main(osversion, radioversion=None, softwareversion=None,
@@ -444,5 +441,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     endtime_proper = math.ceil(endtime * 100) / 100
     print("Completed in " + str(endtime_proper) + " seconds\n")
 
+
 if __name__ == "__main__":
     grab_args()
+    scriptutils.enter_to_exit(False)

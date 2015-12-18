@@ -56,9 +56,7 @@ def grab_args():
         device = input("DEVICE (SXX100-#/FCCID/HWID): ")
         print(" ")
         certchecker_main(device)
-        smeg = input("Press Enter to exit")
-        if smeg or not smeg:
-            raise SystemExit
+        scriptutils.enter_to_exit(True)
 
 
 def certchecker_main(device):

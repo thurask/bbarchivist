@@ -49,5 +49,6 @@ def gpgrunner_main():
         key,
         password)
 
+
 if __name__ == "__main__":
     gpgrunner_main()

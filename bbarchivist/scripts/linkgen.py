@@ -50,27 +50,32 @@ def grab_args():
             args.swrelease,
             args.altsw)
     else:
-        osversion = input("OS VERSION: ")
-        radioversion = input("RADIO VERSION: ")
-        softwareversion = input("SOFTWARE RELEASE: ")
-        print(" ")
-        if not radioversion:
-            radioversion = None
-        if not softwareversion:
-            softwareversion = None
-        usealt = utilities.s2b(input("USE ALTERNATE RADIO? Y/N: "))
-        if usealt:
-            altsw = input("RADIO SOFTWARE RELEASE: ")
-        else:
-            altsw = None
-        linkgen_main(
-            osversion,
-            radioversion,
-            softwareversion,
-            altsw)
-        smeg = input("Press Enter to exit")
-        if smeg or not smeg:
-            raise SystemExit
+        questionnaire()
+
+
+def questionnaire():
+    """
+    Questions to ask if no arguments given.
+    """
+    osversion = input("OS VERSION: ")
+    radioversion = input("RADIO VERSION: ")
+    softwareversion = input("SOFTWARE RELEASE: ")
+    print(" ")
+    if not radioversion:
+        radioversion = None
+    if not softwareversion:
+        softwareversion = None
+    usealt = utilities.s2b(input("USE ALTERNATE RADIO? Y/N: "))
+    if usealt:
+        altsw = input("RADIO SOFTWARE RELEASE: ")
+    else:
+        altsw = None
+    linkgen_main(
+        osversion,
+        radioversion,
+        softwareversion,
+        altsw)
+    scriptutils.enter_to_exit(True)
 
 
 def linkgen_main(osversion, radioversion=None,
@@ -116,6 +121,7 @@ def linkgen_main(osversion, radioversion=None,
     textgenerator.write_links(softwareversion, osversion, radioversion,
                               oses, cores, radios,
                               avlty, False, None, temp)
+
 
 if __name__ == "__main__":
     grab_args()

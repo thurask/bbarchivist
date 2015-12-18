@@ -4,7 +4,6 @@
 import sys  # load arguments
 import os  # local dir
 import subprocess  # running cfp
-from bbarchivist import bbconstants  # cfp location
 from bbarchivist import scriptutils  # default parser
 from bbarchivist import utilities  # platform
 
@@ -21,7 +20,7 @@ def cfp_main():
                                         "BlackBerry CFP.")
     parser.parse_known_args(sys.argv[1:])
     if utilities.is_windows():
-        subprocess.call([bbconstants.CFPLOCATION] + sys.argv[1:])
+        subprocess.call([utilities.grab_cfp()] + sys.argv[1:])
     else:
         print("Sorry, Windows only.")
 

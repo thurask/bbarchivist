@@ -42,5 +42,6 @@ def filehasher_main():
             folder,
             hashdict)
 
+
 if __name__ == "__main__":
     filehasher_main()

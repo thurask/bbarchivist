@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """Calculates escreens codes."""
 
 import sys  # load arguments
@@ -39,23 +39,29 @@ def escreens_main():
             args.duration)
         print(key)
     else:
-        pin = input("PIN: ")
-        app = input("APP VERSION: ")
-        uptime = int(input("UPTIME: "))
-        duration = int(input("1/3/6/15/30 DAYS: "))
-        pin = utilities.escreens_pin(pin)
-        uptime = utilities.positive_integer(uptime)
-        duration = utilities.escreens_duration(duration)
-        print(" ")
-        key = filehashtools.calculate_escreens(
-            pin.lower(),
-            app,
-            str(uptime),
-            duration)
-        print(key)
-        smeg = input("Press Enter to exit")
-        if smeg or not smeg:
-            raise SystemExit
+        questionnaire()
+
+
+def questionnaire():
+    """
+    Questions to ask if no arguments given.
+    """
+    pin = input("PIN: ")
+    app = input("APP VERSION: ")
+    uptime = int(input("UPTIME: "))
+    duration = int(input("1/3/6/15/30 DAYS: "))
+    pin = utilities.escreens_pin(pin)
+    uptime = utilities.positive_integer(uptime)
+    duration = utilities.escreens_duration(duration)
+    print(" ")
+    key = filehashtools.calculate_escreens(
+        pin.lower(),
+        app,
+        str(uptime),
+        duration)
+    print(key)
+    scriptutils.enter_to_exit(True)
+
 
 if __name__ == "__main__":
     escreens_main()
