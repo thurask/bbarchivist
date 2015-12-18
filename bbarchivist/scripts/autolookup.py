@@ -64,12 +64,12 @@ def grab_args():
                 help="Add valid links to database",
                 action="store_true",
                 default=False)
-        parser.add_argument(
-            "-e", "--email",
-            dest="email",
-            help="Email valid links to self",
-            action="store_true",
-            default=False)
+            parser.add_argument(
+                "-e", "--email",
+                dest="email",
+                help="Email valid links to self",
+                action="store_true",
+                default=False)
         parser.add_argument(
             "-c", "--ceiling",
             dest="ceiling",
@@ -82,6 +82,7 @@ def grab_args():
         parser.set_defaults()
         if getattr(sys, 'frozen', False):
             args.sql = False
+            args.email = False
         autolookup_main(
             args.os,
             args.recurse,

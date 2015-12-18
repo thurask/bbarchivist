@@ -106,13 +106,14 @@ def grab_args():
             help="Don't verify created loaders",
             action="store_false",
             default=True)
-        parser.add_argument(
-            "-g",
-            "--gpg",
-            dest="gpg",
-            help="Enable GPG signing. Set up GnuPG.",
-            action="store_true",
-            default=False)
+        if not getattr(sys, 'frozen', False):
+            parser.add_argument(
+                "-g",
+                "--gpg",
+                dest="gpg",
+                help="Enable GPG signing. Set up GnuPG.",
+                action="store_true",
+                default=False)
         parser.add_argument(
             "-r",
             "--radiosw",
@@ -142,8 +143,26 @@ def grab_args():
         args = parser.parse_args(sys.argv[1:])
         if args.folder is None:
             args.folder = os.getcwd()
-        hashdict = filehashtools.verifier_config_loader()
-        filehashtools.verifier_config_writer(hashdict)
+        if getattr(sys, 'frozen', False):
+            args.gpg = False
+            hashdict = {}
+            hashdict['crc32'] = False
+            hashdict['adler32'] = False
+            hashdict['sha1'] = True
+            hashdict['sha224'] = False
+            hashdict['sha256'] = True
+            hashdict['sha384'] = False
+            hashdict['sha512'] = False
+            hashdict['md5'] = True
+            hashdict['md4'] = False
+            hashdict['ripemd160'] = False
+            hashdict['whirlpool'] = False
+            hashdict['onefile'] = False
+            hashdict['blocksize'] = 16777216
+            args.method = "7z"
+        else:
+            hashdict = filehashtools.verifier_config_loader()
+            filehashtools.verifier_config_writer(hashdict)
         if args.method is None:
             compmethod = barutils.compress_config_loader()
             barutils.compress_config_writer(compmethod)
@@ -167,6 +186,13 @@ def questionnaire():
     osversion = input("OS VERSION: ")
     radioversion = input("RADIO VERSION: ")
     softwareversion = input("SOFTWARE RELEASE: ")
+    altcheck = utilities.s2b(input("HYBRID AUTOLOADER (Y/N)?: "))
+    if altcheck:
+        altsw = input("RADIO SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
+        if not altsw:
+            altsw = "checkme"
+    else:
+        altsw = None
     radios = utilities.s2b(input("CREATE RADIO LOADERS? Y/N: "))
     compressed = utilities.s2b(input("COMPRESS LOADERS? Y/N: "))
     if compressed:
@@ -174,9 +200,27 @@ def questionnaire():
     else:
         deleted = False
     hashed = utilities.s2b(input("GENERATE HASHES? Y/N: "))
-    hashdict = filehashtools.verifier_config_loader()
-    filehashtools.verifier_config_writer(hashdict)
-    compmethod = barutils.compress_config_loader()
+    if getattr(sys, 'frozen', False):
+        args.gpg = False
+        hashdict = {}
+        hashdict['crc32'] = False
+        hashdict['adler32'] = False
+        hashdict['sha1'] = True
+        hashdict['sha224'] = False
+        hashdict['sha256'] = True
+        hashdict['sha384'] = False
+        hashdict['sha512'] = False
+        hashdict['md5'] = True
+        hashdict['md4'] = False
+        hashdict['ripemd160'] = False
+        hashdict['whirlpool'] = False
+        hashdict['onefile'] = False
+        hashdict['blocksize'] = 16777216
+        compmethod = "7z"
+    else:
+        hashdict = filehashtools.verifier_config_loader()
+        filehashtools.verifier_config_writer(hashdict)
+        compmethod = barutils.compress_config_loader()
     download = True
     extract = True
     signed = True
