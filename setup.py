@@ -18,6 +18,21 @@ cond_requires = ['requests',
                  'beautifulsoup4']
 if version_info[1] < 3:  # 3.2 and under
     cond_requires.append('shutilwhich')
+scriptlist = ['bb-archivist=bbarchivist.scripts.archivist:grab_args',
+              'bb-lazyloader=bbarchivist.scripts.lazyloader:grab_args',
+              'bb-cchecker=bbarchivist.scripts.carrierchecker:grab_args',
+              'bb-certchecker=bbarchivist.scripts.certchecker:grab_args',
+              'bb-filehasher=bbarchivist.scripts.filehasher:filehasher_main',
+              'bb-escreens=bbarchivist.scripts.escreens:escreens_main',
+              'bb-linkgen=bbarchivist.scripts.linkgen:grab_args',
+              'bb-gpgrunner=bbarchivist.scripts.gpgrunner:gpgrunner_main',
+              'bb-autolookup=bbarchivist.scripts.autolookup:grab_args',
+              'bb-pseudocap=bbarchivist.scripts.cap:cap_main',
+              'bb-sqlexport=bbarchivist.scripts.sqlexport:sqlexport_main',
+              'bb-kompressor=bbarchivist.scripts.kompressor:kompressor_main',
+              'bb-downloader=bbarchivist.scripts.downloader:grab_args',
+              'bb-kernchecker=bbarchivist.scripts.kernchecker:kernchecker_main',
+              'bb-cfp=bbarchivist.scripts.cfp:cfp_main']
 setup(name='bbarchivist',
       version=bbconstants.VERSION,
       description='BlackBerry 10 autoloader tools',
@@ -58,19 +73,5 @@ setup(name='bbarchivist',
       include_package_data=True,
       install_requires=cond_requires,
       entry_points={
-          'console_scripts': [
-              'bb-archivist=bbarchivist.scripts.archivist:grab_args',
-              'bb-lazyloader=bbarchivist.scripts.lazyloader:grab_args',
-              'bb-cchecker=bbarchivist.scripts.carrierchecker:grab_args',
-              'bb-certchecker=bbarchivist.scripts.certchecker:grab_args',
-              'bb-filehasher=bbarchivist.scripts.filehasher:filehasher_main',
-              'bb-escreens=bbarchivist.scripts.escreens:escreens_main',
-              'bb-linkgen=bbarchivist.scripts.linkgen:grab_args',
-              'bb-gpgrunner=bbarchivist.scripts.gpgrunner:gpgrunner_main',
-              'bb-autolookup=bbarchivist.scripts.autolookup:grab_args',
-              'bb-pseudocap=bbarchivist.scripts.cap:cap_main',
-              'bb-sqlexport=bbarchivist.scripts.sqlexport:sqlexport_main',
-              'bb-kompressor=bbarchivist.scripts.kompressor:kompressor_main',
-              'bb-downloader=bbarchivist.scripts.downloader:grab_args',
-              'bb-kernchecker=bbarchivist.scripts.kernchecker:kernchecker_main']
-          })
+          'console_scripts': scriptlist}
+      )

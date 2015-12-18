@@ -48,7 +48,7 @@ command depending on how your system maintainer has organized pip, such as
 	
 For Windows, I recommend `pip-win <https://sites.google.com/site/pydatalog/python/pip-for-windows>`__.
 
-A copy of cap.exe is included with this script.
+Copies of cap.exe and cfp.exe are included with this script. CFP usage is Windows-only, though.
 
 Compression with 7-Zip requires a fairly hefty CPU/RAM setup.
 Using archivist's bulk autoloader creator requires a few dozen GB of hard drive space.
@@ -474,6 +474,22 @@ Help
 	usage: bb-kernchecker [-h] [-v]
 
 	Kernel version scraper.
+
+	optional arguments:
+	  -h, --help     show this help message and exit
+	  -v, --version  show program's version number and exit
+
+	http://github.com/thurask/bbarchivist
+
+----------------------------------------
+
+::
+
+	> bb-cfp -h
+
+	usage: bb-cfp [-h] [-v]
+
+	BlackBerry CFP.
 
 	optional arguments:
 	  -h, --help     show this help message and exit

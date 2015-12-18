@@ -16,10 +16,16 @@ LOCATION = os.path.abspath(__file__)
 DIRECTORY = os.path.dirname(LOCATION)
 #: Version of cap.exe bundled with app.
 CAPVERSION = "3.11.0.22"
+#: Version of cfp.exe bundled with app.
+CFPVERSION = "3.10.0.57"
 #: cap filename.
 CAPFILENAME = "cap-" + CAPVERSION + ".dat"
+#: cfp filename.
+CFPFILENAME = "cfp-" + CFPVERSION + ".dat"
 #: Where cap.exe is. Should be in site-packages.
 CAPLOCATION = os.path.join(DIRECTORY, CAPFILENAME)
+#: Where cfp.exe is. Should be in site-packages.
+CFPLOCATION = os.path.join(DIRECTORY, CFPFILENAME)
 #: JSON storage file.
 JSONFILE = os.path.join(DIRECTORY, "bbconstants.json")
 #: Lookup server list.
