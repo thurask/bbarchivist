@@ -5,7 +5,7 @@ from os import chdir
 from os.path import join, abspath, dirname
 from cx_Freeze import setup, Executable
 from requests import certs
-from bbarchivist.bbconstants import VERSION, CAPLOCATION, CAPVERSION, JSONFILE, CFPLOCATION, CFPVERSION
+from bbarchivist.bbconstants import VERSION, CAPLOCATION, CAPVERSION, JSONFILE
 
 # Dependencies are automatically detected, but it might need
 # fine tuning.
@@ -17,7 +17,6 @@ build_options = dict(packages=["requests",
                      include_files=[
                          (certs.where(), 'cacert.pem'),
                          (CAPLOCATION, "cap-" + CAPVERSION + ".dat"),
-                         (CFPLOCATION, "cfp-" + CFPVERSION + ".dat")
                          (JSONFILE, "bbconstants.json")
                          ],
                      excludes=["rsa",
