@@ -145,24 +145,11 @@ def grab_args():
             args.folder = os.getcwd()
         if getattr(sys, 'frozen', False):
             args.gpg = False
-            hashdict = {}
-            hashdict['crc32'] = False
-            hashdict['adler32'] = False
-            hashdict['sha1'] = True
-            hashdict['sha224'] = False
-            hashdict['sha256'] = True
-            hashdict['sha384'] = False
-            hashdict['sha512'] = False
-            hashdict['md5'] = True
-            hashdict['md4'] = False
-            hashdict['ripemd160'] = False
-            hashdict['whirlpool'] = False
-            hashdict['onefile'] = False
-            hashdict['blocksize'] = 16777216
+            hashdict = filehashtools.verifier_config_loader(os.getcwd())
             args.method = "7z"
         else:
             hashdict = filehashtools.verifier_config_loader()
-            filehashtools.verifier_config_writer(hashdict)
+        filehashtools.verifier_config_writer(hashdict)
         if args.method is None:
             compmethod = barutils.compress_config_loader()
             barutils.compress_config_writer(compmethod)
@@ -202,20 +189,7 @@ def questionnaire():
     hashed = utilities.s2b(input("GENERATE HASHES? Y/N: "))
     if getattr(sys, 'frozen', False):
         args.gpg = False
-        hashdict = {}
-        hashdict['crc32'] = False
-        hashdict['adler32'] = False
-        hashdict['sha1'] = True
-        hashdict['sha224'] = False
-        hashdict['sha256'] = True
-        hashdict['sha384'] = False
-        hashdict['sha512'] = False
-        hashdict['md5'] = True
-        hashdict['md4'] = False
-        hashdict['ripemd160'] = False
-        hashdict['whirlpool'] = False
-        hashdict['onefile'] = False
-        hashdict['blocksize'] = 16777216
+        hashdict = filehashtools.verifier_config_loader(os.getcwd())
         compmethod = "7z"
     else:
         hashdict = filehashtools.verifier_config_loader()

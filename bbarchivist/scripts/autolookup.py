@@ -96,6 +96,8 @@ def grab_args():
     else:
         osversion = input("OS VERSION: ")
         recurse = utilities.s2b(input("LOOP?: "))
+        if recurse:
+            print("Press Ctrl+C to stop loop")
         print(" ")
         autolookup_main(
             osversion,
@@ -153,8 +155,13 @@ def autolookup_main(osversion, loop=False, log=False,
     print("")
     if log:
         logfile = time.strftime("%Y_%m_%d_%H%M%S") + ".txt"
-        record = os.path.join(os.path.expanduser("~"),
-                              logfile)
+        if getattr(sys, 'frozen', False):
+            basefolder = os.path.join(os.getcwd(), "lookuplogs")
+        else:
+            basefolder = os.path.join(os.path.expanduser("~"), "lookuplogs")
+        os.makedirs(basefolder, exist_ok=True)
+        record = os.path.join(basefolder, logfile)
+        open(record, "w").close()
     try:
         while True:
             swrelease = ""
@@ -209,7 +216,7 @@ def autolookup_main(osversion, loop=False, log=False,
             else:
                 pav = "  "
                 is_avail = "Unavailable"
-            swrelset = set([a1rel, b1rel, b2rel, prel])
+            swrelset = set([a1rel, a2rel, b1rel, b2rel, prel])
             for i in swrelset:
                 if i != "SR not in system" and i is not None:
                     swrelease = i
