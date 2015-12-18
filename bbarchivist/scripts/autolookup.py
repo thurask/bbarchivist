@@ -57,7 +57,7 @@ def grab_args():
             default=3,
             type=utilities.positive_integer,
             metavar="INT")
-        if not hasattr(sys, 'frozen', False):
+        if not getattr(sys, 'frozen', False):
             parser.add_argument(
                 "-s", "--sql",
                 dest="sql",
@@ -80,7 +80,7 @@ def grab_args():
             metavar="INT")
         args = parser.parse_args(sys.argv[1:])
         parser.set_defaults()
-        if hasattr(sys, 'frozen', False):
+        if getattr(sys, 'frozen', False):
             args.sql = False
         autolookup_main(
             args.os,
