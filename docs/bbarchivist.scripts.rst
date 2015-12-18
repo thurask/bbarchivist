@@ -28,6 +28,14 @@ bbarchivist.scripts.cap module
     :undoc-members:
     :show-inheritance:
 
+bbarchivist.scripts.cfp module
+------------------------------
+
+.. automodule:: bbarchivist.scripts.cfp
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 bbarchivist.scripts.carrierchecker module
 -----------------------------------------
 
@@ -72,6 +80,14 @@ bbarchivist.scripts.gpgrunner module
 ------------------------------------
 
 .. automodule:: bbarchivist.scripts.gpgrunner
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+bbarchivist.scripts.kernchecker module
+--------------------------------------
+
+.. automodule:: bbarchivist.scripts.kernchecker
     :members:
     :undoc-members:
     :show-inheritance:
