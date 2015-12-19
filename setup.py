@@ -41,7 +41,7 @@ setup(name='bbarchivist',
       keywords='blackberry autoloader',
       author='Thurask',
       author_email='thuraski@hotmail.com',
-      license='Do whatever',
+      license='WTFPL v2',
       classifiers=[
           "Development Status :: 5 - Production/Stable",
           "Environment :: Console",
