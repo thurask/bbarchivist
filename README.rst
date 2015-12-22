@@ -9,6 +9,10 @@ README
     :target: https://coveralls.io/github/thurask/bbarchivist?branch=master
     :alt: Coveralls.io
 
+.. image:: https://readthedocs.org/projects/bbarchivist/badge/?version=latest
+    :target: http://bbarchivist.readthedocs.org/en/latest/?badge=latest
+    :alt: Documentation Status
+
 A Python 3.2+ package for various BlackBerry 10-related functions and scripts.
 
 This can be used either as importing the bbarchivist library, or a variety of command-line scripts.
@@ -73,7 +77,7 @@ Testing
 If you want to run the unit tests yourself, you'll also need mock, pytest
 and httmock. Install from the requirements-devel file with pip.
 
-Coverage requires installation of pytest-cov. Docs use Sphinx for automatic generation.
+Coverage requires installation of pytest-cov.
 
 Testing of GnuPG/7-Zip functions requires setting up GnuPG/7-Zip in the first place.
 
@@ -87,6 +91,13 @@ If you wish to contribute to this project, please do the following:
 3. Make your changes on a new branch without breaking any tests
 4. Open a pull request on GitHub
 
+Documentation
+-------------
+
+Online documentation is hosted at `ReadTheDocs <http://bbarchivist.rtfd.org>`__.
+
+Docs use Sphinx for automatic generation.
+
 
 Credits/Software Used
 ---------------------
@@ -99,6 +110,7 @@ Credits/Software Used
 -  Visual Studio Community 2015: `Microsoft <https://www.visualstudio.com>`__
 -  Python Tools for Visual Studio: `Microsoft <http://microsoft.github.io/PTVS/>`__
 -  Integration: `Travis CI <https://travis-ci.org>`__, `Coveralls.io <https://coveralls.io>`__
+-  Documentation: `ReadTheDocs <http://bbarchivist.rtfd.org>`__
 -  Feedback, bug reports, feature requests: Users Like You
 
 License
