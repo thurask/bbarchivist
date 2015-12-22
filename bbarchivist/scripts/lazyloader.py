@@ -18,6 +18,7 @@ __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015 Thurask"
 
 
+@utilities.timer
 def grab_args():
     """
     Parse arguments from argparse/questionnaire.

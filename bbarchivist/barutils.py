@@ -2,8 +2,6 @@
 """This module is used to operate with bar files and other archives."""
 
 import os  # filesystem read
-import time  # time for downloader
-import math  # rounding of floats
 import subprocess  # invocation of 7z, cap
 import zipfile  # zip extract, zip compresssion
 import tarfile  # txz/tbz/tgz compression
@@ -113,6 +111,7 @@ def bar_tester(filepath):
     return brokens
 
 
+@utilities.timer
 def sz_compress(filepath, filename, szexe=None, strength=5, errors=False):
     """
     Pack a file into a LZMA2 7z file.
@@ -132,7 +131,6 @@ def sz_compress(filepath, filename, szexe=None, strength=5, errors=False):
     :param errors: Print completion status message. Default is false.
     :type errors: bool
     """
-    starttime = time.clock()
     strength = str(strength)
     rawname = os.path.dirname(filepath)
     cores = str(utilities.get_core_count())
@@ -147,9 +145,6 @@ def sz_compress(filepath, filename, szexe=None, strength=5, errors=False):
                                  stdout=dnull,
                                  stderr=subprocess.STDOUT,
                                  shell=True)
-    endtime = time.clock() - starttime
-    endtime_proper = math.ceil(endtime * 100) / 100
-    print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
     if errors:
         print(bbconstants.SZCODES[excode])
 
@@ -174,6 +169,7 @@ def sz_verify(filepath, szexe=None):
     return excode == 0
 
 
+@utilities.timer
 def tgz_compress(filepath, filename, strength=5):
     """
     Pack a file into a gzip tarfile.
@@ -187,13 +183,8 @@ def tgz_compress(filepath, filename, strength=5):
     :param strength: Compression strength. 5 is normal, 9 is ultra.
     :type strength: int
     """
-    with tarfile.open(filepath + '.tar.gz', 'w:gz',
-                      compresslevel=strength) as gzfile:
-        starttime = time.clock()
+    with tarfile.open(filepath + '.tar.gz', 'w:gz', compresslevel=strength) as gzfile:
         gzfile.add(filename, filter=None)
-        endtime = time.clock() - starttime
-        endtime_proper = math.ceil(endtime * 100) / 100
-        print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
 
 
 def tgz_verify(filepath):
@@ -214,6 +205,7 @@ def tgz_verify(filepath):
         return False
 
 
+@utilities.timer
 def tbz_compress(filepath, filename, strength=5):
     """
     Pack a file into a bzip2 tarfile.
@@ -227,13 +219,8 @@ def tbz_compress(filepath, filename, strength=5):
     :param strength: Compression strength. 5 is normal, 9 is ultra.
     :type strength: int
     """
-    with tarfile.open(filepath + '.tar.bz2', 'w:bz2',
-                      compresslevel=strength) as bzfile:
-        starttime = time.clock()
+    with tarfile.open(filepath + '.tar.bz2', 'w:bz2', compresslevel=strength) as bzfile:
         bzfile.add(filename, filter=None)
-        endtime = time.clock() - starttime
-        endtime_proper = math.ceil(endtime * 100) / 100
-        print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
 
 
 def tbz_verify(filepath):
@@ -254,6 +241,7 @@ def tbz_verify(filepath):
         return False
 
 
+@utilities.timer
 def txz_compress(filepath, filename):
     """
     Pack a file into a LZMA tarfile.
@@ -265,11 +253,7 @@ def txz_compress(filepath, filename):
     :type filename: str
     """
     with tarfile.open(filepath + '.tar.xz', 'w:xz') as xzfile:
-        starttime = time.clock()
         xzfile.add(filename, filter=None)
-        endtime = time.clock() - starttime
-        endtime_proper = math.ceil(endtime * 100) / 100
-        print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
 
 
 def txz_verify(filepath):
@@ -293,6 +277,7 @@ def txz_verify(filepath):
             return False
 
 
+@utilities.timer
 def zip_compress(filepath, filename):
     """
     Pack a file into a DEFLATE zipfile.
@@ -303,13 +288,8 @@ def zip_compress(filepath, filename):
     :param filename: Name of file to pack.
     :type filename: str
     """
-    with zipfile.ZipFile(filepath + '.zip', 'w', zipfile.ZIP_DEFLATED,
-                         allowZip64=True) as zfile:
-        starttime = time.clock()
+    with zipfile.ZipFile(filepath + '.zip', 'w', zipfile.ZIP_DEFLATED, allowZip64=True) as zfile:
         zfile.write(filename)
-        endtime = time.clock() - starttime
-        endtime_proper = math.ceil(endtime * 100) / 100
-        print("COMPLETED IN " + str(endtime_proper) + " SECONDS")
 
 
 def zip_verify(filepath):

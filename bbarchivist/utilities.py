@@ -7,10 +7,11 @@ import platform  # platform info
 import glob  # cap grabbing
 import configparser  # config parsing, duh
 import threading  # get thread for spinner
-import time  # spinner delay
+import time  # spinner delay, timer decorator
 import sys  # streams, version info
 import itertools  # spinners gonna spin
 import subprocess  # loader verification
+import math  # rounding
 from bbarchivist import bbconstants  # cap location, version, filename bits
 
 __author__ = "Thurask"
@@ -640,6 +641,22 @@ def verify_bulk_loaders(a_dir):
                 if not verify_loader_integrity(file):
                     brokens.append(file)
         return brokens
+
+
+def timer(method):
+    """
+    Decorator to time a function.
+
+    :param method: Method to time.
+    :type method: function
+    """
+    def wrapper(*args, **kwargs):
+        starttime = time.clock()
+        method(*args, **kwargs)
+        endtime = time.clock() - starttime
+        endtime_proper = math.ceil(endtime * 100) / 100  # rounding
+        print("COMPLETED IN {0} SECONDS".format(str(endtime_proper)))
+    return wrapper
 
 
 def cappath_config_loader(homepath=None):

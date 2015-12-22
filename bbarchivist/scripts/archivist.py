@@ -2,8 +2,6 @@
 """Download bar files, create autoloaders."""
 
 import os  # filesystem read
-import time  # time for downloader
-import math  # rounding of floats
 import sys  # load arguments
 from bbarchivist import scriptutils  # script stuff
 from bbarchivist import bbconstants  # versions/constants
@@ -18,6 +16,7 @@ __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015 Thurask"
 
 
+@utilities.timer
 def grab_args():
     """
     Parse arguments from argparse/questionnaire.
@@ -272,7 +271,6 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     :param core: Whether to create a core/radio loader. Default is false.
     :type core: bool
     """
-    starttime = time.clock()
     swchecked = False  # if we checked sw release already
     if altsw:
         altchecked = False
@@ -455,9 +453,6 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     barutils.remove_empty_folders(localdir)
 
     print("\nFINISHED!")
-    endtime = time.clock() - starttime
-    endtime_proper = math.ceil(endtime * 100) / 100
-    print("Completed in " + str(endtime_proper) + " seconds\n")
 
 
 if __name__ == "__main__":
