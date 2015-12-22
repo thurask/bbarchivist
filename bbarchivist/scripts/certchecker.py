@@ -19,18 +19,26 @@ def grab_args():
     Invoke :func:`certchecker.certchecker_main` with arguments.
     """
     if len(sys.argv) > 1:
+        datafile = jsonutils.load_json('devices')
         parser = scriptutils.default_parser("bb-certchecker",
                                             "Certification scraper")
         parser.add_argument(
             "device",
-            help="FCCID/HWID/model number",
+            help="FCCID/HWID/model #, or family",
             nargs="?",
             default=None)
+        parser.add_argument(
+            "-f",
+            "--family",
+            dest="family",
+            help="Return all certs of a device family",
+            action="store_true",
+            default=False)
         fgroup = parser.add_mutually_exclusive_group()
         fgroup.add_argument(
-            "-l",
-            "--list",
-            dest="list",
+            "-d",
+            "--database",
+            dest="database",
             help="List all devices in database",
             action="store_true",
             default=False)
@@ -41,12 +49,26 @@ def grab_args():
             help="List certified devices in database",
             action="store_true",
             default=False)
+        fgroup.add_argument(
+            "-l",
+            "--list",
+            dest="list",
+            help="List families in database",
+            action="store_true",
+            default=False)
         parser.set_defaults()
         args = parser.parse_args(sys.argv[1:])
-        if args.list:
-            jsonutils.list_devices(jsonutils.load_json('devices'))
+        if args.database:
+            jsonutils.list_devices(datafile)
         elif args.certs:
-            jsonutils.list_available_certs(jsonutils.load_json('devices'))
+            jsonutils.list_available_certs(datafile)
+        elif args.list:
+            jsonutils.list_family(datafile)
+        elif args.family:
+            family = jsonutils.read_family(datafile, args.device.upper())
+            for ptcrbid in family:
+                certchecker_main(ptcrbid)
+                print("")
         elif args.device is None:
             print("NO DEVICE SPECIFIED!")
             raise SystemExit

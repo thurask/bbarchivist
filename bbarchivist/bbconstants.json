@@ -80,7 +80,7 @@
             "hwid": "7002607",
             "fccid": "",
             "ptcrbid": "",
-            "secret": ""
+            "secret": "True"
         },
         {
             "device": "Z10",
@@ -537,8 +537,7 @@
             "name": "STV100-2",
             "hwid": "",
             "fccid": "RHT181LW",
-            "ptcrbid": "",
-            "secret": "True"
+            "ptcrbid": ""
         },
         {
             "device": "PRIV",
@@ -554,8 +553,7 @@
             "name": "STV100-4",
             "hwid": "F33929B2",
             "fccid": "RHM181LW",
-            "ptcrbid": "",
-            "secret": "True"
+            "ptcrbid": ""
         },
         {
             "device": "PRIV",
@@ -563,8 +561,7 @@
             "name": "STV100-5",
             "hwid": "",
             "fccid": "",
-            "ptcrbid": "",
-            "secret": "True"
+            "ptcrbid": ""
         },
         {
             "device": "PRIV",
@@ -585,7 +582,7 @@
             "secret": "True"
         },
         {
-            "device": "PLAYBOOK WIFI",
+            "device": "PLAYBOOK_WIFI",
             "family": "PLAYBOOK",
             "name": "PBWIFI",
             "hwid": "6001A06",
@@ -593,15 +590,16 @@
             "ptcrbid": ""
         },
         {
-            "device": "PLAYBOOK VZW",
+            "device": "PLAYBOOK_VZW",
             "family": "PLAYBOOK",
             "name": "PBVZW",
             "hwid": "C001A06",
             "fccid": "REF31LW",
-            "ptcrbid": ""
+            "ptcrbid": "",
+            "secret":  "True"
         },
         {
-            "device": "PLAYBOOK HSPA+",
+            "device": "PLAYBOOK_HSPA+",
             "family": "PLAYBOOK",
             "name": "PBHSPA",
             "hwid": "E001A06",
@@ -609,7 +607,7 @@
             "ptcrbid": "21167"
         },
         {
-            "device": "PLAYBOOK LTE",
+            "device": "PLAYBOOK_LTE",
             "family": "PLAYBOOK",
             "name": "PBLTE",
             "hwid": "D001A06",
@@ -617,13 +615,13 @@
             "ptcrbid": "21212"
         },
         {
-            "device": "PLAYBOOK ???",
+            "device": "PLAYBOOK_???",
             "family": "PLAYBOOK",
             "name": "PB???",
             "hwid": "4001A0B",
             "fccid": "",
             "ptcrbid": "",
-            "secret": ""
+            "secret": "True"
         },
         {
             "device": "BLACKFOREST?",
@@ -632,7 +630,7 @@
             "hwid": "4002706",
             "fccid": "",
             "ptcrbid": "",
-            "secret": ""
+            "secret": "True"
         }
     ]
 }

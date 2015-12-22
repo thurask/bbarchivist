@@ -17,7 +17,7 @@ def setup_module(module):
     os.chdir("temp_jsonutils")
     ptcrbdev = {}
     ptcrbdev['name'] = "PTCDEVICE"
-    ptcrbdev['device'] = "GALAXY S5"
+    ptcrbdev['device'] = "GALAXY_S5"
     ptcrbdev['hwid'] = ""
     ptcrbdev['ptcrbid'] = "12345"
     ptcrbdev['fccid'] = "FUK999LW"
@@ -29,7 +29,7 @@ def setup_module(module):
     unkdev['fccid'] = ""
     iddev = {}
     iddev['name'] = "TEST"
-    iddev['device'] = "GRUNTMASTER 6000"
+    iddev['device'] = "GRUNTMASTER_6000"
     iddev['hwid'] = "69696969"
     iddev['ptcrbid'] = "98765"
     iddev['fccid'] = ""
@@ -58,8 +58,8 @@ class TestClassJsonutils:
         """
         Create local variables.
         """
-        cls.devlist = [{'device': 'GALAXY S5', 'fccid': 'FUK999LW', 'hwid': '', 'name': 'PTCDEVICE', 'ptcrbid': '12345'},
-                       {'device': 'GRUNTMASTER 6000', 'fccid': '', 'hwid': '69696969', 'name': 'TEST', 'ptcrbid': '98765'},
+        cls.devlist = [{'device': 'GALAXY_S5', 'fccid': 'FUK999LW', 'hwid': '', 'name': 'PTCDEVICE', 'ptcrbid': '12345'},
+                       {'device': 'GRUNTMASTER_6000', 'fccid': '', 'hwid': '69696969', 'name': 'TEST', 'ptcrbid': '98765'},
                        {'device': 'ROTARY', 'fccid': '', 'hwid': '', 'name': 'UNKNOWN', 'ptcrbid': ''}]
 
     def test_grab_json(self):
@@ -101,3 +101,16 @@ class TestClassJsonutils:
         """
         bj.list_devices(self.devlist)
         assert "UNKNOWN" in capsys.readouterr()[0]
+
+    def test_read_family(self):
+        """
+        Test reading families from table.
+        """
+        assert bj.read_family(self.devlist, "GALAXY_S5")[0] == ("FUK999LW")
+
+    def test_list_family(self, capsys):
+        """
+        Test listing families from table.
+        """
+        bj.list_family(self.devlist)
+        assert "GRUNTMASTER" in capsys.readouterr()[0]

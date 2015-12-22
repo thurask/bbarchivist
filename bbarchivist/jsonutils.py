@@ -87,7 +87,7 @@ def list_available_certs(table):
 
 def list_devices(table):
     """
-    Lists all devices, certified or not, in a device table.
+    List all devices, certified or not, in a device table.
 
     :param table: List of device entries.
     :type table: list(dict)
@@ -105,3 +105,29 @@ def list_devices(table):
                                            key['name'],
                                            hwid,
                                            fccid))
+
+
+def read_family(table, device):
+    """
+    Get all devices of a given family in a device table.
+
+    :param table: List of device entries.
+    :type table: list(dict)
+
+    :param device: HWID, FCCID or name of device.
+    :type device: str
+    """
+    famlist = [key['fccid'] for key in table if key['ptcrbid'] and key['device'] == device]
+    return famlist
+
+
+def list_family(table):
+    """
+    List all valid (certified) families in a device table.
+
+    :param table: List of device entries.
+    :type table: list(dict)
+    """
+    famlist = list(set([key['device'] for key in table if not 'secret' in key and key['ptcrbid']]))
+    for fam in famlist:
+        print(fam)
