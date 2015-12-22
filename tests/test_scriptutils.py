@@ -419,7 +419,7 @@ class TestClassScriptutilsIntegrity:
         """
         if os.path.exists("bkmfest.bar"):
             os.rename("bkmfest.bar", "bkmfest.bak")
-        bs.test_bar_files(os.getcwd(), ["http://mfest.bar"], False)
+        bs.test_bar_files(os.getcwd(), ["http://mfest.bar"])
         assert "OK" in capsys.readouterr()[0]
         if os.path.exists("bkmfest.bak"):
             os.rename("bkmfest.bak", "bkmfest.bar")
@@ -432,7 +432,7 @@ class TestClassScriptutilsIntegrity:
             os.rename("mfest.bar", "mfest.bak")
         with mock.patch("bbarchivist.barutils.bar_tester", mock.MagicMock(return_value="bkmfest.bar")):
             with pytest.raises(SystemExit):
-                bs.test_bar_files(os.getcwd(), ["http://bkmfest.bar"], False)
+                bs.test_bar_files(os.getcwd(), ["http://bkmfest.bar"])
         assert "BROKEN" in capsys.readouterr()[0]
         if os.path.exists("mfest.bak"):
             os.rename("mfest.bak", "mfest.bar")

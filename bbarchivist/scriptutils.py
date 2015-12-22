@@ -287,7 +287,7 @@ def get_sz_executable(compmethod):
     return compmethod, szexe
 
 
-def test_bar_files(localdir, urllist, download):
+def test_bar_files(localdir, urllist):
     """
     Test bar files after download.
 
@@ -296,9 +296,6 @@ def test_bar_files(localdir, urllist, download):
 
     :param urllist: List of URLs to check.
     :type urllist: list(str)
-
-    :param download: If we downloaded these files ourselves.
-    :type download: bool
     """
     brokenlist = []
     print("TESTING BAR FILES...")
@@ -312,21 +309,7 @@ def test_bar_files(localdir, urllist, download):
                 for url in urllist:
                     if brokens in url:
                         brokenlist.append(url)
-    if brokenlist and download:
-        print("REDOWNLOADING BROKEN FILES...")
-        if len(brokenlist) > 5:
-            workers = 5
-        else:
-            workers = len(brokenlist)
-        networkutils.download_bootstrap(brokenlist, outdir=localdir, workers=workers)
-        for file in os.listdir(localdir):
-            if file.endswith(".bar"):
-                thepath = os.path.abspath(os.path.join(localdir, file))
-                brokens = barutils.bar_tester(thepath)
-                if brokens is not None:
-                    print(file, "STILL BROKEN")
-                    raise SystemExit
-    elif brokenlist and not download:
+    if brokenlist:
         print("SOME FILES ARE BROKEN!")
         pprint.pprint(brokenlist)
         raise SystemExit
@@ -396,7 +379,7 @@ def test_single_loader(loaderfile):
 def enter_to_exit(checkfreeze=True):
     """
     Press enter to exit a script.
-    
+
     :param checkfreeze: If we need to check if we're frozen. Default is true.
     :type checkfreeze: bool
     """

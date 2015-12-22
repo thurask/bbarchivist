@@ -222,7 +222,7 @@ def downloader_main(osversion, radioversion=None, softwareversion=None,
 
     # Test bar files
     if integrity:
-        scriptutils.test_bar_files(localdir, urllist, True)
+        scriptutils.test_bar_files(localdir, urllist)
 
 
 if __name__ == "__main__":

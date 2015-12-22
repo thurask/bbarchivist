@@ -2,8 +2,6 @@
 """Get software release for one/many OS versions."""
 
 import sys  # load arguments
-import time  # get datestamp for lookup
-import os  # path work
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import networkutils  # lookup
 from bbarchivist import utilities  # incrementer
@@ -154,14 +152,7 @@ def autolookup_main(osversion, loop=False, log=False,
     print("~~~AUTOLOOKUP VERSION", bbconstants.VERSION + "~~~")
     print("")
     if log:
-        logfile = time.strftime("%Y_%m_%d_%H%M%S") + ".txt"
-        if getattr(sys, 'frozen', False):
-            basefolder = os.path.join(os.getcwd(), "lookuplogs")
-        else:
-            basefolder = os.path.join(os.path.expanduser("~"), "lookuplogs")
-        os.makedirs(basefolder, exist_ok=True)
-        record = os.path.join(basefolder, logfile)
-        open(record, "w").close()
+        record = utilities.prep_logfile()
     try:
         while True:
             swrelease = ""
@@ -169,26 +160,10 @@ def autolookup_main(osversion, loop=False, log=False,
             results = networkutils.sr_lookup_bootstrap(osversion)
             if results is None:
                 raise KeyboardInterrupt
-            a1rel = results['a1']
-            if a1rel != "SR not in system" and a1rel is not None:
-                a1av = "A1"
-            else:
-                a1av = "  "
-            a2rel = results['a2']
-            if a2rel != "SR not in system" and a2rel is not None:
-                a2av = "A2"
-            else:
-                a2av = "  "
-            b1rel = results['b1']
-            if b1rel != "SR not in system" and b1rel is not None:
-                b1av = "B1"
-            else:
-                b1av = "  "
-            b2rel = results['b2']
-            if b2rel != "SR not in system" and b2rel is not None:
-                b2av = "B2"
-            else:
-                b2av = "  "
+            a1rel, a1av = networkutils.clean_availability(results, 'a1')
+            a2rel, a2av = networkutils.clean_availability(results, 'a2')
+            b1rel, b1av = networkutils.clean_availability(results, 'b1')
+            b2rel, b2av = networkutils.clean_availability(results, 'b2')
             prel = results['p']
             if prel != "SR not in system" and prel is not None:
                 pav = "PD"

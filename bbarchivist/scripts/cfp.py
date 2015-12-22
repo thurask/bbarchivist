@@ -2,7 +2,6 @@
 """Python interface for cfp."""
 
 import sys  # load arguments
-import os  # local dir
 import subprocess  # running cfp
 from bbarchivist import scriptutils  # default parser
 from bbarchivist import utilities  # platform

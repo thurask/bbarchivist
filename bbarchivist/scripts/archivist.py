@@ -187,26 +187,17 @@ def questionnaire():
         deleted = False
     hashed = utilities.s2b(input("GENERATE HASHES? Y/N: "))
     if getattr(sys, 'frozen', False):
-        args.gpg = False
         hashdict = filehashtools.verifier_config_loader(os.getcwd())
         compmethod = "7z"
     else:
         hashdict = filehashtools.verifier_config_loader()
         filehashtools.verifier_config_writer(hashdict)
         compmethod = barutils.compress_config_loader()
-    download = True
-    extract = True
-    signed = True
-    gpg = False
-    integrity = True
-    altsw = None
-    core = False
     print(" ")
     archivist_main(osversion, radioversion, softwareversion,
                    localdir, radios, compressed, deleted, hashed,
-                   hashdict, download,
-                   extract, signed, compmethod, gpg,
-                   integrity, altsw, core)
+                   hashdict, download=True, extract=True, signed=True, compmethod=compmethod,
+                   gpg=False, integrity=True, altsw=None, core=False)
 
 
 def archivist_main(osversion, radioversion=None, softwareversion=None,
@@ -220,7 +211,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     Some combination of creating, downloading, hashing,
     compressing and moving autoloaders.
 
-    :param osversion: OS version, 10.x.y.zzzz.
+    :param osversion: OS version, 10.x.y.zzzz. Required.
     :type osversion: str
 
     :param radioversion: Radio version, 10.x.y.zzzz. Can be guessed.
@@ -282,7 +273,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
                                                                 radioversion)
     if localdir is None:
         localdir = os.getcwd()
-    if hashdict is None:
+    if hashed and hashdict is None:
         hashdict = filehashtools.verifier_config_loader()
         filehashtools.verifier_config_writer(hashdict)
     print("~~~ARCHIVIST VERSION", bbconstants.VERSION + "~~~")
@@ -345,7 +336,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     # Test bar files
     if integrity:
         urllist = osurls+radiourls
-        scriptutils.test_bar_files(localdir, urllist, download)
+        scriptutils.test_bar_files(localdir, urllist)
 
     # Extract bar files
     if extract:

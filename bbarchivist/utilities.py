@@ -76,8 +76,7 @@ def grab_cfp():
         cfpfile = glob.glob(os.path.join(os.getcwd(), bbconstants.CFPFILENAME))[0]
     except IndexError:
         cfpfile = bbconstants.CFPLOCATION  # system cfp
-    finally:
-        return os.path.abspath(cfpfile)  # local cfp
+    return os.path.abspath(cfpfile)  # local cfp
 
 
 def fsizer(file_size):
@@ -92,10 +91,13 @@ def fsizer(file_size):
     fsize = float(file_size)
     for sfix in ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB']:
         if fsize < 1024.0:
-            return "{0:3.2f}{1}".format(fsize, sfix)
-        fsize /= 1024.0
+            size = "{0:3.2f}{1}".format(fsize, sfix)
+            break
+        else:
+            fsize /= 1024.0
     else:
-        return "{0:3.2f}{1}".format(fsize, 'YB')
+        size = "{0:3.2f}{1}".format(fsize, 'YB')
+    return size
 
 
 def file_exists(file):
@@ -619,8 +621,7 @@ def verify_loader_integrity(loaderfile):
                                          stderr=subprocess.STDOUT)
         except OSError:
             excode = -1
-        finally:
-            return excode == 0  # 0 if OK, non-zero if something broke
+        return excode == 0  # 0 if OK, non-zero if something broke
 
 
 def verify_bulk_loaders(a_dir):
@@ -651,12 +652,30 @@ def timer(method):
     :type method: function
     """
     def wrapper(*args, **kwargs):
+        """
+        Start clock, do function with args, print rounded elapsed time.
+        """
         starttime = time.clock()
         method(*args, **kwargs)
         endtime = time.clock() - starttime
         endtime_proper = math.ceil(endtime * 100) / 100  # rounding
         print("COMPLETED IN {0} SECONDS".format(str(endtime_proper)))
     return wrapper
+
+
+def prep_logfile():
+    """
+    Prepare log file, labeling it with current date. Select folder based on frozen status.
+    """
+    logfile = time.strftime("%Y_%m_%d_%H%M%S") + ".txt"
+    if getattr(sys, 'frozen', False):
+        basefolder = os.path.join(os.getcwd(), "lookuplogs")
+    else:
+        basefolder = os.path.join(os.path.expanduser("~"), "lookuplogs")
+    os.makedirs(basefolder, exist_ok=True)
+    record = os.path.join(basefolder, logfile)
+    open(record, "w").close()
+    return record
 
 
 def cappath_config_loader(homepath=None):

@@ -39,8 +39,7 @@ def smtp_config_loader(homepath=None):
     return resultdict
 
 
-def smtp_config_writer(server=None, port=None, username=None,
-                       password=None, is_ssl=True, homepath=None):
+def smtp_config_writer(**kwargs):
     """
     Write a ConfigParser file to store email server details.
 
@@ -63,24 +62,24 @@ def smtp_config_writer(server=None, port=None, username=None,
     :type homepath: str
     """
     config = configparser.ConfigParser()
-    if homepath is None:
-        homepath = os.path.expanduser("~")
-    conffile = os.path.join(homepath, "bbarchivist.ini")
+    if kwargs['homepath'] is None:
+        kwargs['homepath'] = os.path.expanduser("~")
+    conffile = os.path.join(kwargs['homepath'], "bbarchivist.ini")
     if not os.path.exists(conffile):
         open(conffile, 'w').close()
     config.read(conffile)
     if not config.has_section('email'):
         config['email'] = {}
-    if server is not None:
-        config['email']['server'] = server
-    if port is not None:
-        config['email']['port'] = str(port)
-    if username is not None:
-        config['email']['username'] = username
-    if password is not None:
-        config['email']['password'] = password
-    if is_ssl is not None:
-        config['email']['is_ssl'] = str(is_ssl).lower()
+    if kwargs['server'] is not None:
+        config['email']['server'] = kwargs['server']
+    if kwargs['port'] is not None:
+        config['email']['port'] = str(kwargs['port'])
+    if kwargs['username'] is not None:
+        config['email']['username'] = kwargs['username']
+    if kwargs['password'] is not None:
+        config['email']['password'] = kwargs['password']
+    if kwargs['is_ssl'] is not None:
+        config['email']['is_ssl'] = str(kwargs['is_ssl']).lower()
     with open(conffile, "w") as configfile:
         config.write(configfile)
 

@@ -165,8 +165,8 @@ def write_4k(infile, outfile):
             outfile.write(chunk)
 
 
-def make_autoloader(filename, firstfile, secondfile="", thirdfile="",
-                    fourthfile="", fifthfile="", sixthfile="",
+def make_autoloader(filename, firstfile, secondfile=None, thirdfile=None,
+                    fourthfile=None, fifthfile=None, sixthfile=None,
                     folder=None):
     """
     Write cap.exe, magic offset, signed files to a .exe file.
@@ -217,11 +217,9 @@ def make_autoloader(filename, firstfile, secondfile="", thirdfile="",
     filelist = [os.path.abspath(file) for file in filelist if file]
     print("CREATING:", filename)
     try:
-        with open(os.path.join(os.path.abspath(folder),
-                               filename), "wb") as autoloader:
+        with open(os.path.join(os.path.abspath(folder), filename), "wb") as autoloader:
             with open(os.path.normpath(cap), "rb") as capfile:
-                print("WRITING CAP VERSION",
-                      bbconstants.CAPVERSION + "...")
+                print("WRITING CAP VERSION {0}...".format(bbconstants.CAPVERSION))
                 while True:
                     chunk = capfile.read(4096)  # 4k chunks
                     if not chunk:

@@ -309,7 +309,7 @@ def lazyloader_main(device, osversion, radioversion=None,
         networkutils.download_bootstrap(dllist, outdir=localdir, workers=2)
 
     # Test bar files
-    scriptutils.test_bar_files(localdir, dllist, download)
+    scriptutils.test_bar_files(localdir, dllist)
 
     # Extract bar files
     print("EXTRACTING...")

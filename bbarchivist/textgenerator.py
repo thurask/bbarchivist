@@ -9,6 +9,46 @@ __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015 Thurask"
 
 
+def system_link_writer(target, urls, avlty=False):
+    """
+    Write OS/radio links to file.
+
+    :param target: File to write to.
+    :type target: file
+
+    :param urls: Dictionary of URLs; name: URL
+    :type urls: dict(str: str)
+
+    :param avlty: If this OS release is available. Default is false.
+    :type avlty: bool
+    """
+    for key, val in urls.items():
+        if avlty:
+            fsize = get_length(val)
+        else:
+            fsize = None
+        target.write("{0} [{1}] {2}\n".format(key, fsizer(fsize), val))
+
+
+def app_link_writer(target, urls):
+    """
+    Write app links to file.
+
+    :param target: File to write to.
+    :type target: file
+
+    :param urls: Dictionary of URLs; name: URL
+    :type urls: dict(str: str)
+    """
+    for app in urls:
+        stoppers = ["8960", "8930", "8974", "m5730", "winchester"]
+        if all(word not in app for word in stoppers):
+            fsize = get_length(app)
+            base = app.split('/')[-1]
+            base = stripper(base)
+            target.write("{0} [{1}] {2}\n".format(base, fsizer(fsize), app))
+
+
 def write_links(softwareversion, osversion, radioversion,
                 osurls, coreurls, radiourls, avlty=False,
                 appendbars=False, appurls=None, temp=False):
@@ -57,43 +97,14 @@ def write_links(softwareversion, osversion, radioversion,
         if not avlty:
             target.write("\n!!EXISTENCE NOT GUARANTEED!!\n")
         target.write("\nDEBRICK URLS:\n")
-        for key, value in osurls.items():
-            if avlty:
-                thesize = get_length(value)
-            else:
-                thesize = None
-            target.write("{0} [{1}] {2}\n".format(key,
-                                                  fsizer(thesize),
-                                                  value))
+        system_link_writer(target, osurls, avlty)
         target.write("\nCORE URLS:\n")
-        for key, value in coreurls.items():
-            if avlty:
-                thesize = get_length(value)
-            else:
-                thesize = None
-            target.write("{0} [{1}] {2}\n".format(key,
-                                                  fsizer(thesize),
-                                                  value))
+        system_link_writer(target, coreurls, avlty)
         target.write("\nRADIO URLS:\n")
-        for key, value in radiourls.items():
-            if avlty:
-                thesize = get_length(value)
-            else:
-                thesize = None
-            target.write("{0} [{1}] {2}\n".format(key,
-                                                  fsizer(thesize),
-                                                  value))
+        system_link_writer(target, radiourls, avlty)
         if appendbars:
             target.write("\nAPP URLS:\n")
-            for app in appurls:
-                stoppers = ["8960", "8930", "8974", "m5730", "winchester"]
-                if all(word not in app for word in stoppers):
-                    thesize = get_length(app)
-                    base = app.split('/')[-1]
-                    base = stripper(base)
-                    target.write("{0} [{1}] {2}\n".format(base,
-                                                          fsizer(thesize),
-                                                          app))
+            app_link_writer(target, appurls)
 
 
 def url_gen(osversion, radioversion, softwareversion):

@@ -73,5 +73,4 @@ setup(name='bbarchivist',
       include_package_data=True,
       install_requires=cond_requires,
       entry_points={
-          'console_scripts': scriptlist}
-      )
+          'console_scripts': scriptlist})

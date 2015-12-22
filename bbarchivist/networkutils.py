@@ -132,9 +132,31 @@ def availability(url):
     try:
         avlty = requests.head(url)
         status = int(avlty.status_code)
-        return (status == 200 or 300 < status <= 308)
+        return status == 200 or 300 < status <= 308
     except requests.ConnectionError:
         return False
+
+
+def clean_availability(results, server):
+    """
+    Clean availability for autolookup script.
+
+    :param results: Result dict.
+    :type results: dict(str: str)
+
+    :param server: Server, key for result dict.
+    :type server: str
+    """
+    if server == "p":
+        marker = "PD"
+    else:
+        marker = server.upper()
+    rel = results[server.lower()]
+    if rel != "SR not in system" and rel is not None:
+        avail = marker
+    else:
+        avail = "  "
+    return rel, avail
 
 
 def carrier_checker(mcc, mnc):
