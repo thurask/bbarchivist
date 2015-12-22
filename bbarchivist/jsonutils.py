@@ -128,6 +128,6 @@ def list_family(table):
     :param table: List of device entries.
     :type table: list(dict)
     """
-    famlist = list(set([key['device'] for key in table if not 'secret' in key and key['ptcrbid']]))
+    famlist = list({key['device'] for key in table if not 'secret' in key and key['ptcrbid']})
     for fam in famlist:
         print(fam)

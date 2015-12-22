@@ -1,1 +1,0 @@
-flake8 --output-file=flake8.txt --statistics bbarchivist
