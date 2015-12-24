@@ -659,7 +659,9 @@ def timer(method):
         method(*args, **kwargs)
         endtime = time.clock() - starttime
         endtime_proper = math.ceil(endtime * 100) / 100  # rounding
-        print("COMPLETED IN {0} SECONDS".format(str(endtime_proper)))
+        minutes, seconds = divmod(endtime_proper, 60)
+        hours, minutes = divmod(minutes, 60)
+        print("COMPLETED IN {0}:{1}:{2}".format(int(hours), int(minutes), int(seconds)))
     return wrapper
 
 

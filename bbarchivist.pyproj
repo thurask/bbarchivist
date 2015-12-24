@@ -27,12 +27,11 @@
     <Content Include=".coveralls.yml" />
     <Content Include=".gitattributes" />
     <Content Include=".gitignore" />
-    <Content Include=".project" />
-    <Content Include=".pydevproject" />
     <Content Include=".travis.yml" />
     <Content Include="bbarchivist\bbconstants.json" />
     <Content Include="bbarchivist\cap-3.11.0.22.dat" />
-    <Content Include="docgen.bat" />
+    <Content Include="bbarchivist\cfp-3.10.0.57.dat" />
+    <Content Include="build_exe.bat" />
     <Content Include="docs\bbarchivist.rst" />
     <Content Include="docs\bbarchivist.scripts.rst" />
     <Content Include="docs\html.bat" />
@@ -41,18 +40,15 @@
     <Content Include="docs\Makefile" />
     <Content Include="docs\modules.rst" />
     <Content Include="docs\readme.rst" />
-    <Content Include="exebuilder.bat" />
-    <Content Include="install.bat" />
-    <Content Include="lfsbat.bat" />
+    <Content Include="docs\tests.rst" />
+    <Content Include="gen_docs.bat" />
     <Content Include="LICENSE" />
     <Content Include="MANIFEST.in" />
+    <Content Include="pypi_upload.bat" />
     <Content Include="pytest.ini" />
     <Content Include="README.rst" />
     <Content Include="requirements-devel.txt" />
-    <Content Include="requirements-user.txt" />
-    <Content Include="run_flake.bat" />
     <Content Include="test_coverage.bat" />
-    <Content Include="upload.bat" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="bbarchivist\barutils.py" />
