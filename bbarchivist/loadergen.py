@@ -53,14 +53,16 @@ def read_os_files(localdir, core=False):
         fix8960 = "*qc8960.*_sfi.BB*.signed"
         fixomap_new = "*winchester.*_sfi.BB*.signed"
         fixomap_old = "*os.factory_sfi.BB*.signed"
-        fix8930 = "*qc8x30*_sfi.BB*.signed"
-        fix8974 = "*qc8974*_sfi.BB*.signed"
+        fix8930 = "*qc8x30.BB*.signed"
+        fix8974_new = "*qc8974.BB*.signed"
+        fix8974_old = "*qc8974.*_sfi.BB*.signed"
     else:
         fix8960 = "*qc8960.*_sfi.desktop.BB*.signed"
         fixomap_new = "*winchester.*_sfi.desktop.BB*.signed"
         fixomap_old = "*os.factory_sfi.desktop.BB*.signed"
-        fix8930 = "*qc8x30*_sfi.desktop.BB*.signed"
-        fix8974 = "*qc8974*_sfi.desktop.BB*.signed"
+        fix8930 = "*qc8x30.desktop.BB*.signed"
+        fix8974_new = "*qc8974.desktop.BB*.signed"
+        fix8974_old = "*qc8974.*_sfi.desktop.BB*.signed"
     # 8960
     try:
         os_8960 = glob.glob(
@@ -87,13 +89,13 @@ def read_os_files(localdir, core=False):
             print("No 8x30 image found")
     # 8974
     try:
-        os_8974 = glob.glob(
-            os.path.join(
-                localdir,
-                fix8974))[0]
+        os_8974 = glob.glob(os.path.join(localdir, fix8974_new))[0]
     except IndexError:
-        os_8974 = None
-        print("No 8974 image found")
+        try:
+            os_8974 = glob.glob(os.path.join(localdir, fix8974_old))[0]
+        except IndexError:
+            os_8974 = None
+            print("No 8974 image found")
     # OMAP
     try:
         os_ti = glob.glob(os.path.join(localdir, fixomap_new))[0]
