@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#pylint: disable=no-self-use,unused-argument,line-too-long
 """Test the barutils module."""
 
 import os
@@ -623,12 +624,8 @@ class TestClassBarutilsConfig:
         Test reading compression settings.
         """
         try:
-            FileNotFoundError
-        except NameError:
-            FileNotFoundError = IOError
-        try:
             os.remove("bbarchivist.ini")
-        except (OSError, FileNotFoundError):
+        except (OSError, IOError):
             pass
         with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
             assert bb.compress_config_loader(os.getcwd()) == "7z"
@@ -641,12 +638,8 @@ class TestClassBarutilsConfig:
             pass
         else:
             try:
-                FileNotFoundError
-            except NameError:
-                FileNotFoundError = IOError
-            try:
                 os.remove("bbarchivist.ini")
-            except (OSError, FileNotFoundError):
+            except (OSError, IOError):
                 pass
             with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
                 bb.compress_config_writer("txz")
@@ -658,12 +651,8 @@ class TestClassBarutilsConfig:
         Test writing compression settings.
         """
         try:
-            FileNotFoundError
-        except NameError:
-            FileNotFoundError = IOError
-        try:
             os.remove("bbarchivist.ini")
-        except (OSError, FileNotFoundError):
+        except (OSError, IOError):
             pass
         with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
             with mock.patch('bbarchivist.barutils.compress_config_loader', mock.MagicMock(return_value="tbz")):

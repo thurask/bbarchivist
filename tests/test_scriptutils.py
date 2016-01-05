@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#pylint: disable=too-few-public-methods,no-self-use,unused-argument,line-too-long
 """Test the scriptutils module."""
 
 import os
@@ -106,7 +107,7 @@ class TestClassScriptutils:
         snek = Dummy()
         with mock.patch('requests.head', mock.MagicMock(return_value=snek)):
             bs.export_cchecker(["http://sn.ek"], "123456", "8500090A", "10.1.1.1111",
-                                "10.2.2.2222", "10.3.3.3334", False, None)
+                               "10.2.2.2222", "10.3.3.3334", False, None)
             with open("10.3.3.3334plusapps.txt", "r") as afile:
                 assert len(afile.read()) == 2933
 

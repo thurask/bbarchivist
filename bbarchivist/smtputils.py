@@ -141,15 +141,64 @@ def send_email(kwargs):
     server, username, port, password = parse_kwargs(kwargs)
     subject = generate_subject(kwargs['software'], kwargs['os'])
     message = generate_message(kwargs['body'], username, subject)
+    payload = {"server": server, "port": port, "username": username,
+               "password": password, "message": message}
     if utilities.s2b(kwargs['is_ssl']):
-        smt = smtplib.SMTP_SSL(server, port)
+        send_email_ssl(payload)
     else:
-        smt = smtplib.SMTP(server, port)
+        send_email_tls(payload)
+
+
+def send_email_ssl(kwargs):
+    """
+    Send email through SSL.
+
+    :param server: SMTP email server.
+    :type server: str
+
+    :param port: Port to use.
+    :type port: int
+
+    :param username: Email address.
+    :type username: str
+
+    :param password: Email password.
+    :type password: str
+
+    :param message: Message to send, with body and subject.
+    :type message: MIMEText
+    """
+    smt = smtplib.SMTP_SSL(kwargs['server'], kwargs['port'])
     smt.ehlo()
-    if not utilities.s2b(kwargs['is_ssl']):
-        smt.starttls()
-    smt.login(username, password)
-    smt.sendmail(username, username, message.as_string())
+    smt.login(kwargs['username'], kwargs['password'])
+    smt.sendmail(kwargs['username'], kwargs['username'], kwargs['message'].as_string())
+    smt.quit()
+
+
+def send_email_tls(kwargs):
+    """
+    Send email through TLS.
+
+    :param server: SMTP email server.
+    :type server: str
+
+    :param port: Port to use.
+    :type port: int
+
+    :param username: Email address.
+    :type username: str
+
+    :param password: Email password.
+    :type password: str
+
+    :param message: Message to send, with body and subject.
+    :type message: MIMEText
+    """
+    smt = smtplib.SMTP(kwargs['server'], kwargs['port'])
+    smt.ehlo()
+    smt.starttls()
+    smt.login(kwargs['username'], kwargs['password'])
+    smt.sendmail(kwargs['username'], kwargs['username'], kwargs['message'].as_string())
     smt.quit()
 
 

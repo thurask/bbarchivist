@@ -111,6 +111,30 @@ def list_devices(table):
                                            fccid))
 
 
+def certchecker_prep(table, device):
+    """
+    Extract model, family and HWID from a device table.
+
+    :param table: List of device entries.
+    :type table: list(dict)
+
+    :param device: HWID, FCCID or name of device.
+    :type device: str
+    """
+    for key in table:
+        if 'secret' not in key and key['name'] == device:
+            model = key['device']
+            family = key['family']
+            hwid = key['hwid']
+            break
+    else:
+        print("INVALID DEVICE!")
+        scriptutils.enter_to_exit(True)
+        if not getattr(sys, 'frozen', False):
+            raise SystemExit
+    return model, family, hwid
+
+
 def read_family(table, device):
     """
     Get all devices of a given family in a device table.

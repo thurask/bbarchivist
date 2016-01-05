@@ -110,6 +110,7 @@ def grab_args():
         scriptutils.enter_to_exit(True)
 
 
+@utilities.wrap_keyboard_except
 def autolookup_main(osversion, loop=False, log=False,
                     autogen=False, inc=3, sql=False,
                     quiet=False, ceiling=9996, mailer=False):
@@ -153,87 +154,72 @@ def autolookup_main(osversion, loop=False, log=False,
     print("")
     if log:
         record = utilities.prep_logfile()
-    try:
-        while True:
-            swrelease = ""
-            print("NOW SCANNING:", osversion, end="\r")
-            results = networkutils.sr_lookup_bootstrap(osversion)
-            if results is None:
-                raise KeyboardInterrupt
-            a1rel, a1av = networkutils.clean_availability(results, 'a1')
-            a2rel, a2av = networkutils.clean_availability(results, 'a2')
-            b1rel, b1av = networkutils.clean_availability(results, 'b1')
-            b2rel, b2av = networkutils.clean_availability(results, 'b2')
-            prel = results['p']
-            if prel != "SR not in system" and prel is not None:
-                pav = "PD"
-                baseurl = networkutils.create_base_url(prel)
-                # Check availability of software release
-                avail = networkutils.availability(baseurl)
-                if avail:
-                    is_avail = "Available"
-                    if autogen:
-                        rad = utilities.increment(osversion, 1)
-                        linkgen.linkgen_main(osversion, rad, prel)
-                    if mailer:
-                        sqlutils.prepare_sw_db()
-                        if not sqlutils.check_exists(osversion, prel):
-                            rad = utilities.increment(osversion, 1)
-                            linkgen.linkgen_main(osversion,
-                                                 rad,
-                                                 prel,
-                                                 temp=True)
-                            smtputils.prep_email(osversion,
-                                                 prel,
-                                                 smtpc['password'])
-                else:
-                    is_avail = "Unavailable"
-            else:
-                pav = "  "
-                is_avail = "Unavailable"
-            swrelset = set([a1rel, a2rel, b1rel, b2rel, prel])
-            for i in swrelset:
-                if i != "SR not in system" and i is not None:
-                    swrelease = i
-                    break
-            else:
-                swrelease = ""
-            if swrelease != "":
-                if sql:
+    while True:
+        swrelease = ""
+        print("NOW SCANNING:", osversion, end="\r")
+        results = networkutils.sr_lookup_bootstrap(osversion)
+        if results is None:
+            raise KeyboardInterrupt
+        a1rel, a1av = networkutils.clean_availability(results, 'a1')
+        a2rel, a2av = networkutils.clean_availability(results, 'a2')
+        b1rel, b1av = networkutils.clean_availability(results, 'b1')
+        b2rel, b2av = networkutils.clean_availability(results, 'b2')
+        prel = results['p']
+        if prel != "SR not in system" and prel is not None:
+            pav = "PD"
+            baseurl = networkutils.create_base_url(prel)
+            # Check availability of software release
+            avail = networkutils.availability(baseurl)
+            if avail:
+                is_avail = "Available"
+                if autogen:
+                    rad = utilities.increment(osversion, 1)
+                    linkgen.linkgen_main(osversion, rad, prel)
+                if mailer:
                     sqlutils.prepare_sw_db()
-                    if not sqlutils.check_exists(osversion, swrelease):
-                        sqlutils.insert(osversion, swrelease, is_avail.lower())
-                avblok = "[{0}|{1}|{2}|{3}|{4}]".format(pav,
-                                                        a1av,
-                                                        a2av,
-                                                        b1av,
-                                                        b2av)
-                out = "OS {0} - SR {1} - {2} - {3}".format(osversion,
-                                                           swrelease,
-                                                           avblok,
-                                                           is_avail)
-                if not quiet:
+                    if not sqlutils.check_exists(osversion, prel):
+                        rad = utilities.increment(osversion, 1)
+                        linkgen.linkgen_main(osversion, rad, prel, temp=True)
+                        smtputils.prep_email(osversion, prel, smtpc['password'])
+            else:
+                is_avail = "Unavailable"
+        else:
+            pav = "  "
+            is_avail = "Unavailable"
+        swrelset = set([a1rel, a2rel, b1rel, b2rel, prel])
+        for i in swrelset:
+            if i != "SR not in system" and i is not None:
+                swrelease = i
+                break
+        else:
+            swrelease = ""
+        if swrelease != "":
+            if sql:
+                sqlutils.prepare_sw_db()
+                if not sqlutils.check_exists(osversion, swrelease):
+                    sqlutils.insert(osversion, swrelease, is_avail.lower())
+            avblok = "[{0}|{1}|{2}|{3}|{4}]".format(pav, a1av, a2av, b1av, b2av)
+            out = "OS {0} - SR {1} - {2} - {3}".format(osversion, swrelease, avblok, is_avail)
+            if not quiet:
+                if log:
+                    with open(record, "a") as rec:
+                        rec.write(out+"\n")
+                print(out)
+            else:
+                if is_avail == "Available":
                     if log:
                         with open(record, "a") as rec:
                             rec.write(out+"\n")
                     print(out)
-                else:
-                    if is_avail == "Available":
-                        if log:
-                            with open(record, "a") as rec:
-                                rec.write(out+"\n")
-                        print(out)
-            if not loop:
-                raise KeyboardInterrupt  # hack, but whatever
+        if not loop:
+            raise KeyboardInterrupt  # hack, but whatever
+        else:
+            if int(osversion.split(".")[3]) > ceiling:
+                raise KeyboardInterrupt
             else:
-                if int(osversion.split(".")[3]) > ceiling:
-                    raise KeyboardInterrupt
-                else:
-                    osversion = utilities.increment(osversion, inc)
-                    swrelease = ""
-                    continue
-    except KeyboardInterrupt:
-        pass
+                osversion = utilities.increment(osversion, inc)
+                swrelease = ""
+                continue
 
 
 if __name__ == "__main__":

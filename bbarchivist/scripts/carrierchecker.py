@@ -3,11 +3,8 @@
 
 import sys  # load arguments
 import os  # file/path operations
-import shutil  # folder removal
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import networkutils  # check function
-from bbarchivist import barutils  # file/folder operations
-from bbarchivist import textgenerator  # text work
 from bbarchivist import utilities  # input validation
 from bbarchivist import jsonutils  # json
 from bbarchivist import scriptutils  # default parser
@@ -227,15 +224,7 @@ def carrierchecker_main(mcc, mnc, device,
     if directory is None:
         directory = os.getcwd()
     data = jsonutils.load_json('devices')
-    for key in data:
-        if 'secret' not in key and key['name'] == device:
-            model = key['device']
-            family = key['family']
-            hwid = key['hwid']
-            break
-    else:
-        print("INVALID DEVICE!")
-        raise SystemExit
+    model, family, hwid = jsonutils.certchecker_prep(data, device)
     version = bbconstants.VERSION
     print("~~~CARRIERCHECKER VERSION", version + "~~~")
     country, carrier = networkutils.carrier_checker(mcc, mnc)
@@ -279,15 +268,7 @@ def carrierchecker_main(mcc, mnc, device,
             networkutils.download_bootstrap(files, outdir=bardir)
             scriptutils.test_bar_files(bardir, files)
             if blitz:
-                print("\nCREATING BLITZ...")
-                barutils.create_blitz(bardir, swv)
-                print("\nTESTING BLITZ...")
-                zipver = barutils.zip_verify("Blitz-" + swv + '.zip')
-                if not zipver:
-                    print("BLITZ FILE IS BROKEN")
-                    raise SystemExit
-                else:
-                    shutil.rmtree(bardir)
+                scriptutils.package_blitz(bardir, swv)
             print("\nFINISHED!!!")
 
 

@@ -372,15 +372,14 @@ def compress(filepath, method="7z", szexe=None, selective=False, errors=False):
         filename = os.path.splitext(os.path.basename(file))[0]
         fileloc = os.path.join(filepath, filename)
         print("COMPRESSING: " + filename + ".exe")
-        strength = calculate_strength()
         if method == "7z":
-            sz_compress(fileloc, file, szexe, strength, errors)
+            sz_compress(fileloc, file, szexe, calculate_strength(), errors)
         elif method == "tgz":
-            tgz_compress(fileloc, file, strength)
+            tgz_compress(fileloc, file, calculate_strength())
         elif method == "txz":
             txz_compress(fileloc, file)
         elif method == "tbz":
-            tbz_compress(fileloc, file, strength)
+            tbz_compress(fileloc, file, calculate_strength())
         elif method == "zip":
             zip_compress(fileloc, file)
     return True
@@ -412,30 +411,18 @@ def verify(thepath, method="7z", szexe=None, selective=False):
         if filt:
             print("VERIFYING:", file)
             if file.endswith(".7z") and szexe is not None:
-                szver = sz_verify(os.path.abspath(file), szexe)
-                if not szver:
-                    print("{0} IS BROKEN!".format((file)))
-                return szver
+                verif = sz_verify(os.path.abspath(file), szexe)
             elif file.endswith(".tar.gz"):
-                tgver = tgz_verify(file)
-                if not tgver:
-                    print("{0} IS BROKEN!".format((file)))
-                return tgver
+                verif = tgz_verify(file)
             elif file.endswith(".tar.xz"):
-                txver = txz_verify(file)
-                if not txver:
-                    print("{0} IS BROKEN!".format((file)))
-                return txver
+                verif = txz_verify(file)
             elif file.endswith(".tar.bz2"):
-                tbver = tbz_verify(file)
-                if not tbver:
-                    print("{0} IS BROKEN!".format((file)))
-                return tbver
+                verif = tbz_verify(file)
             elif file.endswith(".zip"):
-                zver = zip_verify(file)
-                if not zver:
-                    print("{0} IS BROKEN!".format((file)))
-                return zver
+                verif = zip_verify(file)
+            if not verif:
+                print("{0} IS BROKEN!".format((file)))
+            return verif
 
 
 def compress_suite(filepath, method="7z", szexe=None, selective=False):

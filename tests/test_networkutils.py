@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#pylint: disable=no-self-use,unused-argument,line-too-long
 """Test the networkutils module."""
 
 import os

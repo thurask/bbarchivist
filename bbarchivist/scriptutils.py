@@ -6,6 +6,7 @@ import pprint  # pretty printing
 import getpass  # invisible password
 import argparse  # generic parser
 import sys  # getattr
+import shutil  # folder removal
 from bbarchivist import utilities  # little things
 from bbarchivist import barutils  # file system work
 from bbarchivist import bbconstants  # constants
@@ -431,8 +432,8 @@ def export_cchecker(files, npc, hwid, osv, radv, swv, upgrade=False, forced=None
             cleanfiles = files
         osurls, coreurls, radiourls = textgenerator.url_gen(osv, radv, swv)
         stoppers = ["8960", "8930", "8974", "m5730", "winchester"]
-        finalfiles = [link for link in cleanfiles if all(word not in link for word in stoppers)]
-        textgenerator.write_links(swv, osv, radv, osurls, coreurls, radiourls, True, True, finalfiles)
+        finals = [link for link in cleanfiles if all(word not in link for word in stoppers)]
+        textgenerator.write_links(swv, osv, radv, osurls, coreurls, radiourls, True, True, finals)
         print("\nFINISHED!!!")
     else:
         print("CANNOT EXPORT, NO SOFTWARE RELEASE")
@@ -479,6 +480,27 @@ def generate_blitz_links(files, osv, radv, swv):
     for i in radiourls:
         files.append(i)
     return files
+
+
+def package_blitz(bardir, swv):
+    """
+    Package and verify a blitz package.
+
+    :param bardir: Path to folder containing bar files.
+    :type bardir: str
+
+    :param swv: Software version.
+    :type swv: str
+    """
+    print("\nCREATING BLITZ...")
+    barutils.create_blitz(bardir, swv)
+    print("\nTESTING BLITZ...")
+    zipver = barutils.zip_verify("Blitz-" + swv + '.zip')
+    if not zipver:
+        print("BLITZ FILE IS BROKEN")
+        raise SystemExit
+    else:
+        shutil.rmtree(bardir)
 
 
 def purge_dross(files):

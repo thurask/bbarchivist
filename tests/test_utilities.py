@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#pylint: disable=no-self-use,unused-argument,line-too-long
 """Test the utilities module."""
 
 import os
@@ -540,12 +541,8 @@ class TestClassUtilitiesConfig:
         Test reading CAP path settings.
         """
         try:
-            FileNotFoundError
-        except NameError:
-            FileNotFoundError = IOError
-        try:
             os.remove("bbarchivist.ini")
-        except (OSError, FileNotFoundError):
+        except (OSError, IOError):
             pass
         with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
             with mock.patch('bbarchivist.bbconstants.CAPLOCATION', "cap.dat"):
@@ -556,12 +553,8 @@ class TestClassUtilitiesConfig:
         Test writing CAP path settings.
         """
         try:
-            FileNotFoundError
-        except NameError:
-            FileNotFoundError = IOError
-        try:
             os.remove("bbarchivist.ini")
-        except (OSError, FileNotFoundError):
+        except (OSError, IOError):
             pass
         with mock.patch('bbarchivist.utilities.grab_cap',
                         mock.MagicMock(return_value=os.path.abspath(os.path.join(os.getcwd(), "cap.dat")))):

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#pylint: disable=no-self-use,unused-argument,line-too-long
 """Test the jsonutils module."""
 
 import os
@@ -22,18 +23,21 @@ def setup_module(module):
     ptcrbdev = {}
     ptcrbdev['name'] = "PTCDEVICE"
     ptcrbdev['device'] = "GALAXY_S5"
+    ptcrbdev['family'] = "SAMSUNG"
     ptcrbdev['hwid'] = ""
     ptcrbdev['ptcrbid'] = "12345"
     ptcrbdev['fccid'] = "FUK999LW"
     unkdev = {}
     unkdev['name'] = "UNKNOWN"
     unkdev['device'] = "ROTARY"
+    unkdev['family'] = "BLACKBERRY"
     unkdev['hwid'] = ""
     unkdev['ptcrbid'] = ""
     unkdev['fccid'] = ""
     iddev = {}
     iddev['name'] = "TEST"
     iddev['device'] = "GRUNTMASTER_6000"
+    iddev['family'] = "PATHETECH"
     iddev['hwid'] = "69696969"
     iddev['ptcrbid'] = "98765"
     iddev['fccid'] = ""
@@ -62,9 +66,9 @@ class TestClassJsonutils:
         """
         Create local variables.
         """
-        cls.devlist = [{'device': 'GALAXY_S5', 'fccid': 'FUK999LW', 'hwid': '', 'name': 'PTCDEVICE', 'ptcrbid': '12345'},
-                       {'device': 'GRUNTMASTER_6000', 'fccid': '', 'hwid': '69696969', 'name': 'TEST', 'ptcrbid': '98765'},
-                       {'device': 'ROTARY', 'fccid': '', 'hwid': '', 'name': 'UNKNOWN', 'ptcrbid': ''}]
+        cls.devlist = [{'device': 'GALAXY_S5', 'fccid': 'FUK999LW', 'hwid': '', 'name': 'PTCDEVICE', 'ptcrbid': '12345', "family": "SAMSUNG"},
+                       {'device': 'GRUNTMASTER_6000', 'fccid': '', 'hwid': '69696969', 'name': 'TEST', 'ptcrbid': '98765', "family": "PATHETECH"},
+                       {'device': 'ROTARY', 'fccid': '', 'hwid': '', 'name': 'UNKNOWN', 'ptcrbid': '', "family": "BLACKBERRY"}]
 
     def test_grab_json(self):
         """
@@ -91,6 +95,19 @@ class TestClassJsonutils:
         """
         with pytest.raises(SystemExit):
             bj.extract_cert(self.devlist, "UNKNOWN")
+
+    def test_certchecker_good(self):
+        """
+        Test certchecker's JSON function, best case.
+        """
+        assert bj.certchecker_prep(self.devlist, "PTCDEVICE") == ("GALAXY_S5", "SAMSUNG", "")
+
+    def test_certchecker_bad(self):
+        """
+        Test certchecker's JSON function, worst case.
+        """
+        with pytest.raises(SystemExit):
+            bj.certchecker_prep(self.devlist, "SNEK")
 
     def test_print_certs(self, capsys):
         """

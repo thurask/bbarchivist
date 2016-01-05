@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#pylint: disable=no-self-use,unused-argument,line-too-long
 """Test the filehashtools module."""
 
 from shutil import rmtree
@@ -345,12 +346,8 @@ class TestClassFilehashtoolsConfig:
         Test reading hash settings.
         """
         try:
-            FileNotFoundError
-        except NameError:
-            FileNotFoundError = IOError
-        try:
             os.remove("bbarchivist.ini")
-        except (OSError, FileNotFoundError):
+        except (OSError, IOError):
             pass
         with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
             assert bf.verifier_config_loader() == self.hashdict
@@ -362,12 +359,8 @@ class TestClassFilehashtoolsConfig:
         hash2 = self.hashdict
         hash2['sha512'] = True
         try:
-            FileNotFoundError
-        except NameError:
-            FileNotFoundError = IOError
-        try:
             os.remove("bbarchivist.ini")
-        except (OSError, FileNotFoundError):
+        except (OSError, IOError):
             pass
         with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
             with mock.patch('bbarchivist.filehashtools.verifier_config_loader',
@@ -380,12 +373,8 @@ class TestClassFilehashtoolsConfig:
         Test reading GPG settings on empty.
         """
         try:
-            FileNotFoundError
-        except NameError:
-            FileNotFoundError = IOError
-        try:
             os.remove("bbarchivist.ini")
-        except (OSError, FileNotFoundError):
+        except (OSError, IOError):
             pass
         with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
             assert bf.gpg_config_loader() == (None, None)
@@ -409,12 +398,8 @@ class TestClassFilehashtoolsConfig:
         Test writing GPG settings.
         """
         try:
-            FileNotFoundError
-        except NameError:
-            FileNotFoundError = IOError
-        try:
             os.remove("bbarchivist.ini")
-        except (OSError, FileNotFoundError):
+        except (OSError, IOError):
             pass
         with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
             bf.gpg_config_writer("0xDEADF00D", "swordfish")

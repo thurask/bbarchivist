@@ -665,6 +665,24 @@ def timer(method):
     return wrapper
 
 
+def wrap_keyboard_except(method):
+    """
+    Decorator to absorb KeyboardInterrupt.
+
+    :param method: Method to use.
+    :type method: function
+    """
+    def wrapper(*args, **kwargs):
+        """
+        Try function, absorb KeyboardInterrupt and leave gracefully.
+        """
+        try:
+            method(*args, **kwargs)
+        except KeyboardInterrupt:
+            pass
+    return wrapper
+
+
 def prep_logfile():
     """
     Prepare log file, labeling it with current date. Select folder based on frozen status.

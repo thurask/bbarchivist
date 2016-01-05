@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#pylint: disable=no-self-use,unused-argument,line-too-long
 """Test the smtputils module."""
 
 import os
@@ -191,12 +192,8 @@ class TestClassSMTPUtilsConfig:
         Test reading SMTP settings when empty.
         """
         try:
-            FileNotFoundError
-        except NameError:
-            FileNotFoundError = IOError
-        try:
             os.remove("bbarchivist.ini")
-        except (OSError, FileNotFoundError):
+        except (OSError, IOError):
             pass
         with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
             with mock.patch('configparser.ConfigParser.read', mock.MagicMock(return_value=self.bogusdict)):
@@ -224,12 +221,8 @@ class TestClassSMTPUtilsConfig:
         Test writing compression settings.
         """
         try:
-            FileNotFoundError
-        except NameError:
-            FileNotFoundError = IOError
-        try:
             os.remove("bbarchivist.ini")
-        except (OSError, FileNotFoundError):
+        except (OSError, IOError):
             pass
         dict2 = self.smtpdict
         dict2['port'] = 6969

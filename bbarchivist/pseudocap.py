@@ -196,7 +196,6 @@ def make_autoloader(filename, firstfile, secondfile=None, thirdfile=None,
     :param folder: Working folder. Optional. Default is local.
     :type folder: str
     """
-    cap = utilities.grab_cap()
     if folder is None:
         folder = os.getcwd()
     make_offset(
@@ -218,7 +217,7 @@ def make_autoloader(filename, firstfile, secondfile=None, thirdfile=None,
     print("CREATING:", filename)
     try:
         with open(os.path.join(os.path.abspath(folder), filename), "wb") as autoloader:
-            with open(os.path.normpath(cap), "rb") as capfile:
+            with open(os.path.normpath(utilities.grab_cap()), "rb") as capfile:
                 print("WRITING CAP VERSION {0}...".format(bbconstants.CAPVERSION))
                 while True:
                     chunk = capfile.read(4096)  # 4k chunks
