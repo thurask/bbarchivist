@@ -4,7 +4,6 @@
 import os  # filesystem read
 import sys  # load arguments
 from bbarchivist import scriptutils  # script stuff
-from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import utilities  # input validation
 from bbarchivist import networkutils  # download/lookup
 
@@ -71,20 +70,13 @@ def grab_args():
             help="Download radios",
             default=False,
             action="store_true")
-        parser.add_argument(
-            "-ni",
-            "--no-integrity",
-            dest="integrity",
-            help="Don't test bar files after download",
-            action="store_false",
-            default=True)
         parser.set_defaults()
         args = parser.parse_args(sys.argv[1:])
         if args.folder is None:
             args.folder = os.getcwd()
         downloader_main(args.os, args.radio, args.swrelease,
                         args.folder, args.debricks, args.radios,
-                        args.cores, args.integrity, args.altsw)
+                        args.cores, args.altsw)
     else:
         questionnaire()
 
@@ -104,18 +96,15 @@ def questionnaire():
     cores = utilities.s2b(input("DOWNLOAD CORES? Y/N: "))
     if not cores:
         cores = False
-    integrity = True
     altsw = None
     print(" ")
     downloader_main(osversion, radioversion, softwareversion,
-                    localdir, debricks, radios, cores,
-                    integrity, altsw)
+                    localdir, debricks, radios, cores, altsw)
     scriptutils.enter_to_exit(True)
 
 
 def downloader_main(osversion, radioversion=None, softwareversion=None,
-                    localdir=None, debricks=True, radios=True, cores=False,
-                    integrity=True, altsw=None):
+                    localdir=None, debricks=True, radios=True, cores=False, altsw=None):
     """
     Archivist's download function, abstracted out.
 
@@ -140,47 +129,19 @@ def downloader_main(osversion, radioversion=None, softwareversion=None,
     :param cores: Whether to download core OS files. False by default.
     :type cores: bool
 
-    :param integrity: Whether to test downloaded bar files. True by default.
-    :type integrity: bool
-
     :param altsw: Radio software release, if not the same as OS.
     :type altsw: str
     """
-    swchecked = False  # if we checked sw release already
     radioversion = scriptutils.return_radio_version(osversion, radioversion)
     softwareversion, swchecked = scriptutils.return_sw_checked(softwareversion, osversion)
     if altsw:
         altsw, altchecked = scriptutils.return_radio_sw_checked(altsw, radioversion)
     if localdir is None:
         localdir = os.getcwd()
-    print("~~~DOWNLOADER VERSION", bbconstants.VERSION + "~~~")
-    print("OS VERSION:", osversion)
-    print("OS SOFTWARE VERSION:", softwareversion)
-    print("RADIO VERSION:", radioversion)
-    if altsw is not None:
-        print("RADIO SOFTWARE VERSION:", altsw)
+    scriptutils.standard_preamble("downloader", osversion, softwareversion, radioversion, altsw)
 
-    baseurl = networkutils.create_base_url(softwareversion)
-    if altsw:
-        alturl = networkutils.create_base_url(altsw)
-    osurls, radurls, coreurls = utilities.generate_urls(baseurl, osversion, radioversion, cores)
-    vzwos, vzwrad = utilities.generate_lazy_urls(baseurl, osversion, radioversion, 2)
-    osurls.append(vzwos)
-    radurls.append(vzwrad)
-    vzwcore = vzwos.replace("sfi.desktop", "sfi")
-    coreurls.append(vzwcore)
-    if not networkutils.availability(osurls[1]):  # fallback to VZW
-        osurls[1] = vzwos
-        coreurls[1] = vzwcore
-    osurls = list(set(osurls))  # pop duplicates
-    radurls = list(set(radurls))
-    coreurls = list(set(coreurls))
-    if altsw:
-        radiourls2 = []
-        for rad in radurls:
-            radiourls2.append(rad.replace(baseurl, alturl))
-        radurls = radiourls2
-        del radiourls2
+    baseurl, alturl = scriptutils.get_baseurls(softwareversion, altsw)
+    osurls, corurls, radurls = utilities.bulk_urls(baseurl, osversion, radioversion, cores, alturl)
 
     # Check availability of software releases
     scriptutils.check_sw(baseurl, softwareversion, swchecked)
@@ -191,7 +152,7 @@ def downloader_main(osversion, radioversion=None, softwareversion=None,
     if debricks:
         scriptutils.check_os_bulk(osurls)
     if cores:
-        scriptutils.check_os_bulk(coreurls)
+        scriptutils.check_os_bulk(corurls)
     if radios:
         radurls, radioversion = scriptutils.check_radio_bulk(radurls, radioversion)
 
@@ -203,7 +164,7 @@ def downloader_main(osversion, radioversion=None, softwareversion=None,
     if radios:
         urllist += radurls
     if cores:
-        urllist += coreurls
+        urllist += corurls
     if urllist:
         networkutils.download_bootstrap(urllist, localdir, workers=5)
         print("ALL FILES DOWNLOADED")
@@ -212,8 +173,7 @@ def downloader_main(osversion, radioversion=None, softwareversion=None,
         raise SystemExit
 
     # Test bar files
-    if integrity:
-        scriptutils.test_bar_files(localdir, urllist)
+    scriptutils.test_bar_files(localdir, urllist)
 
 
 if __name__ == "__main__":

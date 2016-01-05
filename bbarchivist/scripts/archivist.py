@@ -4,7 +4,6 @@
 import os  # filesystem read
 import sys  # load arguments
 from bbarchivist import scriptutils  # script stuff
-from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import utilities  # input validation
 from bbarchivist import barutils  # file/folder work
 from bbarchivist import networkutils  # download/lookup
@@ -267,9 +266,6 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     :param core: Whether to create a core/radio loader. Default is false.
     :type core: bool
     """
-    swchecked = False  # if we checked sw release already
-    if altsw:
-        altchecked = False
     radioversion = scriptutils.return_radio_version(osversion, radioversion)
     softwareversion, swchecked = scriptutils.return_sw_checked(softwareversion, osversion)
     if altsw == "checkme":
@@ -279,17 +275,10 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     if hashed and hashdict is None:
         hashdict = filehashtools.verifier_config_loader()
         filehashtools.verifier_config_writer(hashdict)
-    print("~~~ARCHIVIST VERSION", bbconstants.VERSION + "~~~")
-    print("OS VERSION:", osversion)
-    print("OS SOFTWARE VERSION:", softwareversion)
-    print("RADIO VERSION:", radioversion)
-    if altsw is not None:
-        print("RADIO SOFTWARE VERSION:", altsw)
+    scriptutils.standard_preamble("archivist", osversion, softwareversion, radioversion, altsw)
 
     # Generate download URLs
-    baseurl = networkutils.create_base_url(softwareversion)
-    if altsw:
-        alturl = networkutils.create_base_url(altsw)
+    baseurl, alturl = scriptutils.get_baseurls(softwareversion, altsw)
     osurls, radiourls, cores = utilities.generate_urls(baseurl, osversion, radioversion, True)
     if core:
         osurls = cores

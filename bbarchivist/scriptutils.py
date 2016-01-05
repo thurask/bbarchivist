@@ -261,6 +261,24 @@ def check_radio_bulk(radiourls, radioversion):
     return radiourls, radioversion
 
 
+def get_baseurls(softwareversion, altsw=None):
+    """
+    Generate base URLs for bar links.
+
+    :param softwareversion: Software version.
+    :type softwareversion: str
+
+    :param altsw: Radio software version, if necessary.
+    :type altsw: str
+    """
+    baseurl = networkutils.create_base_url(softwareversion)
+    if altsw:
+        alturl = networkutils.create_base_url(altsw)
+    else:
+        alturl = None
+    return baseurl, alturl
+
+
 def get_sz_executable(compmethod):
     """
     Get 7z executable.
@@ -519,6 +537,33 @@ def purge_dross(files):
             "retaildemo"]
     files2 = [file for file in files if all(word not in file for word in crap)]
     return files2
+
+
+def standard_preamble(appname, osversion, softwareversion, radioversion, altsw=None):
+    """
+    Standard app name, OS, radio and software (plus optional radio software) print block.
+
+    :param appname: Name of app.
+    :type appname: str
+
+    :param osversion: OS version, 10.x.y.zzzz. Required.
+    :type osversion: str
+
+    :param radioversion: Radio version, 10.x.y.zzzz. Can be guessed.
+    :type radioversion: str
+
+    :param softwareversion: Software release, 10.x.y.zzzz. Can be guessed.
+    :type softwareversion: str
+
+    :param altsw: Radio software release, if not the same as OS.
+    :type altsw: str
+    """
+    print("~~~{0} VERSION {1}~~~".format(appname.upper(), bbconstants.VERSION))
+    print("OS VERSION: {0}".format(osversion))
+    print("OS SOFTWARE VERSION: {0}".format(softwareversion))
+    print("RADIO VERSION: {0}".format(radioversion))
+    if altsw is not None:
+        print("RADIO SOFTWARE VERSION: {0}".format(altsw))
 
 
 def verify_gpg_credentials():

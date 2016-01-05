@@ -241,8 +241,6 @@ def lazyloader_main(device, osversion, radioversion=None,
     :param core: Whether to create a core/radio loader. Default is false.
     :type core: bool
     """
-    if (osversion or device) is None:
-        raise SystemExit
     swc = False  # if we checked SW release already
     if altsw:
         altchecked = False
@@ -250,13 +248,8 @@ def lazyloader_main(device, osversion, radioversion=None,
     softwareversion, swc = scriptutils.return_sw_checked(softwareversion, osversion)
     if altsw == "checkme":
         altsw, altchecked = scriptutils.return_radio_sw_checked(altsw, radioversion)
-    print("~~~LAZYLOADER VERSION", bbconstants.VERSION + "~~~")
-    print("OS VERSION:", osversion)
-    print("SOFTWARE VERSION:", softwareversion)
-    print("RADIO VERSION:", radioversion)
-    if altsw is not None:
-        print("RADIO SOFTWARE VERSION:", altsw)
-    print("DEVICE:", bbconstants.DEVICES[device])
+    scriptutils.standard_preamble("lazyloader", osversion, softwareversion, radioversion, altsw)
+    print("DEVICE: {0}".format(bbconstants.DEVICES[device]))
 
     # Make dirs
     bd_o, bd_r, ld_o, ld_r, zd_o, zd_r = barutils.make_dirs(localdir, osversion, radioversion)

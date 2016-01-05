@@ -476,6 +476,48 @@ def generate_lazy_urls(baseurl, osversion, radioversion, device):
     return osurl, radiourl
 
 
+def bulk_urls(baseurl, osversion, radioversion, core=False, alturl=None):
+    """
+    Generate all URLs, plus extra Verizon URLs.
+
+    :param baseurl: The URL, from http to the hashed software release.
+    :type baseurl: str
+
+    :param osversion: OS version.
+    :type osversion: str
+
+    :param radioversion: Radio version.
+    :type radioversion: str
+
+    :param device: Device to use.
+    :type device: int
+
+    :param core: Whether or not to return core URLs as well.
+    :type core: bool
+
+    :param alturl: The base URL for any alternate radios.
+    :type alturl: str
+    """
+    osurls, radurls, coreurls = generate_urls(baseurl, osversion, radioversion, core)
+    vzwos, vzwrad = generate_lazy_urls(baseurl, osversion, radioversion, 2)
+    osurls.append(vzwos)
+    radurls.append(vzwrad)
+    vzwcore = vzwos.replace("sfi.desktop", "sfi")
+    if core:
+        coreurls.append(vzwcore)
+    osurls = list(set(osurls))  # pop duplicates
+    radurls = list(set(radurls))
+    if core:
+        coreurls = list(set(coreurls))
+    if alturl is not None:
+        radiourls2 = []
+        for rad in radurls:
+            radiourls2.append(rad.replace(baseurl, alturl))
+        radurls = radiourls2
+        del radiourls2
+    return osurls, coreurls, radurls
+
+
 def line_begin():
     """
     Go to beginning of line, to overwrite whatever's there.
