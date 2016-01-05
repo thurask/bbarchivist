@@ -241,11 +241,7 @@ def carrierchecker_main(mcc, mnc, device,
             print(bundle)
     else:
         npc = networkutils.return_npc(mcc, mnc)
-        swv, osv, radv, files = networkutils.carrier_update_request(npc,
-                                                                    hwid,
-                                                                    upgrade,
-                                                                    blitz,
-                                                                    forced)
+        swv, osv, radv, files = networkutils.carrier_query(npc, hwid, upgrade, blitz, forced)
         print("SOFTWARE RELEASE:", swv)
         print("OS VERSION:", osv)
         print("RADIO VERSION:", radv)

@@ -148,11 +148,9 @@ def downloader_main(osversion, radioversion=None, softwareversion=None,
     """
     swchecked = False  # if we checked sw release already
     radioversion = scriptutils.return_radio_version(osversion, radioversion)
-    softwareversion, swchecked = scriptutils.return_sw_checked(softwareversion,
-                                                               osversion)
+    softwareversion, swchecked = scriptutils.return_sw_checked(softwareversion, osversion)
     if altsw:
-        altsw, altchecked = scriptutils.return_radio_sw_checked(altsw,
-                                                                radioversion)
+        altsw, altchecked = scriptutils.return_radio_sw_checked(altsw, radioversion)
     if localdir is None:
         localdir = os.getcwd()
     print("~~~DOWNLOADER VERSION", bbconstants.VERSION + "~~~")
@@ -165,29 +163,23 @@ def downloader_main(osversion, radioversion=None, softwareversion=None,
     baseurl = networkutils.create_base_url(softwareversion)
     if altsw:
         alturl = networkutils.create_base_url(altsw)
-    osurls, radiourls, coreurls = utilities.generate_urls(baseurl,
-                                                          osversion,
-                                                          radioversion,
-                                                          cores)
-    vzwos, vzwrad = utilities.generate_lazy_urls(baseurl,
-                                                 osversion,
-                                                 radioversion,
-                                                 2)  # Verizon
+    osurls, radurls, coreurls = utilities.generate_urls(baseurl, osversion, radioversion, cores)
+    vzwos, vzwrad = utilities.generate_lazy_urls(baseurl, osversion, radioversion, 2)
     osurls.append(vzwos)
-    radiourls.append(vzwrad)
+    radurls.append(vzwrad)
     vzwcore = vzwos.replace("sfi.desktop", "sfi")
     coreurls.append(vzwcore)
     if not networkutils.availability(osurls[1]):  # fallback to VZW
         osurls[1] = vzwos
         coreurls[1] = vzwcore
     osurls = list(set(osurls))  # pop duplicates
-    radiourls = list(set(radiourls))
+    radurls = list(set(radurls))
     coreurls = list(set(coreurls))
     if altsw:
         radiourls2 = []
-        for rad in radiourls:
+        for rad in radurls:
             radiourls2.append(rad.replace(baseurl, alturl))
-        radiourls = radiourls2
+        radurls = radiourls2
         del radiourls2
 
     # Check availability of software releases
@@ -201,8 +193,7 @@ def downloader_main(osversion, radioversion=None, softwareversion=None,
     if cores:
         scriptutils.check_os_bulk(coreurls)
     if radios:
-        radiourls, radioversion = scriptutils.check_radio_bulk(radiourls,
-                                                               radioversion)
+        radurls, radioversion = scriptutils.check_radio_bulk(radurls, radioversion)
 
     # Download files
     print("BEGIN DOWNLOADING...")
@@ -210,7 +201,7 @@ def downloader_main(osversion, radioversion=None, softwareversion=None,
     if debricks:
         urllist += osurls
     if radios:
-        urllist += radiourls
+        urllist += radurls
     if cores:
         urllist += coreurls
     if urllist:

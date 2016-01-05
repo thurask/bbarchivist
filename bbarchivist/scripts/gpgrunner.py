@@ -44,10 +44,7 @@ def gpgrunner_main():
             password2 = None
         filehashtools.gpg_config_writer(key, password2)
     print(" ")
-    filehashtools.gpgrunner(
-        workfolder,
-        key,
-        password)
+    filehashtools.gpgrunner(workfolder, key, password)
 
 
 if __name__ == "__main__":

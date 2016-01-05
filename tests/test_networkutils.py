@@ -135,7 +135,7 @@ def gh_mock(url, request):
     return {'status_code': 200, 'content': thebody}
 
 
-def cu_good_mock(url, request):
+def cq_good_mock(url, request):
     """
     Mock for carrier update checking, ideal case.
     """
@@ -143,7 +143,7 @@ def cu_good_mock(url, request):
     return {'status_code': 200, 'content': thebody}
 
 
-def cu_bad_mock(url, request):
+def cq_bad_mock(url, request):
     """
     Mock for carrier update checking, bad case.
     """
@@ -338,27 +338,25 @@ class TestClassNetworkutilsParsing:
         """
         Test carrier update request, ideal case.
         """
-        with httmock.HTTMock(cu_good_mock):
+        with httmock.HTTMock(cq_good_mock):
             alist = ("10.3.1.1877",
                      "10.3.1.2726",
                      "10.3.1.2727",
                      ['http://cdn.fs.sl.blackberry.com/fs/qnx/production/f6832b88958f1c4c3f9bbfd44762e0c516760d8a/com.qnx.qcfm.radio.qc8960.wtr5/10.3.1.2727/qc8960.wtr5-10.3.1.2727-nto+armle-v7+signed.bar',
                       'http://cdn.fs.sl.blackberry.com/fs/qnx/production/f6832b88958f1c4c3f9bbfd44762e0c516760d8a/com.qnx.coreos.qcfm.os.qc8960.factory_sfi.desktop/10.3.1.2726/qc8960.factory_sfi.desktop-10.3.1.2726-nto+armle-v7+signed.bar'])
-            assert bn.carrier_update_request(302220,
-                                             "6002E0A") == alist
+            assert bn.carrier_query(302220, "6002E0A") == alist
 
     def test_upd_req_bad(self):
         """
         Test carrier update request, no software version.
         """
-        with httmock.HTTMock(cu_bad_mock):
+        with httmock.HTTMock(cq_bad_mock):
             alist = ("N/A",
                      "10.3.1.2726",
                      "10.3.1.2727",
                      ['http://cdn.fs.sl.blackberry.com/fs/qnx/production/f6832b88958f1c4c3f9bbfd44762e0c516760d8a/com.qnx.qcfm.radio.qc8960.wtr5/10.3.1.2727/qc8960.wtr5-10.3.1.2727-nto+armle-v7+signed.bar',
                       'http://cdn.fs.sl.blackberry.com/fs/qnx/production/f6832b88958f1c4c3f9bbfd44762e0c516760d8a/com.qnx.coreos.qcfm.os.qc8960.factory_sfi.desktop/10.3.1.2726/qc8960.factory_sfi.desktop-10.3.1.2726-nto+armle-v7+signed.bar'])
-            assert bn.carrier_update_request(302220,
-                                             "6002E0A") == alist
+            assert bn.carrier_query(302220, "6002E0A") == alist
 
     def test_sr_lookup_good(self):
         """

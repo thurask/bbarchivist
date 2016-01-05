@@ -271,11 +271,9 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     if altsw:
         altchecked = False
     radioversion = scriptutils.return_radio_version(osversion, radioversion)
-    softwareversion, swchecked = scriptutils.return_sw_checked(softwareversion,
-                                                               osversion)
+    softwareversion, swchecked = scriptutils.return_sw_checked(softwareversion, osversion)
     if altsw == "checkme":
-        altsw, altchecked = scriptutils.return_radio_sw_checked(altsw,
-                                                                radioversion)
+        altsw, altchecked = scriptutils.return_radio_sw_checked(altsw, radioversion)
     if localdir is None:
         localdir = os.getcwd()
     if hashed and hashdict is None:
@@ -292,8 +290,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     baseurl = networkutils.create_base_url(softwareversion)
     if altsw:
         alturl = networkutils.create_base_url(altsw)
-    osurls, radiourls, cores = utilities.generate_urls(baseurl, osversion,
-                                                       radioversion, True)
+    osurls, radiourls, cores = utilities.generate_urls(baseurl, osversion, radioversion, True)
     if core:
         osurls = cores
     else:
@@ -304,8 +301,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
             vzwindex = idx
             break
     if not networkutils.availability(vzwurl):
-        osurls[vzwindex] = osurls[vzwindex].replace("qc8960.factory_sfi",
-                                                    "qc8960.verizon_sfi")
+        osurls[vzwindex] = osurls[vzwindex].replace("qc8960.factory_sfi", "qc8960.verizon_sfi")
     osurls = list(set(osurls))  # pop duplicates
     if altsw:
         radiourls2 = [x.replace(baseurl, alturl) for x in radiourls]
@@ -319,23 +315,18 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
 
     # Check availability of OS, radio
     scriptutils.check_os_bulk(osurls)
-    radiourls, radioversion = scriptutils.check_radio_bulk(radiourls,
-                                                           radioversion)
+    radiourls, radioversion = scriptutils.check_radio_bulk(radiourls, radioversion)
 
     # Get 7z executable
     compmethod, szexe = scriptutils.get_sz_executable(compmethod)
 
     # Make dirs
-    bd_o, bd_r, ld_o, ld_r, zd_o, zd_r = barutils.make_dirs(localdir,
-                                                            osversion,
-                                                            radioversion)
+    bd_o, bd_r, ld_o, ld_r, zd_o, zd_r = barutils.make_dirs(localdir, osversion, radioversion)
 
     # Download files
     if download:
         print("BEGIN DOWNLOADING...")
-        networkutils.download_bootstrap(radiourls+osurls,
-                                        localdir,
-                                        workers=3)
+        networkutils.download_bootstrap(radiourls+osurls, localdir, 3)
         print("ALL FILES DOWNLOADED")
 
     # Test bar files
@@ -359,12 +350,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     # Create loaders
     print("GENERATING LOADERS...")
     altradio = (altsw is not None)
-    loadergen.generate_loaders(osversion,
-                               radioversion,
-                               radios,
-                               localdir,
-                               altradio,
-                               core)
+    loadergen.generate_loaders(osversion, radioversion, radios, localdir, altradio, core)
 
     # Test loader files
     if integrity:
@@ -386,58 +372,32 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
 
     # Move zipped/unzipped loaders
     print("MOVING LOADERS...")
-    barutils.move_loaders(localdir,
-                          ld_o, ld_r,
-                          zd_o, zd_r)
+    barutils.move_loaders(localdir, ld_o, ld_r, zd_o, zd_r)
 
     # Get hashes (if specified)
     if hashed:
         print("HASHING LOADERS...")
         if compressed:
-            filehashtools.verifier(
-                zd_o,
-                hashdict)
+            filehashtools.verifier(zd_o, hashdict)
             if radios:
-                filehashtools.verifier(
-                    zd_r,
-                    hashdict)
+                filehashtools.verifier(zd_r, hashdict)
         if not deleted:
-            filehashtools.verifier(
-                ld_o,
-                hashdict)
+            filehashtools.verifier(ld_o, hashdict)
             if radios:
-                filehashtools.verifier(
-                    ld_r,
-                    hashdict)
+                filehashtools.verifier(ld_r, hashdict)
     if gpg:
         gpgkey, gpgpass = scriptutils.verify_gpg_credentials()
         if gpgpass is not None and gpgkey is not None:
             print("VERIFYING LOADERS...")
             print("KEY:", gpgkey)
             if compressed:
-                filehashtools.gpgrunner(
-                    zd_o,
-                    gpgkey,
-                    gpgpass,
-                    True)
+                filehashtools.gpgrunner(zd_o, gpgkey, gpgpass, True)
                 if radios:
-                    filehashtools.gpgrunner(
-                        zd_r,
-                        gpgkey,
-                        gpgpass,
-                        True)
+                    filehashtools.gpgrunner(zd_r, gpgkey, gpgpass, True)
             if not deleted:
-                filehashtools.gpgrunner(
-                    ld_o,
-                    gpgkey,
-                    gpgpass,
-                    True)
+                filehashtools.gpgrunner(ld_o, gpgkey, gpgpass, True)
                 if radios:
-                    filehashtools.gpgrunner(
-                        ld_r,
-                        gpgkey,
-                        gpgpass,
-                        True)
+                    filehashtools.gpgrunner(ld_r, gpgkey, gpgpass, True)
 
     # Remove uncompressed loaders (if specified)
     if deleted:

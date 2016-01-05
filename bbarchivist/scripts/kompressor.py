@@ -50,10 +50,7 @@ def kompressor_main():
     workfolder = args.folder
     barutils.compress_config_writer()
     print(" ")
-    barutils.compress_suite(workfolder,
-                            method,
-                            szexe,
-                            False)
+    barutils.compress_suite(workfolder, method, szexe, False)
 
 
 if __name__ == "__main__":

@@ -246,13 +246,10 @@ def lazyloader_main(device, osversion, radioversion=None,
     swc = False  # if we checked SW release already
     if altsw:
         altchecked = False
-    radioversion = scriptutils.return_radio_version(osversion,
-                                                    radioversion)
-    softwareversion, swc = scriptutils.return_sw_checked(softwareversion,
-                                                         osversion)
+    radioversion = scriptutils.return_radio_version(osversion, radioversion)
+    softwareversion, swc = scriptutils.return_sw_checked(softwareversion, osversion)
     if altsw == "checkme":
-        altsw, altchecked = scriptutils.return_radio_sw_checked(altsw,
-                                                                radioversion)
+        altsw, altchecked = scriptutils.return_radio_sw_checked(altsw, radioversion)
     print("~~~LAZYLOADER VERSION", bbconstants.VERSION + "~~~")
     print("OS VERSION:", osversion)
     print("SOFTWARE VERSION:", softwareversion)
@@ -262,9 +259,7 @@ def lazyloader_main(device, osversion, radioversion=None,
     print("DEVICE:", bbconstants.DEVICES[device])
 
     # Make dirs
-    bd_o, bd_r, ld_o, ld_r, zd_o, zd_r = barutils.make_dirs(localdir,
-                                                            osversion,
-                                                            radioversion)
+    bd_o, bd_r, ld_o, ld_r, zd_o, zd_r = barutils.make_dirs(localdir, osversion, radioversion)
     osurl = radiourl = None
 
     # Create download URLs
@@ -272,10 +267,7 @@ def lazyloader_main(device, osversion, radioversion=None,
         baseurl = networkutils.create_base_url(softwareversion)
         if altsw:
             alturl = networkutils.create_base_url(altsw)
-        osurl, radiourl = utilities.generate_lazy_urls(baseurl,
-                                                       osversion,
-                                                       radioversion,
-                                                       device)
+        osurl, radiourl = utilities.generate_lazy_urls(baseurl, osversion, radioversion, device)
         if altsw:
             radiourl = radiourl.replace(baseurl, alturl)
         if core:
@@ -288,9 +280,7 @@ def lazyloader_main(device, osversion, radioversion=None,
 
         # Check availability of OS, radio
         scriptutils.check_os_single(osurl, osversion, device)
-        radiourl, radioversion = scriptutils.check_radio_single(radiourl,
-                                                                radioversion)
-
+        radiourl, radioversion = scriptutils.check_radio_single(radiourl, radioversion)
     dllist = [osurl, radiourl]
 
     # Download files
@@ -317,10 +307,7 @@ def lazyloader_main(device, osversion, radioversion=None,
         altradio = radioversion
     else:
         altradio = None
-    loadergen.generate_lazy_loader(osversion, device,
-                                   localdir=localdir,
-                                   altradio=altradio,
-                                   core=core)
+    loadergen.generate_lazy_loader(osversion, device, localdir, altradio, core)
 
     # Test loader
     suffix = loadergen.format_suffix(bool(altradio), altradio, core)

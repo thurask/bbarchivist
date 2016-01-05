@@ -426,7 +426,7 @@ def export_cchecker(files, npc, hwid, osv, radv, swv, upgrade=False, forced=None
     """
     if files:
         if not upgrade:
-            newfiles = networkutils.carrier_update_request(npc, hwid, True, False, forced)
+            newfiles = networkutils.carrier_query(npc, hwid, True, False, forced)
             cleanfiles = newfiles[3]
         else:
             cleanfiles = files

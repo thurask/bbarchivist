@@ -53,13 +53,8 @@ def questionnaire():
     pin = utilities.escreens_pin(pin)
     uptime = utilities.positive_integer(uptime)
     duration = utilities.escreens_duration(duration)
-    print(" ")
-    key = filehashtools.calculate_escreens(
-        pin.lower(),
-        app,
-        str(uptime),
-        duration)
-    print(key)
+    key = filehashtools.calculate_escreens(pin.lower(), app, str(uptime), duration)
+    print("\n" + key)
     scriptutils.enter_to_exit(True)
 
 

@@ -33,14 +33,11 @@ def filehasher_main():
         args = parser.parse_args(sys.argv[1:])
         if args.folder is None:
             args.folder = os.getcwd()
-        filehashtools.verifier(args.folder,
-                               hashdict)
+        filehashtools.verifier(args.folder, hashdict)
     else:
         folder = os.getcwd()
         print(" ")
-        filehashtools.verifier(
-            folder,
-            hashdict)
+        filehashtools.verifier(folder, hashdict)
 
 
 if __name__ == "__main__":

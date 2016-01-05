@@ -199,10 +199,7 @@ def return_npc(mcc, mnc):
     return str(mcc).zfill(3) + str(mnc).zfill(3) + "30"
 
 
-def carrier_update_request(npc, device,
-                           upgrade=False,
-                           blitz=False,
-                           forced=None):
+def carrier_query(npc, device, upgrade=False, blitz=False, forced=None):
     """
     Query BlackBerry servers, check which update is out for a carrier.
 
