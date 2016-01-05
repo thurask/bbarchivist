@@ -37,6 +37,18 @@ def teardown_module(module):
     rmtree("temp_scriptutils", ignore_errors=True)
 
 
+class Dummy(object):
+    """
+    Dummy, with text and headers attributes.
+    """
+    def __init__(self):
+        """
+        Populate text and headers.
+        """
+        self.text = "snek"
+        self.headers = {"content-length": 12345}
+
+
 class TestClassScriptutils:
     """
     Test script-related tools.
@@ -52,6 +64,51 @@ class TestClassScriptutils:
         Test radio version incrementing.
         """
         assert bs.return_radio_version("10.3.2.2639") == "10.3.2.2640"
+
+    def test_purge_dross(self):
+        """
+        Test excluding useless garbage from a list of apps.
+        """
+        apps = ["os.bar", "radio.bar", "retaildemo.bar", "nuance_common.bar"]
+        assert bs.purge_dross(apps) == apps[:2]
+
+    def test_blitz_links(self):
+        """
+        Test creating blitz links.
+        """
+        with mock.patch('bbarchivist.networkutils.create_base_url',
+                        mock.MagicMock(return_value="abacab")):
+            links = bs.generate_blitz_links([], "10.2.2.2222",
+                                            "10.3.3.3333", "10.4.4.4444")
+            assert len(links) == 10
+
+    def test_cchecker_export_none(self, capsys):
+        """
+        Test exporting links, with no links to export.
+        """
+        bs.export_cchecker(None, None, None, None, None, None)
+        assert "NO SOFTWARE RELEASE" in capsys.readouterr()[0]
+
+    def test_cchecker_export_upgrade(self):
+        """
+        Test exporting links, with upgrade files.
+        """
+        with mock.patch('bbarchivist.networkutils.get_length', mock.MagicMock(return_value=12345)):
+            bs.export_cchecker(["http://sn.ek"], None, None, "10.1.1.1111",
+                               "10.2.2.2222", "10.3.3.3333", True, None)
+            with open("10.3.3.3333plusapps.txt", "r") as afile:
+                assert len(afile.read()) == 2926
+
+    def test_cchecker_export_debrick(self):
+        """
+        Test exporting links, having to find upgrade files.
+        """
+        snek = Dummy()
+        with mock.patch('requests.head', mock.MagicMock(return_value=snek)):
+            bs.export_cchecker(["http://sn.ek"], "123456", "8500090A", "10.1.1.1111",
+                                "10.2.2.2222", "10.3.3.3334", False, None)
+            with open("10.3.3.3334plusapps.txt", "r") as afile:
+                assert len(afile.read()) == 2933
 
 
 class TestClassScriptutilsSoftware:
