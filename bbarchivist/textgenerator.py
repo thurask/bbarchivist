@@ -6,7 +6,7 @@ from bbarchivist.utilities import fsizer, generate_urls, stripper  # utils
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "Copyright 2015 Thurask"
+__copyright__ = "Copyright 2015-2016 Thurask"
 
 
 def system_link_writer(target, urls, avlty=False):
@@ -51,7 +51,7 @@ def app_link_writer(target, urls):
 
 def write_links(softwareversion, osversion, radioversion,
                 osurls, coreurls, radiourls, avlty=False,
-                appendbars=False, appurls=None, temp=False):
+                appendbars=False, appurls=None, temp=False, altsw=None):
     """
     Write lookup links to file. Check for availability, can include app bars.
 
@@ -84,6 +84,9 @@ def write_links(softwareversion, osversion, radioversion,
 
     :param temp: If file we write to is temporary.
     :type temp: bool
+
+    :param altsw: Radio software release version, if different.
+    :type altsw: str
     """
     thename = softwareversion
     if appendbars:
@@ -94,6 +97,8 @@ def write_links(softwareversion, osversion, radioversion,
         target.write("OS VERSION: " + osversion + "\n")
         target.write("RADIO VERSION: " + radioversion + "\n")
         target.write("SOFTWARE RELEASE: " + softwareversion + "\n")
+        if altsw is not None:
+            target.write("RADIO SOFTWARE RELEASE: " + altsw + "\n")
         if not avlty:
             target.write("\n!!EXISTENCE NOT GUARANTEED!!\n")
         target.write("\nDEBRICK URLS:\n")

@@ -14,6 +14,10 @@ import pytest
 import bbarchivist.barutils as bb
 from bbarchivist.utilities import prep_seven_zip, get_seven_zip
 
+__author__ = "Thurask"
+__license__ = "WTFPL v2"
+__copyright__ = "Copyright 2015-2016 Thurask"
+
 
 def setup_module(module):
     """

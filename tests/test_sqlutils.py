@@ -13,6 +13,10 @@ import pytest
 import bbarchivist.sqlutils as bs
 from bbarchivist.utilities import file_exists
 
+__author__ = "Thurask"
+__license__ = "WTFPL v2"
+__copyright__ = "Copyright 2015-2016 Thurask"
+
 
 def setup_module(module):
     """

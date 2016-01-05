@@ -13,7 +13,7 @@ from bbarchivist import filehashtools  # hashes, GPG
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "Copyright 2015 Thurask"
+__copyright__ = "Copyright 2015-2016 Thurask"
 
 
 @utilities.timer
@@ -169,23 +169,27 @@ def questionnaire():
     Questions to ask if no arguments given.
     """
     localdir = os.getcwd()
-    osversion = input("OS VERSION: ")
-    radioversion = input("RADIO VERSION: ")
-    softwareversion = input("SOFTWARE RELEASE: ")
-    altcheck = utilities.s2b(input("HYBRID AUTOLOADER (Y/N)?: "))
+    osversion = input("OS VERSION (REQUIRED): ")
+    radioversion = input("RADIO VERSION (PRESS ENTER TO GUESS): ")
+    if not radioversion:
+        radioversion = None
+    softwareversion = input("OS SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
+    if not softwareversion:
+        softwareversion = None
+    altcheck = utilities.s2b(input("USING ALTERNATE RADIO (Y/N)?: "))
     if altcheck:
         altsw = input("RADIO SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
         if not altsw:
             altsw = "checkme"
     else:
         altsw = None
-    radios = utilities.s2b(input("CREATE RADIO LOADERS? Y/N: "))
-    compressed = utilities.s2b(input("COMPRESS LOADERS? Y/N: "))
+    radios = utilities.s2b(input("CREATE RADIO LOADERS (Y/N)?: "))
+    compressed = utilities.s2b(input("COMPRESS LOADERS (Y/N)?: "))
     if compressed:
-        deleted = utilities.s2b(input("DELETE UNCOMPRESSED? Y/N: "))
+        deleted = utilities.s2b(input("DELETE UNCOMPRESSED LOADERS (Y/N)?: "))
     else:
         deleted = False
-    hashed = utilities.s2b(input("GENERATE HASHES? Y/N: "))
+    hashed = utilities.s2b(input("GENERATE HASHES (Y/N)?: "))
     if getattr(sys, 'frozen', False):
         hashdict = filehashtools.verifier_config_loader(os.getcwd())
         compmethod = "7z"
@@ -196,8 +200,9 @@ def questionnaire():
     print(" ")
     archivist_main(osversion, radioversion, softwareversion,
                    localdir, radios, compressed, deleted, hashed,
-                   hashdict, download=True, extract=True, signed=True, compmethod=compmethod,
-                   gpg=False, integrity=True, altsw=None, core=False)
+                   hashdict, download=True, extract=True, signed=True,
+                   compmethod=compmethod, gpg=False, integrity=True,
+                   altsw=None, core=False)
 
 
 def archivist_main(osversion, radioversion=None, softwareversion=None,

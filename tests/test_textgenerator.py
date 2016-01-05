@@ -70,7 +70,8 @@ class TestClassTextGenerator:
         Test writing URLs to file.
         """
         bt.write_links("10.3.3000", "10.1.1000", "10.2.2000",
-                       self.deb, self.cor, self.rad, True, False, None, False)
+                       self.deb, self.cor, self.rad,
+                       True, False, None, False, None)
         with open("10.3.3000.txt", 'rb') as file:
             data = file.read()
             data = data.replace(b"\r", b"")
@@ -81,7 +82,8 @@ class TestClassTextGenerator:
         Test writing URLs, to file, if file existence not guaranteed.
         """
         bt.write_links("10.3.3000", "10.1.1000", "10.2.2000",
-                       self.deb, self.cor, self.rad, False, False, None, False)
+                       self.deb, self.cor, self.rad,
+                       False, False, None, False, None)
         with open("10.3.3000.txt", 'rb') as file:
             data = file.read()
             data = data.replace(b"\r", b"")
@@ -94,8 +96,9 @@ class TestClassTextGenerator:
         apps = ["http://APP#1.bar", "http://APP#2.bar", "http://APP#3.bar"]
         with httmock.HTTMock(cl_good_mock):
             bt.write_links("10.3.3000", "10.1.1000", "10.2.2000",
-                           self.deb, self.cor, self.rad, True, True, apps, True)
+                           self.deb, self.cor, self.rad,
+                           True, True, apps, True, "10.4.4.4000")
         with open("TEMPFILE.txt", 'rb') as file:
             data = file.read()
             data = data.replace(b"\r", b"")
-            assert len(data) == 3024
+            assert len(data) == 3060

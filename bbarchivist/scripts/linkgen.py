@@ -9,7 +9,7 @@ from bbarchivist import textgenerator  # actually writing
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "Copyright 2015 Thurask"
+__copyright__ = "Copyright 2015-2016 Thurask"
 
 
 def grab_args():
@@ -57,17 +57,20 @@ def questionnaire():
     """
     Questions to ask if no arguments given.
     """
-    osversion = input("OS VERSION: ")
-    radioversion = input("RADIO VERSION: ")
-    softwareversion = input("SOFTWARE RELEASE: ")
-    print(" ")
+    osversion = input("OS VERSION (REQUIRED): ")
+    radioversion = input("RADIO VERSION (PRESS ENTER TO GUESS): ")
+    softwareversion = input("OS SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
     if not radioversion:
         radioversion = None
+        usealt = False
+    else:
+        usealt = utilities.s2b(input("ALTERNATE RADIO (Y/N)?: "))
     if not softwareversion:
         softwareversion = None
-    usealt = utilities.s2b(input("USE ALTERNATE RADIO? Y/N: "))
     if usealt:
-        altsw = input("RADIO SOFTWARE RELEASE: ")
+        altsw = input("RADIO SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
+        if not altsw:
+            altsw = "checkme"
     else:
         altsw = None
     linkgen_main(
@@ -102,14 +105,16 @@ def linkgen_main(osversion, radioversion=None,
     softwareversion, swc = scriptutils.return_sw_checked(softwareversion,
                                                          osversion)
     del swc
+    if altsw is not None:
+        altsw, aswc = scriptutils.return_radio_sw_checked(altsw, radioversion)
+        del aswc
     baseurl = networkutils.create_base_url(softwareversion)
 
     # List of debrick urls
     oses, cores, radios = textgenerator.url_gen(osversion,
                                                 radioversion,
                                                 softwareversion)
-
-    if altsw:
+    if altsw is not None:
         del radios
         dbks, cors, radios = textgenerator.url_gen(osversion,
                                                    radioversion,
@@ -120,7 +125,7 @@ def linkgen_main(osversion, radioversion=None,
     avlty = networkutils.availability(baseurl)
     textgenerator.write_links(softwareversion, osversion, radioversion,
                               oses, cores, radios,
-                              avlty, False, None, temp)
+                              avlty, False, None, temp, altsw)
 
 
 if __name__ == "__main__":

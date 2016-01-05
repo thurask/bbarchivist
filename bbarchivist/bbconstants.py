@@ -6,7 +6,7 @@ import os.path  # for producing cap location constant
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "Copyright 2015 Thurask"
+__copyright__ = "Copyright 2015-2016 Thurask"
 
 #: App version.
 VERSION = "2.3.0"

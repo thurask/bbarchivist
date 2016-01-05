@@ -14,7 +14,7 @@ from bbarchivist import scriptutils  # default parser
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "Copyright 2015 Thurask"
+__copyright__ = "Copyright 2015-2016 Thurask"
 
 
 def grab_args():
@@ -68,6 +68,12 @@ def grab_args():
             help="Create blitz package",
             action="store_true",
             default=False)
+        parser.add_argument(
+            "--selective",
+            dest="selective",
+            help="Skip Nuance/retaildemo",
+            action="store_true",
+            default=False)
         fgroup = parser.add_mutually_exclusive_group()
         fgroup.add_argument(
             "-s", "--software-release",
@@ -114,48 +120,63 @@ def grab_args():
             args.export,
             args.blitz,
             args.bundles,
-            forced)
+            forced,
+            args.selective)
     else:
-        while True:
-            mcc = int(input("MCC: "))
-            if mcc == utilities.valid_carrier(mcc):
-                break
-        while True:
-            mnc = int(input("MNC: "))
-            if mnc == utilities.valid_carrier(mnc):
-                break
-        device = input("DEVICE (SXX100-#): ")
-        bundles = utilities.s2b(input("CHECK BUNDLES?: "))
-        if bundles:
-            download = False
-            upgrade = False
-            export = False
-            blitz = False
-        else:
-            export = utilities.s2b(input("EXPORT TO FILE?: "))
-            download = utilities.s2b(input("DOWNLOAD?: "))
-            if download:
-                upgrade = utilities.s2b(input("UPGRADE BARS?: "))
-                if upgrade:
-                    blitz = utilities.s2b(input("CREATE BLITZ?: "))
-                else:
-                    blitz = False
-            else:
-                upgrade = False
-                blitz = False
-        directory = os.getcwd()
-        print(" ")
-        carrierchecker_main(
-            mcc,
-            mnc,
-            device,
-            download,
-            upgrade,
-            directory,
-            export,
-            blitz,
-            None)
+        questionnaire()
     scriptutils.enter_to_exit(True)
+
+
+def questionnaire():
+    """
+    Questions to ask if no arguments given.
+    """
+    while True:
+        mcc = int(input("MCC: "))
+        if mcc == utilities.valid_carrier(mcc):
+            break
+    while True:
+        mnc = int(input("MNC: "))
+        if mnc == utilities.valid_carrier(mnc):
+            break
+    device = input("DEVICE (SXX100-#): ")
+    if not device:
+        print("NO DEVICE SPECIFIED!")
+        scriptutils.enter_to_exit(True)
+        if not getattr(sys, 'frozen', False):
+            raise SystemExit
+    bundles = utilities.s2b(input("CHECK BUNDLES?: "))
+    if bundles:
+        download = False
+        upgrade = False
+        export = False
+        blitz = False
+    else:
+        export = utilities.s2b(input("EXPORT TO FILE?: "))
+        download = utilities.s2b(input("DOWNLOAD?: "))
+        if download:
+            upgrade = utilities.s2b(input("Y=UPGRADE BARS, N=DEBRICK BARS?: "))
+            if upgrade:
+                blitz = utilities.s2b(input("CREATE BLITZ?: "))
+            else:
+                blitz = False
+        else:
+            upgrade = False
+            blitz = False
+    directory = os.getcwd()
+    print(" ")
+    carrierchecker_main(
+        mcc,
+        mnc,
+        device,
+        download,
+        upgrade,
+        directory,
+        export,
+        blitz,
+        bundles,
+        None,
+        False)
 
 
 def carrierchecker_main(mcc, mnc, device,
@@ -164,7 +185,8 @@ def carrierchecker_main(mcc, mnc, device,
                         export=False,
                         blitz=False,
                         bundles=False,
-                        forced=None):
+                        forced=None,
+                        selective=False):
     """
     Wrap around :mod:`bbarchivist.networkutils` carrier checking.
 
@@ -197,6 +219,9 @@ def carrierchecker_main(mcc, mnc, device,
 
     :param forced: Force a software release. None to go for latest.
     :type forced: str
+
+    :param selective: Whether or not to exclude Nuance/other dross. Default is false.
+    :type selective: bool
     """
     device = device.upper()
     if directory is None:
@@ -235,33 +260,12 @@ def carrierchecker_main(mcc, mnc, device,
         print("SOFTWARE RELEASE:", swv)
         print("OS VERSION:", osv)
         print("RADIO VERSION:", radv)
+        if selective:
+            files = scriptutils.purge_dross(files)
         if export:
             print("\nEXPORTING...")
-            if files:
-                if not upgrade:
-                    npc = networkutils.return_npc(mcc, mnc)
-                    newfiles = networkutils.carrier_update_request(npc,
-                                                                   hwid,
-                                                                   True,
-                                                                   False,
-                                                                   forced)
-                    cleanfiles = newfiles[3]
-                else:
-                    cleanfiles = files
-                osurls, coreurls, radiourls = textgenerator.url_gen(osv,
-                                                                    radv,
-                                                                    swv)
-                finalfiles = []
-                stoppers = ["8960", "8930", "8974", "m5730", "winchester"]
-                for link in cleanfiles:
-                    if all(word not in link for word in stoppers):
-                        finalfiles.append(link)
-                textgenerator.write_links(swv, osv, radv,
-                                          osurls, coreurls, radiourls,
-                                          True, True, finalfiles)
-                print("\nFINISHED!!!")
-            else:
-                print("CANNOT EXPORT, NO SOFTWARE RELEASE")
+            npc = networkutils.return_npc(mcc, mnc)
+            scriptutils.export_cchecker(files, npc, hwid, osv, radv, swv, upgrade, forced)
         if download:
             if blitz:
                 bardir = os.path.join(directory, swv + "-BLITZ")
@@ -270,65 +274,10 @@ def carrierchecker_main(mcc, mnc, device,
             if not os.path.exists(bardir):
                 os.makedirs(bardir)
             if blitz:
-                baseurl = networkutils.create_base_url(swv)
-                coreurls = [baseurl + "/winchester.factory_sfi-" +
-                            osv + "-nto+armle-v7+signed.bar",
-                            baseurl + "/qc8960.factory_sfi-" +
-                            osv + "-nto+armle-v7+signed.bar",
-                            baseurl + "/qc8960.factory_sfi_hybrid_qc8x30-" +
-                            osv + "-nto+armle-v7+signed.bar",
-                            baseurl + "/qc8960.factory_sfi_hybrid_qc8974-" +
-                            osv + "-nto+armle-v7+signed.bar"]
-                for i in coreurls:
-                    files.append(i)
-                # List of radio urls
-                radiourls = [baseurl + "/m5730-" + radv +
-                             "-nto+armle-v7+signed.bar",
-                             baseurl + "/qc8960-" + radv +
-                             "-nto+armle-v7+signed.bar",
-                             baseurl + "/qc8960.wtr-" + radv +
-                             "-nto+armle-v7+signed.bar",
-                             baseurl + "/qc8960.wtr5-" +
-                             radv + "-nto+armle-v7+signed.bar",
-                             baseurl + "/qc8930.wtr5-" + radv +
-                             "-nto+armle-v7+signed.bar",
-                             baseurl + "/qc8974.wtr2-" + radv +
-                             "-nto+armle-v7+signed.bar"]
-                for i in radiourls:
-                    files.append(i)
+                files = scriptutils.generate_blitz_links(files, osv, radv, swv)
             print("\nDOWNLOADING...")
             networkutils.download_bootstrap(files, outdir=bardir)
-            # integrity check
-            brokenlist = []
-            print("\nTESTING...")
-            for file in os.listdir(bardir):
-                if file.endswith(".bar"):
-                    print("TESTING:", file)
-                    thepath = os.path.abspath(os.path.join(bardir, file))
-                    brokens = barutils.bar_tester(thepath)
-                    if brokens is not None:
-                        os.remove(brokens)
-                        for url in files:
-                            if brokens in url:
-                                brokenlist.append(url)
-            if brokenlist:
-                if len(brokenlist) > 5:
-                    workers = 5
-                else:
-                    workers = len(brokenlist)
-                print("\nREDOWNLOADING BROKEN FILES...")
-                networkutils.download_bootstrap(brokenlist,
-                                                outdir=bardir,
-                                                workers=workers)
-                for file in os.listdir(bardir):
-                    if file.endswith(".bar"):
-                        thepath = os.path.abspath(os.path.join(bardir, file))
-                        brokens = barutils.bar_tester(thepath)
-                        if brokens is not None:
-                            print(file, "STILL BROKEN")
-                            raise SystemExit
-            else:
-                print("\nALL FILES DOWNLOADED OK")
+            scriptutils.test_bar_files(bardir, files)
             if blitz:
                 print("\nCREATING BLITZ...")
                 barutils.create_blitz(bardir, swv)

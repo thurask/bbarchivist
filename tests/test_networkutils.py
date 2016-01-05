@@ -8,6 +8,10 @@ import httmock
 import requests
 import bbarchivist.networkutils as bn
 
+__author__ = "Thurask"
+__license__ = "WTFPL v2"
+__copyright__ = "Copyright 2015-2016 Thurask"
+
 
 def setup_module(module):
     """

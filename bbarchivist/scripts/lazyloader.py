@@ -15,7 +15,7 @@ from bbarchivist import loadergen  # cap wrapper
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "Copyright 2015 Thurask"
+__copyright__ = "Copyright 2015-2016 Thurask"
 
 
 @utilities.timer
@@ -158,51 +158,41 @@ def questionnaire():
     """
     localdir = os.getcwd()
     while True:
-        osversion = input("OS VERSION: ")
+        osversion = input("OS VERSION (REQUIRED): ")
         if osversion:
             break
-    print("OS:", osversion)
     radioversion = input("RADIO VERSION (PRESS ENTER TO GUESS): ")
-    if not radioversion:
-        radioversion = None
-    else:
-        print("RADIO:", radioversion)
-    softwareversion = input("SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
+    softwareversion = input("OS SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
     if not softwareversion:
         softwareversion = None
-    else:
-        print("SOFTWARE RELEASE:", softwareversion)
-    altcheck = utilities.s2b(input("HYBRID AUTOLOADER (Y/N)?: "))
-    if altcheck:
-        print("CREATING HYBRID AUTOLOADER")
-        altsw = input("RADIO SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
-        if altsw:
-            print("RADIO SOFTWARE RELEASE:", altsw)
-        else:
-            altsw = "checkme"
-    else:
+    if not radioversion:
+        radioversion = None
+        altcheck = False
         altsw = None
+    else:
+        altcheck = utilities.s2b(input("USING ALTERNATE RADIO (Y/N)?: "))
+        if altcheck:
+            altsw = input("RADIO SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
+            if not altsw:
+                altsw = "checkme"
     print("DEVICES:")
-    inputlist = ["0=STL100-1",
-                 "1=STL100-2/3/P9982",
-                 "2=STL100-4",
-                 "3=Q10/Q5/P9983",
-                 "4=Z30/CLASSIC/LEAP",
-                 "5=Z3",
-                 "6=PASSPORT"]
-    pprint.pprint(inputlist)
+    devlist = ["0=STL100-1",
+               "1=STL100-2/3/P9982",
+               "2=STL100-4",
+               "3=Q10/Q5/P9983",
+               "4=Z30/CLASSIC/LEAP",
+               "5=Z3",
+               "6=PASSPORT"]
+    pprint.pprint(devlist)
     while True:
         device = int(input("SELECTED DEVICE: "))
-        if not 0 <= device <= len(inputlist) - 1:
+        if not 0 <= device <= len(devlist) - 1:
             continue
         else:
-            print("DEVICE:", bbconstants.DEVICES[device])
             break
     if utilities.is_windows():
         autoloader = utilities.s2b(
-            input("RUN AUTOLOADER (WILL WIPE YOUR DEVICE!)(Y/N)?: "))
-        if autoloader:
-            print("RUN AUTOLOADER AFTER CREATION")
+            input("RUN AUTOLOADER - WILL WIPE YOUR DEVICE! (Y/N)?: "))
     else:
         autoloader = False
     print(" ")

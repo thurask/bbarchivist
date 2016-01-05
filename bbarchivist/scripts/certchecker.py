@@ -9,7 +9,7 @@ from bbarchivist import scriptutils  # default parser
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "Copyright 2015 Thurask"
+__copyright__ = "Copyright 2015-2016 Thurask"
 
 
 def grab_args():
@@ -76,6 +76,11 @@ def grab_args():
             certchecker_main(args.device)
     else:
         device = input("DEVICE (SXX100-#/FCCID/HWID): ")
+        if not device:
+            print("NO DEVICE SPECIFIED!")
+            scriptutils.enter_to_exit(True)
+            if not getattr(sys, 'frozen', False):
+                raise SystemExit
         print(" ")
         certchecker_main(device)
         scriptutils.enter_to_exit(True)

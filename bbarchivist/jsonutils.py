@@ -4,11 +4,13 @@
 import os  # path work
 import json  # duh
 import glob  # filenames
+import sys  # frozen status
 from bbarchivist import bbconstants  # file location
+from bbarchivist import scriptutils  # enter to exit
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "Copyright 2015 Thurask"
+__copyright__ = "Copyright 2015-2016 Thurask"
 
 
 def grab_json():
@@ -62,7 +64,9 @@ def extract_cert(table, device):
             break
     else:
         print("NO PTCRB ID!")
-        raise SystemExit
+        scriptutils.enter_to_exit(True)
+        if not getattr(sys, 'frozen', False):
+            raise SystemExit
     return name, ptcrbid, hwid, fccid
 
 

@@ -11,10 +11,11 @@ from bbarchivist import barutils  # file system work
 from bbarchivist import bbconstants  # constants
 from bbarchivist import filehashtools  # gpg
 from bbarchivist import networkutils  # network tools
+from bbarchivist import textgenerator  # writing text to file
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "Copyright 2015 Thurask"
+__copyright__ = "Copyright 2015-2016 Thurask"
 
 
 def default_parser(name=None, desc=None):
@@ -392,6 +393,110 @@ def enter_to_exit(checkfreeze=True):
         smeg = input("Press Enter to exit")
         if smeg or not smeg:
             raise SystemExit
+
+
+def export_cchecker(files, npc, hwid, osv, radv, swv, upgrade=False, forced=None):
+    """
+    Write carrierchecker lookup links to file.
+
+    :param files: List of file URLs.
+    :type files: list(str)
+
+    :param npc: MCC + MNC (ex. 302220).
+    :type npc: int
+
+    :param hwid: Device hardware ID.
+    :type hwid: str
+
+    :param osv: OS version.
+    :type osv: str
+
+    :param radv: Radio version.
+    :type radv: str
+
+    :param swv: Software release.
+    :type swv: str
+
+    :param upgrade: Whether or not to use upgrade files. Default is false.
+    :type upgrade: bool
+
+    :param forced: Force a software release. None to go for latest.
+    :type forced: str
+    """
+    if files:
+        if not upgrade:
+            newfiles = networkutils.carrier_update_request(npc, hwid, True, False, forced)
+            cleanfiles = newfiles[3]
+        else:
+            cleanfiles = files
+        osurls, coreurls, radiourls = textgenerator.url_gen(osv, radv, swv)
+        stoppers = ["8960", "8930", "8974", "m5730", "winchester"]
+        finalfiles = [link for link in cleanfiles if all(word not in link for word in stoppers)]
+        textgenerator.write_links(swv, osv, radv, osurls, coreurls, radiourls, True, True, finalfiles)
+        print("\nFINISHED!!!")
+    else:
+        print("CANNOT EXPORT, NO SOFTWARE RELEASE")
+
+
+def generate_blitz_links(files, osv, radv, swv):
+    """
+    Generate blitz URLs (i.e. all OS and radio links).
+    :param files: List of file URLs.
+    :type files: list(str)
+
+    :param osv: OS version.
+    :type osv: str
+
+    :param radv: Radio version.
+    :type radv: str
+
+    :param swv: Software release.
+    :type swv: str
+    """
+    baseurl = networkutils.create_base_url(swv)
+    coreurls = [baseurl + "/winchester.factory_sfi-" +
+                osv + "-nto+armle-v7+signed.bar",
+                baseurl + "/qc8960.factory_sfi-" +
+                osv + "-nto+armle-v7+signed.bar",
+                baseurl + "/qc8960.factory_sfi_hybrid_qc8x30-" +
+                osv + "-nto+armle-v7+signed.bar",
+                baseurl + "/qc8960.factory_sfi_hybrid_qc8974-" +
+                osv + "-nto+armle-v7+signed.bar"]
+    for i in coreurls:
+        files.append(i)
+    radiourls = [baseurl + "/m5730-" + radv +
+                 "-nto+armle-v7+signed.bar",
+                 baseurl + "/qc8960-" + radv +
+                 "-nto+armle-v7+signed.bar",
+                 baseurl + "/qc8960.wtr-" + radv +
+                 "-nto+armle-v7+signed.bar",
+                 baseurl + "/qc8960.wtr5-" +
+                 radv + "-nto+armle-v7+signed.bar",
+                 baseurl + "/qc8930.wtr5-" + radv +
+                 "-nto+armle-v7+signed.bar",
+                 baseurl + "/qc8974.wtr2-" + radv +
+                 "-nto+armle-v7+signed.bar"]
+    for i in radiourls:
+        files.append(i)
+    return files
+
+
+def purge_dross(files):
+    """
+    Get rid of Nuance/retaildemo apps in a list of apps.
+
+    :param files: List of URLs.
+    :type files: list(str)
+    """
+    crap = ["sin_ji", "common", "xander", "kate", "ava", "amelie", "thomas",
+            "anna", "alice", "kyoko", "sora", "li_li", "mei_jia", "nora",
+            "zosia", "luciana", "joana", "milena", "marisol", "angelica",
+            "arw", "bgb", "cah", "czc", "dad", "dun", "ena", "eni", "fif",
+            "frc", "frf", "ged", "grg", "iti", "jpj", "kok", "mnc", "mnt",
+            "non", "plp", "ptb", "ptp", "rur", "spe", "spm", "sws", "trt",
+            "retaildemo"]
+    files2 = [file for file in files if all(word not in file for word in crap)]
+    return files2
 
 
 def verify_gpg_credentials():
