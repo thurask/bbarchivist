@@ -158,7 +158,6 @@ def autolookup_main(osversion, loop=False, log=False,
     else:
         record = None
     while True:
-        swrelease = ""
         print("NOW SCANNING:", osversion, end="\r")
         results = networkutils.sr_lookup_bootstrap(osversion)
         if results is None:
@@ -167,7 +166,7 @@ def autolookup_main(osversion, loop=False, log=False,
         a2rel, a2av = networkutils.clean_availability(results, 'a2')
         b1rel, b1av = networkutils.clean_availability(results, 'b1')
         b2rel, b2av = networkutils.clean_availability(results, 'b2')
-        prel, pav, avail = scriptutils.prod_avail(results, autogen, mailer, osversion, pword)
+        prel, pav, avail = scriptutils.prod_avail(results, mailer, osversion, pword)
         avpack = (a1av, a2av, b1av, b2av, pav)
         swrelease = scriptutils.clean_swrel(set([a1rel, a2rel, b1rel, b2rel, prel]))
         if swrelease != "":

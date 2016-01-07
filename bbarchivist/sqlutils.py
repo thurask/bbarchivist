@@ -120,13 +120,12 @@ def export_sql_db():
     """
     Export main SQL database into a CSV file.
     """
-    thepath = os.path.expanduser("~")
-    sqlpath = os.path.join(thepath, "bbarchivist.db")
+    sqlpath = os.path.join(os.path.expanduser("~"), "bbarchivist.db")
     if os.path.exists(sqlpath):
         try:
             cnxn = sqlite3.connect(prepare_path())
             with cnxn:
-                csvpath = os.path.join(thepath, "swrelease.csv")
+                csvpath = os.path.join(os.path.expanduser("~"), "swrelease.csv")
                 csvw = csv.writer(open(csvpath, "w"), dialect='excel')
                 crs = cnxn.cursor()
                 crs.execute("SELECT Os,Software,Available,Date FROM Swrelease")
@@ -145,8 +144,7 @@ def list_sw_releases():
     """
     Return every SW/OS pair in the database.
     """
-    thepath = os.path.expanduser("~")
-    sqlpath = os.path.join(thepath, "bbarchivist.db")
+    sqlpath = os.path.join(os.path.expanduser("~"), "bbarchivist.db")
     if os.path.exists(sqlpath):
         try:
             cnxn = sqlite3.connect(prepare_path())

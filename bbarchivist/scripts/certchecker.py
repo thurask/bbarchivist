@@ -96,7 +96,7 @@ def certchecker_main(device):
     data = jsonutils.load_json('devices')
     device = device.upper()
     name, ptcrbid, hwid, fccid = jsonutils.extract_cert(data, device)
-    print("~~~CERTCHECKER VERSION", bbconstants.VERSION + "~~~")
+    print("~~~CERTCHECKER VERSION {0}~~~".format(bbconstants.VERSION))
     print("DEVICE: {0}".format(device.upper()))
     print("VARIANT: {0}".format(name.upper()))
     if hwid:

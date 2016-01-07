@@ -225,8 +225,7 @@ def carrierchecker_main(mcc, mnc, device,
         directory = os.getcwd()
     data = jsonutils.load_json('devices')
     model, family, hwid = jsonutils.certchecker_prep(data, device)
-    version = bbconstants.VERSION
-    print("~~~CARRIERCHECKER VERSION", version + "~~~")
+    print("~~~CARRIERCHECKER VERSION {0}~~~".format(bbconstants.VERSION))
     country, carrier = networkutils.carrier_checker(mcc, mnc)
     print("COUNTRY:", country.upper())
     print("CARRIER:", carrier.upper())

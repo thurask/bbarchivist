@@ -39,10 +39,7 @@ def where_which(path):
     try:
         from shutil import which
     except ImportError:
-        try:
-            from shutilwhich import which
-        except ImportError:
-            raise SystemExit
+        from shutilwhich import which
     finally:
         thepath = which(path)
     return thepath

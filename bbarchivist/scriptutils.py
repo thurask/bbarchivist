@@ -442,8 +442,6 @@ def prod_avail(results, mailer=False, osversion=None, password=None):
             if mailer:
                 sqlutils.prepare_sw_db()
                 if not sqlutils.check_exists(osversion, prel):
-                    rad = utilities.increment(osversion, 1)
-                    linkgen.linkgen_main(osversion, rad, prel, temp=True)
                     smtputils.prep_email(osversion, prel, password)
         else:
             is_avail = "Unavailable"
