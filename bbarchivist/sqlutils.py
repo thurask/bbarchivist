@@ -132,7 +132,7 @@ def export_sql_db():
                 crs.execute("SELECT Os,Software,Available,Date FROM Swrelease")
                 rows = crs.fetchall()
                 sortedrows = sorted(rows, key=operator.itemgetter(0))
-                csvw.writerow(('OS Version', 'Software Release', 'Available', 'First Added'))
+                csvw.writerow(('OS Version', 'Software Release', 'Available', 'Date Modified'))
                 csvw.writerows(sortedrows)
         except sqlite3.Error as sqerror:
             print(str(sqerror))
