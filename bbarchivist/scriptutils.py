@@ -497,8 +497,24 @@ def autolookup_printer(out, avail, log=False, quiet=False, record=None):
         print(out)
 
 
-def autolookup_output(osversion, swrelease, avail, avpack, quiet=False, sql=False):
+def autolookup_output(osversion, swrelease, avail, avpack, sql=False):
     """
+    Prepare autolookup block, and add to SQL database.
+
+    :param osversion: OS version.
+    :type osversion: str
+
+    :param swrelease: Software release.
+    :type swrelease: str
+
+    :param avail: "Unavailable" or "Available".
+    :type avail: str
+
+    :param avpack: Availabilities: alpha 1 and 2, beta 1 and 2, production.
+    :type avpack: list(str)
+
+    :param sql: If we're adding this to our SQL database.
+    :type sql: bool
     """
     if sql:
         sqlutils.prepare_sw_db()

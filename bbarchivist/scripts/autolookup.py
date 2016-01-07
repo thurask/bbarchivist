@@ -171,7 +171,7 @@ def autolookup_main(osversion, loop=False, log=False,
         avpack = (a1av, a2av, b1av, b2av, pav)
         swrelease = scriptutils.clean_swrel(set([a1rel, a2rel, b1rel, b2rel, prel]))
         if swrelease != "":
-            out = scriptutils.autolookup_output(osversion, swrelease, avail, avpack, quiet, sql)
+            out = scriptutils.autolookup_output(osversion, swrelease, avail, avpack, sql)
             scriptutils.autolookup_printer(out, avail, log, quiet, record)
         if autogen and avail == "Available":
             rad = utilities.increment(osversion, 1)
