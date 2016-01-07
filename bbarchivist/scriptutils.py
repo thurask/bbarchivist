@@ -13,6 +13,8 @@ from bbarchivist import bbconstants  # constants
 from bbarchivist import filehashtools  # gpg
 from bbarchivist import networkutils  # network tools
 from bbarchivist import textgenerator  # writing text to file
+from bbarchivist import smtputils  # email
+from bbarchivist import sqlutils  # sql
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -412,6 +414,99 @@ def enter_to_exit(checkfreeze=True):
         smeg = input("Press Enter to exit")
         if smeg or not smeg:
             raise SystemExit
+
+
+def prod_avail(results, mailer=False, osversion=None, password=None):
+    """
+    Clean availability for production lookups for autolookup script.
+
+    :param results: Result dict.
+    :type results: dict(str: str)
+
+    :param mailer: If we're mailing links. Default is false.
+    :type mailer: bool
+
+    :param osversion: OS version.
+    :type osversion: str
+
+    :param password: Email password.
+    :type password: str
+    """
+    prel = results['p']
+    if prel != "SR not in system" and prel is not None:
+        pav = "PD"
+        baseurl = networkutils.create_base_url(prel)
+        avail = networkutils.availability(baseurl)
+        if avail:
+            is_avail = "Available"
+            if mailer:
+                sqlutils.prepare_sw_db()
+                if not sqlutils.check_exists(osversion, prel):
+                    rad = utilities.increment(osversion, 1)
+                    linkgen.linkgen_main(osversion, rad, prel, temp=True)
+                    smtputils.prep_email(osversion, prel, password)
+        else:
+            is_avail = "Unavailable"
+    else:
+        pav = "  "
+        is_avail = "Unavailable"
+    return prel, pav, is_avail
+
+
+def clean_swrel(swrelset):
+    """
+    Clean a list of software release lookups.
+
+    :param swrelset: List of software releases.
+    :type swrelset: set(str)
+    """
+    for i in swrelset:
+        if i != "SR not in system" and i is not None:
+            swrelease = i
+            break
+    else:
+        swrelease = ""
+    return swrelease
+
+
+def autolookup_printer(out, avail, log=False, quiet=False, record=None):
+    """
+    Print autolookup results, logging if specified.
+
+    :param out: Output block.
+    :type out: str
+
+    :param avail: Availability. Can be "Available" or "Unavailable".
+    :type avail: str
+
+    :param log: If we're logging to file.
+    :type log: bool
+
+    :param quiet: If we only note available entries.
+    :type quiet: bool
+
+    :param record: If we're logging, the file to log to.
+    :type record: str
+    """
+    if not quiet:
+        avail = "Available"  # force things
+    if avail == "Available":
+        if log:
+            with open(record, "a") as rec:
+                rec.write(out+"\n")
+        print(out)
+
+
+def autolookup_output(osversion, swrelease, avail, avpack, quiet=False, sql=False):
+    """
+    """
+    if sql:
+        sqlutils.prepare_sw_db()
+        if not sqlutils.check_exists(osversion, swrelease):
+            sqlutils.insert(osversion, swrelease, avail.lower())
+    avblok = "[{0}|{1}|{2}|{3}|{4}]".format(*avpack)
+    out = "OS {0} - SR {1} - {2} - {3}".format(osversion, swrelease, avblok, avail)
+    return out
 
 
 def export_cchecker(files, npc, hwid, osv, radv, swv, upgrade=False, forced=None):

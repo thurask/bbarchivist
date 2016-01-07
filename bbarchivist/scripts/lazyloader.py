@@ -241,9 +241,6 @@ def lazyloader_main(device, osversion, radioversion=None,
     :param core: Whether to create a core/radio loader. Default is false.
     :type core: bool
     """
-    swc = False  # if we checked SW release already
-    if altsw:
-        altchecked = False
     radioversion = scriptutils.return_radio_version(osversion, radioversion)
     softwareversion, swc = scriptutils.return_sw_checked(softwareversion, osversion)
     if altsw == "checkme":

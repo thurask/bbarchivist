@@ -5,10 +5,9 @@ import sys  # load arguments
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import networkutils  # lookup
 from bbarchivist import utilities  # incrementer
-from bbarchivist import sqlutils  # sql db work
-from bbarchivist.scripts import linkgen  # link generator
 from bbarchivist import smtputils  # email
 from bbarchivist import scriptutils  # default parser
+from bbarchivist.scripts import linkgen  # automatic generation
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -149,11 +148,15 @@ def autolookup_main(osversion, loop=False, log=False,
         smtpc = smtputils.smtp_config_loader()
         smtpc = smtputils.smtp_config_generator(smtpc)
         smtpc['homepath'] = None
+        pword = smtpc['password']
         smtputils.smtp_config_writer(**smtpc)
-    print("~~~AUTOLOOKUP VERSION", bbconstants.VERSION + "~~~")
-    print("")
+    else:
+        pword = None
+    print("~~~AUTOLOOKUP VERSION {0}~~~\n".format(bbconstants.VERSION))
     if log:
         record = utilities.prep_logfile()
+    else:
+        record = None
     while True:
         swrelease = ""
         print("NOW SCANNING:", osversion, end="\r")
@@ -164,53 +167,15 @@ def autolookup_main(osversion, loop=False, log=False,
         a2rel, a2av = networkutils.clean_availability(results, 'a2')
         b1rel, b1av = networkutils.clean_availability(results, 'b1')
         b2rel, b2av = networkutils.clean_availability(results, 'b2')
-        prel = results['p']
-        if prel != "SR not in system" and prel is not None:
-            pav = "PD"
-            baseurl = networkutils.create_base_url(prel)
-            # Check availability of software release
-            avail = networkutils.availability(baseurl)
-            if avail:
-                is_avail = "Available"
-                if autogen:
-                    rad = utilities.increment(osversion, 1)
-                    linkgen.linkgen_main(osversion, rad, prel)
-                if mailer:
-                    sqlutils.prepare_sw_db()
-                    if not sqlutils.check_exists(osversion, prel):
-                        rad = utilities.increment(osversion, 1)
-                        linkgen.linkgen_main(osversion, rad, prel, temp=True)
-                        smtputils.prep_email(osversion, prel, smtpc['password'])
-            else:
-                is_avail = "Unavailable"
-        else:
-            pav = "  "
-            is_avail = "Unavailable"
-        swrelset = set([a1rel, a2rel, b1rel, b2rel, prel])
-        for i in swrelset:
-            if i != "SR not in system" and i is not None:
-                swrelease = i
-                break
-        else:
-            swrelease = ""
+        prel, pav, avail = scriptutils.prod_avail(results, autogen, mailer, osversion, pword)
+        avpack = (a1av, a2av, b1av, b2av, pav)
+        swrelease = scriptutils.clean_swrel(set([a1rel, a2rel, b1rel, b2rel, prel]))
         if swrelease != "":
-            if sql:
-                sqlutils.prepare_sw_db()
-                if not sqlutils.check_exists(osversion, swrelease):
-                    sqlutils.insert(osversion, swrelease, is_avail.lower())
-            avblok = "[{0}|{1}|{2}|{3}|{4}]".format(pav, a1av, a2av, b1av, b2av)
-            out = "OS {0} - SR {1} - {2} - {3}".format(osversion, swrelease, avblok, is_avail)
-            if not quiet:
-                if log:
-                    with open(record, "a") as rec:
-                        rec.write(out+"\n")
-                print(out)
-            else:
-                if is_avail == "Available":
-                    if log:
-                        with open(record, "a") as rec:
-                            rec.write(out+"\n")
-                    print(out)
+            out = scriptutils.autolookup_output(osversion, swrelease, avail, avpack, quiet, sql)
+            scriptutils.autolookup_printer(out, avail, log, quiet, record)
+        if autogen and avail == "Available":
+            rad = utilities.increment(osversion, 1)
+            linkgen.linkgen_main(osversion, rad, prel)
         if not loop:
             raise KeyboardInterrupt  # hack, but whatever
         else:
