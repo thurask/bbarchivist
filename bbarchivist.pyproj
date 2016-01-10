@@ -91,6 +91,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="bbarchivist\sqlutils.py" />
+    <Compile Include="download_dats.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="tests\test_barutils.py" />
     <Compile Include="tests\test_filehashtools.py" />
     <Compile Include="tests\test_jsonutils.py">

@@ -26,6 +26,10 @@ CFPFILENAME = "cfp-" + CFPVERSION + ".dat"
 CAPLOCATION = os.path.join(DIRECTORY, CAPFILENAME)
 #: Where cfp.exe is. Should be in site-packages.
 CFPLOCATION = os.path.join(DIRECTORY, CFPFILENAME)
+#: cap filesize.
+CAPSIZE = 9252400
+#: cfp filesize.
+CFPSIZE = 16361984
 #: JSON storage file.
 JSONFILE = os.path.join(DIRECTORY, "bbconstants.json")
 #: Lookup server list.
