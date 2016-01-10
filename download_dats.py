@@ -3,7 +3,6 @@
 
 """Manually download dat files, if Git-LFS isn't working or something."""
 
-import requests
 import os
 from bbarchivist.networkutils import download_bootstrap
 from bbarchivist.bbconstants import CAPSIZE, CFPSIZE, CAPLOCATION, CFPLOCATION
