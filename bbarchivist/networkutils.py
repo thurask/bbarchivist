@@ -346,15 +346,19 @@ def sr_lookup(osver, server):
         req = requests.post(server, headers=header, data=query, timeout=1)
     except (requests.exceptions.Timeout, requests.exceptions.ConnectionError):
         return "SR not in system"
-    root = xml.etree.ElementTree.fromstring(req.text)
-    packages = root.findall('./data/content/')
-    for package in packages:
-        if package.text is not None:
-            match = reg.match(package.text)
-            if match:
-                return package.text
-            else:
-                return "SR not in system"
+    try:
+        root = xml.etree.ElementTree.fromstring(req.text)
+    except xml.etree.ElementTree.ParseError:
+        return "SR not in system"
+    else:
+        packages = root.findall('./data/content/')
+        for package in packages:
+            if package.text is not None:
+                match = reg.match(package.text)
+                if match:
+                    return package.text
+                else:
+                    return "SR not in system"
 
 
 def sr_lookup_bootstrap(osv):
