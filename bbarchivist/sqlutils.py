@@ -140,9 +140,12 @@ def export_sql_db():
         raise SystemExit
 
 
-def list_sw_releases():
+def list_sw_releases(avail=False):
     """
     Return every SW/OS pair in the database.
+
+    :param avail: If we filter out non-available results. Default is false.
+    :type avail: bool
     """
     sqlpath = os.path.join(os.path.expanduser("~"), "bbarchivist.db")
     if os.path.exists(sqlpath):
@@ -150,7 +153,10 @@ def list_sw_releases():
             cnxn = sqlite3.connect(prepare_path())
             with cnxn:
                 crs = cnxn.cursor()
-                crs.execute("SELECT Os,Software,Available,Date FROM Swrelease")
+                query = "SELECT Os,Software,Available,Date FROM Swrelease"
+                if avail:
+                    query += " WHERE Available= 'available'"
+                crs.execute(query)
                 rows = crs.fetchall()
         except sqlite3.Error as sqerror:
             print(str(sqerror))
