@@ -260,10 +260,11 @@ def generate_loaders(
         device = generate_device(radval)
         osname = generate_filename(device, osversion, suffix)
         osfile = filedict[radval]
-        wrap_pseudocap(osname, localdir, osfile, radval)
-        if radios:
-            radname = generate_filename(device, radioversion, "")
-            wrap_pseudocap(radname, localdir, radval)
+        if osfile is not None:
+            wrap_pseudocap(osname, localdir, osfile, radval)
+            if radios:
+                radname = generate_filename(device, radioversion, "")
+                wrap_pseudocap(radname, localdir, radval)
 
 
 def wrap_pseudocap(filename, folder, first, second=None):
