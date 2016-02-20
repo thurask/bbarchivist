@@ -311,7 +311,7 @@ class TestClassFilehashtoolsGPG:
         elif NOGNUPG:
             pass
         else:
-            with mock.patch("bbarchivist.filehashtools.gpgfile", mock.MagicMock(side_effect=Exception)):
+            with mock.patch("concurrent.futures.ThreadPoolExecutor.submit", mock.MagicMock(side_effect=Exception)):
                 with pytest.raises(SystemExit):
                     bf.gpgrunner(os.getcwd(), "12345678", "hunter2", False)
                     assert "SOMETHING WENT WRONG" in capsys.readouterr()[0]

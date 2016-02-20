@@ -7,7 +7,9 @@ import hmac  # escreens is a hmac, news at 11
 import configparser  # config parsing, duh
 import os  # path work
 import gnupg  # interface b/w Python, GPG
+import concurrent.futures  # parallelization
 from bbarchivist import bbconstants  # premade stuff
+from bbarchivist import utilities  # cores
 from bbarchivist.barutils import prepends  # file parsing
 
 __author__ = "Thurask"
@@ -462,7 +464,7 @@ def verifier(workingdir, kwargs=None):
 
 def gpgrunner(workingdir, keyid=None, pword=None, selective=False):
     """
-    Create ASCII-armored PGP signatures for all files in a given directory.
+    Create ASCII-armored PGP signatures for all files in a given directory, in parallel.
 
     :param workingdir: Path containing files you wish to verify.
     :type workingdir: str
@@ -485,21 +487,26 @@ def gpgrunner(workingdir, keyid=None, pword=None, selective=False):
         if not keyid.startswith("0x"):
             keyid = "0x" + keyid.upper()
         dirlist = os.listdir(workingdir)
-        files = (file for file in dirlist if not os.path.isdir(file))
-        for file in files:
-            sup = bbconstants.SUPPS
-            if not file.endswith(sup):
-                aps = bbconstants.ARCSPLUS
-                pfx = bbconstants.PREFIXES
-                if (prepends(file, pfx, aps)) if selective else True:
-                    print("VERIFYING:", str(file))
-                    thepath = os.path.join(workingdir, file)
-                    try:
-                        gpgfile(thepath, gpg, keyid=keyid, passphrase=pword)
-                    except Exception as exc:
-                        print("SOMETHING WENT WRONG")
-                        print(str(exc))
-                        raise SystemExit
+        files = [file for file in dirlist if not os.path.isdir(file)]
+        if len(files) < utilities.enum_cpus():
+            workers = len(files)
+        else:
+            workers = utilities.enum_cpus()
+        with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as xec:
+            for file in files:
+                sup = bbconstants.SUPPS
+                if not file.endswith(sup):
+                    aps = bbconstants.ARCSPLUS
+                    pfx = bbconstants.PREFIXES
+                    if (prepends(file, pfx, aps)) if selective else True:
+                        print("VERIFYING:", str(file))
+                        thepath = os.path.join(workingdir, file)
+                        try:
+                            xec.submit(gpgfile, thepath, gpg, keyid, pword)
+                        except Exception as exc:
+                            print("SOMETHING WENT WRONG")
+                            print(str(exc))
+                            raise SystemExit
 
 
 def gpg_config_loader(homepath=None):
