@@ -53,7 +53,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'bbarchivist'
-copyright = '2015, Thurask'
+copyright = '2015-2016, Thurask'
 author = 'Thurask'
 
 # The version info for the project you're documenting, acts as replacement for

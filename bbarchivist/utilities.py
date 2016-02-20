@@ -673,7 +673,7 @@ def verify_bulk_loaders(a_dir):
     if not is_windows():
         pass
     else:
-        files = (file for file in os.listdir(a_dir) if not os.path.isdir(file))
+        files = [file for file in os.listdir(a_dir) if not os.path.isdir(file)]
         brokens = []
         for file in files:
             if file.endswith(".exe") and file.startswith(bbconstants.PREFIXES):

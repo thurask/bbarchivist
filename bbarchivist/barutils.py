@@ -403,7 +403,7 @@ def verify(thepath, method="7z", szexe=None, selective=False):
     """
     method = filter_method(method, szexe)
     pathlist = [os.path.join(thepath, file) for file in os.listdir(thepath)]
-    files = (file for file in pathlist if not os.path.isdir(file))
+    files = [file for file in pathlist if not os.path.isdir(file)]
     for file in files:
         filt = file.endswith(bbconstants.ARCS)
         if selective:
@@ -565,17 +565,13 @@ def move_loaders(a_dir,
     """
     arx = bbconstants.ARCS
     pfx = bbconstants.PREFIXES
-    loaders = (file for file in os.listdir(a_dir) if prepends(file,
-                                                              pfx,
-                                                              ".exe"))
+    loaders = [file for file in os.listdir(a_dir) if prepends(file, pfx, ".exe")]
     for file in loaders:
         print("MOVING: " + file)
         exedest_os = os.path.join(exedir_os, file)
         exedest_rad = os.path.join(exedir_rad, file)
         loader_sorter(file, exedest_os, exedest_rad)
-    zippeds = (file for file in os.listdir(a_dir) if prepends(file,
-                                                              pfx,
-                                                              arx))
+    zippeds = [file for file in os.listdir(a_dir) if prepends(file, pfx, arx)]
     for file in zippeds:
         print("MOVING: " + file)
         zipdest_os = os.path.join(zipdir_os, file)
