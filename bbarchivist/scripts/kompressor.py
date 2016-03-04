@@ -21,7 +21,7 @@ def kompressor_main():
     parser = scriptutils.default_parser("bb-kompressor",
                                         "Compress files")
     parser.add_argument(
-        "-m"
+        "-m",
         "--method",
         help="Compression method",
         nargs="?",
