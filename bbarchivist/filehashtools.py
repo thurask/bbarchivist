@@ -398,68 +398,43 @@ def verifier(workingdir, kwargs=None):
                     h_r160.append(hash_get(file, hr160, workingdir, block))
                 if kwargs['whirlpool']:
                     h_wp.append(hash_get(file, hwp, workingdir, block))
-                if not kwargs['onefile']:
-                    basename = file + ".cksum"
-                    targetname = os.path.join(workingdir, basename)
-                    with open(targetname, 'w') as target:
-                        if kwargs['adler32']:
-                            target.write("\n".join(h_a32))
-                        if kwargs['crc32']:
-                            target.write("\n".join(h_c32))
-                        if kwargs['md4']:
-                            target.write("\n".join(h_m4))
-                        if kwargs['md5']:
-                            target.write("\n".join(h_m5))
-                        if kwargs['sha1']:
-                            target.write("\n".join(h_s1))
-                        if kwargs['sha224']:
-                            target.write("\n".join(h_s224))
-                        if kwargs['sha256']:
-                            target.write("\n".join(h_s256))
-                        if kwargs['sha384']:
-                            target.write("\n".join(h_s384))
-                        if kwargs['sha512']:
-                            target.write("\n".join(h_s512))
-                        if kwargs['ripemd160']:
-                            target.write("\n".join(h_r160))
-                        if kwargs['whirlpool']:
-                            target.write("\n".join(h_wp))
-                    # reset hashes
-                    h_c32 = hash_reset(h_c32)
-                    h_a32 = hash_reset(h_a32)
-                    h_s1 = hash_reset(h_s1)
-                    h_s224 = hash_reset(h_s224)
-                    h_s256 = hash_reset(h_s256)
-                    h_s384 = hash_reset(h_s384)
-                    h_s512 = hash_reset(h_s512)
-                    h_m5 = hash_reset(h_m5)
-                    h_m4 = hash_reset(h_m4)
-                    h_r160 = hash_reset(h_r160)
-                    h_wp = hash_reset(h_wp)
-        if kwargs['onefile']:
-            with open(os.path.join(workingdir, 'all.cksum'), 'w') as target:
-                if kwargs['adler32']:
-                    target.write("\n".join(h_a32))
-                if kwargs['crc32']:
-                    target.write("\n".join(h_c32))
-                if kwargs['md4']:
-                    target.write("\n".join(h_m4))
-                if kwargs['md5']:
-                    target.write("\n".join(h_m5))
-                if kwargs['sha1']:
-                    target.write("\n".join(h_s1))
-                if kwargs['sha224']:
-                    target.write("\n".join(h_s224))
-                if kwargs['sha256']:
-                    target.write("\n".join(h_s256))
-                if kwargs['sha384']:
-                    target.write("\n".join(h_s384))
-                if kwargs['sha512']:
-                    target.write("\n".join(h_s512))
-                if kwargs['ripemd160']:
-                    target.write("\n".join(h_r160))
-                if kwargs['whirlpool']:
-                    target.write("\n".join(h_wp))
+                basename = file + ".cksum"
+                targetname = os.path.join(workingdir, basename)
+                with open(targetname, 'w') as target:
+                    if kwargs['adler32']:
+                        target.write("\n".join(h_a32))
+                    if kwargs['crc32']:
+                        target.write("\n".join(h_c32))
+                    if kwargs['md4']:
+                        target.write("\n".join(h_m4))
+                    if kwargs['md5']:
+                        target.write("\n".join(h_m5))
+                    if kwargs['sha1']:
+                        target.write("\n".join(h_s1))
+                    if kwargs['sha224']:
+                        target.write("\n".join(h_s224))
+                    if kwargs['sha256']:
+                        target.write("\n".join(h_s256))
+                    if kwargs['sha384']:
+                        target.write("\n".join(h_s384))
+                    if kwargs['sha512']:
+                        target.write("\n".join(h_s512))
+                    if kwargs['ripemd160']:
+                        target.write("\n".join(h_r160))
+                    if kwargs['whirlpool']:
+                        target.write("\n".join(h_wp))
+                # reset hashes
+                h_c32 = hash_reset(h_c32)
+                h_a32 = hash_reset(h_a32)
+                h_s1 = hash_reset(h_s1)
+                h_s224 = hash_reset(h_s224)
+                h_s256 = hash_reset(h_s256)
+                h_s384 = hash_reset(h_s384)
+                h_s512 = hash_reset(h_s512)
+                h_m5 = hash_reset(h_m5)
+                h_m4 = hash_reset(h_m4)
+                h_r160 = hash_reset(h_r160)
+                h_wp = hash_reset(h_wp)
 
 
 def gpgrunner(workingdir, keyid=None, pword=None, selective=False):
@@ -589,7 +564,6 @@ def verifier_config_loader(homepath=None):
     results['md4'] = bool(ini.getboolean('md4', fallback=False))
     results['ripemd160'] = bool(ini.getboolean('ripemd160', fallback=False))
     results['whirlpool'] = bool(ini.getboolean('whirlpool', fallback=False))
-    results['onefile'] = bool(ini.getboolean('onefile', fallback=False))
     results['blocksize'] = int(ini.getint('blocksize', fallback=16777216))
     return results
 

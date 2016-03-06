@@ -156,12 +156,9 @@ class TestClassFilehashtools:
         uptime = "69696969"
         assert bf.calculate_escreens(pin, app, uptime, duration=2) == "E4A25067"
 
-    def test_verifier(self, onefile=False):
+    def test_verifier(self):
         """
         Test batch hashing.
-
-        :param onefile: One file or not. Default is false.
-        :type onefile: bool
         """
         confload = {}
         confload['adler32'] = True
@@ -176,7 +173,6 @@ class TestClassFilehashtools:
         confload['ripemd160'] = True
         confload['whirlpool'] = True
         confload['blocksize'] = "16777216"
-        confload['onefile'] = onefile
         print(confload)
         with mock.patch('bbarchivist.filehashtools.verifier_config_loader',
                         mock.MagicMock(return_value=confload)):
@@ -210,10 +206,7 @@ class TestClassFilehashtools:
             item2 = item2.replace(b'\n', b'')
             item2 = item2.replace(b'\r', b'')
             stocklines2.append(item2)
-        if onefile:
-            filename = "all.cksum"
-        else:
-            filename = "tempfile.txt.cksum"
+        filename = "tempfile.txt.cksum"
         with open(filename, "rb") as checksumfile:
             content = checksumfile.read().splitlines()
         content2 = []
@@ -225,12 +218,6 @@ class TestClassFilehashtools:
             content2.append(item2)
         for idx, value in enumerate(content2):
             assert stocklines2[idx] == value
-
-    def test_verifier_onefile(self):
-        """
-        Test batch hashing, one output file.
-        """
-        self.test_verifier(True)
 
 
 class TestClassFilehashtoolsGPG:
@@ -338,7 +325,6 @@ class TestClassFilehashtoolsConfig:
         cls.hashdict['md4'] = False
         cls.hashdict['ripemd160'] = False
         cls.hashdict['whirlpool'] = False
-        cls.hashdict['onefile'] = False
         cls.hashdict['blocksize'] = 16777216
 
     def test_hash_loader(self):
