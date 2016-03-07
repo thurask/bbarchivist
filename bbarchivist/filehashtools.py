@@ -333,14 +333,81 @@ def hash_get(filename, hashfunc, workingdir, blocksize=16777216):
     return "{0} {1}\n".format(result.upper(), filename)
 
 
-def hash_reset(hashlist):
+def hash_writer(source, dest, workingdir, kwargs=None):
     """
-    Reset list by returning only the first item.
+    Write per-file hashes.
 
-    :param hashlist: List to reset. First item is the type of hash.
-    :type hashlist: list
+    :param source: File to be hashed; foobar.ext
+    :type source: str
+
+    :param dest: Destination file; foobar.ext.cksum
+    :type dest: str
+
+    :param workingdir: Path containing files you wish to verify.
+    :type workingdir: str
+
+    :param kwargs: Values. Refer to `:func:verifier_config_loader`.
+    :type kwargs: dict
     """
-    return [hashlist[0]]
+    block = int(kwargs['blocksize'])
+    with open(dest, 'w') as target:
+        if kwargs['adler32']:
+            h_a32 = ["ADLER32"]
+            h_a32.append(hash_get(source, ha32, workingdir, block))
+            target.write("\n".join(h_a32))
+        if kwargs['crc32']:
+            h_c32 = ["CRC32"]
+            h_c32.append(hash_get(source, hc32, workingdir, block))
+            target.write("\n".join(h_c32))
+        if kwargs['md4']:
+            h_m4 = ["MD4"]
+            h_m4.append(hash_get(source, hm4, workingdir, block))
+            target.write("\n".join(h_m4))
+        if kwargs['md5']:
+            h_m5 = ["MD5"]
+            h_m5.append(hash_get(source, hm5, workingdir, block))
+            target.write("\n".join(h_m5))
+        if kwargs['sha1']:
+            h_s1 = ["SHA1"]
+            h_s1.append(hash_get(source, hs1, workingdir, block))
+            target.write("\n".join(h_s1))
+        if kwargs['sha224']:
+            h_s224 = ["SHA224"]
+            h_s224.append(hash_get(source, hs224, workingdir, block))
+            target.write("\n".join(h_s224))
+        if kwargs['sha256']:
+            h_s256 = ["SHA256"]
+            h_s256.append(hash_get(source, hs256, workingdir, block))
+            target.write("\n".join(h_s256))
+        if kwargs['sha384']:
+            h_s384 = ["SHA384"]
+            h_s384.append(hash_get(source, hs384, workingdir, block))
+            target.write("\n".join(h_s384))
+        if kwargs['sha512']:
+            h_s512 = ["SHA512"]
+            h_s512.append(hash_get(source, hs512, workingdir, block))
+            target.write("\n".join(h_s512))
+        if kwargs['ripemd160']:
+            h_r160 = ["RIPEMD160"]
+            h_r160.append(hash_get(source, hr160, workingdir, block))
+            target.write("\n".join(h_r160))
+        if kwargs['whirlpool']:
+            h_wp = ["WHIRLPOOL"]
+            h_wp.append(hash_get(source, hwp, workingdir, block))
+            target.write("\n".join(h_wp))
+
+
+def filefilter(file, workingdir):
+    """
+    Check if file in folder is a folder, or if it's got a forbidden extension.
+
+    :param file: File to be hashed.
+    :type file: str
+
+    :param workingdir: Path containing files you wish to verify.
+    :type workingdir: str
+    """
+    return not (os.path.isdir(os.path.join(workingdir, file)) or file.endswith(bbconstants.SUPPS))
 
 
 def verifier(workingdir, kwargs=None):
@@ -356,85 +423,22 @@ def verifier(workingdir, kwargs=None):
     """
     if kwargs is None:
         kwargs = verifier_config_loader()
-    h_c32 = ["CRC32"]
-    h_a32 = ["ADLER32"]
-    h_s1 = ["SHA1"]
-    h_s224 = ["SHA224"]
-    h_s256 = ["SHA256"]
-    h_s384 = ["SHA384"]
-    h_s512 = ["SHA512"]
-    h_m5 = ["MD5"]
-    h_m4 = ["MD4"]
-    h_r160 = ["RIPEMD160"]
-    h_wp = ["WHIRLPOOL"]
-    block = int(kwargs['blocksize'])
-    if os.listdir(workingdir):
-        for file in os.listdir(workingdir):
-            if os.path.isdir(os.path.join(workingdir, file)):
-                pass  # exclude folders
-            elif file.endswith(bbconstants.SUPPS):
-                pass  # exclude already generated files
-            else:
-                print("HASHING:", str(file))
-                if kwargs['adler32']:
-                    h_a32.append(hash_get(file, ha32, workingdir, block))
-                if kwargs['crc32']:
-                    h_c32.append(hash_get(file, hc32, workingdir, block))
-                if kwargs['md4']:
-                    h_m4.append(hash_get(file, hm4, workingdir, block))
-                if kwargs['md5']:
-                    h_m5.append(hash_get(file, hm5, workingdir, block))
-                if kwargs['sha1']:
-                    h_s1.append(hash_get(file, hs1, workingdir, block))
-                if kwargs['sha224']:
-                    h_s224.append(hash_get(file, hs224, workingdir, block))
-                if kwargs['sha256']:
-                    h_s256.append(hash_get(file, hs256, workingdir, block))
-                if kwargs['sha384']:
-                    h_s384.append(hash_get(file, hs384, workingdir, block))
-                if kwargs['sha512']:
-                    h_s512.append(hash_get(file, hs512, workingdir, block))
-                if kwargs['ripemd160']:
-                    h_r160.append(hash_get(file, hr160, workingdir, block))
-                if kwargs['whirlpool']:
-                    h_wp.append(hash_get(file, hwp, workingdir, block))
-                basename = file + ".cksum"
-                targetname = os.path.join(workingdir, basename)
-                with open(targetname, 'w') as target:
-                    if kwargs['adler32']:
-                        target.write("\n".join(h_a32))
-                    if kwargs['crc32']:
-                        target.write("\n".join(h_c32))
-                    if kwargs['md4']:
-                        target.write("\n".join(h_m4))
-                    if kwargs['md5']:
-                        target.write("\n".join(h_m5))
-                    if kwargs['sha1']:
-                        target.write("\n".join(h_s1))
-                    if kwargs['sha224']:
-                        target.write("\n".join(h_s224))
-                    if kwargs['sha256']:
-                        target.write("\n".join(h_s256))
-                    if kwargs['sha384']:
-                        target.write("\n".join(h_s384))
-                    if kwargs['sha512']:
-                        target.write("\n".join(h_s512))
-                    if kwargs['ripemd160']:
-                        target.write("\n".join(h_r160))
-                    if kwargs['whirlpool']:
-                        target.write("\n".join(h_wp))
-                # reset hashes
-                h_c32 = hash_reset(h_c32)
-                h_a32 = hash_reset(h_a32)
-                h_s1 = hash_reset(h_s1)
-                h_s224 = hash_reset(h_s224)
-                h_s256 = hash_reset(h_s256)
-                h_s384 = hash_reset(h_s384)
-                h_s512 = hash_reset(h_s512)
-                h_m5 = hash_reset(h_m5)
-                h_m4 = hash_reset(h_m4)
-                h_r160 = hash_reset(h_r160)
-                h_wp = hash_reset(h_wp)
+    files = [file for file in os.listdir(workingdir) if filefilter(file, workingdir)]
+    if len(files) < utilities.enum_cpus():
+        workers = len(files)
+    else:
+        workers = utilities.enum_cpus()
+    with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as xec:
+        for file in files:
+            print("HASHING:", str(file))
+            basename = file + ".cksum"
+            targetname = os.path.join(workingdir, basename)
+            try:
+                xec.submit(hash_writer, file, targetname, workingdir, kwargs)
+            except Exception as exc:
+                print("SOMETHING WENT WRONG")
+                print(str(exc))
+                raise SystemExit
 
 
 def gpgrunner(workingdir, keyid=None, pword=None, selective=False):
