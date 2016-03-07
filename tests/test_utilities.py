@@ -307,8 +307,7 @@ class TestClassUtilitiesStdout:
         """
         Test interrupting the Spinner.
         """
-        with mock.patch("bbarchivist.utilities.Spinner.after",
-                        mock.MagicMock(side_effect=KeyboardInterrupt)):
+        with mock.patch("bbarchivist.utilities.Spinner.after", mock.MagicMock(side_effect=KeyboardInterrupt)):
             with pytest.raises(KeyboardInterrupt):
                 spin = bu.Spinner()
                 spin.after()

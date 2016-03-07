@@ -60,9 +60,7 @@ class TestClassBarutils:
                     break
                 shahash.update(data)
         orighash = shahash.hexdigest()
-        with zipfile.ZipFile('testfile.bar',
-                             'w',
-                             zipfile.ZIP_DEFLATED) as zfile:
+        with zipfile.ZipFile('testfile.bar', 'w', zipfile.ZIP_DEFLATED) as zfile:
             zfile.write("testfile.signed")
         os.remove("testfile.signed")
         bb.extract_bars(os.getcwd())
@@ -166,10 +164,25 @@ class TestClassBarutilsCompression:
         """
         Test zip compression failure.
         """
-        with mock.patch("bbarchivist.barutils.bar_tester",
-                        mock.MagicMock(return_value="Z10_BIGLOADER.zip")):
+        with mock.patch("bbarchivist.barutils.bar_tester", mock.MagicMock(return_value="Z10_BIGLOADER.zip")):
             smeg = bb.zip_verify("Z10_BIGLOADER.zip")
             assert not smeg
+
+    def test_compress_tar(self):
+        """
+        Test tar packing.
+        """
+        bb.compress(os.getcwd(), "tar")
+        assert bb.tar_verify("Z10_BIGLOADER.tar")
+        if os.path.exists("Z10_BIGLOADER.tar"):
+            os.remove("Z10_BIGLOADER.tar")
+
+    def test_compress_tar_fail(self):
+        """
+        Test tar packing failure.
+        """
+        with mock.patch("tarfile.TarFile.getmembers", mock.MagicMock(return_value=False)):
+            assert not bb.zip_verify("Z10_BIGLOADER.tar")
 
     def test_compress_gzip(self):
         """

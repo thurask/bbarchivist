@@ -582,28 +582,22 @@ def generate_blitz_links(files, osv, radv, swv):
     :type swv: str
     """
     baseurl = networkutils.create_base_url(swv)
-    coreurls = [baseurl + "/winchester.factory_sfi-" +
-                osv + "-nto+armle-v7+signed.bar",
-                baseurl + "/qc8960.factory_sfi-" +
-                osv + "-nto+armle-v7+signed.bar",
-                baseurl + "/qc8960.factory_sfi_hybrid_qc8x30-" +
-                osv + "-nto+armle-v7+signed.bar",
-                baseurl + "/qc8960.factory_sfi_hybrid_qc8974-" +
-                osv + "-nto+armle-v7+signed.bar"]
+    coreurls = [
+        baseurl + "/winchester.factory_sfi-" + osv + "-nto+armle-v7+signed.bar",      
+        baseurl + "/qc8960.factory_sfi-" + osv + "-nto+armle-v7+signed.bar",
+        baseurl + "/qc8960.factory_sfi_hybrid_qc8x30-" + osv + "-nto+armle-v7+signed.bar",
+        baseurl + "/qc8960.factory_sfi_hybrid_qc8974-" + osv + "-nto+armle-v7+signed.bar"
+        ]
     for i in coreurls:
         files.append(i)
-    radiourls = [baseurl + "/m5730-" + radv +
-                 "-nto+armle-v7+signed.bar",
-                 baseurl + "/qc8960-" + radv +
-                 "-nto+armle-v7+signed.bar",
-                 baseurl + "/qc8960.wtr-" + radv +
-                 "-nto+armle-v7+signed.bar",
-                 baseurl + "/qc8960.wtr5-" +
-                 radv + "-nto+armle-v7+signed.bar",
-                 baseurl + "/qc8930.wtr5-" + radv +
-                 "-nto+armle-v7+signed.bar",
-                 baseurl + "/qc8974.wtr2-" + radv +
-                 "-nto+armle-v7+signed.bar"]
+    radiourls = [
+        baseurl + "/m5730-" + radv + "-nto+armle-v7+signed.bar",
+        baseurl + "/qc8960-" + radv +"-nto+armle-v7+signed.bar",
+        baseurl + "/qc8960.wtr-" + radv + "-nto+armle-v7+signed.bar",
+        baseurl + "/qc8960.wtr5-" + radv + "-nto+armle-v7+signed.bar",
+        baseurl + "/qc8930.wtr5-" + radv + "-nto+armle-v7+signed.bar",
+        baseurl + "/qc8974.wtr2-" + radv + "-nto+armle-v7+signed.bar"
+        ]
     for i in radiourls:
         files.append(i)
     return files
@@ -637,13 +631,15 @@ def purge_dross(files):
     :param files: List of URLs.
     :type files: list(str)
     """
-    crap = ["sin_ji", "common", "xander", "kate", "ava", "amelie", "thomas",
-            "anna", "alice", "kyoko", "sora", "li_li", "mei_jia", "nora",
-            "zosia", "luciana", "joana", "milena", "marisol", "angelica",
-            "arw", "bgb", "cah", "czc", "dad", "dun", "ena", "eni", "fif",
-            "frc", "frf", "ged", "grg", "iti", "jpj", "kok", "mnc", "mnt",
-            "non", "plp", "ptb", "ptp", "rur", "spe", "spm", "sws", "trt",
-            "retaildemo"]
+    crap = [
+        "sin_ji", "common", "xander", "kate", "ava", "amelie", "thomas",
+        "anna", "alice", "kyoko", "sora", "li_li", "mei_jia", "nora",
+        "zosia", "luciana", "joana", "milena", "marisol", "angelica",
+        "arw", "bgb", "cah", "czc", "dad", "dun", "ena", "eni", "fif",
+        "frc", "frf", "ged", "grg", "iti", "jpj", "kok", "mnc", "mnt",
+        "non", "plp", "ptb", "ptp", "rur", "spe", "spm", "sws", "trt",
+        "retaildemo"
+        ]
     files2 = [file for file in files if all(word not in file for word in crap)]
     return files2
 

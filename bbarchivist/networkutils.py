@@ -115,8 +115,7 @@ def create_base_url(softwareversion):
     swhash = hashlib.sha1(softwareversion.encode('utf-8'))
     hashedsoftwareversion = swhash.hexdigest()
     # Root of all urls
-    baseurl = "http://cdn.fs.sl.blackberry.com/fs/qnx/production/"
-    baseurl += hashedsoftwareversion
+    baseurl = "http://cdn.fs.sl.blackberry.com/fs/qnx/production/" + hashedsoftwareversion
     return baseurl
 
 
@@ -294,9 +293,7 @@ def parse_carrier_xml(data, blitz=False):
             if not blitz:
                 files.append(baseurl + child.get("path"))
             else:
-                if child.get("type") not in ["system:radio",
-                                             "system:desktop",
-                                             "system:os"]:
+                if child.get("type") not in ["system:radio", "system:desktop", "system:os"]:
                     files.append(baseurl + child.get("path"))
             if child.get("type") == "system:radio":
                 radver = child.get("version")
@@ -370,15 +367,15 @@ def sr_lookup_bootstrap(osv):
     """
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as xec:
         try:
-            results = {"p": None,
-                       "a1": None,
-                       "a2": None,
-                       "b1": None,
-                       "b2": None}
+            results = {
+                "p": None,
+                "a1": None,
+                "a2": None,
+                "b1": None,
+                "b2": None
+                }
             for key in results:
-                results[key] = xec.submit(sr_lookup,
-                                          osv,
-                                          SERVERS[key]).result()
+                results[key] = xec.submit(sr_lookup, osv, SERVERS[key]).result()
             return results
         except KeyboardInterrupt:  # pragma: no cover
             xec.shutdown(wait=False)

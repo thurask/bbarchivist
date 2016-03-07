@@ -55,6 +55,9 @@
     <Compile Include="bbarchivist\bbconstants.py" />
     <Compile Include="bbarchivist\filehashtools.py" />
     <Compile Include="bbarchivist\loadergen.py" />
+    <Compile Include="bbarchivist\scripts\cap.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="bbarchivist\scripts\cfp.py">
       <SubType>Code</SubType>
     </Compile>
@@ -74,7 +77,7 @@
     <Compile Include="bbarchivist\pseudocap.py" />
     <Compile Include="bbarchivist\scripts\archivist.py" />
     <Compile Include="bbarchivist\scripts\autolookup.py" />
-    <Compile Include="bbarchivist\scripts\cap.py" />
+    <Compile Include="bbarchivist\scripts\pseudocap.py" />
     <Compile Include="bbarchivist\scripts\carrierchecker.py" />
     <Compile Include="bbarchivist\scripts\certchecker.py" />
     <Compile Include="bbarchivist\scripts\escreens.py" />

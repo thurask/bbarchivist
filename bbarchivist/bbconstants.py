@@ -41,23 +41,23 @@ SERVERS = {
     "a2": "https://alpha2.sl.eval.blackberry.com/slscse/srVersionLookup/2.0.0/"
 }
 #: Archive files.
-ARCS = (".7z", ".tar.xz", ".tar.bz2", ".tar.gz", ".zip",
-        ".txz", ".tbz", ".tgz", ".bar")
+ARCS = (".7z", ".tar.xz", ".tar.bz2", ".tar.gz", ".tar", ".zip", ".txz", ".tbz", ".tgz", ".bar")
 #: Archive files plus executables.
-ARCSPLUS = (".7z", ".tar.xz", ".tar.bz2", ".tar.gz", ".zip", ".exe")
+ARCSPLUS = (".7z", ".tar.xz", ".tar.bz2", ".tar.gz", ".zip", ".tar", ".exe")
 #: Compression methods.
-METHODS = ("7z", "tbz", "tgz", "zip", "txz")
+METHODS = ("7z", "tbz", "tgz", "zip", "txz", "tar")
 #: Autoloader/archive filename beginnings.
 PREFIXES = ("Q10", "Z10", "Z30", "Z3", "Passport")
 #: Support files.
 SUPPS = (".asc", ".cksum")
 #: Devices.
-DEVICES = ("STL100-1", "STL100-2/3/P9982", "STL100-4",
-           "Q10/Q5/P9983", "Z30/CLASSIC/LEAP", "Z3", "PASSPORT")
+DEVICES = ("STL100-1", "STL100-2/3/P9982", "STL100-4", "Q10/Q5/P9983", "Z30/CLASSIC/LEAP", "Z3", "PASSPORT")
 #: 7z exit codes.
-SZCODES = {0: "NO ERRORS",
-           1: "COMPLETED WITH WARNINGS",
-           2: "FATAL ERROR",
-           7: "COMMAND LINE ERROR",
-           8: "OUT OF MEMORY ERROR",
-           255: "USER STOPPED PROCESS"}
+SZCODES = {
+    0: "NO ERRORS",
+    1: "COMPLETED WITH WARNINGS",
+    2: "FATAL ERROR",
+    7: "COMMAND LINE ERROR",
+    8: "OUT OF MEMORY ERROR",
+    255: "USER STOPPED PROCESS"
+    }

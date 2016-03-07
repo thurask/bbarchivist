@@ -250,7 +250,7 @@ def hwp(filepath, blocksize=16 * 1024 * 1024):
         print("WHIRLPOOL HASH FAILED:\nIS IT AVAILABLE?")
 
 
-def gpgfile(filepath, gpginst, keyid=None, passphrase=None):
+def gpgfile(filepath, gpginst, key=None, pword=None):
     """
     Make ASCII-armored signature files with a given private key.
     Takes an instance of gnupg.GPG().
@@ -261,18 +261,15 @@ def gpgfile(filepath, gpginst, keyid=None, passphrase=None):
     :param gpginst: Instance of Python GnuPG executable.
     :type gpginst: gnupg.GPG()
 
-    :param keyid: Key ID. 0xABCDEF01
-    :type keyid: str
+    :param key: Key ID. 0xABCDEF01
+    :type key: str
 
-    :param passphrase: Passphrase for key.
-    :type passphrase: str
+    :param pword: Passphrase for key.
+    :type pword: str
     """
     with open(filepath, "rb") as file:
-        gpginst.sign_file(file,
-                          detach=True,
-                          keyid=keyid,
-                          passphrase=passphrase,
-                          output=file.name + ".asc")
+        fname = file.name + ".asc"
+        gpginst.sign_file(file, detach=True, keyid=key, passphrase=pword, output=fname)
 
 
 def calculate_escreens(pin, app, uptime, duration=30):
@@ -298,7 +295,7 @@ def calculate_escreens(pin, app, uptime, duration=30):
         7: "He was a boy, and she was a girl, can I make it any more obvious?",
         15: "So am I, still waiting, for this world to stop hating?",
         30: "I love myself today, not like yesterday. "
-    }
+        }
     lifetimes[30] += "I'm cool, I'm calm, I'm gonna be okay"
     #: Escreens magic HMAC secret.
     secret = 'Up the time stream without a TARDIS'
@@ -306,9 +303,7 @@ def calculate_escreens(pin, app, uptime, duration=30):
     if duration not in [1, 3, 6, 15, 30]:
         duration = 1
     data = pin.lower() + app + str(uptime) + lifetimes[duration]
-    newhmac = hmac.new(secret.encode(),
-                       data.encode(),
-                       digestmod=hashlib.sha1)
+    newhmac = hmac.new(secret.encode(), data.encode(), digestmod=hashlib.sha1)
     key = newhmac.hexdigest()[:8]
     return key.upper()
 

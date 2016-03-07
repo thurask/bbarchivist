@@ -70,19 +70,17 @@ class TestClassSQLUtils:
                     reqid = "INTEGER PRIMARY KEY"
                     reqs = "TEXT NOT NULL UNIQUE COLLATE NOCASE"
                     reqs2 = "TEXT"
-                    table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(
-                        *(reqid, reqs, reqs2))
+                    table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(*(reqid, reqs, reqs2))
                     crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
             except sqlite3.Error:
                 assert False
             bs.insert("70.OSVERSION", "80.SWVERSION", "unavailable")
             with mock.patch("bbarchivist.sqlutils.insert",
-                            mock.MagicMock(return_value=None,
-                                           side_effect=sqlite3.IntegrityError)):
+                            mock.MagicMock(return_value=None, side_effect=sqlite3.IntegrityError)):
                 with pytest.raises(sqlite3.IntegrityError):
                     bs.insert("70.OSVERSION", "80.SWVERSION", "unavailable")  # update, not add
             with mock.patch("sqlite3.connect", mock.MagicMock(side_effect=sqlite3.IntegrityError)):
-                assert bs.insert("70.OSVERSION", "80.SWVERSION", "unavailable") is None # integrity error
+                assert bs.insert("70.OSVERSION", "80.SWVERSION", "unavailable") is None
             try:
                 cnxn = sqlite3.connect(sqlpath)
                 with cnxn:
@@ -121,8 +119,7 @@ class TestClassSQLUtils:
                     reqid = "INTEGER PRIMARY KEY"
                     reqs = "TEXT NOT NULL UNIQUE COLLATE NOCASE"
                     reqs2 = "TEXT"
-                    table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(
-                        *(reqid, reqs, reqs2))
+                    table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(*(reqid, reqs, reqs2))
                     crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
             except sqlite3.Error:
                 assert False
@@ -165,8 +162,7 @@ class TestClassSQLUtils:
                     reqid = "INTEGER PRIMARY KEY"
                     reqs = "TEXT NOT NULL UNIQUE COLLATE NOCASE"
                     reqs2 = "TEXT"
-                    table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(
-                        *(reqid, reqs, reqs2))
+                    table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(*(reqid, reqs, reqs2))
                     crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
             except sqlite3.Error:
                 assert False
@@ -192,11 +188,9 @@ class TestClassSQLUtils:
                     reqid = "INTEGER PRIMARY KEY"
                     reqs = "TEXT NOT NULL UNIQUE COLLATE NOCASE"
                     reqs2 = "TEXT"
-                    table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(
-                        *(reqid, reqs, reqs2))
+                    table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(*(reqid, reqs, reqs2))
                     crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
-                    crsr.execute("INSERT INTO Swrelease(Os, Software, Available, Date) VALUES (?,?,?,?)",
-                                 ("120.OSVERSION", "130.SWVERSION", "available", "1970 January 1"))
+                    crsr.execute("INSERT INTO Swrelease(Os, Software, Available, Date) VALUES (?,?,?,?)", ("120.OSVERSION", "130.SWVERSION", "available", "1970 January 1"))
             except sqlite3.Error:
                 assert False
             bs.export_sql_db()
@@ -226,11 +220,9 @@ class TestClassSQLUtils:
                     reqid = "INTEGER PRIMARY KEY"
                     reqs = "TEXT NOT NULL UNIQUE COLLATE NOCASE"
                     reqs2 = "TEXT"
-                    table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(
-                        *(reqid, reqs, reqs2))
+                    table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(*(reqid, reqs, reqs2))
                     crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
-                    crsr.execute("INSERT INTO Swrelease(Os, Software, Available, Date) VALUES (?,?,?,?)",
-                                 ("120.OSVERSION", "130.SWVERSION", "available", "1970 January 1"))
+                    crsr.execute("INSERT INTO Swrelease(Os, Software, Available, Date) VALUES (?,?,?,?)", ("120.OSVERSION", "130.SWVERSION", "available", "1970 January 1"))
             except sqlite3.Error:
                 assert False
             rellist = bs.list_sw_releases()

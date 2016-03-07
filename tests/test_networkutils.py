@@ -339,11 +339,15 @@ class TestClassNetworkutilsParsing:
         Test carrier update request, ideal case.
         """
         with httmock.HTTMock(cq_good_mock):
-            alist = ("10.3.1.1877",
-                     "10.3.1.2726",
-                     "10.3.1.2727",
-                     ['http://cdn.fs.sl.blackberry.com/fs/qnx/production/f6832b88958f1c4c3f9bbfd44762e0c516760d8a/com.qnx.qcfm.radio.qc8960.wtr5/10.3.1.2727/qc8960.wtr5-10.3.1.2727-nto+armle-v7+signed.bar',
-                      'http://cdn.fs.sl.blackberry.com/fs/qnx/production/f6832b88958f1c4c3f9bbfd44762e0c516760d8a/com.qnx.coreos.qcfm.os.qc8960.factory_sfi.desktop/10.3.1.2726/qc8960.factory_sfi.desktop-10.3.1.2726-nto+armle-v7+signed.bar'])
+            alist = (
+                "10.3.1.1877",
+                "10.3.1.2726",
+                "10.3.1.2727",
+                [
+                    'http://cdn.fs.sl.blackberry.com/fs/qnx/production/f6832b88958f1c4c3f9bbfd44762e0c516760d8a/com.qnx.qcfm.radio.qc8960.wtr5/10.3.1.2727/qc8960.wtr5-10.3.1.2727-nto+armle-v7+signed.bar',
+                    'http://cdn.fs.sl.blackberry.com/fs/qnx/production/f6832b88958f1c4c3f9bbfd44762e0c516760d8a/com.qnx.coreos.qcfm.os.qc8960.factory_sfi.desktop/10.3.1.2726/qc8960.factory_sfi.desktop-10.3.1.2726-nto+armle-v7+signed.bar'
+                    ]
+                )
             assert bn.carrier_query(302220, "6002E0A") == alist
 
     def test_upd_req_bad(self):
@@ -351,11 +355,15 @@ class TestClassNetworkutilsParsing:
         Test carrier update request, no software version.
         """
         with httmock.HTTMock(cq_bad_mock):
-            alist = ("N/A",
-                     "10.3.1.2726",
-                     "10.3.1.2727",
-                     ['http://cdn.fs.sl.blackberry.com/fs/qnx/production/f6832b88958f1c4c3f9bbfd44762e0c516760d8a/com.qnx.qcfm.radio.qc8960.wtr5/10.3.1.2727/qc8960.wtr5-10.3.1.2727-nto+armle-v7+signed.bar',
-                      'http://cdn.fs.sl.blackberry.com/fs/qnx/production/f6832b88958f1c4c3f9bbfd44762e0c516760d8a/com.qnx.coreos.qcfm.os.qc8960.factory_sfi.desktop/10.3.1.2726/qc8960.factory_sfi.desktop-10.3.1.2726-nto+armle-v7+signed.bar'])
+            alist = (
+                "N/A",
+                "10.3.1.2726",
+                "10.3.1.2727",
+                [
+                    'http://cdn.fs.sl.blackberry.com/fs/qnx/production/f6832b88958f1c4c3f9bbfd44762e0c516760d8a/com.qnx.qcfm.radio.qc8960.wtr5/10.3.1.2727/qc8960.wtr5-10.3.1.2727-nto+armle-v7+signed.bar',
+                    'http://cdn.fs.sl.blackberry.com/fs/qnx/production/f6832b88958f1c4c3f9bbfd44762e0c516760d8a/com.qnx.coreos.qcfm.os.qc8960.factory_sfi.desktop/10.3.1.2726/qc8960.factory_sfi.desktop-10.3.1.2726-nto+armle-v7+signed.bar'
+                    ]
+                )
             assert bn.carrier_query(302220, "6002E0A") == alist
 
     def test_sr_lookup_good(self):
@@ -396,18 +404,20 @@ class TestClassNetworkutilsParsing:
         Test bundle lookup, large input.
         """
         with httmock.HTTMock(bl_big_mock):
-            assert bn.available_bundle_lookup(302, 220, "8500240A") == ["10.0.9.2372",
-                                                                        "10.0.10.672",
-                                                                        "10.1.0.1720",
-                                                                        "10.1.0.2050",
-                                                                        "10.1.0.4633",
-                                                                        "10.2.0.1791",
-                                                                        "10.2.0.1803",
-                                                                        "10.2.1.1925",
-                                                                        "10.2.1.2141",
-                                                                        "10.2.1.3247",
-                                                                        "10.2.1.3442",
-                                                                        "10.3.1.2708"]
+            assert bn.available_bundle_lookup(302, 220, "8500240A") == [
+                "10.0.9.2372",
+                "10.0.10.672",
+                "10.1.0.1720",
+                "10.1.0.2050",
+                "10.1.0.4633",
+                "10.2.0.1791",
+                "10.2.0.1803",
+                "10.2.1.1925",
+                "10.2.1.2141",
+                "10.2.1.3247",
+                "10.2.1.3442",
+                "10.3.1.2708"
+                ]
 
     def test_bundle_lookup_small(self):
         """

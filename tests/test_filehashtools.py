@@ -174,31 +174,32 @@ class TestClassFilehashtools:
         confload['whirlpool'] = True
         confload['blocksize'] = "16777216"
         print(confload)
-        with mock.patch('bbarchivist.filehashtools.verifier_config_loader',
-                        mock.MagicMock(return_value=confload)):
+        with mock.patch('bbarchivist.filehashtools.verifier_config_loader', mock.MagicMock(return_value=confload)):
             bf.verifier(os.getcwd())
-        stocklines = [b"ADLER32",
-                      b"02470DCD tempfile.txt",
-                      b"CRC32",
-                      b"ED5D3F26 tempfile.txt",
-                      b"MD4",
-                      b"DF26ADA1A895F94E1F1257FAD984E809 tempfile.txt",
-                      b"MD5",
-                      b"822E1187FDE7C8D55AFF8CC688701650 tempfile.txt",
-                      b"SHA1",
-                      b"71DC7CE8F27C11B792BE3F169ECF985865E276D0 tempfile.txt",
-                      b"SHA224",
-                      b"7BCD7B77F63633BF0F7DB181106F08EB630A58C521B109BE1CC4A404 tempfile.txt",
-                      b"SHA256",
-                      b"F118871C45171D5FE4E9049980959E033EEEABCFA12046C243FDA310580E8A0B tempfile.txt",
-                      b"SHA384",
-                      b"76620873C0D27873C137B082425C6E87E3D601C4B19241A1F2222F7F700A2FE8D3C648B26F62325A411CB020BFF527BE tempfile.txt",
-                      b"SHA512",
-                      b"B66A5E8AA9B9705748C2EE585B0E1A3A41288D2DAFC3BE2DB12FA89D2F2A3E14F9DEC11DE4BA865BB51EAA6C2CFEB294139455E34DA7D827A19504B0906C01C1 tempfile.txt",
-                      b"RIPEMD160",
-                      b"F3E191024C33768E2589E2EFCA53D55F4E4945EE tempfile.txt",
-                      b"WHIRLPOOL",
-                      b"9835D12F3CB3EA3934635E4A7CC918E489379ED69D894EBC2C09BBF99FE72567BFD26C919AD666E170752ABFC4B8C37B376F5102F9E5DE59AF2B65EFC2E01293 tempfile.txt",]
+        stocklines = [
+            b"ADLER32",
+            b"02470DCD tempfile.txt",
+            b"CRC32",
+            b"ED5D3F26 tempfile.txt",
+            b"MD4",
+            b"DF26ADA1A895F94E1F1257FAD984E809 tempfile.txt",
+            b"MD5",
+            b"822E1187FDE7C8D55AFF8CC688701650 tempfile.txt",
+            b"SHA1",
+            b"71DC7CE8F27C11B792BE3F169ECF985865E276D0 tempfile.txt",
+            b"SHA224",
+            b"7BCD7B77F63633BF0F7DB181106F08EB630A58C521B109BE1CC4A404 tempfile.txt",
+            b"SHA256",
+            b"F118871C45171D5FE4E9049980959E033EEEABCFA12046C243FDA310580E8A0B tempfile.txt",
+            b"SHA384",
+            b"76620873C0D27873C137B082425C6E87E3D601C4B19241A1F2222F7F700A2FE8D3C648B26F62325A411CB020BFF527BE tempfile.txt",
+            b"SHA512",
+            b"B66A5E8AA9B9705748C2EE585B0E1A3A41288D2DAFC3BE2DB12FA89D2F2A3E14F9DEC11DE4BA865BB51EAA6C2CFEB294139455E34DA7D827A19504B0906C01C1 tempfile.txt",
+            b"RIPEMD160",
+            b"F3E191024C33768E2589E2EFCA53D55F4E4945EE tempfile.txt",
+            b"WHIRLPOOL",
+            b"9835D12F3CB3EA3934635E4A7CC918E489379ED69D894EBC2C09BBF99FE72567BFD26C919AD666E170752ABFC4B8C37B376F5102F9E5DE59AF2B65EFC2E01293 tempfile.txt"
+            ]
         stocklines2 = []
         for item in stocklines:
             item2 = item.strip()

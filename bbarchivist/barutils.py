@@ -133,18 +133,11 @@ def sz_compress(filepath, filename, szexe=None, strength=5, errors=False):
     """
     strength = str(strength)
     rawname = os.path.dirname(filepath)
-    cores = str(utilities.get_core_count())
-    initfold = os.path.join(rawname, filename)
-    cmd = '{0} a -mx{1} -m0=lzma2 -mmt{2} "{3}.7z" "{4}"'.format(szexe,
-                                                                 strength,
-                                                                 cores,
-                                                                 filepath,
-                                                                 initfold)
+    thr = str(utilities.get_core_count())
+    fold = os.path.join(rawname, filename)
+    cmd = '{0} a -mx{1} -m0=lzma2 -mmt{2} "{3}.7z" "{4}"'.format(szexe, strength, thr, filepath, fold)
     with open(os.devnull, 'wb') as dnull:
-        excode = subprocess.call(cmd,
-                                 stdout=dnull,
-                                 stderr=subprocess.STDOUT,
-                                 shell=True)
+        excode = subprocess.call(cmd, stdout=dnull, stderr=subprocess.STDOUT, shell=True)
     if errors:
         print(bbconstants.SZCODES[excode])
 
@@ -162,11 +155,41 @@ def sz_verify(filepath, szexe=None):
     filepath = os.path.abspath(filepath)
     cmd = '{0} t "{1}"'.format(szexe, filepath)
     with open(os.devnull, 'wb') as dnull:
-        excode = subprocess.call(cmd,
-                                 stdout=dnull,
-                                 stderr=subprocess.STDOUT,
-                                 shell=True)
+        excode = subprocess.call(cmd, stdout=dnull, stderr=subprocess.STDOUT, shell=True)
     return excode == 0
+
+
+@utilities.timer
+def tar_compress(filepath, filename):
+    """
+    Pack a file into an uncompressed tarfile.
+
+    :param filepath: Basename of file, no extension.
+    :type filepath: str
+
+    :param filename: Name of file to pack.
+    :type filename: str
+    """
+    with tarfile.open(filepath + '.tar', 'w:') as tfile:
+        tfile.add(filename, filter=None)
+
+
+def tar_verify(filepath):
+    """
+    Verify that a tar file is valid and working.
+
+    :param filepath: Filename.
+    :type filepath: str
+    """
+    if tarfile.is_tarfile(filepath):
+        with tarfile.open(filepath, "r:") as thefile:
+            mems = thefile.getmembers()
+        if not mems:
+            return False
+        else:
+            return True
+    else:
+        return False
 
 
 @utilities.timer
@@ -380,6 +403,8 @@ def compress(filepath, method="7z", szexe=None, selective=False, errors=False):
             txz_compress(fileloc, file)
         elif method == "tbz":
             tbz_compress(fileloc, file, calculate_strength())
+        elif method == "tar":
+            tar_compress(fileloc, file)
         elif method == "zip":
             zip_compress(fileloc, file)
     return True
@@ -418,6 +443,8 @@ def verify(thepath, method="7z", szexe=None, selective=False):
                 verif = txz_verify(file)
             elif file.endswith(".tar.bz2"):
                 verif = tbz_verify(file)
+            elif file.endswith(".tar"):
+                verif = tar_verify(file)
             elif file.endswith(".zip"):
                 verif = zip_verify(file)
             if not verif:
@@ -513,10 +540,8 @@ def create_blitz(a_folder, swver):
     :param swver: Software version to title the blitz.
     :type swver: str
     """
-    with zipfile.ZipFile("Blitz-" + swver + '.zip',
-                         'w',
-                         zipfile.ZIP_DEFLATED,
-                         allowZip64=True) as zfile:
+    fname = "Blitz-" + swver + '.zip'
+    with zipfile.ZipFile(fname, 'w', zipfile.ZIP_DEFLATED, allowZip64=True) as zfile:
         for root, dirs, files in os.walk(a_folder):
             del dirs
             for file in files:
@@ -686,12 +711,7 @@ def make_dirs(localdir, osversion, radioversion):
         os.makedirs(os.path.join(zipdir, radioversion), exist_ok=True)
     zipdir_radio = os.path.join(zipdir, radioversion)
 
-    return (bardir_os,
-            bardir_radio,
-            loaderdir_os,
-            loaderdir_radio,
-            zipdir_os,
-            zipdir_radio)
+    return (bardir_os, bardir_radio, loaderdir_os, loaderdir_radio, zipdir_os, zipdir_radio)
 
 
 def compress_config_loader(homepath=None):

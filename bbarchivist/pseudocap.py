@@ -24,8 +24,7 @@ def ghetto_convert(intsize):
     if not isinstance(intsize, int):
         intsize = int(intsize)
     hexsize = format(intsize, '08x')  # '00AABBCC'
-    newlist = [hexsize[i:i + 2]
-               for i in range(0, len(hexsize), 2)]  # ['00', 'AA','BB','CC']
+    newlist = [hexsize[i:i + 2] for i in range(0, len(hexsize), 2)]  # ['00', 'AA','BB','CC']
     newlist.reverse()
     ghetto_hex = "".join(newlist)  # 'CCBBAA'
     ghetto_hex = ghetto_hex.rjust(16, '0')
@@ -64,18 +63,11 @@ def make_offset(firstfile, secondfile=None, thirdfile=None,
     if folder is None:
         folder = os.getcwd()
     cap = utilities.grab_cap()
-    filelist = [
-        firstfile,
-        secondfile,
-        thirdfile,
-        fourthfile,
-        fifthfile,
-        sixthfile]
+    filelist = [firstfile, secondfile, thirdfile, fourthfile, fifthfile, sixthfile]
     filecount = len([file for file in filelist if file])
     fcount = b'0' + bytes(str(filecount), 'ascii')
     # immutable things
-    scaff = b'at9dFE5LTEdOT0hHR0lTCxcKDR4MFFMtPiU6LT0zPj'
-    scaff += b's6Ui88U05GTVFOSUdRTlFOT3BwcJzVxZec1cWXnNXFlw=='
+    scaff = b'at9dFE5LTEdOT0hHR0lTCxcKDR4MFFMtPiU6LT0zPjs6Ui88U05GTVFOSUdRTlFOT3BwcJzVxZec1cWXnNXFlw=='
     separator = base64.b64decode(scaff)
     password = binascii.unhexlify(b'0'*160)
     singlepad = b'\x00'
@@ -198,21 +190,8 @@ def make_autoloader(filename, firstfile, secondfile=None, thirdfile=None,
     """
     if folder is None:
         folder = os.getcwd()
-    make_offset(
-        firstfile,
-        secondfile,
-        thirdfile,
-        fourthfile,
-        fifthfile,
-        sixthfile,
-        folder)
-    filelist = [
-        firstfile,
-        secondfile,
-        thirdfile,
-        fourthfile,
-        fifthfile,
-        sixthfile]
+    make_offset(firstfile, secondfile, thirdfile, fourthfile, fifthfile, sixthfile, folder)
+    filelist = [firstfile, secondfile, thirdfile, fourthfile, fifthfile, sixthfile]
     filelist = [os.path.abspath(file) for file in filelist if file]
     print("CREATING:", filename)
     try:

@@ -83,10 +83,7 @@ def list_available_certs(table):
                 hwid = "NO HWID"
             else:
                 hwid = key['hwid']
-            print("{0} {1} - {2} - {3}".format(key['device'],
-                                               key['name'],
-                                               hwid,
-                                               key['fccid']))
+            print("{0} {1} - {2} - {3}".format(key['device'], key['name'], hwid, key['fccid']))
 
 
 def list_devices(table):
@@ -105,10 +102,7 @@ def list_devices(table):
             fccid = "NO FCCID"
         else:
             fccid = key['fccid']
-        print("{0} {1} - {2} - {3}".format(key['device'],
-                                           key['name'],
-                                           hwid,
-                                           fccid))
+        print("{0} {1} - {2} - {3}".format(key['device'], key['name'], hwid, fccid))
 
 
 def certchecker_prep(table, device):

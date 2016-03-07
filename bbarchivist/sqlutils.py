@@ -34,8 +34,7 @@ def prepare_sw_db():
             reqid = "INTEGER PRIMARY KEY"
             reqs = "TEXT NOT NULL UNIQUE COLLATE NOCASE"
             reqs2 = "TEXT NOT NULL"
-            table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(
-                *(reqid, reqs, reqs2))
+            table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(*(reqid, reqs, reqs2))
             crs.execute("CREATE TABLE IF NOT EXISTS " + table)
     except sqlite3.Error as sqerror:
         print(str(sqerror))
@@ -63,12 +62,10 @@ def insert(osversion, swrelease, available, curdate=None):
         cnxn = sqlite3.connect(prepare_path())
         with cnxn:
             crs = cnxn.cursor()
-            try:
-                crs.execute("INSERT INTO Swrelease(Os, Software, Available, Date) VALUES (?,?,?,?)",
-                            (osversion, swrelease, available, curdate))  # insert if new
-            except sqlite3.IntegrityError:
-                crs.execute("UPDATE Swrelease SET Available=? WHERE Os=? AND Software=?",
-                            (available, osversion, swrelease))  # update if not new
+            try:  # insert if new
+                crs.execute("INSERT INTO Swrelease(Os, Software, Available, Date) VALUES (?,?,?,?)", (osversion, swrelease, available, curdate))
+            except sqlite3.IntegrityError:  # update if not new
+                crs.execute("UPDATE Swrelease SET Available=? WHERE Os=? AND Software=?", (available, osversion, swrelease))
     except sqlite3.IntegrityError:
         UselessStdout.write("ASDASDASD")  # avoid dupes
     except sqlite3.Error as sqerror:
@@ -89,8 +86,7 @@ def pop_sw_release(osversion, swrelease):
         cnxn = sqlite3.connect(prepare_path())
         with cnxn:
             crs = cnxn.cursor()
-            crs.execute("DELETE FROM Swrelease WHERE Os=? AND Software=?",
-                        (osversion, swrelease))
+            crs.execute("DELETE FROM Swrelease WHERE Os=? AND Software=?", (osversion, swrelease))
     except sqlite3.Error as sqerror:
         print(str(sqerror))
 
@@ -107,10 +103,9 @@ def check_exists(osversion, swrelease):
     """
     try:
         cnxn = sqlite3.connect(prepare_path())
-        with cnxn:
+        with cnxn:  # check if exists
             crs = cnxn.cursor()
-            exis = crs.execute("SELECT EXISTS (SELECT 1 FROM Swrelease WHERE Os=? AND Software=?)",
-                               (osversion, swrelease)).fetchone()[0]  # check if exists
+            exis = crs.execute("SELECT EXISTS (SELECT 1 FROM Swrelease WHERE Os=? AND Software=?)", (osversion, swrelease)).fetchone()[0]
             return bool(exis)
     except sqlite3.Error as sqerror:
         print(str(sqerror))

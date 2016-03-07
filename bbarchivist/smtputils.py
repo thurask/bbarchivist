@@ -141,8 +141,13 @@ def send_email(kwargs):
     server, username, port, password = parse_kwargs(kwargs)
     subject = generate_subject(kwargs['software'], kwargs['os'])
     message = generate_message(kwargs['body'], username, subject)
-    payload = {"server": server, "port": port, "username": username,
-               "password": password, "message": message}
+    payload = {
+        "server": server,
+        "port": port,
+        "username": username,
+        "password": password,
+        "message": message
+        }
     if utilities.s2b(kwargs['is_ssl']):
         send_email_ssl(payload)
     else:

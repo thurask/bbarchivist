@@ -66,9 +66,32 @@ class TestClassJsonutils:
         """
         Create local variables.
         """
-        cls.devlist = [{'device': 'GALAXY_S5', 'fccid': 'FUK999LW', 'hwid': '', 'name': 'PTCDEVICE', 'ptcrbid': '12345', "family": "SAMSUNG"},
-                       {'device': 'GRUNTMASTER_6000', 'fccid': '', 'hwid': '69696969', 'name': 'TEST', 'ptcrbid': '98765', "family": "PATHETECH"},
-                       {'device': 'ROTARY', 'fccid': '', 'hwid': '', 'name': 'UNKNOWN', 'ptcrbid': '', "family": "BLACKBERRY"}]
+        cls.devlist = [
+            {
+                'device': 'GALAXY_S5',
+                'fccid': 'FUK999LW',
+                'hwid': '',
+                'name': 'PTCDEVICE',
+                'ptcrbid': '12345',
+                'family': 'SAMSUNG'
+                },
+            {
+                'device': 'GRUNTMASTER_6000',
+                'fccid': '',
+                'hwid': '69696969',
+                'name': 'TEST',
+                'ptcrbid': '98765',
+                'family': 'PATHETECH'
+                },
+            {
+                'device': 'ROTARY',
+                'fccid': '',
+                'hwid': '',
+                'name': 'UNKNOWN',
+                'ptcrbid': '',
+                'family': 'BLACKBERRY'
+                }
+            ]
 
     def test_grab_json(self):
         """

@@ -77,10 +77,8 @@ class TestClassScriptutils:
         """
         Test creating blitz links.
         """
-        with mock.patch('bbarchivist.networkutils.create_base_url',
-                        mock.MagicMock(return_value="abacab")):
-            links = bs.generate_blitz_links([], "10.2.2.2222",
-                                            "10.3.3.3333", "10.4.4.4444")
+        with mock.patch('bbarchivist.networkutils.create_base_url', mock.MagicMock(return_value="abacab")):
+            links = bs.generate_blitz_links([], "10.2.2.2222", "10.3.3.3333", "10.4.4.4444")
             assert len(links) == 10
 
     def test_cchecker_export_none(self, capsys):
@@ -95,8 +93,7 @@ class TestClassScriptutils:
         Test exporting links, with upgrade files.
         """
         with mock.patch('bbarchivist.networkutils.get_length', mock.MagicMock(return_value=12345)):
-            bs.export_cchecker(["http://sn.ek"], None, None, "10.1.1.1111",
-                               "10.2.2.2222", "10.3.3.3333", True, None)
+            bs.export_cchecker(["http://sn.ek"], None, None, "10.1.1.1111", "10.2.2.2222", "10.3.3.3333", True, None)
             with open("10.3.3.3333plusapps.txt", "r") as afile:
                 assert len(afile.read()) == 2926
 
@@ -106,8 +103,7 @@ class TestClassScriptutils:
         """
         snek = Dummy()
         with mock.patch('requests.head', mock.MagicMock(return_value=snek)):
-            bs.export_cchecker(["http://sn.ek"], "123456", "8500090A", "10.1.1.1111",
-                               "10.2.2.2222", "10.3.3.3334", False, None)
+            bs.export_cchecker(["http://sn.ek"], "123456", "8500090A", "10.1.1.1111", "10.2.2.2222", "10.3.3.3334", False, None)
             with open("10.3.3.3334plusapps.txt", "r") as afile:
                 assert len(afile.read()) == 2933
 
@@ -126,16 +122,14 @@ class TestClassScriptutilsSoftware:
         """
         Test software release checking.
         """
-        with mock.patch('bbarchivist.networkutils.sr_lookup',
-                        mock.MagicMock(return_value="10.3.2.2474")):
+        with mock.patch('bbarchivist.networkutils.sr_lookup', mock.MagicMock(return_value="10.3.2.2474")):
             assert bs.return_sw_checked(None, "10.3.2.2639") == ("10.3.2.2474", True)
 
     def test_return_swc_explicit(self):
         """
         Test software release checking, failure and definition.
         """
-        with mock.patch('bbarchivist.networkutils.sr_lookup',
-                        mock.MagicMock(return_value="SR not in system")):
+        with mock.patch('bbarchivist.networkutils.sr_lookup', mock.MagicMock(return_value="SR not in system")):
             with mock.patch('builtins.input', mock.MagicMock(return_value="10.3.2.9999")):
                 with mock.patch('bbarchivist.utilities.s2b', mock.MagicMock(return_value=True)):
                     assert bs.return_sw_checked(None, "10.3.2.2639") == ("10.3.2.9999", False)
@@ -144,8 +138,7 @@ class TestClassScriptutilsSoftware:
         """
         Test exiting upon software release check failure.
         """
-        with mock.patch('bbarchivist.networkutils.sr_lookup',
-                        mock.MagicMock(return_value="SR not in system")):
+        with mock.patch('bbarchivist.networkutils.sr_lookup', mock.MagicMock(return_value="SR not in system")):
             with mock.patch('builtins.input', mock.MagicMock(return_value="n")):
                 with pytest.raises(SystemExit):
                     bs.return_sw_checked(None, "10.3.2.2639")
@@ -168,8 +161,7 @@ class TestClassScriptutilsSoftware:
         """
         Test radio software release checking, failure and definition.
         """
-        with mock.patch('bbarchivist.networkutils.sr_lookup',
-                        mock.MagicMock(return_value="SR not in system")):
+        with mock.patch('bbarchivist.networkutils.sr_lookup', mock.MagicMock(return_value="SR not in system")):
             with mock.patch('builtins.input', mock.MagicMock(return_value="10.3.2.2474")):
                 with mock.patch('bbarchivist.utilities.s2b', mock.MagicMock(return_value=True)):
                     assert bs.return_radio_sw_checked("checkme", "10.3.2.2640") == ("10.3.2.2474", False)
@@ -178,8 +170,7 @@ class TestClassScriptutilsSoftware:
         """
         Test exiting upon radio software release check failure.
         """
-        with mock.patch('bbarchivist.networkutils.sr_lookup',
-                        mock.MagicMock(return_value="SR not in system")):
+        with mock.patch('bbarchivist.networkutils.sr_lookup', mock.MagicMock(return_value="SR not in system")):
             with mock.patch('builtins.input', mock.MagicMock(return_value="n")):
                 with pytest.raises(SystemExit):
                     bs.return_radio_sw_checked("checkme", "10.3.2.2639")
@@ -195,8 +186,7 @@ class TestClassScriptutilsSoftware:
         """
         Test manual software availability checking.
         """
-        with mock.patch('bbarchivist.networkutils.availability',
-                        mock.MagicMock(return_value=True)):
+        with mock.patch('bbarchivist.networkutils.availability', mock.MagicMock(return_value=True)):
             bs.check_sw("http://qrrbrbirlbel.yu/", "10.3.2.2474", False)
             assert "EXISTS" in capsys.readouterr()[0]
 
@@ -204,8 +194,7 @@ class TestClassScriptutilsSoftware:
         """
         Test exiting upon software release availability failure.
         """
-        with mock.patch('bbarchivist.networkutils.availability',
-                        mock.MagicMock(return_value=False)):
+        with mock.patch('bbarchivist.networkutils.availability', mock.MagicMock(return_value=False)):
             with mock.patch('builtins.input', mock.MagicMock(return_value="n")):
                 with pytest.raises(SystemExit):
                     bs.check_sw("http://qrrbrbirlbel.yu/", "10.3.2.2474", False)
@@ -214,8 +203,7 @@ class TestClassScriptutilsSoftware:
         """
         Test continuing upon software release availability failure.
         """
-        with mock.patch('bbarchivist.networkutils.availability',
-                        mock.MagicMock(return_value=False)):
+        with mock.patch('bbarchivist.networkutils.availability', mock.MagicMock(return_value=False)):
             with mock.patch('builtins.input', mock.MagicMock(return_value="y")):
                 assert bs.check_sw("http://qrrbrbirlbel.yu/", "10.3.2.2474", False) is None
 
@@ -230,8 +218,7 @@ class TestClassScriptutilsSoftware:
         """
         Test manual radio software availability checking.
         """
-        with mock.patch('bbarchivist.networkutils.availability',
-                        mock.MagicMock(return_value=True)):
+        with mock.patch('bbarchivist.networkutils.availability', mock.MagicMock(return_value=True)):
             bs.check_radio_sw("http://qrrbrbirlbel.yu/", "10.3.2.2474", False)
             assert "EXISTS" in capsys.readouterr()[0]
 
@@ -239,8 +226,7 @@ class TestClassScriptutilsSoftware:
         """
         Test exiting upon radio software release availability failure.
         """
-        with mock.patch('bbarchivist.networkutils.availability',
-                        mock.MagicMock(return_value=False)):
+        with mock.patch('bbarchivist.networkutils.availability', mock.MagicMock(return_value=False)):
             with mock.patch('builtins.input', mock.MagicMock(return_value="n")):
                 with pytest.raises(SystemExit):
                     bs.check_radio_sw("http://qrrbrbirlbel.yu/", "10.3.2.2474", False)
@@ -249,8 +235,7 @@ class TestClassScriptutilsSoftware:
         """
         Test continuing upon radio software release availability failure.
         """
-        with mock.patch('bbarchivist.networkutils.availability',
-                        mock.MagicMock(return_value=False)):
+        with mock.patch('bbarchivist.networkutils.availability', mock.MagicMock(return_value=False)):
             with mock.patch('builtins.input', mock.MagicMock(return_value="y")):
                 assert bs.check_radio_sw("http://qrrbrbirlbel.yu/", "10.3.2.2474", False) is None
 
@@ -263,8 +248,7 @@ class TestClassScriptutilsURLCheck:
         """
         Test single OS availability.
         """
-        with mock.patch('bbarchivist.networkutils.availability',
-                        mock.MagicMock(return_value=True)):
+        with mock.patch('bbarchivist.networkutils.availability', mock.MagicMock(return_value=True)):
             bs.check_os_single("http://qrrbrbirlbel.yu/", "10.3.2.2639", 0)
             assert "NOT AVAILABLE" not in capsys.readouterr()[0]
 
@@ -272,8 +256,7 @@ class TestClassScriptutilsURLCheck:
         """
         Test single OS availability failure.
         """
-        with mock.patch('bbarchivist.networkutils.availability',
-                        mock.MagicMock(return_value=False)):
+        with mock.patch('bbarchivist.networkutils.availability', mock.MagicMock(return_value=False)):
             with mock.patch('builtins.input', mock.MagicMock(return_value="n")):
                 with pytest.raises(SystemExit):
                     bs.check_os_single("http://qrrbrbirlbel.yu/", "10.3.2.2639", 0)
@@ -282,8 +265,7 @@ class TestClassScriptutilsURLCheck:
         """
         Test single OS availability continuation.
         """
-        with mock.patch('bbarchivist.networkutils.availability',
-                        mock.MagicMock(return_value=False)):
+        with mock.patch('bbarchivist.networkutils.availability', mock.MagicMock(return_value=False)):
             with mock.patch('builtins.input', mock.MagicMock(return_value="y")):
                 assert bs.check_os_single("http://qrrbrbirlbel.yu/", "10.3.2.2639", 0) is None
 
@@ -292,8 +274,7 @@ class TestClassScriptutilsURLCheck:
         Test bulk OS availability.
         """
         osurls = ["http://qrrbrbirlbel.yu/", "http://zeekyboogydoog.su/"]
-        with mock.patch('bbarchivist.networkutils.availability',
-                        mock.MagicMock(return_value=True)):
+        with mock.patch('bbarchivist.networkutils.availability', mock.MagicMock(return_value=True)):
             bs.check_os_bulk(osurls)
             assert "NOT FOUND" not in capsys.readouterr()[0]
 
@@ -302,8 +283,7 @@ class TestClassScriptutilsURLCheck:
         Test bulk OS availability failure.
         """
         osurls = ["http://qrrbrbirlbel.yu/", "http://zeekyboogydoog.su/"]
-        with mock.patch('bbarchivist.networkutils.availability',
-                        mock.MagicMock(return_value=False)):
+        with mock.patch('bbarchivist.networkutils.availability', mock.MagicMock(return_value=False)):
             with mock.patch('builtins.input', mock.MagicMock(return_value="n")):
                 with pytest.raises(SystemExit):
                     bs.check_os_bulk(osurls)
@@ -313,8 +293,7 @@ class TestClassScriptutilsURLCheck:
         Test bulk OS availability continuation.
         """
         osurls = ["http://qrrbrbirlbel.yu/", "http://zeekyboogydoog.su/"]
-        with mock.patch('bbarchivist.networkutils.availability',
-                        mock.MagicMock(return_value=False)):
+        with mock.patch('bbarchivist.networkutils.availability', mock.MagicMock(return_value=False)):
             with mock.patch('builtins.input', mock.MagicMock(return_value="y")):
                 assert bs.check_os_bulk(osurls) is None
 
@@ -322,19 +301,15 @@ class TestClassScriptutilsURLCheck:
         """
         Test single radio availability.
         """
-        with mock.patch('bbarchivist.networkutils.availability',
-                        mock.MagicMock(return_value=True)):
-            assert bs.check_radio_single("http://qrrbrbirlbel.yu/",
-                                         "10.3.2.2640") == ("http://qrrbrbirlbel.yu/",
-                                                            "10.3.2.2640")
+        with mock.patch('bbarchivist.networkutils.availability',mock.MagicMock(return_value=True)):
+            assert bs.check_radio_single("http://qrrbrbirlbel.yu/", "10.3.2.2640") == ("http://qrrbrbirlbel.yu/", "10.3.2.2640")
             assert "NOT AVAILABLE" not in capsys.readouterr()[0]
 
     def test_radio_single_fail(self):
         """
         Test single radio availability failure.
         """
-        with mock.patch('bbarchivist.networkutils.availability',
-                        mock.MagicMock(return_value=False)):
+        with mock.patch('bbarchivist.networkutils.availability', mock.MagicMock(return_value=False)):
             with mock.patch('builtins.input', mock.MagicMock(return_value="n")):
                 with pytest.raises(SystemExit):
                     bs.check_radio_single("http://qrrbrbirlbel.yu/", "10.3.2.2639")
@@ -343,8 +318,7 @@ class TestClassScriptutilsURLCheck:
         """
         Test single radio availability replacement.
         """
-        with mock.patch('bbarchivist.networkutils.availability',
-                        mock.MagicMock(return_value=False)):
+        with mock.patch('bbarchivist.networkutils.availability', mock.MagicMock(return_value=False)):
             with mock.patch('builtins.input', mock.MagicMock(return_value="y")):
                 assert bs.check_radio_single("http://qrrbrbirlbel.yu/", "10.3.2.2639") == ("http://qrrbrbirlbel.yu/", "y")
 
@@ -353,11 +327,8 @@ class TestClassScriptutilsURLCheck:
         Test bulk radio availability.
         """
         radiourls = ["http://qrrbrbirlbel.yu/", "http://zeekyboogydoog.su/"]
-        with mock.patch('bbarchivist.networkutils.availability',
-                        mock.MagicMock(return_value=True)):
-            assert bs.check_radio_bulk(radiourls,
-                                       "10.3.2.2640") == (radiourls,
-                                                          "10.3.2.2640")
+        with mock.patch('bbarchivist.networkutils.availability',mock.MagicMock(return_value=True)):
+            assert bs.check_radio_bulk(radiourls, "10.3.2.2640") == (radiourls, "10.3.2.2640")
             assert "NOT FOUND" not in capsys.readouterr()[0]
 
     def test_radio_bulk_fail(self):
@@ -365,8 +336,7 @@ class TestClassScriptutilsURLCheck:
         Test bulk radio availability failure.
         """
         radiourls = ["http://qrrbrbirlbel.yu/", "http://zeekyboogydoog.su/"]
-        with mock.patch('bbarchivist.networkutils.availability',
-                        mock.MagicMock(return_value=False)):
+        with mock.patch('bbarchivist.networkutils.availability', mock.MagicMock(return_value=False)):
             with mock.patch('builtins.input', mock.MagicMock(return_value="n")):
                 with pytest.raises(SystemExit):
                     bs.check_radio_bulk(radiourls, "10.3.2.2639")
@@ -376,8 +346,7 @@ class TestClassScriptutilsURLCheck:
         Test bulk radio availability replacement.
         """
         radiourls = ["http://qrrbrbirlbel.yu/", "http://zeekyboogydoog.su/"]
-        with mock.patch('bbarchivist.networkutils.availability',
-                        mock.MagicMock(return_value=False)):
+        with mock.patch('bbarchivist.networkutils.availability', mock.MagicMock(return_value=False)):
             with mock.patch('builtins.input', mock.MagicMock(return_value="y")):
                 assert bs.check_radio_bulk(radiourls, "10.3.2.2639") == (radiourls, "y")
 
@@ -396,18 +365,15 @@ class TestClassScriptutilsSevenzip:
         """
         Test 7z exe finding, when it exists.
         """
-        with mock.patch('bbarchivist.utilities.prep_seven_zip',
-                        mock.MagicMock(return_value=True)):
-            with mock.patch('bbarchivist.utilities.get_seven_zip',
-                            mock.MagicMock(return_value="jackdaw")):
+        with mock.patch('bbarchivist.utilities.prep_seven_zip', mock.MagicMock(return_value=True)):
+            with mock.patch('bbarchivist.utilities.get_seven_zip', mock.MagicMock(return_value="jackdaw")):
                 assert bs.get_sz_executable("7z") == ("7z", "jackdaw")
 
     def test_szexe_exit(self):
         """
         Test exiting upon not finding 7z exe.
         """
-        with mock.patch('bbarchivist.utilities.prep_seven_zip',
-                        mock.MagicMock(return_value=False)):
+        with mock.patch('bbarchivist.utilities.prep_seven_zip', mock.MagicMock(return_value=False)):
             with mock.patch('builtins.input', mock.MagicMock(return_value="n")):
                 with pytest.raises(SystemExit):
                     bs.get_sz_executable("7z")
@@ -416,8 +382,7 @@ class TestClassScriptutilsSevenzip:
         """
         Test falling back to zip upon not finding 7z exe.
         """
-        with mock.patch('bbarchivist.utilities.prep_seven_zip',
-                        mock.MagicMock(return_value=False)):
+        with mock.patch('bbarchivist.utilities.prep_seven_zip', mock.MagicMock(return_value=False)):
             with mock.patch('builtins.input', mock.MagicMock(return_value="y")):
                 assert bs.get_sz_executable("7z") == ("zip", "")
 
@@ -463,12 +428,10 @@ class TestClassScriptutilsIntegrity:
         cls.mstring = b"Somestuff\nName: target.signed\nDigest: tmpeiqm5cFdIwu5YWw4aOkEojS2vw74tsS-onS8qPhT53sEd5LqGW7Ueqmws_rKUE5RV402n2CehlQSwkGwBwQ\nmorestuff"
         cls.estring = cls.mstring + b"HAHAHAFOOLEDYOU"
         cls.fstring = b"Jackdaws love my big sphinx of quartz"
-        with zipfile.ZipFile("mfest.bar", mode="w",
-                             compression=zipfile.ZIP_DEFLATED) as zfile:
+        with zipfile.ZipFile("mfest.bar", mode="w", compression=zipfile.ZIP_DEFLATED) as zfile:
             zfile.writestr("MANIFEST.MF", cls.mstring)
             zfile.writestr("target.signed", cls.fstring)
-        with zipfile.ZipFile("bkmfest.bar", mode="w",
-                             compression=zipfile.ZIP_DEFLATED) as zfile:
+        with zipfile.ZipFile("bkmfest.bar", mode="w", compression=zipfile.ZIP_DEFLATED) as zfile:
             zfile.writestr("MANIFEST.MF", cls.mstring)
             zfile.writestr("target.signed", cls.estring)
         copyfile("bkmfest.bar", "bkmfest.bra")
@@ -527,8 +490,7 @@ class TestClassScriptutilsIntegrity:
         Test checking one loader, best case.
         """
         with mock.patch('platform.system', mock.MagicMock(return_value="Windows")):
-            with mock.patch('bbarchivist.utilities.verify_loader_integrity',
-                            mock.MagicMock(return_value=True)):
+            with mock.patch('bbarchivist.utilities.verify_loader_integrity', mock.MagicMock(return_value=True)):
                 bs.test_single_loader("Z10_loader1.exe")
                 assert "OK" in capsys.readouterr()[0]
 
@@ -537,8 +499,7 @@ class TestClassScriptutilsIntegrity:
         Test checking one loader, worst case.
         """
         with mock.patch('platform.system', mock.MagicMock(return_value="Windows")):
-            with mock.patch('bbarchivist.utilities.verify_loader_integrity',
-                            mock.MagicMock(return_value=False)):
+            with mock.patch('bbarchivist.utilities.verify_loader_integrity', mock.MagicMock(return_value=False)):
                 try:
                     bs.test_single_loader("Z10_loader1.exe")
                 except SystemExit:
@@ -558,8 +519,7 @@ class TestClassScriptutilsIntegrity:
         Test checking many loaders, best case.
         """
         with mock.patch('platform.system', mock.MagicMock(return_value="Windows")):
-            with mock.patch('bbarchivist.utilities.verify_loader_integrity',
-                            mock.MagicMock(return_value=True)):
+            with mock.patch('bbarchivist.utilities.verify_loader_integrity', mock.MagicMock(return_value=True)):
                 bs.test_loader_files(os.getcwd())
                 assert "OK" in capsys.readouterr()[0]
 
@@ -568,8 +528,7 @@ class TestClassScriptutilsIntegrity:
         Test checking many loaders, worst case.
         """
         with mock.patch('platform.system', mock.MagicMock(return_value="Windows")):
-            with mock.patch('bbarchivist.utilities.verify_loader_integrity',
-                            mock.MagicMock(return_value=False)):
+            with mock.patch('bbarchivist.utilities.verify_loader_integrity', mock.MagicMock(return_value=False)):
                 try:
                     bs.test_loader_files(os.getcwd())
                 except SystemExit:
@@ -593,30 +552,25 @@ class TestClassScriptutilsGPG:
         """
         Test no modifications to GPG credentials.
         """
-        with mock.patch('bbarchivist.filehashtools.gpg_config_loader',
-                        mock.MagicMock(return_value=("12345678", "hunter2"))):
+        with mock.patch('bbarchivist.filehashtools.gpg_config_loader', mock.MagicMock(return_value=("12345678", "hunter2"))):
             assert bs.verify_gpg_credentials() == ("12345678", "hunter2")
 
     def test_gpgver_key(self):
         """
         Test lack of GPG key.
         """
-        with mock.patch('bbarchivist.filehashtools.gpg_config_loader',
-                        mock.MagicMock(return_value=(None, "hunter2"))):
+        with mock.patch('bbarchivist.filehashtools.gpg_config_loader', mock.MagicMock(return_value=(None, "hunter2"))):
             with mock.patch('builtins.input', mock.MagicMock(return_value="y")):
-                with mock.patch('bbarchivist.filehashtools.gpg_config_writer',
-                                mock.MagicMock(return_value=None)):
+                with mock.patch('bbarchivist.filehashtools.gpg_config_writer', mock.MagicMock(return_value=None)):
                     assert bs.verify_gpg_credentials() == ("0xy", "hunter2")
 
     def test_gpgver_pass(self):
         """
         Test lack of GPG pass.
         """
-        with mock.patch('bbarchivist.filehashtools.gpg_config_loader',
-                        mock.MagicMock(return_value=("12345678", None))):
+        with mock.patch('bbarchivist.filehashtools.gpg_config_loader', mock.MagicMock(return_value=("12345678", None))):
             with mock.patch('builtins.input', mock.MagicMock(return_value="y")):
-                with mock.patch('bbarchivist.filehashtools.gpg_config_writer',
-                                mock.MagicMock(return_value=None)):
+                with mock.patch('bbarchivist.filehashtools.gpg_config_writer', mock.MagicMock(return_value=None)):
                     with mock.patch('getpass.getpass', mock.MagicMock(return_value="hunter2")):
                         assert bs.verify_gpg_credentials() == ("12345678", "hunter2")
 
@@ -624,7 +578,6 @@ class TestClassScriptutilsGPG:
         """
         Test lack of both, and not replacing them.
         """
-        with mock.patch('bbarchivist.filehashtools.gpg_config_loader',
-                        mock.MagicMock(return_value=(None, None))):
+        with mock.patch('bbarchivist.filehashtools.gpg_config_loader', mock.MagicMock(return_value=(None, None))):
             with mock.patch('builtins.input', mock.MagicMock(return_value="n")):
                 assert bs.verify_gpg_credentials() == (None, None)

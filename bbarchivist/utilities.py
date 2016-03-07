@@ -105,8 +105,7 @@ def file_exists(file):
     :type file: str
     """
     if not os.path.exists(file):
-        raise argparse.ArgumentError(argument=None,
-                                     message="{0} not found.".format(file))
+        raise argparse.ArgumentError(argument=None, message="{0} not found.".format(file))
     return file
 
 
@@ -119,8 +118,7 @@ def positive_integer(input_int):
     """
     if int(input_int) <= 0:
         info = "{0} is not >=0.".format(str(input_int))
-        raise argparse.ArgumentError(argument=None,
-                                     message=info)
+        raise argparse.ArgumentError(argument=None, message=info)
     return int(input_int)
 
 
@@ -168,13 +166,11 @@ def escreens_pin(pin):
         try:
             int(pin, 16)  # hexadecimal-ness
         except ValueError:
-            raise argparse.ArgumentError(argument=None,
-                                         message="Invalid PIN.")
+            raise argparse.ArgumentError(argument=None, message="Invalid PIN.")
         else:
             return pin.lower()
     else:
-        raise argparse.ArgumentError(argument=None,
-                                     message="Invalid PIN.")
+        raise argparse.ArgumentError(argument=None, message="Invalid PIN.")
 
 
 def escreens_duration(duration):
@@ -187,8 +183,7 @@ def escreens_duration(duration):
     if int(duration) in (1, 3, 6, 15, 30):
         return int(duration)
     else:
-        raise argparse.ArgumentError(argument=None,
-                                     message="Invalid duration.")
+        raise argparse.ArgumentError(argument=None, message="Invalid duration.")
 
 
 def s2b(input_check):
@@ -372,36 +367,27 @@ def generate_urls(baseurl, osversion, radioversion, core=False):
     :param core: Whether or not to return core URLs as well.
     :type core: bool
     """
-    osurls = [baseurl + "/winchester.factory_sfi.desktop-" +
-              osversion + "-nto+armle-v7+signed.bar",
-              baseurl + "/qc8960.factory_sfi.desktop-" +
-              osversion + "-nto+armle-v7+signed.bar",
-              baseurl + "/qc8960.factory_sfi.desktop-" +
-              osversion + "-nto+armle-v7+signed.bar",
-              baseurl + "/qc8974.factory_sfi.desktop-" +
-              osversion + "-nto+armle-v7+signed.bar"]
-    radiourls = [baseurl + "/m5730-" + radioversion +
-                 "-nto+armle-v7+signed.bar",
-                 baseurl + "/qc8960-" + radioversion +
-                 "-nto+armle-v7+signed.bar",
-                 baseurl + "/qc8960.omadm-" + radioversion +
-                 "-nto+armle-v7+signed.bar",
-                 baseurl + "/qc8960.wtr-" + radioversion +
-                 "-nto+armle-v7+signed.bar",
-                 baseurl + "/qc8960.wtr5-" + radioversion +
-                 "-nto+armle-v7+signed.bar",
-                 baseurl + "/qc8930.wtr5-" + radioversion +
-                 "-nto+armle-v7+signed.bar",
-                 baseurl + "/qc8974.wtr2-" + radioversion +
-                 "-nto+armle-v7+signed.bar"]
+    osurls = [
+        baseurl + "/winchester.factory_sfi.desktop-" + osversion + "-nto+armle-v7+signed.bar",
+        baseurl + "/qc8960.factory_sfi.desktop-" + osversion + "-nto+armle-v7+signed.bar",
+        baseurl + "/qc8960.factory_sfi.desktop-" + osversion + "-nto+armle-v7+signed.bar",
+        baseurl + "/qc8974.factory_sfi.desktop-" + osversion + "-nto+armle-v7+signed.bar"
+        ]
+    radiourls = [
+        baseurl + "/m5730-" + radioversion + "-nto+armle-v7+signed.bar",
+        baseurl + "/qc8960-" + radioversion + "-nto+armle-v7+signed.bar",
+        baseurl + "/qc8960.omadm-" + radioversion + "-nto+armle-v7+signed.bar",
+        baseurl + "/qc8960.wtr-" + radioversion + "-nto+armle-v7+signed.bar",
+        baseurl + "/qc8960.wtr5-" + radioversion + "-nto+armle-v7+signed.bar",
+        baseurl + "/qc8930.wtr5-" + radioversion + "-nto+armle-v7+signed.bar",
+        baseurl + "/qc8974.wtr2-" + radioversion + "-nto+armle-v7+signed.bar"
+        ]
     coreurls = []
     splitos = osversion.split(".")
     splitos = [int(i) for i in splitos]
     if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):  # 10.3.1+
-        osurls[2] = osurls[2].replace("qc8960.factory_sfi",
-                                      "qc8960.factory_sfi_hybrid_qc8x30")
-        osurls[3] = osurls[3].replace("qc8974.factory_sfi",
-                                      "qc8960.factory_sfi_hybrid_qc8974")
+        osurls[2] = osurls[2].replace("qc8960.factory_sfi", "qc8960.factory_sfi_hybrid_qc8x30")
+        osurls[3] = osurls[3].replace("qc8974.factory_sfi", "qc8960.factory_sfi_hybrid_qc8974")
     for url in osurls:
         coreurls.append(url.replace(".desktop", ""))
     if core:
@@ -429,47 +415,32 @@ def generate_lazy_urls(baseurl, osversion, radioversion, device):
     """
     splitos = osversion.split(".")
     splitos = [int(i) for i in splitos]
+    suffix = "-nto+armle-v7+signed.bar"
     if device == 0:
-        osurl = baseurl + "/winchester.factory_sfi.desktop-"
-        osurl += osversion + "-nto+armle-v7+signed.bar"
-        radiourl = baseurl + "/m5730-"
-        radiourl += radioversion + "-nto+armle-v7+signed.bar"
+        osurl = baseurl + "/winchester.factory_sfi.desktop-" + osversion + suffix
+        radiourl = baseurl + "/m5730-" + radioversion + suffix
     elif device == 1:
-        osurl = baseurl + "/qc8960.factory_sfi.desktop-"
-        osurl += osversion + "-nto+armle-v7+signed.bar"
-        radiourl = baseurl + "/qc8960-"
-        radiourl += radioversion + "-nto+armle-v7+signed.bar"
+        osurl = baseurl + "/qc8960.factory_sfi.desktop-" + osversion + suffix
+        radiourl = baseurl + "/qc8960-" + radioversion + suffix
     elif device == 2:
-        osurl = baseurl + "/qc8960.verizon_sfi.desktop-"
-        osurl += osversion + "-nto+armle-v7+signed.bar"
-        radiourl = baseurl + "/qc8960.omadm-"
-        radiourl += radioversion + "-nto+armle-v7+signed.bar"
+        osurl = baseurl + "/qc8960.verizon_sfi.desktop-" + osversion + suffix
+        radiourl = baseurl + "/qc8960.omadm-" + radioversion + suffix
     elif device == 3:
-        osurl = baseurl + "/qc8960.factory_sfi.desktop-"
-        osurl += osversion + "-nto+armle-v7+signed.bar"
-        radiourl = baseurl + "/qc8960.wtr-"
-        radiourl += radioversion + "-nto+armle-v7+signed.bar"
+        osurl = baseurl + "/qc8960.factory_sfi.desktop-" + osversion + suffix
+        radiourl = baseurl + "/qc8960.wtr-" + radioversion + suffix
     elif device == 4:
-        osurl = baseurl + "/qc8960.factory_sfi.desktop-"
-        osurl += osversion + "-nto+armle-v7+signed.bar"
-        radiourl = baseurl + "/qc8960.wtr5-"
-        radiourl += radioversion + "-nto+armle-v7+signed.bar"
+        osurl = baseurl + "/qc8960.factory_sfi.desktop-" + osversion + suffix
+        radiourl = baseurl + "/qc8960.wtr5-" + radioversion + suffix
     elif device == 5:
-        osurl = baseurl + "/qc8960.factory_sfi.desktop-"
-        osurl += osversion + "-nto+armle-v7+signed.bar"
-        radiourl = baseurl + "/qc8930.wtr5-"
-        radiourl += radioversion + "-nto+armle-v7+signed.bar"
+        osurl = baseurl + "/qc8960.factory_sfi.desktop-" + osversion + suffix
+        radiourl = baseurl + "/qc8930.wtr5-" + radioversion + suffix
         if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):
-            osurl = osurl.replace("qc8960.factory_sfi",
-                                  "qc8960.factory_sfi_hybrid_qc8x30")
+            osurl = osurl.replace("qc8960.factory_sfi", "qc8960.factory_sfi_hybrid_qc8x30")
     elif device == 6:
-        osurl = baseurl + "/qc8974.factory_sfi.desktop-"
-        osurl += osversion + "-nto+armle-v7+signed.bar"
-        radiourl = baseurl + "/qc8974.wtr2-"
-        radiourl += radioversion + "-nto+armle-v7+signed.bar"
+        osurl = baseurl + "/qc8974.factory_sfi.desktop-" + osversion + suffix
+        radiourl = baseurl + "/qc8974.wtr2-" + radioversion + suffix
         if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):
-            osurl = osurl.replace("qc8974.factory_sfi",
-                                  "qc8960.factory_sfi_hybrid_qc8974")
+            osurl = osurl.replace("qc8974.factory_sfi", "qc8960.factory_sfi_hybrid_qc8974")
     return osurl, radiourl
 
 
@@ -655,9 +626,8 @@ def verify_loader_integrity(loaderfile):
         excode = None
         try:
             with open(os.devnull, 'rb') as dnull:
-                excode = subprocess.call('{0} fileinfo"'.format(loaderfile),
-                                         stdout=dnull,
-                                         stderr=subprocess.STDOUT)
+                cmd = "{0} fileinfo".format(loaderfile)
+                excode = subprocess.call(cmd, stdout=dnull, stderr=subprocess.STDOUT)
         except OSError:
             excode = -1
         return excode == 0  # 0 if OK, non-zero if something broke
@@ -728,9 +698,10 @@ def prep_logfile():
     """
     logfile = time.strftime("%Y_%m_%d_%H%M%S") + ".txt"
     if getattr(sys, 'frozen', False):
-        basefolder = os.path.join(os.getcwd(), "lookuplogs")
+        root = os.getcwd()
     else:
-        basefolder = os.path.join(os.path.expanduser("~"), "lookuplogs")
+        root = os.path.expanduser("~")
+    basefolder = os.path.join(root, "lookuplogs")
     os.makedirs(basefolder, exist_ok=True)
     record = os.path.join(basefolder, logfile)
     open(record, "w").close()

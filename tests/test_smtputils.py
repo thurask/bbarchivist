@@ -42,27 +42,33 @@ class TestClassSMTPUtils:
         """
         Test config filtering.
         """
-        results = {"server": "abc.xyz",
-                   "port": 69,
-                   "username": "luser",
-                   "password": "hunter2",
-                   "is_ssl": True}
+        results = {
+            "server": "abc.xyz",
+            "port": 69,
+            "username": "luser",
+            "password": "hunter2",
+            "is_ssl": True
+            }
         assert bs.smtp_config_generator(results) == results
 
     def test_smtp_confgen_fback(self):
         """
         Test config fallback.
         """
-        dummy = {"server": None,
-                 "port": 0,
-                 "username": None,
-                 "password": None,
-                 "is_ssl": None}
-        results_y = {"server": "yes",
-                     "port": "yes",
-                     "username": "yes",
-                     "password": "pas",
-                     "is_ssl": "true"}
+        dummy = {
+            "server": None,
+            "port": 0,
+            "username": None,
+            "password": None,
+            "is_ssl": None
+            }
+        results_y = {
+            "server": "yes",
+            "port": "yes",
+            "username": "yes",
+            "password": "pas",
+            "is_ssl": "true"
+            }
         with mock.patch("getpass.getpass", mock.MagicMock(return_value="pas")):
             with mock.patch("builtins.input", mock.MagicMock(return_value="yes")):
                 assert bs.smtp_config_generator(dummy) == results_y
@@ -71,16 +77,20 @@ class TestClassSMTPUtils:
         """
         Test SSL fallback, specifically.
         """
-        dummy = {"server": None,
-                 "port": 0,
-                 "username": None,
-                 "password": None,
-                 "is_ssl": None}
-        results_n = {"server": "no",
-                     "port": "no",
-                     "username": "no",
-                     "password": "pas",
-                     "is_ssl": "false"}
+        dummy = {
+            "server": None,
+            "port": 0,
+            "username": None,
+            "password": None,
+            "is_ssl": None
+            }
+        results_n = {
+            "server": "no",
+            "port": "no",
+            "username": "no",
+            "password": "pas",
+            "is_ssl": "false"
+            }
         with mock.patch("getpass.getpass", mock.MagicMock(return_value="pas")):
             with mock.patch("builtins.input", mock.MagicMock(return_value="no")):
                 assert bs.smtp_config_generator(dummy) == results_n
@@ -89,15 +99,14 @@ class TestClassSMTPUtils:
         """
         Test kwarg unpacking.
         """
-        results = {"server": "abc.xyz",
-                   "port": 69,
-                   "username": "luser",
-                   "password": "hunter2",
-                   "is_ssl": True}
-        assert bs.parse_kwargs(results) == (results['server'],
-                                            results['username'],
-                                            results['port'],
-                                            results['password'])
+        results = {
+            "server": "abc.xyz",
+            "port": 69,
+            "username": "luser",
+            "password": "hunter2",
+            "is_ssl": True
+            }
+        assert bs.parse_kwargs(results) == (results['server'], results['username'], results['port'], results['password'])
 
     def test_generate_message(self):
         """
@@ -123,14 +132,16 @@ class TestClassSMTPUtils:
         """
         Test sending an email.
         """
-        kwargs = {"server": "abc.xyz",
-                  "port": 69,
-                  "username": "luser",
-                  "password": None,
-                  "is_ssl": False,
-                  "software": "10.9.8.7654",
-                  "os": "10.2.3.4567",
-                  "body": "Hey! Listen!"}
+        kwargs = {
+            "server": "abc.xyz",
+            "port": 69,
+            "username": "luser",
+            "password": None,
+            "is_ssl": False,
+            "software": "10.9.8.7654",
+            "os": "10.2.3.4567",
+            "body": "Hey! Listen!"
+            }
         with mock.patch('getpass.getpass', mock.MagicMock(return_value="hunter2")):
             with mock.patch('smtplib.SMTP') as run_amock:
                 bs.send_email(kwargs)
@@ -145,19 +156,23 @@ class TestClassSMTPUtils:
         """
         Test preparing and sending an email.
         """
-        kwargs = {"server": "abc.xyz",
-                  "port": 69,
-                  "username": "luser",
-                  "password": None,
-                  "is_ssl": False,
-                  "software": "10.9.8.7654",
-                  "os": "10.2.3.4567",
-                  "body": "Hey! Listen!"}
-        kwargsmin = {"server": "abc.xyz",
-                     "port": 69,
-                     "username": "luser",
-                     "password": None,
-                     "is_ssl": False}
+        kwargs = {
+            "server": "abc.xyz",
+            "port": 69,
+            "username": "luser",
+            "password": None,
+            "is_ssl": False,
+            "software": "10.9.8.7654",
+            "os": "10.2.3.4567",
+            "body": "Hey! Listen!"
+            }
+        kwargsmin = {
+            "server": "abc.xyz",
+            "port": 69,
+            "username": "luser",
+            "password": None,
+            "is_ssl": False
+            }
         with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
             with mock.patch('bbarchivist.smtputils.smtp_config_loader', mock.MagicMock(return_value=kwargsmin)):
                 with mock.patch('bbarchivist.utilities.return_and_delete', mock.MagicMock(return_value="Hey! Listen!")):

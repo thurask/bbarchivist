@@ -65,25 +65,16 @@ def read_os_files(localdir, core=False):
         fix8974_old = "*qc8974.*_sfi.desktop.BB*.signed"
     # 8960
     try:
-        os_8960 = glob.glob(
-            os.path.join(
-                localdir,
-                fix8960))[0]
+        os_8960 = glob.glob(os.path.join(localdir, fix8960))[0]
     except IndexError:
         os_8960 = None
         print("No 8960 image found")
     # 8x30 (10.3.1 MR+)
     try:
-        os_8x30 = glob.glob(
-            os.path.join(
-                localdir,
-                fix8930))[0]
+        os_8x30 = glob.glob(os.path.join(localdir, fix8930))[0]
     except IndexError:
         try:
-            os_8x30 = glob.glob(
-                os.path.join(
-                    localdir,
-                    fix8960))[0]
+            os_8x30 = glob.glob(os.path.join(localdir, fix8960))[0]
         except IndexError:
             os_8x30 = None
             print("No 8x30 image found")
@@ -117,61 +108,50 @@ def read_radio_files(localdir):
     """
     # STL100-1
     try:
-        radio_ti = glob.glob(
-            os.path.join(
-                localdir,
-                "*radio.m5730*.signed"))[0]
+        radio_ti = glob.glob(os.path.join(localdir, "*radio.m5730*.signed"))[0]
     except IndexError:
         radio_ti = None
         print("No OMAP radio found")
     # STL100-X
     try:
-        radio_z10 = glob.glob(
-            os.path.join(
-                localdir,
-                "*radio.qc8960.BB*.signed"))[0]
+        radio_z10 = glob.glob(os.path.join(localdir, "*radio.qc8960.BB*.signed"))[0]
     except IndexError:
         radio_z10 = None
         print("No 8960 radio found")
     # STL100-4
     try:
-        radio_z10_vzw = glob.glob(
-            os.path.join(
-                localdir,
-                "*radio.qc8960*omadm*.signed"))[0]
+        radio_z10_vzw = glob.glob(os.path.join(localdir, "*radio.qc8960*omadm*.signed"))[0]
     except IndexError:
         radio_z10_vzw = None
         print("No Verizon 8960 radio found")
     # Q10/Q5
     try:
-        radio_q10 = glob.glob(os.path.join(localdir,
-                                           "*radio.qc8960*wtr.*signed"))[0]
+        radio_q10 = glob.glob(os.path.join(localdir, "*radio.qc8960*wtr.*signed"))[0]
     except IndexError:
         radio_q10 = None
         print("No Q10/Q5 radio found")
     # Z30/Classic
     try:
-        radio_z30 = glob.glob(os.path.join(localdir,
-                                           "*radio.qc8960*wtr5*.signed"))[0]
+        radio_z30 = glob.glob(os.path.join(localdir, "*radio.qc8960*wtr5*.signed"))[0]
     except IndexError:
         radio_z30 = None
         print("No Z30/Classic radio found")
     # Z3
     try:
-        radio_z3 = glob.glob(os.path.join(localdir,
-                                          "*radio.qc8930*wtr5*.signed"))[0]
+        radio_z3 = glob.glob(os.path.join(localdir, "*radio.qc8930*wtr5*.signed"))[0]
     except IndexError:
         radio_z3 = None
         print("No Z3 radio found")
     # Passport
     try:
-        radio_8974 = glob.glob(os.path.join(localdir,
-                                            "*radio.qc8974*wtr2*.signed"))[0]
+        radio_8974 = glob.glob(os.path.join(localdir, "*radio.qc8974*wtr2*.signed"))[0]
     except IndexError:
         radio_8974 = None
         print("No Passport radio found")
-    return [radio_ti, radio_z10, radio_z10_vzw,
-            radio_q10, radio_z30, radio_z3, radio_8974]
+    return [
+        radio_ti, radio_z10, radio_z10_vzw,
+        radio_q10, radio_z30, radio_z3, radio_8974
+        ]
 
 
 def pretty_formatter(osversion, radioversion):
