@@ -9,7 +9,7 @@ __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015-2016 Thurask"
 
 #: App version.
-VERSION = "2.4.0"
+VERSION = "2.4.1"
 #: File location.
 LOCATION = os.path.abspath(__file__)
 #: File folder.
