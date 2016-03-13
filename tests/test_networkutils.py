@@ -135,6 +135,22 @@ def gh_mock(url, request):
     return {'status_code': 200, 'content': thebody}
 
 
+def pa_good_mock(url, request):
+    """
+    Mock for Android autoloader lookup, best case.
+    """
+    thebody = "http://bbapps.download.blackberry.com/Priv/bbry_qc8992_autoloader_user-common-AAD250.zip"
+    return {'status_code': 200, 'content': thebody}
+
+
+def pa_bad_mock(url, request):
+    """
+    Mock for Android autoloader lookup, worst case.
+    """
+    thebody = "http://bbapps.download.blackberry.com/Priv/bbry_qc8992_autoloader_user-common-AAD250.zip"
+    return {'status_code': 404, 'content': thebody}
+
+
 def cq_good_mock(url, request):
     """
     Mock for carrier update checking, ideal case.
@@ -457,3 +473,19 @@ class TestClassNetworkutilsParsing:
         with httmock.HTTMock(gh_mock):
             results = bn.kernel_scraper()
             assert "msm8992/AAC724" in results[0]
+
+    def test_autoloader_scan_good(self):
+        """
+        Test Android autoloader lookup, best case.
+        """
+        with httmock.HTTMock(pa_good_mock):
+            results = bn.priv_scanner("AAD250")
+            assert "user-common-AAD250" in results[0]
+
+    def test_autoloader_scan_bad(self):
+        """
+        Test Android autoloader lookup, worst case.
+        """
+        with httmock.HTTMock(pa_bad_mock):
+            results = bn.priv_scanner("AAD250")
+            assert results is None

@@ -402,7 +402,7 @@ def enter_to_exit(checkfreeze=True):
     """
     Press enter to exit a script.
 
-    :param checkfreeze: If we need to check if we're frozen. Default is true.
+    :param checkfreeze: If this triggers only in frozen executables. Default is true.
     :type checkfreeze: bool
     """
     if checkfreeze:

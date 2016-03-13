@@ -36,11 +36,12 @@ scriptlist = [
     'bb-downloader=bbarchivist.scripts.downloader:grab_args',
     'bb-kernchecker=bbarchivist.scripts.kernchecker:kernchecker_main',
     'bb-cfp=bbarchivist.scripts.cfp:cfp_main',
-    'bb-cap=bbarchivist.scripts.cap:cap_main'
+    'bb-cap=bbarchivist.scripts.cap:cap_main',
+    'bb-privlookup=bbarchivist.scripts.privlookup:grab_args'
     ]
 setup(name='bbarchivist',
       version=bbconstants.VERSION,
-      description='BlackBerry 10 autoloader tools',
+      description='BlackBerry autoloader tools',
       long_description=readme(),
       url='http://github.com/thurask/bbarchivist',
       keywords='blackberry autoloader',
@@ -70,6 +71,7 @@ setup(name='bbarchivist',
           "Programming Language :: Python :: 3.3",
           "Programming Language :: Python :: 3.4",
           "Programming Language :: Python :: 3.5",
+          "Programming Language :: Python :: 3",
           "Programming Language :: Python :: 3 :: Only",
           "Topic :: Utilities"
       ],

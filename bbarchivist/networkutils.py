@@ -10,7 +10,7 @@ import glob  # pem file lookup
 import requests  # downloading
 from bs4 import BeautifulSoup  # scraping
 from bbarchivist import utilities  # parse filesize
-from bbarchivist.bbconstants import SERVERS  # lookup servers
+from bbarchivist.bbconstants import SERVERS, PRIVVARS  # lookup servers, Priv variants
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -507,3 +507,23 @@ def kernel_scraper():
     text = soup.get_text()
     kernlist = re.findall(r"msm[0-9]{4}\/[A-Z0-9]{6}", text, re.IGNORECASE)
     return kernlist
+
+
+def priv_scanner(build):
+    """
+    Check for Priv autoloaders on BlackBerry's site.
+
+    :param build: Build to check, 3 letters + 3 numbers.
+    :type build: str
+    """
+    with concurrent.futures.ThreadPoolExecutor(max_workers=len(PRIVVARS)) as xec:
+        results = []
+        for var in PRIVVARS:
+            skel = "http://bbapps.download.blackberry.com/Priv/bbry_qc8992_autoloader_user-{0}-{1}.zip".format(var, build.upper())
+            avail = availability(skel)
+            if avail:
+                results.append(skel)
+        if results:
+            return results
+        else:
+            return None

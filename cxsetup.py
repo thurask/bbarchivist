@@ -48,7 +48,8 @@ executables = [
     Executable(join(localdir, 'autolookup.py'), base=base, targetName="autolookup.exe"),
     Executable(join(localdir, 'linkgen.py'), base=base, targetName="linkgen.exe"),
     Executable(join(localdir, 'kernchecker.py'), base=base, targetName="kernchecker.exe"),
-    Executable(join(localdir, 'escreens.py'), base=base, targetName="escreens.exe")
+    Executable(join(localdir, 'escreens.py'), base=base, targetName="escreens.exe"),
+    Executable(join(localdir, 'privlookup.py'), base=base, targetName="privlookup.exe")
 ]
 
 setup(name='bbarchivist',
