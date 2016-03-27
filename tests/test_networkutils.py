@@ -3,8 +3,13 @@
 """Test the networkutils module."""
 
 import os
+import xml.etree.ElementTree
 from shutil import rmtree
 from hashlib import sha512
+try:
+    import unittest.mock as mock
+except ImportError:
+    import mock
 import httmock
 import requests
 import bbarchivist.networkutils as bn
@@ -55,6 +60,18 @@ def download_mock(url, request):
     content = b"Jackdaws love my big sphinx of quartz"*5000
     headers = {'content-length': len(content)}
     return httmock.response(status_code=200,
+                            content=content,
+                            headers=headers)
+
+
+@httmock.urlmatch(netloc=r'(.*\.)?google\.com$')
+def download_mock_fail(url, request):
+    """
+    HTTMock mock for download failure.
+    """
+    content = b"Jackdaws love my big sphinx of quartz"*5000
+    headers = {'content-length': len(content)}
+    return httmock.response(status_code=404,
                             content=content,
                             headers=headers)
 
@@ -185,7 +202,7 @@ def bl_little_mock(url, request):
 
 def sr_good_mock(url, request):
     """
-    Mock for software release lookup, best case.
+    Mock for software release lookup, SR found.
     """
     goodbody = b'<?xml version="1.0" encoding="UTF-8"?><srVersionLookupResponse version="2.0.0"><data authEchoTS="1366644680359"><status code="0"><friendlyMessage>Success</friendlyMessage><technicalMessage>Success</technicalMessage></status><content><softwareReleaseVersion>10.3.2.516</softwareReleaseVersion></content></data><signature><root><cipher>EC521R1</cipher><shaType>SHA512</shaType><sigR>QnnSA+ZMae96eC82GU+VNUFGPHsqD4n7MydOacSsEwygn2Fs+41jiXZpQ8mZ51ft4eTWAlmbdpecZMqlSPbaS/4=</sigR><sigS>AQlCb2Wk87R/jwMxQCP8jElfE88nzelzqmpyakkXokRhy8kkec67R6wQIek+TJvXRsxS6hHqIhjjA5wO/NWaM5Z0</sigS></root><chain ordinal="1"><cipher>EC521R1</cipher><shaType>SHA512</shaType><publicKey notValidUntil="1434253530830" notValidAfter="1434685530830">BACDEf0rUyqeoahFj57x02KvWvq8ztyl2ekJabpghmvv256KGhkuxTj6ugD6cvf6jYOIyjx6og0XRj/cnycNb1dhrwDNwOOB/qgE+RNWWDcUL8M/Lm2nyT+kru3IZ6MWBedYKine+dZHFpJk+x26QnXsEYgtMR4rCbIVC2Ooc8vCIV29rQ==</publicKey><sigR>APicruleHOD+jCsLmaSRIDePoyICdUBQkz/jq3tpyp1jnmN6K29r35UBnsYlGtnlUKscVg5uQbCSemO5+KWYa96R</sigR><sigS>ATzJc0Ev+2ep9eFgmtn6wdt+B2TAo1n3K5lvrfKGiyFrUNEbBdIejk3afL/IwKV3euSNx+iwHrscKtrrjWIfrTgB</sigS></chain></signature></srVersionLookupResponse>'
     return {'status_code': 200, 'content': goodbody}
@@ -193,9 +210,17 @@ def sr_good_mock(url, request):
 
 def sr_bad_mock(url, request):
     """
-    Mock for software release lookup, worst case.
+    Mock for software release lookup, SR not found.
     """
     badbody = b'<?xml version="1.0" encoding="UTF-8"?><srVersionLookupResponse version="2.0.0"><data authEchoTS="1366644680359"><status code="0"><friendlyMessage>Success</friendlyMessage><technicalMessage>Success</technicalMessage></status><content><softwareReleaseVersion>SR not in system</softwareReleaseVersion></content></data><signature><root><cipher>EC521R1</cipher><shaType>SHA512</shaType><sigR>YMd1frOGcmTxawdRMnCsPB7C/x4xik5LyHVtsTBVPVl/id+yGT5vcLfcSL9z0g5HK0iGl99J4tCvlBO12+NTU7c=</sigR><sigS>AcbRzaMX6cQ/RGfk7m7tUora+W/nvBHonKJNpHuudYAoMbKRX0CofnNB9f2QXNiPZfSHpLYZ1YkuZ9cEHDmhCitD</sigS></root><chain ordinal="1"><cipher>EC521R1</cipher><shaType>SHA512</shaType><publicKey notValidUntil="1434251625739" notValidAfter="1434683625739">BAHxY5kl7VQ37IN1b1nWKCFGdc+s5Wm6VNLINp4rfUyfQavysqbn90Le+Q76J5CLaxXHVm+3ras0DqXT2s/6f+vBAgGWDNykX5Rc4m+J+0r2nw9XlERO0jDINNlPiz7SuIttP8UNgdQIHtyjPzdna7gvjfH3MBw/vQ4aUukklBHGakZVXA==</publicKey><sigR>AUjqIq5u1DTdz2pY68ChgP38rjRY5naKcBX4h6db8qfjdJTQZ5nEPB/2ujkouj8MQAB/Mx62aoGjG8X1acFR0oiK</sigR><sigS>AZ90jlOJis7nyLLLBT72oaFBzljw3v7F2MmiPS5H4VEytKoDjHX5lLrYcuVTspBTvBp68EzFHauWvJD74bVb4ciM</sigS></chain></signature></srVersionLookupResponse>'
+    return {'status_code': 200, 'content': badbody}
+
+
+def sr_fail_mock(url, request):
+    """
+    Mock for software release lookup, XML parse error.
+    """
+    badbody = b'<?xml version="1.0" encoding="UTF-8"?></srVersionLookupResponse>'
     return {'status_code': 200, 'content': badbody}
 
 
@@ -265,6 +290,14 @@ class TestClassNetworkutils:
                 else:
                     break
 
+    def test_download_fail(self, capsys):
+        """
+        Test download failure.
+        """
+        with httmock.HTTMock(download_mock_fail):
+            bn.download("http://google.com/smack.dat")
+        assert "HTTP 404" in capsys.readouterr()[0]
+
     def test_download_bootstrap(self):
         """
         Test multiple downloading.
@@ -306,6 +339,21 @@ class TestClassNetworkutils:
         Test NPC generation.
         """
         assert bn.return_npc(10, 42) == "01004230"
+
+    def test_avail_clean_avail(self):
+        """
+        Test availability cleaning, with an available software release.
+        """
+        result = {"p": "10.3.2.2836"}
+        assert bn.clean_availability(result, "p") == ("10.3.2.2836", "PD")
+
+    def test_avail_clean_fail(self):
+        """
+        Test availability cleaning, with an unavailable software release.
+        """
+        result = {"a1": "SR not in system"}
+        assert bn.clean_availability(result, "a1") == ("SR not in system", "  ")
+
 
 
 class TestClassNetworkutilsParsing:
@@ -396,6 +444,14 @@ class TestClassNetworkutilsParsing:
         """
         server = "https://cs.sl.blackberry.com/cse/srVersionLookup/2.0.0/"
         with httmock.HTTMock(sr_bad_mock):
+            assert bn.sr_lookup("10.3.2.798", server) == "SR not in system"
+
+    def test_sr_lookup_error(self):
+        """
+        Test software lookup, XML parse error.
+        """
+        server = "https://cs.sl.blackberry.com/cse/srVersionLookup/2.0.0/"
+        with httmock.HTTMock(sr_fail_mock):
             assert bn.sr_lookup("10.3.2.798", server) == "SR not in system"
 
     def test_sr_lookup_timeout(self):

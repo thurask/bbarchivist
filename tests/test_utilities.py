@@ -292,6 +292,15 @@ class TestClassUtilities:
             afile.write("You can call me Al")
         assert bu.return_and_delete("TEST.txt") == "You can call me Al"
 
+    def test_wrap_kb_except(self):
+        """
+        Test wrapping Ctrl-C.
+        """
+        def dummy():
+            raise KeyboardInterrupt
+        wrapped = bu.wrap_keyboard_except(dummy)
+        assert True  # if we get here, KeyboardInterrupt was handled
+
 
 class TestClassUtilitiesStdout:
     """

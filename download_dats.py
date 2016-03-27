@@ -5,7 +5,7 @@
 
 import os
 from bbarchivist.networkutils import download_bootstrap
-from bbarchivist.bbconstants import CAPSIZE, CFPSIZE, CAPLOCATION, CFPLOCATION
+from bbarchivist.bbconstants import CAP, CFP
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -18,15 +18,15 @@ def download():
     """
     basename = "https://github.com/thurask/bbarchivist/raw/master/bbarchivist/"
     files = []
-    capfile = os.path.basename(CAPLOCATION)
+    capfile = os.path.basename(CAP.location)
     try:
-        if os.path.getsize(CAPLOCATION) != CAPSIZE:
+        if os.path.getsize(CAP.location) != CAP.size:
             files.append(basename+capfile)
     except FileNotFoundError:
         files.append(basename+capfile)
-    cfpfile = os.path.basename(CFPLOCATION)
+    cfpfile = os.path.basename(CFP.location)
     try:
-        if os.path.getsize(CFPLOCATION) != CFPSIZE:
+        if os.path.getsize(CFP.location) != CFP.size:
             files.append(basename+cfpfile)
     except FileNotFoundError:
         files.append(basename+cfpfile)

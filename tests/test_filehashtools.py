@@ -2,7 +2,7 @@
 #pylint: disable=no-self-use,unused-argument,line-too-long
 """Test the filehashtools module."""
 
-from shutil import rmtree
+from shutil import rmtree, copyfile
 from hashlib import algorithms_available as algos
 from configparser import ConfigParser
 import os
@@ -220,6 +220,23 @@ class TestClassFilehashtools:
         for idx, value in enumerate(content2):
             assert stocklines2[idx] == value
 
+    def test_verifier_multiple(self):
+        """
+        Test batch hashing, but with multiple files.
+        """
+        for i in range(17):
+            copyfile("tempfile.txt", "tempfile{0}.txt".format(i))
+        self.test_verifier()
+
+    def test_verifier_fail(self, capsys):
+        """
+        Test batch hashing failure.
+        """
+        with mock.patch("concurrent.futures.ThreadPoolExecutor.submit", mock.MagicMock(side_effect=Exception)):
+            with pytest.raises(SystemExit):
+                bf.verifier(os.getcwd())
+                assert "SOMETHING WENT WRONG" in capsys.readouterr()[0]
+
 
 class TestClassFilehashtoolsGPG:
     """
@@ -280,6 +297,15 @@ class TestClassFilehashtoolsGPG:
                             pass
                     else:
                         assert verified
+
+    def test_gpgrunner_single(self):
+        """
+        Test GPGRunner, but with just one file (ThreadPoolExecutor worker count).
+        """
+        for file in os.listdir():
+            if any(char.isdigit() for char in file):
+                os.remove(file)
+        self.test_gpgrunner()
 
     def test_gpgrunner_unavail(self, capsys):
         """

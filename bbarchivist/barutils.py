@@ -131,6 +131,14 @@ def sz_compress(filepath, filename, szexe=None, strength=5, errors=False):
     :param errors: Print completion status message. Default is false.
     :type errors: bool
     """
+    szcodes = {
+        0: "NO ERRORS",
+        1: "COMPLETED WITH WARNINGS",
+        2: "FATAL ERROR",
+        7: "COMMAND LINE ERROR",
+        8: "OUT OF MEMORY ERROR",
+        255: "USER STOPPED PROCESS"
+    }
     strength = str(strength)
     rawname = os.path.dirname(filepath)
     thr = str(utilities.get_core_count())
@@ -139,7 +147,7 @@ def sz_compress(filepath, filename, szexe=None, strength=5, errors=False):
     with open(os.devnull, 'wb') as dnull:
         excode = subprocess.call(cmd, stdout=dnull, stderr=subprocess.STDOUT, shell=True)
     if errors:
-        print(bbconstants.SZCODES[excode])
+        print(szcodes[excode])
 
 
 def sz_verify(filepath, szexe=None):

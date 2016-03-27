@@ -225,7 +225,7 @@ class TestClassSQLUtils:
                     crsr.execute("INSERT INTO Swrelease(Os, Software, Available, Date) VALUES (?,?,?,?)", ("120.OSVERSION", "130.SWVERSION", "available", "1970 January 1"))
             except sqlite3.Error:
                 assert False
-            rellist = bs.list_sw_releases()
+            rellist = bs.list_sw_releases(avail=True)
             assert rellist[0] == ("120.OSVERSION", "130.SWVERSION", "available", "1970 January 1")
             with mock.patch("sqlite3.connect", mock.MagicMock(side_effect=sqlite3.Error)):
                 bs.list_sw_releases()

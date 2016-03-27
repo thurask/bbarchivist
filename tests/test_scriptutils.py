@@ -107,6 +107,20 @@ class TestClassScriptutils:
             with open("10.3.3.3334plusapps.txt", "r") as afile:
                 assert len(afile.read()) == 2933
 
+    def test_slim_preamble(self, capsys):
+        """
+        Test single line app header.
+        """
+        bs.slim_preamble("snek")
+        assert "SNEK" in capsys.readouterr()[0]
+
+    def test_standard_preamble(self, capsys):
+        """
+        Test multi-line app header.
+        """
+        bs.standard_preamble("snek", "10.3.2.2639", "10.3.2.2474", "10.3.2.2877", "10.3.2.2836")
+        assert "2836" in capsys.readouterr()[0]
+
 
 class TestClassScriptutilsSoftware:
     """
@@ -238,6 +252,22 @@ class TestClassScriptutilsSoftware:
         with mock.patch('bbarchivist.networkutils.availability', mock.MagicMock(return_value=False)):
             with mock.patch('builtins.input', mock.MagicMock(return_value="y")):
                 assert bs.check_radio_sw("http://qrrbrbirlbel.yu/", "10.3.2.2474", False) is None
+
+    def test_baseurls(self):
+        """
+        Test generating base URLs for bar links, no alternate radio URLs.
+        """
+        baseurl, alturl = bs.get_baseurls("10.3.2.2836")
+        assert "7bca9151809337becef897a0bcf3f199dfc74373" in baseurl
+        assert alturl is None
+
+    def test_baseurls_alt(self):
+        """
+        Test generating base URLs for bar links, with alternate radio URLs.
+        """
+        baseurl, alturl = bs.get_baseurls("10.3.2.2836", "10.3.2.2474")
+        assert "7bca9151809337becef897a0bcf3f199dfc74373" in baseurl
+        assert "af31a981d0a53f304d0cfe3f68d35dc3c0b5964f" in alturl
 
 
 class TestClassScriptutilsURLCheck:

@@ -10,7 +10,7 @@ import glob  # pem file lookup
 import requests  # downloading
 from bs4 import BeautifulSoup  # scraping
 from bbarchivist import utilities  # parse filesize
-from bbarchivist.bbconstants import SERVERS, PRIVVARS  # lookup servers, Priv variants
+from bbarchivist.bbconstants import SERVERS  # lookup servers
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -516,9 +516,10 @@ def priv_scanner(build):
     :param build: Build to check, 3 letters + 3 numbers.
     :type build: str
     """
-    with concurrent.futures.ThreadPoolExecutor(max_workers=len(PRIVVARS)) as xec:
+    vars = ("common", "vzw-vzw", "na-tmo", "na-att", "apac-amx")  # device variants
+    with concurrent.futures.ThreadPoolExecutor(max_workers=len(vars)) as xec:
         results = []
-        for var in PRIVVARS:
+        for var in vars:
             skel = "http://bbapps.download.blackberry.com/Priv/bbry_qc8992_autoloader_user-{0}-{1}.zip".format(var, build.upper())
             avail = availability(skel)
             if avail:
