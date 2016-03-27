@@ -39,6 +39,32 @@ def read_files(localdir, core=False):
     return filtdict
 
 
+def find_signed_file(match, localdir, title, silent=False):
+    """
+    Use pattern matching to find a signed file in a directory.
+
+    :param match: Match pattern to use.
+    :type match: str
+    
+    :param localdir: Directory to use.
+    :type localdir: str
+
+    :param title: File type, in case it isn't found.
+    :type title: str
+
+    :param silent: Don't print that a file wasn't found. Default is False.
+    :type silent: bool
+    """
+    try:
+        signedfile = glob.glob(os.path.join(localdir, match))[0]
+    except IndexError:
+        signedfile = None
+        if not silent:
+            print("No {0} found".format(title))
+    finally:
+        return signedfile
+
+
 def read_os_files(localdir, core=False):
     """
     Read list of OS signed files, return name assignments.
@@ -64,38 +90,19 @@ def read_os_files(localdir, core=False):
         fix8974_new = "*qc8974.desktop.BB*.signed"
         fix8974_old = "*qc8974.*_sfi.desktop.BB*.signed"
     # 8960
-    try:
-        os_8960 = glob.glob(os.path.join(localdir, fix8960))[0]
-    except IndexError:
-        os_8960 = None
-        print("No 8960 image found")
+    os_8960 = find_signed_file(fix8960, localdir, "8960 OS")
     # 8x30 (10.3.1 MR+)
-    try:
-        os_8x30 = glob.glob(os.path.join(localdir, fix8930))[0]
-    except IndexError:
-        try:
-            os_8x30 = glob.glob(os.path.join(localdir, fix8960))[0]
-        except IndexError:
-            os_8x30 = None
-            print("No 8x30 image found")
+    os_8x30 = find_signed_file(fix8930, localdir, "8x30 OS", True)
+    if os_8x30 is None:
+        os_8x30 = find_signed_file(fix8960, localdir, "8x30 OS")
     # 8974
-    try:
-        os_8974 = glob.glob(os.path.join(localdir, fix8974_new))[0]
-    except IndexError:
-        try:
-            os_8974 = glob.glob(os.path.join(localdir, fix8974_old))[0]
-        except IndexError:
-            os_8974 = None
-            print("No 8974 image found")
+    os_8974 = find_signed_file(fix8974_new, localdir, "8974 OS", True)
+    if os_8974 is None:
+        os_8974 = find_signed_file(fix8974_old, localdir, "8974 OS")
     # OMAP
-    try:
-        os_ti = glob.glob(os.path.join(localdir, fixomap_new))[0]
-    except IndexError:
-        try:
-            os_ti = glob.glob(os.path.join(localdir, fixomap_old))[0]
-        except IndexError:
-            os_ti = None
-            print("No OMAP image found")
+    os_ti = find_signed_file(fixomap_new, localdir, "OMAP OS", True)
+    if os_ti is None:
+        os_ti = find_signed_file(fixomap_old, localdir, "OMAP OS")
     return [os_8960, os_8x30, os_8974, os_ti]
 
 
@@ -107,51 +114,20 @@ def read_radio_files(localdir):
     :type localdir: str
     """
     # STL100-1
-    try:
-        radio_ti = glob.glob(os.path.join(localdir, "*radio.m5730*.signed"))[0]
-    except IndexError:
-        radio_ti = None
-        print("No OMAP radio found")
+    radio_ti = find_signed_file("*radio.m5730*.signed", localdir, "OMAP radio")
     # STL100-X
-    try:
-        radio_z10 = glob.glob(os.path.join(localdir, "*radio.qc8960.BB*.signed"))[0]
-    except IndexError:
-        radio_z10 = None
-        print("No 8960 radio found")
+    radio_z10 = find_signed_file("*radio.qc8960.BB*.signed", localdir, "8960 radio")
     # STL100-4
-    try:
-        radio_z10_vzw = glob.glob(os.path.join(localdir, "*radio.qc8960*omadm*.signed"))[0]
-    except IndexError:
-        radio_z10_vzw = None
-        print("No Verizon 8960 radio found")
+    radio_z10_vzw = find_signed_file("*radio.qc8960*omadm*.signed", localdir, "VZW 8960 radio")
     # Q10/Q5
-    try:
-        radio_q10 = glob.glob(os.path.join(localdir, "*radio.qc8960*wtr.*signed"))[0]
-    except IndexError:
-        radio_q10 = None
-        print("No Q10/Q5 radio found")
+    radio_q10 = find_signed_file("*radio.qc8960*wtr.*signed", localdir, "Q10/Q5 radio")
     # Z30/Classic
-    try:
-        radio_z30 = glob.glob(os.path.join(localdir, "*radio.qc8960*wtr5*.signed"))[0]
-    except IndexError:
-        radio_z30 = None
-        print("No Z30/Classic radio found")
+    radio_z30 = find_signed_file("*radio.qc8960*wtr5*.signed", localdir, "Z30/Classic radio")
     # Z3
-    try:
-        radio_z3 = glob.glob(os.path.join(localdir, "*radio.qc8930*wtr5*.signed"))[0]
-    except IndexError:
-        radio_z3 = None
-        print("No Z3 radio found")
+    radio_z3 = find_signed_file("*radio.qc8930*wtr5*.signed", localdir, "Z3 radio")
     # Passport
-    try:
-        radio_8974 = glob.glob(os.path.join(localdir, "*radio.qc8974*wtr2*.signed"))[0]
-    except IndexError:
-        radio_8974 = None
-        print("No Passport radio found")
-    return [
-        radio_ti, radio_z10, radio_z10_vzw,
-        radio_q10, radio_z30, radio_z3, radio_8974
-        ]
+    radio_8974 = find_signed_file("*radio.qc8974*wtr2*.signed", localdir, "Passport radio")
+    return [radio_ti, radio_z10, radio_z10_vzw, radio_q10, radio_z30, radio_z3, radio_8974]
 
 
 def pretty_formatter(osversion, radioversion):
