@@ -8,28 +8,26 @@ __author__ = "Thurask"
 __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015-2016 Thurask"
 
+
+class Datafile:
+    """Structure for information about a data file included with this app."""
+    def __init__(self, version, datatype, size):
+        self.version = version
+        self.filename = "{0}-{1}.dat".format(datatype, version)
+        self.location = os.path.join(DIRECTORY, self.filename)
+        self.size = size
+
+
 #: App version.
 VERSION = "2.4.1"
 #: File location.
 LOCATION = os.path.abspath(__file__)
 #: File folder.
 DIRECTORY = os.path.dirname(LOCATION)
-#: Version of cap.exe bundled with app.
-CAPVERSION = "3.11.0.22"
-#: Version of cfp.exe bundled with app.
-CFPVERSION = "3.10.0.57"
-#: cap filename.
-CAPFILENAME = "cap-" + CAPVERSION + ".dat"
-#: cfp filename.
-CFPFILENAME = "cfp-" + CFPVERSION + ".dat"
-#: Where cap.exe is. Should be in site-packages.
-CAPLOCATION = os.path.join(DIRECTORY, CAPFILENAME)
-#: Where cfp.exe is. Should be in site-packages.
-CFPLOCATION = os.path.join(DIRECTORY, CFPFILENAME)
-#: cap filesize.
-CAPSIZE = 9252400
-#: cfp filesize.
-CFPSIZE = 16361984
+#: CAP
+CAP = Datafile("3.11.0.22", "cap", 9252400)
+#: CFP
+CFP = Datafile("3.10.0.57", "cfp", 16361984)
 #: JSON storage file.
 JSONFILE = os.path.join(DIRECTORY, "bbconstants.json")
 #: Lookup server list.

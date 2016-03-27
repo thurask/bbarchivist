@@ -544,7 +544,7 @@ class TestClassUtilitiesConfig:
         except (OSError, IOError):
             pass
         with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
-            with mock.patch('bbarchivist.bbconstants.CAPLOCATION', "cap.dat"):
+            with mock.patch('bbarchivist.bbconstants.CAP.location', "cap.dat"):
                 assert bu.cappath_config_loader() == "cap.dat"
 
     def test_cappath_writer(self):

@@ -37,7 +37,7 @@ def make_offset(firstfile, secondfile=None, thirdfile=None,
     """
     Create magic offset file for use in autoloader creation.
     Cap.exe MUST match separator version.
-    Version defined in :data:`bbarchivist.bbconstants.CAPVERSION`.
+    Version defined in :data:`bbarchivist.bbconstants.CAP.version`.
 
     :param firstfile: First signed file. Required.
     :type firstfile: str
@@ -197,7 +197,7 @@ def make_autoloader(filename, firstfile, secondfile=None, thirdfile=None,
     try:
         with open(os.path.join(os.path.abspath(folder), filename), "wb") as autoloader:
             with open(os.path.normpath(utilities.grab_cap()), "rb") as capfile:
-                print("WRITING CAP VERSION {0}...".format(bbconstants.CAPVERSION))
+                print("WRITING CAP VERSION {0}...".format(bbconstants.CAP.version))
                 while True:
                     chunk = capfile.read(4096)  # 4k chunks
                     if not chunk:

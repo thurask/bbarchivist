@@ -50,14 +50,14 @@ def grab_cap():
     Figure out where cap is, local, specified or system-supplied.
     """
     try:
-        capfile = glob.glob(os.path.join(os.getcwd(), bbconstants.CAPFILENAME))[0]
+        capfile = glob.glob(os.path.join(os.getcwd(), bbconstants.CAP.filename))[0]
     except IndexError:
         try:
             cappath = cappath_config_loader()
             capfile = glob.glob(cappath)[0]
         except IndexError:
-            cappath_config_writer(bbconstants.CAPLOCATION)
-            return bbconstants.CAPLOCATION  # no ini cap
+            cappath_config_writer(bbconstants.CAP.location)
+            return bbconstants.CAP.location  # no ini cap
         else:
             cappath_config_writer(os.path.abspath(capfile))
             return os.path.abspath(capfile)  # ini cap
@@ -70,9 +70,9 @@ def grab_cfp():
     Figure out where cfp is, local or system-supplied.
     """
     try:
-        cfpfile = glob.glob(os.path.join(os.getcwd(), bbconstants.CFPFILENAME))[0]
+        cfpfile = glob.glob(os.path.join(os.getcwd(), bbconstants.CFP.filename))[0]
     except IndexError:
-        cfpfile = bbconstants.CFPLOCATION  # system cfp
+        cfpfile = bbconstants.CFP.location  # system cfp
     return os.path.abspath(cfpfile)  # local cfp
 
 
@@ -725,7 +725,7 @@ def cappath_config_loader(homepath=None):
     if not config.has_section('cap'):
         config['cap'] = {}
     capini = config['cap']
-    cappath = capini.get('path', fallback=bbconstants.CAPLOCATION)
+    cappath = capini.get('path', fallback=bbconstants.CAP.location)
     return cappath
 
 

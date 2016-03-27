@@ -644,6 +644,16 @@ def purge_dross(files):
     return files2
 
 
+def slim_preamble(appname):
+    """
+    Standard app name header.
+
+    :param appname: Name of app.
+    :type appname: str
+    """
+    print("~~~{0} VERSION {1}~~~".format(appname.upper(), bbconstants.VERSION))
+
+
 def standard_preamble(appname, osversion, softwareversion, radioversion, altsw=None):
     """
     Standard app name, OS, radio and software (plus optional radio software) print block.
@@ -663,7 +673,7 @@ def standard_preamble(appname, osversion, softwareversion, radioversion, altsw=N
     :param altsw: Radio software release, if not the same as OS.
     :type altsw: str
     """
-    print("~~~{0} VERSION {1}~~~".format(appname.upper(), bbconstants.VERSION))
+    slim_preamble(appname)
     print("OS VERSION: {0}".format(osversion))
     print("OS SOFTWARE VERSION: {0}".format(softwareversion))
     print("RADIO VERSION: {0}".format(radioversion))

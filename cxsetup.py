@@ -5,7 +5,7 @@ from os.path import join, abspath, dirname
 from sys import exec_prefix
 from cx_Freeze import setup, Executable
 from requests import certs
-from bbarchivist.bbconstants import VERSION, CAPLOCATION, CAPVERSION, JSONFILE
+from bbarchivist.bbconstants import VERSION, CAP, JSONFILE
 
 # Dependencies are automatically detected, but it might need
 # fine tuning.
@@ -15,7 +15,7 @@ build_options = dict(packages=["requests", "bbarchivist", "bs4", "gnupg"],
                      includes=[],
                      include_files=[
                          (certs.where(), 'cacert.pem'),
-                         (CAPLOCATION, "cap-" + CAPVERSION + ".dat"),
+                         (CAP.location, CAP.filename),
                          (JSONFILE, "bbconstants.json"),
                          (sq3dll, "sqlite3.dll")  # manual override
                          ],

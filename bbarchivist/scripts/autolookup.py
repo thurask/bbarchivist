@@ -152,7 +152,7 @@ def autolookup_main(osversion, loop=False, log=False,
         smtputils.smtp_config_writer(**smtpc)
     else:
         pword = None
-    print("~~~AUTOLOOKUP VERSION {0}~~~\n".format(bbconstants.VERSION))
+    scriptutils.slim_preamble("AUTOLOOKUP")
     if log:
         record = utilities.prep_logfile()
     else:
