@@ -3,6 +3,7 @@
 """Test the utilities module."""
 
 import os
+import sys
 from shutil import rmtree, copyfile
 from argparse import ArgumentError
 from platform import system
@@ -292,17 +293,20 @@ class TestClassUtilities:
             afile.write("You can call me Al")
         assert bu.return_and_delete("TEST.txt") == "You can call me Al"
 
-    def test_wrap_kb_except(self):
+    def test_logfile_localfolder(self):
         """
-        Test wrapping Ctrl-C.
+        Test creating a logfile in the current folder.
         """
-        def dummy():
-            """
-            Raise KeyboardInterrupt.
-            """
-            raise KeyboardInterrupt
-        bu.wrap_keyboard_except(dummy)
-        assert True  # if we get here, KeyboardInterrupt was handled
+        sys.frozen = True
+        assert "temp_utilities" in bu.prep_logfile()
+    
+    def test_logfile_homefolder(self):
+        """
+        Test creating a logfile in the home folder.
+        """
+        sys.frozen = False
+        with mock.patch("os.path.expanduser", mock.MagicMock(return_value=os.getcwd())):
+            assert "temp_utilities" in bu.prep_logfile()
 
 
 class TestClassUtilitiesStdout:
@@ -344,6 +348,13 @@ class TestClassUtilitiesUrls:
         osu, radu, coru = bu.generate_urls("http://www.qrrbrbirlbel.yu/", "10.2.3.4567", "10.9.8.7654", False)
         del osu, radu
         assert not coru
+
+    def test_bulk_alt(self):
+        """
+        """
+        osu, coru, radu = bu.bulk_urls("http://www.qrrbrbirlbel.yu/", "10.3.2.4567", "10.9.8.7654", True, "http://qrrbrbirlbel.su")
+        del osu, coru
+        assert "http://qrrbrbirlbel.su/m5730-10.9.8.7654-nto+armle-v7+signed.bar" in radu
 
     def test_stl1(self):
         """

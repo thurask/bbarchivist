@@ -269,6 +269,35 @@ class TestClassScriptutilsSoftware:
         assert "7bca9151809337becef897a0bcf3f199dfc74373" in baseurl
         assert "af31a981d0a53f304d0cfe3f68d35dc3c0b5964f" in alturl
 
+    def test_clean_swrel(self):
+        """
+        Test picking a software release out of a set of software releases.
+        """
+        swrels = set(["SR not in system", None, "10.3.2.2836", None])
+        assert bs.clean_swrel(swrels) == "10.3.2.2836"
+
+    def test_clean_swrel_none(self):
+        """
+        Test dealing with no software release in a set of lookup results.
+        """
+        swrels = set(["SR not in system", None, "SR not in system", None])
+        assert not bs.clean_swrel(swrels)
+
+    def test_autolookup_printer(self, capsys):
+        """
+        Test writing autolookup output to stdout.
+        """
+        bs.autolookup_printer("SNEK", "Available", False, False)
+        assert "SNEK" in capsys.readouterr()[0]
+
+    def test_autolookup_out(self):
+        """
+        Test autolookup output.
+        """
+        avpack = ("A1", "  ", "  ", "B2", "PD")
+        block = bs.autolookup_output("10.3.2.2639", "10.3.2.2474", "Available", avpack)
+        assert "OS 10.3.2.2639 -" in block
+
 
 class TestClassScriptutilsURLCheck:
     """
