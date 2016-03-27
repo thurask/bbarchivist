@@ -583,7 +583,7 @@ def generate_blitz_links(files, osv, radv, swv):
     """
     baseurl = networkutils.create_base_url(swv)
     coreurls = [
-        baseurl + "/winchester.factory_sfi-" + osv + "-nto+armle-v7+signed.bar",      
+        baseurl + "/winchester.factory_sfi-" + osv + "-nto+armle-v7+signed.bar",
         baseurl + "/qc8960.factory_sfi-" + osv + "-nto+armle-v7+signed.bar",
         baseurl + "/qc8960.factory_sfi_hybrid_qc8x30-" + osv + "-nto+armle-v7+signed.bar",
         baseurl + "/qc8960.factory_sfi_hybrid_qc8974-" + osv + "-nto+armle-v7+signed.bar"

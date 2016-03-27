@@ -600,6 +600,13 @@ class UselessStdout(object):
         return True
 
 
+class DummyException(Exception):
+    """
+    Exception that is not raised at all.
+    """
+    pass
+
+
 def return_and_delete(target):
     """
     Read text file, then delete it. Return contents.

@@ -297,8 +297,11 @@ class TestClassUtilities:
         Test wrapping Ctrl-C.
         """
         def dummy():
+            """
+            Raise KeyboardInterrupt.
+            """
             raise KeyboardInterrupt
-        wrapped = bu.wrap_keyboard_except(dummy)
+        bu.wrap_keyboard_except(dummy)
         assert True  # if we get here, KeyboardInterrupt was handled
 
 

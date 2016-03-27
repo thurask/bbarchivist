@@ -2,7 +2,6 @@
 """Get software release for one/many OS versions."""
 
 import sys  # load arguments
-from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import networkutils  # lookup
 from bbarchivist import utilities  # incrementer
 from bbarchivist import smtputils  # email

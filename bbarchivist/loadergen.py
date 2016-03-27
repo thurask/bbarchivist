@@ -45,7 +45,7 @@ def find_signed_file(match, localdir, title, silent=False):
 
     :param match: Match pattern to use.
     :type match: str
-    
+
     :param localdir: Directory to use.
     :type localdir: str
 
@@ -61,8 +61,7 @@ def find_signed_file(match, localdir, title, silent=False):
         signedfile = None
         if not silent:
             print("No {0} found".format(title))
-    finally:
-        return signedfile
+    return signedfile
 
 
 def read_os_files(localdir, core=False):

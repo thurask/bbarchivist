@@ -6,8 +6,8 @@ import hashlib  # all other hashes
 import hmac  # escreens is a hmac, news at 11
 import configparser  # config parsing, duh
 import os  # path work
-import gnupg  # interface b/w Python, GPG
 import concurrent.futures  # parallelization
+import gnupg  # interface b/w Python, GPG
 from bbarchivist import bbconstants  # premade stuff
 from bbarchivist import utilities  # cores
 from bbarchivist.barutils import prepends  # file parsing

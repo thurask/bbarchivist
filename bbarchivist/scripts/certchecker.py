@@ -2,7 +2,6 @@
 """Checks certifications for a given device."""
 
 import sys  # load arguments
-from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import networkutils  # check function
 from bbarchivist import jsonutils  # json
 from bbarchivist import scriptutils  # default parser

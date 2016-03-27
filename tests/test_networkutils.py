@@ -3,13 +3,8 @@
 """Test the networkutils module."""
 
 import os
-import xml.etree.ElementTree
 from shutil import rmtree
 from hashlib import sha512
-try:
-    import unittest.mock as mock
-except ImportError:
-    import mock
 import httmock
 import requests
 import bbarchivist.networkutils as bn

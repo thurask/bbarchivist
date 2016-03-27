@@ -331,7 +331,7 @@ class TestClassScriptutilsURLCheck:
         """
         Test single radio availability.
         """
-        with mock.patch('bbarchivist.networkutils.availability',mock.MagicMock(return_value=True)):
+        with mock.patch('bbarchivist.networkutils.availability', mock.MagicMock(return_value=True)):
             assert bs.check_radio_single("http://qrrbrbirlbel.yu/", "10.3.2.2640") == ("http://qrrbrbirlbel.yu/", "10.3.2.2640")
             assert "NOT AVAILABLE" not in capsys.readouterr()[0]
 
@@ -357,7 +357,7 @@ class TestClassScriptutilsURLCheck:
         Test bulk radio availability.
         """
         radiourls = ["http://qrrbrbirlbel.yu/", "http://zeekyboogydoog.su/"]
-        with mock.patch('bbarchivist.networkutils.availability',mock.MagicMock(return_value=True)):
+        with mock.patch('bbarchivist.networkutils.availability', mock.MagicMock(return_value=True)):
             assert bs.check_radio_bulk(radiourls, "10.3.2.2640") == (radiourls, "10.3.2.2640")
             assert "NOT FOUND" not in capsys.readouterr()[0]
 
