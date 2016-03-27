@@ -516,13 +516,13 @@ def priv_scanner(build):
     :param build: Build to check, 3 letters + 3 numbers.
     :type build: str
     """
-    vars = ("common", "vzw-vzw", "na-tmo", "na-att", "apac-amx")  # device variants
-    with concurrent.futures.ThreadPoolExecutor(max_workers=len(vars)) as xec:
+    variants = ("common", "vzw-vzw", "na-tmo", "na-att", "apac-amx")  # device variants
+    with concurrent.futures.ThreadPoolExecutor(max_workers=len(variants)) as xec:
         results = []
-        for var in vars:
+        for var in variants:
             skel = "http://bbapps.download.blackberry.com/Priv/bbry_qc8992_autoloader_user-{0}-{1}.zip".format(var, build.upper())
-            avail = availability(skel)
-            if avail:
+            avail = xec.submit(availability, skel)
+            if avail.result():
                 results.append(skel)
         if results:
             return results
