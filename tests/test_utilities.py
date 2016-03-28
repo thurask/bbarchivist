@@ -351,6 +351,7 @@ class TestClassUtilitiesUrls:
 
     def test_bulk_alt(self):
         """
+        Test generating debrick, core and radio URLs, with alternate radio software release.
         """
         osu, coru, radu = bu.bulk_urls("http://www.qrrbrbirlbel.yu/", "10.3.2.4567", "10.9.8.7654", True, "http://qrrbrbirlbel.su")
         del osu, coru

@@ -253,36 +253,11 @@ class TestClassScriptutilsSoftware:
             with mock.patch('builtins.input', mock.MagicMock(return_value="y")):
                 assert bs.check_radio_sw("http://qrrbrbirlbel.yu/", "10.3.2.2474", False) is None
 
-    def test_baseurls(self):
-        """
-        Test generating base URLs for bar links, no alternate radio URLs.
-        """
-        baseurl, alturl = bs.get_baseurls("10.3.2.2836")
-        assert "7bca9151809337becef897a0bcf3f199dfc74373" in baseurl
-        assert alturl is None
 
-    def test_baseurls_alt(self):
-        """
-        Test generating base URLs for bar links, with alternate radio URLs.
-        """
-        baseurl, alturl = bs.get_baseurls("10.3.2.2836", "10.3.2.2474")
-        assert "7bca9151809337becef897a0bcf3f199dfc74373" in baseurl
-        assert "af31a981d0a53f304d0cfe3f68d35dc3c0b5964f" in alturl
-
-    def test_clean_swrel(self):
-        """
-        Test picking a software release out of a set of software releases.
-        """
-        swrels = set(["SR not in system", None, "10.3.2.2836", None])
-        assert bs.clean_swrel(swrels) == "10.3.2.2836"
-
-    def test_clean_swrel_none(self):
-        """
-        Test dealing with no software release in a set of lookup results.
-        """
-        swrels = set(["SR not in system", None, "SR not in system", None])
-        assert not bs.clean_swrel(swrels)
-
+class TestClassScriptutilsIO:
+    """
+    Test print-related utilities.
+    """
     def test_autolookup_printer(self, capsys):
         """
         Test writing autolookup output to stdout.
@@ -408,6 +383,36 @@ class TestClassScriptutilsURLCheck:
         with mock.patch('bbarchivist.networkutils.availability', mock.MagicMock(return_value=False)):
             with mock.patch('builtins.input', mock.MagicMock(return_value="y")):
                 assert bs.check_radio_bulk(radiourls, "10.3.2.2639") == (radiourls, "y")
+
+    def test_clean_swrel(self):
+        """
+        Test picking a software release out of a set of software releases.
+        """
+        swrels = set(["SR not in system", None, "10.3.2.2836", None])
+        assert bs.clean_swrel(swrels) == "10.3.2.2836"
+
+    def test_clean_swrel_none(self):
+        """
+        Test dealing with no software release in a set of lookup results.
+        """
+        swrels = set(["SR not in system", None, "SR not in system", None])
+        assert not bs.clean_swrel(swrels)
+
+    def test_baseurls(self):
+        """
+        Test generating base URLs for bar links, no alternate radio URLs.
+        """
+        baseurl, alturl = bs.get_baseurls("10.3.2.2836")
+        assert "7bca9151809337becef897a0bcf3f199dfc74373" in baseurl
+        assert alturl is None
+
+    def test_baseurls_alt(self):
+        """
+        Test generating base URLs for bar links, with alternate radio URLs.
+        """
+        baseurl, alturl = bs.get_baseurls("10.3.2.2836", "10.3.2.2474")
+        assert "7bca9151809337becef897a0bcf3f199dfc74373" in baseurl
+        assert "af31a981d0a53f304d0cfe3f68d35dc3c0b5964f" in alturl
 
 
 class TestClassScriptutilsSevenzip:
