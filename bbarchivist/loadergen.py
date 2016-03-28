@@ -242,7 +242,7 @@ def wrap_pseudocap(filename, folder, first, second=None):
         print("No OS!")
         raise SystemError
     try:
-        pseudocap.make_autoloader(filename, first, second, folder=folder)
+        pseudocap.make_autoloader(filename, [first, second], folder=folder)
     except (OSError, IndexError, SystemError) as exc:
         print(str(exc))
         print("Could not create", filename)

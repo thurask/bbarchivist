@@ -28,15 +28,15 @@ def setup_module(module):
         targetfile.write("Jackdaws love my big sphinx of quartz")
     with open("cap-3.11.0.22.dat", "w") as targetfile:
         targetfile.write("0"*9500000)
-    bp.make_offset("firstfile.signed")
+    bp.make_offset(["firstfile.signed"])
     copyfile("offset.hex", "offset.tmp")
     fpath = os.path.abspath("firstfile.signed")
-    bp.make_autoloader("loader1.exe", fpath)
-    bp.make_autoloader("loader2.exe", fpath, fpath)
-    bp.make_autoloader("loader3.exe", fpath, fpath, fpath)
-    bp.make_autoloader("loader4.exe", fpath, fpath, fpath, fpath)
-    bp.make_autoloader("loader5.exe", fpath, fpath, fpath, fpath, fpath)
-    bp.make_autoloader("loader6.exe", fpath, fpath, fpath, fpath, fpath, fpath)
+    bp.make_autoloader("loader1.exe", [fpath])
+    bp.make_autoloader("loader2.exe", [fpath, fpath])
+    bp.make_autoloader("loader3.exe", [fpath, fpath, fpath])
+    bp.make_autoloader("loader4.exe", [fpath, fpath, fpath, fpath])
+    bp.make_autoloader("loader5.exe", [fpath, fpath, fpath, fpath, fpath])
+    bp.make_autoloader("loader6.exe", [fpath, fpath, fpath, fpath, fpath, fpath])
     copyfile("offset.tmp", "offset.hex")
     if os.path.exists("offset.tmp"):
         os.remove("offset.tmp")
@@ -174,7 +174,7 @@ class TestClassPseudocap:
         Test invalid number of files sent to autoloader maker.
         """
         with pytest.raises(SystemExit):
-            bp.make_autoloader("loader0.exe", None)
+            bp.make_autoloader("loader0.exe", [None])
             assert "Invalid filecount" in capsys.readouterr()[0]
 
     def test_write4k_ioerror(self, capsys):
@@ -182,7 +182,7 @@ class TestClassPseudocap:
         Test error incurred by writing 4096 bytes at a time.
         """
         with mock.patch("bbarchivist.pseudocap.write_4k", mock.MagicMock(side_effect=IOError)):
-            bp.make_autoloader("loader0.exe", "firstfile.signed")
+            bp.make_autoloader("loader0.exe", ["firstfile.signed"])
             assert "Operation failed" in capsys.readouterr()[0]
 
     def test_type_error(self):
@@ -191,7 +191,7 @@ class TestClassPseudocap:
         """
         with mock.patch("glob.glob", mock.MagicMock(side_effect=TypeError)):
             with pytest.raises(TypeError):
-                bp.make_autoloader("loader0.exe", "zerothfile")
+                bp.make_autoloader("loader0.exe", ["zerothfile"])
 
     def test_target_ioerror(self):
         """
@@ -199,7 +199,7 @@ class TestClassPseudocap:
         """
         with mock.patch("os.path.join", mock.MagicMock(side_effect=IOError)):
             with pytest.raises(IOError):
-                bp.make_autoloader("loader0.exe", "firstfile")
+                bp.make_autoloader("loader0.exe", ["firstfile"])
 
     def test_firstfile_ioerror(self):
         """
@@ -207,7 +207,7 @@ class TestClassPseudocap:
         """
         with mock.patch("os.path.normpath", mock.MagicMock(side_effect=IOError)):
             with pytest.raises(IOError):
-                bp.make_autoloader("loader0.exe", "firstfile")
+                bp.make_autoloader("loader0.exe", ["firstfile"])
 
     def test_secondfile_ioerror(self):
         """
@@ -215,7 +215,7 @@ class TestClassPseudocap:
         """
         with mock.patch("os.path.normpath", mock.MagicMock(side_effect=IOError)):
             with pytest.raises(IOError):
-                bp.make_autoloader("loader0.exe", "firstfile", "secondfile")
+                bp.make_autoloader("loader0.exe", ["firstfile", "secondfile"])
 
     def test_thirdfile_ioerror(self):
         """
@@ -223,7 +223,7 @@ class TestClassPseudocap:
         """
         with mock.patch("os.path.normpath", mock.MagicMock(side_effect=IOError)):
             with pytest.raises(IOError):
-                bp.make_autoloader("loader0.exe", "firstfile", "secondfile", "thirdfile")
+                bp.make_autoloader("loader0.exe", ["firstfile", "secondfile", "thirdfile"])
 
     def test_fourthfile_ioerror(self):
         """
@@ -231,7 +231,7 @@ class TestClassPseudocap:
         """
         with mock.patch("os.path.normpath", mock.MagicMock(side_effect=IOError)):
             with pytest.raises(IOError):
-                bp.make_autoloader("loader0.exe", "firstfile", "secondfile", "thirdfile", "fourthfile")
+                bp.make_autoloader("loader0.exe", ["firstfile", "secondfile", "thirdfile", "fourthfile"])
 
     def test_fifthfile_ioerror(self):
         """
@@ -239,7 +239,7 @@ class TestClassPseudocap:
         """
         with mock.patch("os.path.normpath", mock.MagicMock(side_effect=IOError)):
             with pytest.raises(IOError):
-                bp.make_autoloader("loader0.exe", "firstfile", "secondfile", "thirdfile", "fourthfile", "fifthfile")
+                bp.make_autoloader("loader0.exe", ["firstfile", "secondfile", "thirdfile", "fourthfile", "fifthfile"])
 
     def test_sixthfile_ioerror(self):
         """
@@ -247,4 +247,4 @@ class TestClassPseudocap:
         """
         with mock.patch("os.path.normpath", mock.MagicMock(side_effect=IOError)):
             with pytest.raises(IOError):
-                bp.make_autoloader("loader0.exe", "firstfile", "secondfile", "thirdfile", "fourthfile", "fifthfile", "sixthfile")
+                bp.make_autoloader("loader0.exe", ["firstfile", "secondfile", "thirdfile", "fourthfile", "fifthfile", "sixthfile"])

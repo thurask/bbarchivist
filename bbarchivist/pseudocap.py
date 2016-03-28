@@ -32,73 +32,53 @@ def ghetto_convert(intsize):
         return binascii.unhexlify(bytes(ghetto_hex.upper(), 'ascii'))
 
 
-def make_offset(firstfile, secondfile=None, thirdfile=None,
-                fourthfile=None, fifthfile=None, sixthfile=None, folder=None):
+def make_offset(files, folder=None):
     """
     Create magic offset file for use in autoloader creation.
     Cap.exe MUST match separator version.
     Version defined in :data:`bbarchivist.bbconstants.CAP.version`.
 
-    :param firstfile: First signed file. Required.
-    :type firstfile: str
-
-    :param secondfile: Second signed file. Optional.
-    :type secondfile: str
-
-    :param thirdfile: Third signed file. Optional.
-    :type thirdfile: str
-
-    :param fourthfile: Fourth signed file. Optional.
-    :type fourthfile: str
-
-    :param fifthfile: Fifth signed file. Optional.
-    :type fifthfile: str
-
-    :param sixthfile: Sixth signed file. Optional.
-    :type sixthfile: str
+    :param files: List of 1-6 signed files.
+    :type files: list(str)
 
     :param folder: Working folder. Optional. Default is local.
     :type folder: str
     """
     if folder is None:
         folder = os.getcwd()
-    cap = utilities.grab_cap()
-    filelist = [firstfile, secondfile, thirdfile, fourthfile, fifthfile, sixthfile]
-    filecount = len([file for file in filelist if file])
+    capfile = utilities.grab_cap()
+    filelist = [file for file in files if file]
+    filecount = len(filelist)
     fcount = b'0' + bytes(str(filecount), 'ascii')
     # immutable things
     scaff = b'at9dFE5LTEdOT0hHR0lTCxcKDR4MFFMtPiU6LT0zPjs6Ui88U05GTVFOSUdRTlFOT3BwcJzVxZec1cWXnNXFlw=='
     separator = base64.b64decode(scaff)
     password = binascii.unhexlify(b'0'*160)
-    singlepad = b'\x00'
-    doublepad = b'\x00\x00'
-    signedpad = b'\x00\x00\x00\x00\x00\x00\x00\x00'
+    pad = b'\x00'  # 1x, 2x or 8x
     filepad = binascii.unhexlify(fcount)  # 01-06
     trailers = binascii.unhexlify(b'00' * (7 - filecount))  # 00, 1-6x
-    capfile = str(cap)
     capsize = os.path.getsize(capfile)
-    if firstfile is None:  # we need at least one file
+    if not filecount:  # we need at least one file
         raise SystemExit
-    first = str(glob.glob(firstfile)[0])
+    first = str(glob.glob(filelist[0])[0])
     firstsize = os.path.getsize(first)  # required
     if filecount >= 2:
-        second = str(glob.glob(secondfile)[0])
+        second = str(glob.glob(filelist[1])[0])
         secondsize = os.path.getsize(second)
     if filecount >= 3:
-        third = str(glob.glob(thirdfile)[0])
+        third = str(glob.glob(filelist[2])[0])
         thirdsize = os.path.getsize(third)
     if filecount >= 4:
-        fourth = str(glob.glob(fourthfile)[0])
+        fourth = str(glob.glob(filelist[3])[0])
         fourthsize = os.path.getsize(fourth)
     if filecount >= 5:
-        fifth = str(glob.glob(fifthfile)[0])
+        fifth = str(glob.glob(filelist[4])[0])
         fifthsize = os.path.getsize(fifth)
     # start of first file; length of cap + length of offset
     beginlength = len(separator) + len(password) + 64
     firstoffset = beginlength + capsize
     firststart = ghetto_convert(firstoffset)
-    secondstart = thirdstart = fourthstart = signedpad
-    fifthstart = sixthstart = signedpad
+    secondstart = thirdstart = fourthstart = fifthstart = sixthstart = pad * 8
     if filecount >= 2:
         secondoffset = firstoffset + firstsize  # start of second file
         secondstart = ghetto_convert(secondoffset)
@@ -114,26 +94,22 @@ def make_offset(firstfile, secondfile=None, thirdfile=None,
     if filecount == 6:
         sixthoffset = fifthoffset + fifthsize  # start of sixth file
         sixthstart = ghetto_convert(sixthoffset)
-    makeuplen = 64 - 6*len(signedpad)
-    makeuplen -= 2*len(doublepad)
-    makeuplen -= len(filepad)
-    makeuplen -= 2*len(singlepad)
-    makeuplen -= len(trailers)
+    makeuplen = 64 - 6*len(pad*8) - 2*len(pad*2) - 2*len(pad) - len(trailers) - len(filepad)
     makeup = b'\x00'*makeuplen  # pad to match offset begin
     with open(os.path.join(folder, "offset.hex"), "wb") as file:
         file.write(separator)
         file.write(password)
         file.write(filepad)
-        file.write(doublepad)
-        file.write(singlepad)
+        file.write(pad * 2)
+        file.write(pad)
         file.write(firststart)
         file.write(secondstart)
         file.write(thirdstart)
         file.write(fourthstart)
         file.write(fifthstart)
         file.write(sixthstart)
-        file.write(singlepad)
-        file.write(doublepad)
+        file.write(pad)
+        file.write(pad * 2)
         file.write(trailers)
         file.write(makeup)
 
@@ -157,9 +133,7 @@ def write_4k(infile, outfile):
             outfile.write(chunk)
 
 
-def make_autoloader(filename, firstfile, secondfile=None, thirdfile=None,
-                    fourthfile=None, fifthfile=None, sixthfile=None,
-                    folder=None):
+def make_autoloader(filename, files, folder=None):
     """
     Write cap.exe, magic offset, signed files to a .exe file.
     :func:`make_offset` is used to create the offset.
@@ -167,32 +141,16 @@ def make_autoloader(filename, firstfile, secondfile=None, thirdfile=None,
     :param filename: Name of autoloader.
     :type filename: str
 
-    :param firstfile: First signed file. Required.
-    :type firstfile: str
-
-    :param secondfile: Second signed file. Optional.
-    :type secondfile: str
-
-    :param thirdfile: Third signed file. Optional.
-    :type thirdfile: str
-
-    :param fourthfile: Fourth signed file. Optional.
-    :type fourthfile: str
-
-    :param fifthfile: Fifth signed file. Optional.
-    :type fifthfile: str
-
-    :param sixthfile: Sixth signed file. Optional.
-    :type sixthfile: str
+    :param files: List of 1-6 signed files.
+    :type files: list(str)
 
     :param folder: Working folder. Optional. Default is local.
     :type folder: str
     """
     if folder is None:
         folder = os.getcwd()
-    make_offset(firstfile, secondfile, thirdfile, fourthfile, fifthfile, sixthfile, folder)
-    filelist = [firstfile, secondfile, thirdfile, fourthfile, fifthfile, sixthfile]
-    filelist = [os.path.abspath(file) for file in filelist if file]
+    make_offset(files, folder)
+    filelist = [os.path.abspath(file) for file in files if file]
     print("CREATING:", filename)
     try:
         with open(os.path.join(os.path.abspath(folder), filename), "wb") as autoloader:

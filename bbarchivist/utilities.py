@@ -97,6 +97,19 @@ def fsizer(file_size):
     return size
 
 
+def signed_file_args(files):
+    """
+    Check if there are between 1 and 6 files supplied to argparse.
+
+    :param files: List of signed files, between 1 and 6 strings.
+    :type files: list(str)
+    """
+    filelist = [file for file in files if file]
+    if not 1 <= len(filelist) <= 6:
+        raise argparse.ArgumentError(argument=None, message="Requires 1-6 signed files")
+    return files
+
+
 def file_exists(file):
     """
     Check if file exists, raise argparse error if it doesn't.
