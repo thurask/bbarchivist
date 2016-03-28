@@ -299,7 +299,7 @@ class TestClassUtilities:
         """
         sys.frozen = True
         assert "temp_utilities" in bu.prep_logfile()
-    
+
     def test_logfile_homefolder(self):
         """
         Test creating a logfile in the home folder.
@@ -553,6 +553,20 @@ class TestClassUtilitiesArgparse:
             for dur in (2, 4, 7, 16, 31):
                 bu.escreens_duration(dur)
                 assert "duration" in str(argexc.value)
+
+    def test_signed_files_good(self):
+        """
+        Test checking a signed file list, best case.
+        """
+        assert bu.signed_file_args(["snek", "snek", None]) == (["snek", "snek", None])
+
+    def test_signed_files_bad(self):
+        """
+        Test checking a signed file list, worst case.
+        """
+        with pytest.raises(ArgumentError) as argexc:
+            bu.signed_file_args([None])
+            assert "requires" in str(argexc.value)
 
 
 class TestClassUtilitiesConfig:

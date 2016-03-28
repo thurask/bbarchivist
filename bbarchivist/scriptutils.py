@@ -707,3 +707,63 @@ def verify_gpg_credentials():
         else:
             gpgkey = None
     return gpgkey, gpgpass
+
+
+def bulk_hash(dirs, compressed=True, deleted=True, radios=True, hashdict=None):
+    """
+    Hash files in several folders based on flags.
+
+    :param dirs: Folders: [OS_bars, radio_bars, OS_exes, radio_exes, OS_zips, radio_zips]
+    :type dirs: list(str)
+
+    :param compressed: Whether to hash compressed files. True by default.
+    :type compressed: bool
+
+    :param deleted: Whether to delete uncompressed files. True by default.
+    :type deleted: bool
+
+    :param radios: Whether to hash radio autoloaders. True by default.
+    :type radios: bool
+
+    :param hashdict: Dictionary of hash rules, in ~\bbarchivist.ini.
+    :type hashdict: dict({str: bool})
+    """
+    print("HASHING LOADERS...")
+    if compressed:
+        filehashtools.verifier(dirs[4], hashdict)
+        if radios:
+            filehashtools.verifier(dirs[5], hashdict)
+    if not deleted:
+        filehashtools.verifier(dirs[2], hashdict)
+        if radios:
+            filehashtools.verifier(dirs[3], hashdict)
+
+
+def bulk_verify(dirs, compressed=True, deleted=True, radios=True):
+    """
+    Verify files in several folders based on flags.
+
+    :param dirs: Folders: [OS_bars, radio_bars, OS_exes, radio_exes, OS_zips, radio_zips]
+    :type dirs: list(str)
+
+    :param compressed: Whether to hash compressed files. True by default.
+    :type compressed: bool
+
+    :param deleted: Whether to delete uncompressed files. True by default.
+    :type deleted: bool
+
+    :param radios: Whether to hash radio autoloaders. True by default.
+    :type radios: bool
+    """
+    gpgkey, gpgpass = verify_gpg_credentials()
+    if gpgpass is not None and gpgkey is not None:
+        print("VERIFYING LOADERS...")
+        print("KEY:", gpgkey)
+        if compressed:
+            filehashtools.gpgrunner(dirs[4], gpgkey, gpgpass, True)
+            if radios:
+                filehashtools.gpgrunner(dirs[5], gpgkey, gpgpass, True)
+        if not deleted:
+            filehashtools.gpgrunner(dirs[2], gpgkey, gpgpass, True)
+            if radios:
+                filehashtools.gpgrunner(dirs[3], gpgkey, gpgpass, True)

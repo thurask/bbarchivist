@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#pylint: disable=too-few-public-methods,no-self-use,unused-argument,line-too-long
+#pylint: disable=no-self-use,unused-argument,line-too-long
 """Test the scriptutils module."""
 
 import os
@@ -608,9 +608,9 @@ class TestClassScriptutilsIntegrity:
             assert bs.test_loader_files(os.getcwd()) is None
 
 
-class TestClassScriptutilsGPG:
+class TestClassScriptutilsFHT:
     """
-    Test GPG-related utilities.
+    Test hash/GPG-related utilities.
     """
     def test_gpgver_unchanged(self):
         """
@@ -645,3 +645,22 @@ class TestClassScriptutilsGPG:
         with mock.patch('bbarchivist.filehashtools.gpg_config_loader', mock.MagicMock(return_value=(None, None))):
             with mock.patch('builtins.input', mock.MagicMock(return_value="n")):
                 assert bs.verify_gpg_credentials() == (None, None)
+
+    def test_gpgver_bulk(self):
+        """
+        Test flag-based per-folder GPG verification.
+        """
+        dirs = (os.getcwd(), os.getcwd(), os.getcwd(), os.getcwd(), os.getcwd(), os.getcwd())
+        with mock.patch('bbarchivist.filehashtools.gpg_config_loader', mock.MagicMock(return_value=("12345678", "hunter2"))):
+            with mock.patch('bbarchivist.filehashtools.gpgrunner', mock.MagicMock(side_effect=None)):
+                bs.bulk_verify(dirs, True, False, True)
+                assert True
+
+    def test_hash_bulk(self):
+        """
+        Test flag-based per-folder hashing.
+        """
+        dirs = (os.getcwd(), os.getcwd(), os.getcwd(), os.getcwd(), os.getcwd(), os.getcwd())
+        with mock.patch('bbarchivist.filehashtools.verifier', mock.MagicMock(side_effect=None)):
+            bs.bulk_hash(dirs, True, False, True)
+            assert True

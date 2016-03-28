@@ -43,13 +43,13 @@ def excepthandler(integrity):
             try:
                 result = method(*args, **kwargs)
                 return result
-            except (sqlite3.IntegrityError if bool(integrity) else DummyException):
+            except sqlite3.IntegrityError if bool(integrity) else DummyException:
                 UselessStdout.write("ASDASDASD")  # DummyException never going to happen
             except sqlite3.Error as sqerror:
                 print(sqerror)
         return wrapper
     return exceptdecorator
-        
+
 
 def existhandler(method):
     """

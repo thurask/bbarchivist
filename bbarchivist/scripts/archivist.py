@@ -309,8 +309,8 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     # Get 7z executable
     compmethod, szexe = scriptutils.get_sz_executable(compmethod)
 
-    # Make dirs
-    bd_o, bd_r, ld_o, ld_r, zd_o, zd_r = barutils.make_dirs(localdir, osversion, radioversion)
+    # Make dirs: bd_o, bd_r, ld_o, ld_r, zd_o, zd_r
+    dirs = barutils.make_dirs(localdir, osversion, radioversion)
 
     # Download files
     if download:
@@ -334,7 +334,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
 
     # Move bar files
     print("MOVING BAR FILES...")
-    barutils.move_bars(localdir, bd_o, bd_r)
+    barutils.move_bars(localdir, dirs[0], dirs[1])
 
     # Create loaders
     print("GENERATING LOADERS...")
@@ -361,37 +361,18 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
 
     # Move zipped/unzipped loaders
     print("MOVING LOADERS...")
-    barutils.move_loaders(localdir, ld_o, ld_r, zd_o, zd_r)
+    barutils.move_loaders(localdir, dirs[2], dirs[3], dirs[4], dirs[5])
 
-    # Get hashes (if specified)
+    # Get hashes/signatures (if specified)
     if hashed:
-        print("HASHING LOADERS...")
-        if compressed:
-            filehashtools.verifier(zd_o, hashdict)
-            if radios:
-                filehashtools.verifier(zd_r, hashdict)
-        if not deleted:
-            filehashtools.verifier(ld_o, hashdict)
-            if radios:
-                filehashtools.verifier(ld_r, hashdict)
+        scriptutils.bulk_hash(dirs, compressed, deleted, radios, hashdict)
     if gpg:
-        gpgkey, gpgpass = scriptutils.verify_gpg_credentials()
-        if gpgpass is not None and gpgkey is not None:
-            print("VERIFYING LOADERS...")
-            print("KEY:", gpgkey)
-            if compressed:
-                filehashtools.gpgrunner(zd_o, gpgkey, gpgpass, True)
-                if radios:
-                    filehashtools.gpgrunner(zd_r, gpgkey, gpgpass, True)
-            if not deleted:
-                filehashtools.gpgrunner(ld_o, gpgkey, gpgpass, True)
-                if radios:
-                    filehashtools.gpgrunner(ld_r, gpgkey, gpgpass, True)
+        scriptutils.bulk_verify(dirs, compressed, deleted, radios)
 
     # Remove uncompressed loaders (if specified)
     if deleted:
         print("DELETING UNCOMPRESSED LOADERS...")
-        barutils.remove_unpacked_loaders(ld_o, ld_r, radios)
+        barutils.remove_unpacked_loaders(dirs[2], dirs[3], radios)
 
     # Delete empty folders
     print("REMOVING EMPTY FOLDERS...")
