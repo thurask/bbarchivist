@@ -31,7 +31,7 @@ Installation
 
 Requires Python >=3.2, with 3.5 or later preferred.
 
-To get this package, install with pip:
+To get the latest stable version, install with pip:
 
 ::
 
@@ -42,6 +42,14 @@ For some systems, it may be a different command depending on how your system mai
 ::
 
     $ pip3 install bbarchivist
+
+If you want the latest development version, clone from Git and install with setuptools:
+
+::
+
+    $ git clone https://github.com/thurask/bbarchivist.git
+    $ cd bbarchivist
+    $ python setup.py install
 
 
 Python Libraries
