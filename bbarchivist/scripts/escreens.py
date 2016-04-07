@@ -18,8 +18,7 @@ def escreens_main():
     Invoke :func:`bbarchivist.filehashtools.calculate_escreens` with arguments.
     """
     if len(sys.argv) > 1:
-        parser = scriptutils.default_parser("bb-escreens",
-                                            "Calculate escrens codes")
+        parser = scriptutils.default_parser("bb-escreens", "Calculate escrens codes")
         parser.add_argument("pin",
                             help="PIN, 8 characters",
                             type=utilities.escreens_pin)

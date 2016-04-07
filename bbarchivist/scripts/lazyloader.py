@@ -26,23 +26,8 @@ def grab_args():
     Invoke :func:`lazyloader.lazyloader_main` with arguments.
     """
     if len(sys.argv) > 1:
-        parser = scriptutils.default_parser("bb-lazyloader",
-                                            "Create one autoloader")
-        parser.add_argument(
-            "os",
-            help="OS version, 10.x.y.zzzz",
-            nargs="?",
-            default=None)
-        parser.add_argument(
-            "radio",
-            help="Radio version, 10.x.y.zzzz",
-            nargs="?",
-            default=None)
-        parser.add_argument(
-            "swrelease",
-            help="Software version, 10.x.y.zzzz",
-            nargs="?",
-            default=None)
+        parser = scriptutils.default_parser("bb-lazyloader", "Create one autoloader",
+                                            ("folder", "osr"))
         devgroup = parser.add_argument_group(
             "devices",
             "Device to load (one required)")
@@ -95,13 +80,6 @@ def grab_args():
             help="Run autoloader after creation",
             action="store_true",
             default=False)
-        parser.add_argument(
-            "-f",
-            "--folder",
-            dest="folder",
-            help="Working folder",
-            default=None,
-            metavar="DIR")
         parser.add_argument(
             "-n",
             "--no-download",

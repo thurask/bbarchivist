@@ -17,8 +17,7 @@ def grab_args():
 
     Invoke :func:`privlookup.privlookup_main` with those arguments."""
     if len(sys.argv) > 1:
-        parser = scriptutils.default_parser("bb-privlookup",
-                                            "Get Priv autoloaders")
+        parser = scriptutils.default_parser("bb-privlookup", "Get Priv autoloaders")
         parser.add_argument(
             "branch",
             help="OS branch, 3 letters"

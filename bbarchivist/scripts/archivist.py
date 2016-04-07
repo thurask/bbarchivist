@@ -23,28 +23,8 @@ def grab_args():
     Invoke :func:`archivist.archivist_main` with those arguments.
     """
     if len(sys.argv) > 1:
-        parser = scriptutils.default_parser("bb-archivist",
-                                            "Create many autoloaders")
-        parser.add_argument(
-            "os",
-            help="OS version, 10.x.y.zzzz")
-        parser.add_argument(
-            "radio",
-            help="Radio version, 10.x.y.zzzz",
-            nargs="?",
-            default=None)
-        parser.add_argument(
-            "swrelease",
-            help="Software version, 10.x.y.zzzz",
-            nargs="?",
-            default=None)
-        parser.add_argument(
-            "-f",
-            "--folder",
-            dest="folder",
-            help="Working folder",
-            default=None,
-            metavar="DIR")
+        parser = scriptutils.default_parser("bb-archivist", "Create many autoloaders",
+                                            ("folder", "osr"))
         negategroup = parser.add_argument_group(
             "negators",
             "Disable program functionality")

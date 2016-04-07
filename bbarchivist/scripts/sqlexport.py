@@ -16,8 +16,7 @@ def sqlexport_main():
 
     Invoke :func:`bbarchivist.sqlutils.export_sql_db`.
     """
-    parser = scriptutils.default_parser("bb-sqlexport",
-                                        "SQL-related tools")
+    parser = scriptutils.default_parser("bb-sqlexport", "SQL-related tools")
     parser.add_argument(
         "-p",
         "--pop",

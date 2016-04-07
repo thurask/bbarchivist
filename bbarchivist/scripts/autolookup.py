@@ -19,8 +19,7 @@ def grab_args():
 
     Invoke :func:`autolookup.autolookup_main` with those arguments."""
     if len(sys.argv) > 1:
-        parser = scriptutils.default_parser("bb-autolookup",
-                                            "Get software releases")
+        parser = scriptutils.default_parser("bb-autolookup", "Get software releases")
         parser.add_argument("os", help="OS version, 10.x.y.zzzz")
         parser.add_argument(
             "-l", "--loop",

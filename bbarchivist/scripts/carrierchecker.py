@@ -20,8 +20,7 @@ def grab_args():
 
     Invoke :func:`carrierchecker.carrierchecker_main` with those arguments."""
     if len(sys.argv) > 1:
-        parser = scriptutils.default_parser("bb-cchecker",
-                                            "Carrier info checking")
+        parser = scriptutils.default_parser("bb-cchecker", "Carrier info checking")
         parser.add_argument("mcc",
                             help="1-3 digit country code",
                             type=utilities.valid_carrier)

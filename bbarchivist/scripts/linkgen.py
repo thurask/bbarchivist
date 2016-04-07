@@ -19,21 +19,8 @@ def grab_args():
     Invoke :func:`linkgen.linkgen_main` with those arguments.
     """
     if len(sys.argv) > 1:
-        parser = scriptutils.default_parser("bb-linkgen",
-                                            "Bar link generation")
-        parser.add_argument(
-            "os",
-            help="OS version, 10.x.y.zzzz")
-        parser.add_argument(
-            "radio",
-            help="Radio version, 10.x.y.zzzz",
-            nargs="?",
-            default=None)
-        parser.add_argument(
-            "swrelease",
-            help="Software version, 10.x.y.zzzz",
-            nargs="?",
-            default=None)
+        parser = scriptutils.default_parser("bb-linkgen", "Bar link generation",
+                                            ("osr"))
         parser.add_argument(
             "-r",
             "--radiosw",

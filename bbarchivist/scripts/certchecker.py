@@ -19,8 +19,7 @@ def grab_args():
     """
     if len(sys.argv) > 1:
         datafile = jsonutils.load_json('devices')
-        parser = scriptutils.default_parser("bb-certchecker",
-                                            "Certification scraper")
+        parser = scriptutils.default_parser("bb-certchecker", "Certification scraper")
         parser.add_argument(
             "device",
             help="FCCID/HWID/model #, or family",

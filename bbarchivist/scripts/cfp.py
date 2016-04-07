@@ -15,8 +15,7 @@ def cfp_main():
     """
     Run cfp.
     """
-    parser = scriptutils.default_parser("bb-cfp",
-                                        "BlackBerry CFP.")
+    parser = scriptutils.default_parser("bb-cfp", "BlackBerry CFP.")
     parser.parse_known_args(sys.argv[1:])
     if utilities.is_windows():
         subprocess.call([utilities.grab_cfp()] + sys.argv[1:])

@@ -21,8 +21,7 @@ def filehasher_main():
     hashdict = filehashtools.verifier_config_loader()
     filehashtools.verifier_config_writer(hashdict)
     if len(sys.argv) > 1:
-        parser = scriptutils.default_parser("bb-filehasher",
-                                            "Hash files")
+        parser = scriptutils.default_parser("bb-filehasher", "Hash files")
         parser.add_argument(
             "folder",
             help="Working directory, default is local",

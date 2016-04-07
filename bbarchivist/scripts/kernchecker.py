@@ -15,8 +15,7 @@ def kernchecker_main():
     """
     Wrap around :mod:`bbarchivist.networkutils` kernel checking.
     """
-    parser = scriptutils.default_parser("bb-kernchecker",
-                                        "Kernel version scraper.")
+    parser = scriptutils.default_parser("bb-kernchecker", "Kernel version scraper.")
     parser.parse_args(sys.argv[1:])
     print("~~~KERNCHECKER VERSION {0}~~~".format(bbconstants.VERSION))
     print("\nCHECKING KERNELS...\n")

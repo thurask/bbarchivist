@@ -18,7 +18,8 @@ def pseudocap_main():
 
     Invoke :func:`bbarchivist.pseudocap.make_autoloader` with arguments.
     """
-    parser = scriptutils.default_parser("bb-pseudocap", "BlackBerry CAP, in Python.")
+    parser = scriptutils.default_parser("bb-pseudocap", "BlackBerry CAP, in Python.",
+                                        ("folder"))
     parser.add_argument("filename", help="Filename")
     files = parser.add_argument_group()
     files.add_argument(
@@ -26,14 +27,6 @@ def pseudocap_main():
         help="1-6 signed files, space separated",
         nargs="+",
         type=utilities.signed_file_args)
-    parser.add_argument(
-        "-f",
-        "--folder",
-        dest="folder",
-        help="Working folder",
-        default=None,
-        metavar="DIR",
-        type=utilities.file_exists)
     parser.set_defaults()
     args = parser.parse_args(sys.argv[1:])
     if args.folder is None:

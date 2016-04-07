@@ -21,9 +21,18 @@ __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015-2016 Thurask"
 
 
-def default_parser(name=None, desc=None):
+def default_parser(name=None, desc=None, flags=None):
     """
     A generic form of argparse's ArgumentParser.
+
+    :param name: App name.
+    :type name: str
+
+    :param desc: App description.
+    :type desc: str
+
+    :param flags: Tuple of sections to add.
+    :type flags: tuple(str)
     """
     parser = argparse.ArgumentParser(
         prog=name,
@@ -33,7 +42,31 @@ def default_parser(name=None, desc=None):
         "-v",
         "--version",
         action="version",
-        version="%(prog)s " + bbconstants.VERSION)
+        version="{0} {1}".format(parser.prog, bbconstants.VERSION))
+    if flags is not None:
+        if "folder" in flags:
+            parser.add_argument(
+                "-f",
+                "--folder",
+                dest="folder",
+                help="Working folder",
+                default=None,
+                metavar="DIR",
+                type=utilities.file_exists)
+        if "osr" in flags:
+            parser.add_argument(
+                "os",
+                help="OS version, 10.x.y.zzzz")
+            parser.add_argument(
+                "radio",
+                help="Radio version, 10.x.y.zzzz",
+                nargs="?",
+                default=None)
+            parser.add_argument(
+                "swrelease",
+                help="Software version, 10.x.y.zzzz",
+                nargs="?",
+                default=None)
     return parser
 
 

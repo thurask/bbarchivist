@@ -19,28 +19,8 @@ def grab_args():
     Invoke downloader from :func:`archivist.archivist_main` with arguments.
     """
     if len(sys.argv) > 1:
-        parser = scriptutils.default_parser("bb-downloader",
-                                            "Download bar files")
-        parser.add_argument(
-            "os",
-            help="OS version, 10.x.y.zzzz")
-        parser.add_argument(
-            "radio",
-            help="Radio version, 10.x.y.zzzz",
-            nargs="?",
-            default=None)
-        parser.add_argument(
-            "swrelease",
-            help="Software version, 10.x.y.zzzz",
-            nargs="?",
-            default=None)
-        parser.add_argument(
-            "-f",
-            "--folder",
-            dest="folder",
-            help="Working folder",
-            default=None,
-            metavar="DIR")
+        parser = scriptutils.default_parser("bb-downloader", "Download bar files",
+                                            ("folder", "osr"))
         parser.add_argument(
             "-a",
             "--altsw",

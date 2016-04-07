@@ -19,8 +19,7 @@ def gpgrunner_main():
 
     Invoke :func:`bbarchivist.filehashtools.gpgrunner` with those arguments.
     """
-    parser = scriptutils.default_parser("bb-gpgrunner",
-                                        "GPG-sign files")
+    parser = scriptutils.default_parser("bb-gpgrunner", "GPG-sign files")
     parser.add_argument(
         "folder",
         help="Working directory, default is local",
