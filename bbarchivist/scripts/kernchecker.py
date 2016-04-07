@@ -17,7 +17,7 @@ def kernchecker_main():
     """
     parser = scriptutils.default_parser("bb-kernchecker", "Kernel version scraper.")
     parser.parse_args(sys.argv[1:])
-    print("~~~KERNCHECKER VERSION {0}~~~".format(bbconstants.VERSION))
+    scriptutils.slim_preamble("KERNCHECKER")
     print("\nCHECKING KERNELS...\n")
     kernlist = networkutils.kernel_scraper()
     for item in kernlist:

@@ -79,10 +79,7 @@ def list_available_certs(table):
     """
     for key in table:
         if key['ptcrbid']:
-            if not key['hwid']:
-                hwid = "NO HWID"
-            else:
-                hwid = key['hwid']
+            hwid = "NO HWID" if not key['hwid'] else key['hwid']
             print("{0} {1} - {2} - {3}".format(key['device'], key['name'], hwid, key['fccid']))
 
 
@@ -94,14 +91,8 @@ def list_devices(table):
     :type table: list(dict)
     """
     for key in table:
-        if not key['hwid']:
-            hwid = "NO HWID"
-        else:
-            hwid = key['hwid']
-        if not key['fccid']:
-            fccid = "NO FCCID"
-        else:
-            fccid = key['fccid']
+        hwid = "NO HWID" if not key['hwid'] else key['hwid']
+        fccid = "NO FCCID" if not key['fccid'] else key['fccid']
         print("{0} {1} - {2} - {3}".format(key['device'], key['name'], hwid, fccid))
 
 

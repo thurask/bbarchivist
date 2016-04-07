@@ -98,10 +98,7 @@ def grab_args():
         if args.forcedos is not None and args.forcedsw is None:
             avail = networkutils.sr_lookup(args.forcedos,
                                            bbconstants.SERVERS['p'])
-            if avail != "SR not in system":
-                forced = avail
-            else:
-                forced = None
+            forced = avail if avail != "SR not in system" else None
         elif args.forcedos is None and args.forcedsw is not None:
             forced = args.forcedsw
         else:
@@ -152,10 +149,7 @@ def questionnaire():
         download = utilities.s2b(input("DOWNLOAD?: "))
         if download:
             upgrade = utilities.s2b(input("Y=UPGRADE BARS, N=DEBRICK BARS?: "))
-            if upgrade:
-                blitz = utilities.s2b(input("CREATE BLITZ?: "))
-            else:
-                blitz = False
+            blitz = utilities.s2b(input("CREATE BLITZ?: ")) if upgrade else False
         else:
             upgrade = False
             blitz = False
@@ -224,7 +218,7 @@ def carrierchecker_main(mcc, mnc, device,
         directory = os.getcwd()
     data = jsonutils.load_json('devices')
     model, family, hwid = jsonutils.certchecker_prep(data, device)
-    print("~~~CARRIERCHECKER VERSION {0}~~~".format(bbconstants.VERSION))
+    scriptutils.slim_preamble("CARRIERCHECKER")
     country, carrier = networkutils.carrier_checker(mcc, mnc)
     print("COUNTRY:", country.upper())
     print("CARRIER:", carrier.upper())
@@ -250,10 +244,8 @@ def carrierchecker_main(mcc, mnc, device,
             npc = networkutils.return_npc(mcc, mnc)
             scriptutils.export_cchecker(files, npc, hwid, osv, radv, swv, upgrade, forced)
         if download:
-            if blitz:
-                bardir = os.path.join(directory, swv + "-BLITZ")
-            else:
-                bardir = os.path.join(directory, swv + "-" + family)
+            suffix = "-BLITZ" if blitz else "-{0}".format(family)
+            bardir = os.path.join(directory, swv + suffix)
             if not os.path.exists(bardir):
                 os.makedirs(bardir)
             if blitz:

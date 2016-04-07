@@ -52,10 +52,7 @@ def sqlexport_main():
         rellist = sqlutils.list_sw_releases(args.avail)
         if rellist is not None:
             for rel in rellist:
-                if rel[2] == "available":
-                    affix = "  "
-                else:
-                    affix = ""
+                affix = "  " if rel[2] == "available" else ""
                 print("OS {0} - SR {1} - {2} - {3}".format(
                     rel[0], rel[1], (rel[2] + affix), rel[3]))
 

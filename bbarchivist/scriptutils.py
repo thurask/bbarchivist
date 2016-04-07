@@ -307,10 +307,7 @@ def get_baseurls(softwareversion, altsw=None):
     :type altsw: str
     """
     baseurl = networkutils.create_base_url(softwareversion)
-    if altsw:
-        alturl = networkutils.create_base_url(altsw)
-    else:
-        alturl = None
+    alturl = networkutils.create_base_url(altsw) if altsw else None
     return baseurl, alturl
 
 
@@ -438,10 +435,7 @@ def enter_to_exit(checkfreeze=True):
     :param checkfreeze: If this triggers only in frozen executables. Default is true.
     :type checkfreeze: bool
     """
-    if checkfreeze:
-        greenlight = bool(getattr(sys, 'frozen', False))
-    else:
-        greenlight = True
+    greenlight = bool(getattr(sys, 'frozen', False)) if checkfreeze else True
     if greenlight:
         print("")
         smeg = input("Press Enter to exit")
@@ -732,10 +726,7 @@ def verify_gpg_credentials():
                 writebool = utilities.s2b(input("SAVE PASSPHRASE (Y/N)?:"))
             else:
                 writebool = False
-            if writebool:
-                gpgpass2 = gpgpass
-            else:
-                gpgpass2 = None
+            gpgpass2 = gpgpass if writebool else None
             filehashtools.gpg_config_writer(gpgkey, gpgpass2)
         else:
             gpgkey = None

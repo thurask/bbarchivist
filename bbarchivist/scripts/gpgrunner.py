@@ -37,10 +37,7 @@ def gpgrunner_main():
         if password is None:
             password = getpass.getpass(prompt="PGP PASSPHRASE: ")
             write = utilities.s2b(input("SAVE PASSPHRASE (Y/N)?: "))
-        if write:
-            password2 = password
-        else:
-            password2 = None
+        password2 = password if write else None
         filehashtools.gpg_config_writer(key, password2)
     print(" ")
     filehashtools.gpgrunner(workfolder, key, password)

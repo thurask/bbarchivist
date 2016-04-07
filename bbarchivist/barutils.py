@@ -192,10 +192,7 @@ def tar_verify(filepath):
     if tarfile.is_tarfile(filepath):
         with tarfile.open(filepath, "r:") as thefile:
             mems = thefile.getmembers()
-        if not mems:
-            return False
-        else:
-            return True
+        return False if not mems else True
     else:
         return False
 
@@ -228,10 +225,7 @@ def tgz_verify(filepath):
     if tarfile.is_tarfile(filepath):
         with tarfile.open(filepath, "r:gz") as thefile:
             mems = thefile.getmembers()
-        if not mems:
-            return False
-        else:
-            return True
+        return False if not mems else True
     else:
         return False
 
@@ -264,10 +258,7 @@ def tbz_verify(filepath):
     if tarfile.is_tarfile(filepath):
         with tarfile.open(filepath, "r:bz2") as thefile:
             mems = thefile.getmembers()
-        if not mems:
-            return False
-        else:
-            return True
+        return False if not mems else True
     else:
         return False
 
@@ -300,10 +291,7 @@ def txz_verify(filepath):
         if tarfile.is_tarfile(filepath):
             with tarfile.open(filepath, "r:xz") as thefile:
                 mems = thefile.getmembers()
-            if not mems:
-                return False
-            else:
-                return True
+            return False if not mems else True
         else:
             return False
 
@@ -362,10 +350,7 @@ def calculate_strength():
     """
     Determine zip/gzip/bzip2 strength by OS bit setting.
     """
-    if utilities.is_amd64():
-        strength = 9  # ultra compression
-    else:
-        strength = 5  # normal compression
+    strength = 9 if utilities.is_amd64() else 5
     return strength
 
 

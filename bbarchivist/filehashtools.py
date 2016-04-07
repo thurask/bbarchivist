@@ -419,10 +419,7 @@ def verifier(workingdir, kwargs=None):
     if kwargs is None:
         kwargs = verifier_config_loader()
     files = [file for file in os.listdir(workingdir) if filefilter(file, workingdir)]
-    if len(files) < utilities.enum_cpus():
-        workers = len(files)
-    else:
-        workers = utilities.enum_cpus()
+    workers = len(files) if len(files) < utilities.enum_cpus() else utilities.enum_cpus()
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as xec:
         for file in files:
             print("HASHING:", str(file))
@@ -462,10 +459,7 @@ def gpgrunner(workingdir, keyid=None, pword=None, selective=False):
             keyid = "0x" + keyid.upper()
         dirlist = os.listdir(workingdir)
         files = [file for file in dirlist if not os.path.isdir(file)]
-        if len(files) < utilities.enum_cpus():
-            workers = len(files)
-        else:
-            workers = utilities.enum_cpus()
+        workers = len(files) if len(files) < utilities.enum_cpus() else utilities.enum_cpus()
         with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as xec:
             for file in files:
                 sup = bbconstants.SUPPS

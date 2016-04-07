@@ -271,10 +271,7 @@ def lazyloader_main(device, osversion, radioversion=None,
     barutils.move_bars(localdir, bd_o, bd_r)
 
     # Generate loader
-    if altsw:
-        altradio = radioversion
-    else:
-        altradio = None
+    altradio = radioversion if altsw else None
     loadergen.generate_lazy_loader(osversion, device, localdir, altradio, core)
 
     # Test loader

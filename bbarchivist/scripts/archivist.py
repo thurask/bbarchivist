@@ -164,10 +164,7 @@ def questionnaire():
         altsw = None
     radios = utilities.s2b(input("CREATE RADIO LOADERS (Y/N)?: "))
     compressed = utilities.s2b(input("COMPRESS LOADERS (Y/N)?: "))
-    if compressed:
-        deleted = utilities.s2b(input("DELETE UNCOMPRESSED LOADERS (Y/N)?: "))
-    else:
-        deleted = False
+    deleted = utilities.s2b(input("DELETE UNCOMPRESSED LOADERS (Y/N)?: ")) if compressed else False
     hashed = utilities.s2b(input("GENERATE HASHES (Y/N)?: "))
     if getattr(sys, 'frozen', False):
         hashdict = filehashtools.verifier_config_loader(os.getcwd())
@@ -318,7 +315,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
 
     # Create loaders
     print("GENERATING LOADERS...")
-    altradio = (altsw is not None)
+    altradio = altsw is not None
     loadergen.generate_loaders(osversion, radioversion, radios, localdir, altradio, core)
 
     # Test loader files

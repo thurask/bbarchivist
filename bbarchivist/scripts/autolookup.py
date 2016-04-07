@@ -151,10 +151,7 @@ def autolookup_main(osversion, loop=False, log=False,
     else:
         pword = None
     scriptutils.slim_preamble("AUTOLOOKUP")
-    if log:
-        record = utilities.prep_logfile()
-    else:
-        record = None
+    record = utilities.prep_logfile() if log else None
     while True:
         print("NOW SCANNING:", osversion, end="\r")
         results = networkutils.sr_lookup_bootstrap(osversion)
