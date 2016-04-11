@@ -88,8 +88,7 @@ def download_bootstrap(urls, outdir=None, workers=5):
     :param workers: Number of worker processes. Default is 5.
     :type workers: int
     """
-    if len(urls) < workers:
-        workers = len(urls)
+    workers = len(urls) if len(urls) < workers else workers
     spinman = utilities.SpinManager()
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as xec:
         try:

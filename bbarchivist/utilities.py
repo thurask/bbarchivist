@@ -694,6 +694,17 @@ def timer(method):
     return wrapper
 
 
+def cpu_workers(input_data):
+    """
+    Count number of CPU workers, smaller of number of threads and length of data.
+
+    :param input_data: Input data, some iterable.
+    :type input_data: list
+    """
+    workers = len(input_data) if len(input_data) < enum_cpus() else enum_cpus()
+    return workers
+
+
 def wrap_keyboard_except(method):
     """
     Decorator to absorb KeyboardInterrupt.
