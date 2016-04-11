@@ -419,7 +419,7 @@ def verifier(workingdir, kwargs=None):
     if kwargs is None:
         kwargs = verifier_config_loader()
     files = [file for file in os.listdir(workingdir) if filefilter(file, workingdir)]
-    with concurrent.futures.ThreadPoolExecutor(max_workers=utilities.cpu_workers()) as xec:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=utilities.workers(files)) as xec:
         for file in files:
             print("HASHING:", str(file))
             basename = file + ".cksum"
@@ -458,7 +458,7 @@ def gpgrunner(workingdir, keyid=None, pword=None, selective=False):
             keyid = "0x" + keyid.upper()
         dirlist = os.listdir(workingdir)
         files = [file for file in dirlist if not os.path.isdir(file)]
-        with concurrent.futures.ThreadPoolExecutor(max_workers=utilities.cpu_workers()) as xec:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=utilities.workers(files)) as xec:
             for file in files:
                 sup = bbconstants.SUPPS
                 if not file.endswith(sup):

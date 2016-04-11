@@ -694,7 +694,7 @@ def timer(method):
     return wrapper
 
 
-def cpu_workers(input_data):
+def workers(input_data):
     """
     Count number of CPU workers, smaller of number of threads and length of data.
 
