@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#pylint: skip-file
+# pylint: skip-file
 # -*- coding: utf-8 -*-
 #
 # bbarchivist documentation build configuration file, created by

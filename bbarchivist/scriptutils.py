@@ -518,7 +518,7 @@ def autolookup_printer(out, avail, log=False, quiet=False, record=None):
     if avail == "Available":
         if log:
             with open(record, "a") as rec:
-                rec.write(out+"\n")
+                rec.write(out + "\n")
         print(out)
 
 
@@ -614,17 +614,17 @@ def generate_blitz_links(files, osv, radv, swv):
         baseurl + "/qc8960.factory_sfi-" + osv + "-nto+armle-v7+signed.bar",
         baseurl + "/qc8960.factory_sfi_hybrid_qc8x30-" + osv + "-nto+armle-v7+signed.bar",
         baseurl + "/qc8960.factory_sfi_hybrid_qc8974-" + osv + "-nto+armle-v7+signed.bar"
-        ]
+    ]
     for i in coreurls:
         files.append(i)
     radiourls = [
         baseurl + "/m5730-" + radv + "-nto+armle-v7+signed.bar",
-        baseurl + "/qc8960-" + radv +"-nto+armle-v7+signed.bar",
+        baseurl + "/qc8960-" + radv + "-nto+armle-v7+signed.bar",
         baseurl + "/qc8960.wtr-" + radv + "-nto+armle-v7+signed.bar",
         baseurl + "/qc8960.wtr5-" + radv + "-nto+armle-v7+signed.bar",
         baseurl + "/qc8930.wtr5-" + radv + "-nto+armle-v7+signed.bar",
         baseurl + "/qc8974.wtr2-" + radv + "-nto+armle-v7+signed.bar"
-        ]
+    ]
     for i in radiourls:
         files.append(i)
     return files
@@ -666,7 +666,7 @@ def purge_dross(files):
         "frc", "frf", "ged", "grg", "iti", "jpj", "kok", "mnc", "mnt",
         "non", "plp", "ptb", "ptp", "rur", "spe", "spm", "sws", "trt",
         "retaildemo"
-        ]
+    ]
     files2 = [file for file in files if all(word not in file for word in crap)]
     return files2
 

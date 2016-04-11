@@ -134,14 +134,14 @@ def url_gen(osversion, radioversion, softwareversion):
         "Z30/LEAP/CLASSIC",
         "Z3",
         "PASSPORT"
-        ]
+    ]
     oslist = [
         "STL100-1",
         "QC8960",
         "VERIZON QC8960",
         "Z3",
         "PASSPORT"
-        ]
+    ]
     oses, radios, cores = generate_urls(baseurl, osversion, radioversion, True)
     vzw = "/{0}-{1}-{2}".format("qc8960.verizon_sfi.desktop", osversion, "nto+armle-v7+signed.bar")
     oses.insert(2, baseurl + vzw)

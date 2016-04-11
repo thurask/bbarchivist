@@ -53,7 +53,7 @@ def make_offset(files, folder=None):
     # immutable things
     scaff = b'at9dFE5LTEdOT0hHR0lTCxcKDR4MFFMtPiU6LT0zPjs6Ui88U05GTVFOSUdRTlFOT3BwcJzVxZec1cWXnNXFlw=='
     separator = base64.b64decode(scaff)
-    password = binascii.unhexlify(b'0'*160)
+    password = binascii.unhexlify(b'0' * 160)
     pad = b'\x00'  # 1x, 2x or 8x
     filepad = binascii.unhexlify(fcount)  # 01-06
     trailers = binascii.unhexlify(b'00' * (7 - filecount))  # 00, 1-6x
@@ -94,8 +94,9 @@ def make_offset(files, folder=None):
     if filecount == 6:
         sixthoffset = fifthoffset + fifthsize  # start of sixth file
         sixthstart = ghetto_convert(sixthoffset)
-    makeuplen = 64 - 6*len(pad*8) - 2*len(pad*2) - 2*len(pad) - len(trailers) - len(filepad)
-    makeup = b'\x00'*makeuplen  # pad to match offset begin
+    makeuplen = 64 - 6 * len(pad * 8) - 2 * len(pad * 2) - 2 * \
+        len(pad) - len(trailers) - len(filepad)
+    makeup = b'\x00' * makeuplen  # pad to match offset begin
     with open(os.path.join(folder, "offset.hex"), "wb") as file:
         file.write(separator)
         file.write(password)

@@ -63,7 +63,7 @@ def retrieve_sha512(filename):
         for idx, line in enumerate(manf):
             if line.endswith(b"signed"):
                 alist.append(manf[idx])
-                alist.append(manf[idx+1])
+                alist.append(manf[idx + 1])
         assetname = alist[0].split(b": ")[1]
         assethash = alist[1].split(b": ")[1]
         return assetname, assethash  # (b"blabla.signed", b"somehash")
@@ -86,7 +86,7 @@ def verify_sha512(filename, inithash):
     sha512 = hashlib.sha512()
     with open(filename, 'rb') as file:
         while True:
-            data = file.read(16*1024*1024)
+            data = file.read(16 * 1024 * 1024)
             if not data:
                 break
             sha512.update(data)

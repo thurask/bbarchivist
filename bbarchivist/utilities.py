@@ -385,7 +385,7 @@ def generate_urls(baseurl, osversion, radioversion, core=False):
         baseurl + "/qc8960.factory_sfi.desktop-" + osversion + "-nto+armle-v7+signed.bar",
         baseurl + "/qc8960.factory_sfi.desktop-" + osversion + "-nto+armle-v7+signed.bar",
         baseurl + "/qc8974.factory_sfi.desktop-" + osversion + "-nto+armle-v7+signed.bar"
-        ]
+    ]
     radiourls = [
         baseurl + "/m5730-" + radioversion + "-nto+armle-v7+signed.bar",
         baseurl + "/qc8960-" + radioversion + "-nto+armle-v7+signed.bar",
@@ -394,7 +394,7 @@ def generate_urls(baseurl, osversion, radioversion, core=False):
         baseurl + "/qc8960.wtr5-" + radioversion + "-nto+armle-v7+signed.bar",
         baseurl + "/qc8930.wtr5-" + radioversion + "-nto+armle-v7+signed.bar",
         baseurl + "/qc8974.wtr2-" + radioversion + "-nto+armle-v7+signed.bar"
-        ]
+    ]
     coreurls = []
     splitos = osversion.split(".")
     splitos = [int(i) for i in splitos]
@@ -519,6 +519,7 @@ class Spinner(object):
     """
     A basic spinner using itertools. No need for progress.
     """
+
     def __init__(self):
         self.wheel = itertools.cycle(['-', '/', '|', '\\'])
         self.file = UselessStdout()
@@ -546,6 +547,7 @@ class SpinManager(object):
     """
     Wraps around the itertools spinner, runs it in another thread.
     """
+
     def __init__(self):
         spinner = Spinner()
         self.spinner = spinner

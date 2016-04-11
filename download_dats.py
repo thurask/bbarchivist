@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#pylint: disable = I0011, C0111, C0103, W0622
+# pylint: disable = I0011, C0111, C0103, W0622
 
 """Manually download dat files, if Git-LFS isn't working or something."""
 
@@ -21,15 +21,15 @@ def download():
     capfile = os.path.basename(CAP.location)
     try:
         if os.path.getsize(CAP.location) != CAP.size:
-            files.append(basename+capfile)
+            files.append(basename + capfile)
     except FileNotFoundError:
-        files.append(basename+capfile)
+        files.append(basename + capfile)
     cfpfile = os.path.basename(CFP.location)
     try:
         if os.path.getsize(CFP.location) != CFP.size:
-            files.append(basename+cfpfile)
+            files.append(basename + cfpfile)
     except FileNotFoundError:
-        files.append(basename+cfpfile)
+        files.append(basename + cfpfile)
     outdir = os.path.join(os.getcwd(), "bbarchivist")
     if files:
         download_bootstrap(files, outdir)

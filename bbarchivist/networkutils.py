@@ -372,7 +372,7 @@ def sr_lookup_bootstrap(osv):
                 "a2": None,
                 "b1": None,
                 "b2": None
-                }
+            }
             for key in results:
                 results[key] = xec.submit(sr_lookup, osv, SERVERS[key]).result()
             return results
@@ -519,7 +519,8 @@ def priv_scanner(build):
     with concurrent.futures.ThreadPoolExecutor(max_workers=len(variants)) as xec:
         results = []
         for var in variants:
-            skel = "http://bbapps.download.blackberry.com/Priv/bbry_qc8992_autoloader_user-{0}-{1}.zip".format(var, build.upper())
+            skel = "http://bbapps.download.blackberry.com/Priv/bbry_qc8992_autoloader_user-{0}-{1}.zip".format(
+                var, build.upper())
             avail = xec.submit(availability, skel)
             if avail.result():
                 results.append(skel)

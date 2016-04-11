@@ -169,7 +169,7 @@ def format_suffix(altradio=None, radioversion=None, core=False):
     :type core: bool
     """
     if altradio and radioversion:
-        suffix = "_R"+radioversion
+        suffix = "_R" + radioversion
     else:
         suffix = ""
     if core:

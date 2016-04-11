@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#pylint: disable = I0011, C0111, C0103, W0622
+# pylint: disable = I0011, C0111, C0103, W0622
 
 from os.path import join, abspath, dirname
 from sys import exec_prefix
@@ -18,8 +18,8 @@ build_options = dict(packages=["requests", "bbarchivist", "bs4", "gnupg"],
                          (CAP.location, CAP.filename),
                          (JSONFILE, "bbconstants.json"),
                          (sq3dll, "sqlite3.dll")  # manual override
-                         ],
-                     excludes=[
+],
+    excludes=[
                          "rsa",
                          "pywin32",
                          "pytz",
@@ -34,10 +34,10 @@ build_options = dict(packages=["requests", "bbarchivist", "bs4", "gnupg"],
                          "matplotlib",
                          "PIL",
                          "tk"
-                         ],
-                     include_msvcr=[True],
-                     build_exe="lazyloader",
-                     zip_includes=[])
+],
+    include_msvcr=[True],
+    build_exe="lazyloader",
+    zip_includes=[])
 
 base = 'Console'
 executables = [

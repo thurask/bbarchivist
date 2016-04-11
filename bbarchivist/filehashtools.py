@@ -295,7 +295,7 @@ def calculate_escreens(pin, app, uptime, duration=30):
         7: "He was a boy, and she was a girl, can I make it any more obvious?",
         15: "So am I, still waiting, for this world to stop hating?",
         30: "I love myself today, not like yesterday. "
-        }
+    }
     lifetimes[30] += "I'm cool, I'm calm, I'm gonna be okay"
     #: Escreens magic HMAC secret.
     secret = 'Up the time stream without a TARDIS'

@@ -11,6 +11,7 @@ __copyright__ = "Copyright 2015-2016 Thurask"
 
 class Datafile:
     """Structure for information about a data file included with this app."""
+
     def __init__(self, version, datatype, size):
         self.version = version
         self.filename = "{0}-{1}.dat".format(datatype, version)
@@ -49,4 +50,11 @@ PREFIXES = ("Q10", "Z10", "Z30", "Z3", "Passport")
 #: Support files.
 SUPPS = (".asc", ".cksum")
 #: Devices.
-DEVICES = ("STL100-1", "STL100-2/3/P9982", "STL100-4", "Q10/Q5/P9983", "Z30/CLASSIC/LEAP", "Z3", "PASSPORT")
+DEVICES = (
+    "STL100-1",
+    "STL100-2/3/P9982",
+    "STL100-4",
+    "Q10/Q5/P9983",
+    "Z30/CLASSIC/LEAP",
+    "Z3",
+    "PASSPORT")

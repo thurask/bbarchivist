@@ -147,7 +147,7 @@ def send_email(kwargs):
         "username": username,
         "password": password,
         "message": message
-        }
+    }
     if utilities.s2b(kwargs['is_ssl']):
         send_email_ssl(payload)
     else:
