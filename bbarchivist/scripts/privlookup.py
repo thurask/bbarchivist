@@ -20,24 +20,21 @@ def grab_args():
         parser = scriptutils.default_parser("bb-privlookup", "Get Priv autoloaders")
         parser.add_argument(
             "branch",
-            help="OS branch, 3 letters"
-            )
+            help="OS branch, 3 letters")
         parser.add_argument(
             "floor",
             help="Start of search range",
             default=0,
             type=int,
             choices=range(0, 999),
-            metavar="INT"
-            )
+            metavar="INT")
         parser.add_argument(
             "ceil",
             help="End of search range",
             default=999,
             type=int,
             choices=range(1, 1000),
-            metavar="INT"
-            )
+            metavar="INT")
         args = parser.parse_args(sys.argv[1:])
         parser.set_defaults()
         privlookup_main(args.branch, args.floor, args.ceil)
@@ -102,7 +99,7 @@ def privlookup_main(branch, floor=0, ceil=999):
     :param ceil: Ending OS version, padded to 3 numbers. Default is 999.
     :type ceil: int
     """
-    for ver in range(floor, ceil+1):
+    for ver in range(floor, ceil + 1):
         build = "{0}{1}".format(branch.upper(), str(ver).zfill(3))
         print("NOW SCANNING: {0}".format(build), end="\r")
         results = networkutils.priv_scanner(build)

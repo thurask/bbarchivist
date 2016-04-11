@@ -292,12 +292,12 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     # Download files
     if download:
         print("BEGIN DOWNLOADING...")
-        networkutils.download_bootstrap(radiourls+osurls, localdir, 3)
+        networkutils.download_bootstrap(radiourls + osurls, localdir, 3)
         print("ALL FILES DOWNLOADED")
 
     # Test bar files
     if integrity:
-        urllist = osurls+radiourls
+        urllist = osurls + radiourls
         scriptutils.test_bar_files(localdir, urllist)
 
     # Extract bar files
