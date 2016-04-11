@@ -42,7 +42,8 @@ def kompressor_main():
             method = "zip"
     else:
         method = args.method
-    szexe = utilities.get_seven_zip(False) if (method == "7z" and utilities.prep_seven_zip(False)) else None
+    psz = utilities.prep_seven_zip(False)
+    szexe = utilities.get_seven_zip(False) if (method == "7z" and psz) else None
     workfolder = args.folder
     barutils.compress_config_writer()
     print(" ")

@@ -701,8 +701,8 @@ def workers(input_data):
     :param input_data: Input data, some iterable.
     :type input_data: list
     """
-    workers = len(input_data) if len(input_data) < enum_cpus() else enum_cpus()
-    return workers
+    runners = len(input_data) if len(input_data) < enum_cpus() else enum_cpus()
+    return runners
 
 
 def wrap_keyboard_except(method):

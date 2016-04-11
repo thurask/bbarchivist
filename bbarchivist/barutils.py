@@ -143,7 +143,8 @@ def sz_compress(filepath, filename, szexe=None, strength=5, errors=False):
     rawname = os.path.dirname(filepath)
     thr = str(utilities.get_core_count())
     fold = os.path.join(rawname, filename)
-    cmd = '{0} a -mx{1} -m0=lzma2 -mmt{2} "{3}.7z" "{4}"'.format(szexe, strength, thr, filepath, fold)
+    cmd = '{0} a -mx{1} -m0=lzma2 -mmt{2} "{3}.7z" "{4}"'.format(szexe, strength,
+                                                                 thr, filepath, fold)
     with open(os.devnull, 'wb') as dnull:
         excode = subprocess.call(cmd, stdout=dnull, stderr=subprocess.STDOUT, shell=True)
     if errors:

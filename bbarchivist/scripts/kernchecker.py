@@ -2,7 +2,6 @@
 """Checks BlackBerry's Android kernel repo for available branches."""
 
 import sys  # load arguments
-from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import networkutils  # check function
 from bbarchivist import scriptutils  # default parser
 
