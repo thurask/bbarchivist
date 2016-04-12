@@ -145,15 +145,9 @@ def clean_availability(results, server):
     :param server: Server, key for result dict.
     :type server: str
     """
-    if server == "p":
-        marker = "PD"
-    else:
-        marker = server.upper()
+    marker = "PD" if server == "p" else server.upper()
     rel = results[server.lower()]
-    if rel != "SR not in system" and rel is not None:
-        avail = marker
-    else:
-        avail = "  "
+    avail = marker if rel != "SR not in system" and rel is not None else "  "
     return rel, avail
 
 
@@ -167,11 +161,8 @@ def carrier_checker(mcc, mnc):
     :param mnc: Network code.
     :type mnc: int
     """
-    url = "http://appworld.blackberry.com/ClientAPI/checkcarrier?homemcc="
-    url += str(mcc)
-    url += "&homemnc="
-    url += str(mnc)
-    url += "&devicevendorid=-1&pin=0"
+    url = "http://appworld.blackberry.com/ClientAPI/checkcarrier?homemcc={0}&homemnc={1}&devicevendorid=-1&pin=0".format(
+        mcc, mnc)
     user_agent = {'User-agent': 'AppWorld/5.1.0.60'}
     os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
     req = requests.get(url, headers=user_agent)
@@ -194,7 +185,7 @@ def return_npc(mcc, mnc):
     :param mnc: Network code.
     :type mnc: int
     """
-    return str(mcc).zfill(3) + str(mnc).zfill(3) + "30"
+    return "{0}{1}30".format(str(mcc).zfill(3), str(mnc).zfill(3))
 
 
 def carrier_query(npc, device, upgrade=False, blitz=False, forced=None):
@@ -216,24 +207,19 @@ def carrier_query(npc, device, upgrade=False, blitz=False, forced=None):
     :param forced: Force a software release.
     :type forced: str
     """
-    if upgrade:
-        upg = "upgrade"
-    else:
-        upg = "repair"
-    if forced is None:
-        forced = "latest"
+    upg = "upgrade" if upgrade else "repair"
+    forced = "latest" if forced is None else forced
     url = "https://cs.sl.blackberry.com/cse/updateDetails/2.2/"
     query = '<?xml version="1.0" encoding="UTF-8"?>'
-    query += '<updateDetailRequest version="2.2.1"'
-    query += ' authEchoTS="1366644680359">'
+    query += '<updateDetailRequest version="2.2.1" authEchoTS="1366644680359">'
     query += "<clientProperties>"
     query += "<hardware>"
     query += "<pin>0x2FFFFFB3</pin><bsn>1128121361</bsn>"
     query += "<imei>004401139269240</imei>"
-    query += "<id>0x" + device + "</id>"
+    query += "<id>0x{0}</id>".format(device)
     query += "</hardware>"
     query += "<network>"
-    query += "<homeNPC>0x" + str(npc) + "</homeNPC>"
+    query += "<homeNPC>0x{0}</homeNPC>".format(npc)
     query += "<iccid>89014104255505565333</iccid>"
     query += "</network>"
     query += "<software>"
@@ -243,16 +229,14 @@ def carrier_query(npc, device, upgrade=False, blitz=False, forced=None):
     query += "</clientProperties>"
     query += "<updateDirectives>"
     query += '<allowPatching type="REDBEND">true</allowPatching>'
-    query += "<upgradeMode>" + upg + "</upgradeMode>"
+    query += "<upgradeMode>{0}</upgradeMode>".format(upg)
     query += "<provideDescriptions>false</provideDescriptions>"
     query += "<provideFiles>true</provideFiles>"
     query += "<queryType>NOTIFICATION_CHECK</queryType>"
     query += "</updateDirectives>"
     query += "<pollType>manual</pollType>"
     query += "<resultPackageSetCriteria>"
-    query += '<softwareRelease softwareReleaseVersion="'
-    query += forced
-    query += '" />'
+    query += '<softwareRelease softwareReleaseVersion="{0}" />'.format(forced)
     query += "<releaseIndependent>"
     query += '<packageType operation="include">application</packageType>'
     query += "</releaseIndependent>"
@@ -276,10 +260,8 @@ def parse_carrier_xml(data, blitz=False):
     """
     root = xml.etree.ElementTree.fromstring(data)
     sw_exists = root.find('./data/content/softwareReleaseMetadata')
-    swver = ""
-    if sw_exists is None:
-        swver = "N/A"
-    else:
+    swver = "N/A" if sw_exists is None else ""
+    if sw_exists is not None:
         for child in root.iter("softwareReleaseMetadata"):
             swver = child.get("softwareReleaseVersion")
     files = []
@@ -287,7 +269,7 @@ def parse_carrier_xml(data, blitz=False):
     radver = ""
     package_exists = root.find('./data/content/fileSets/fileSet')
     if package_exists is not None:
-        baseurl = package_exists.get("url") + "/"
+        baseurl = "{0}/".format(package_exists.get("url"))
         for child in root.iter("package"):
             if not blitz:
                 files.append(baseurl + child.get("path"))
@@ -331,9 +313,8 @@ def sr_lookup(osver, server):
     query += '</network>'
     query += '<software><currentLocale>en_US</currentLocale>'
     query += '<legalLocale>en_US</legalLocale>'
-    query += '<osVersion>'
-    query += osver
-    query += '</osVersion><omadmEnabled>false</omadmEnabled>'
+    query += '<osVersion>{0}</osVersion>'.format(osver)
+    query += '<omadmEnabled>false</omadmEnabled>'
     query += '</software></clientProperties>'
     query += '</srVersionLookupRequest>'
     header = {"Content-Type": "text/xml;charset=UTF-8"}
@@ -399,14 +380,10 @@ def available_bundle_lookup(mcc, mnc, device):
     query += '<availableBundlesRequest version="1.0.0" '
     query += 'authEchoTS="1366644680359">'
     query += '<deviceId><pin>0x2FFFFFB3</pin></deviceId>'
-    query += '<clientProperties><hardware><id>0x'
-    query += device
-    query += '</id><isBootROMSecure>true</isBootROMSecure></hardware>'
-    query += '<network><vendorId>0x0</vendorId><homeNPC>0x'
-    query += npc
-    query += '</homeNPC><currentNPC>0x'
-    query += npc
-    query += '</currentNPC></network><software>'
+    query += '<clientProperties><hardware><id>0x{0}</id>'.format(device)
+    query += '<isBootROMSecure>true</isBootROMSecure></hardware>'
+    query += '<network><vendorId>0x0</vendorId><homeNPC>0x{0}</homeNPC>'.format(npc)
+    query += '<currentNPC>0x{0}</currentNPC></network><software>'.format(npc)
     query += '<currentLocale>en_US</currentLocale>'
     query += '<legalLocale>en_US</legalLocale>'
     query += '<osVersion>10.0.0.0</osVersion>'
@@ -419,10 +396,7 @@ def available_bundle_lookup(mcc, mnc, device):
     req = requests.post(server, headers=header, data=query)
     root = xml.etree.ElementTree.fromstring(req.text)
     package = root.find('./data/content')
-    bundlelist = []
-    adder = bundlelist.append
-    for child in package:
-        adder(child.attrib["version"])
+    bundlelist = [child.attrib["version"] for child in package]
     return bundlelist
 
 
@@ -524,7 +498,4 @@ def priv_scanner(build):
             avail = xec.submit(availability, skel)
             if avail.result():
                 results.append(skel)
-        if results:
-            return results
-        else:
-            return None
+        return results if results else None

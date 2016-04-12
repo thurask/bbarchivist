@@ -18,8 +18,8 @@ build_options = dict(packages=["requests", "bbarchivist", "bs4", "gnupg"],
                          (CAP.location, CAP.filename),
                          (JSONFILE, "bbconstants.json"),
                          (sq3dll, "sqlite3.dll")  # manual override
-],
-    excludes=[
+                         ],
+                     excludes=[
                          "rsa",
                          "pywin32",
                          "pytz",
@@ -34,10 +34,10 @@ build_options = dict(packages=["requests", "bbarchivist", "bs4", "gnupg"],
                          "matplotlib",
                          "PIL",
                          "tk"
-],
-    include_msvcr=[True],
-    build_exe="lazyloader",
-    zip_includes=[])
+                         ],
+                     include_msvcr=[True],
+                     build_exe="lazyloader",
+                     zip_includes=[])
 
 base = 'Console'
 executables = [

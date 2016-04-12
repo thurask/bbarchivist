@@ -258,7 +258,7 @@ def generate_skeletons():
     data = jsonutils.load_json('integermap')
     for key in data:
         if key['id'] in namelist:
-            namelist[key['id']] = key['parts']
+            namelist[key['id']] = (key['parts'])
             namelist[key['id']].append(".exe")
     return namelist
 

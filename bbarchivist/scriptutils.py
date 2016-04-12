@@ -464,14 +464,12 @@ def prod_avail(results, mailer=False, osversion=None, password=None):
         pav = "PD"
         baseurl = networkutils.create_base_url(prel)
         avail = networkutils.availability(baseurl)
+        is_avail = "Available" if avail else "Unavailable"
         if avail:
-            is_avail = "Available"
             if mailer:
                 sqlutils.prepare_sw_db()
                 if not sqlutils.check_exists(osversion, prel):
                     smtputils.prep_email(osversion, prel, password)
-        else:
-            is_avail = "Unavailable"
     else:
         pav = "  "
         is_avail = "Unavailable"
@@ -518,7 +516,7 @@ def autolookup_printer(out, avail, log=False, quiet=False, record=None):
     if avail == "Available":
         if log:
             with open(record, "a") as rec:
-                rec.write(out + "\n")
+                rec.write("{0}\n".format(out))
         print(out)
 
 
@@ -609,25 +607,22 @@ def generate_blitz_links(files, osv, radv, swv):
     :type swv: str
     """
     baseurl = networkutils.create_base_url(swv)
+    suffix = "nto+armle-v7+signed.bar"
     coreurls = [
-        baseurl + "/winchester.factory_sfi-" + osv + "-nto+armle-v7+signed.bar",
-        baseurl + "/qc8960.factory_sfi-" + osv + "-nto+armle-v7+signed.bar",
-        baseurl + "/qc8960.factory_sfi_hybrid_qc8x30-" + osv + "-nto+armle-v7+signed.bar",
-        baseurl + "/qc8960.factory_sfi_hybrid_qc8974-" + osv + "-nto+armle-v7+signed.bar"
+        "{0}/winchester.factory_sfi-{1}-{2}".format(baseurl, osv, suffix),
+        "{0}/qc8960.factory_sfi-{1}-{2}".format(baseurl, osv, suffix),
+        "{0}/qc8960.factory_sfi_hybrid_qc8x30-{1}-{2}".format(baseurl, osv, suffix),
+        "{0}/qc8974.factory_sfi_hybrid_qc8974-{1}-{2}".format(baseurl, osv, suffix)
     ]
-    for i in coreurls:
-        files.append(i)
     radiourls = [
-        baseurl + "/m5730-" + radv + "-nto+armle-v7+signed.bar",
-        baseurl + "/qc8960-" + radv + "-nto+armle-v7+signed.bar",
-        baseurl + "/qc8960.wtr-" + radv + "-nto+armle-v7+signed.bar",
-        baseurl + "/qc8960.wtr5-" + radv + "-nto+armle-v7+signed.bar",
-        baseurl + "/qc8930.wtr5-" + radv + "-nto+armle-v7+signed.bar",
-        baseurl + "/qc8974.wtr2-" + radv + "-nto+armle-v7+signed.bar"
+        "{0}/m5730-{1}-{2}".format(baseurl, radv, suffix),
+        "{0}/qc8960-{1}-{2}".format(baseurl, radv, suffix),
+        "{0}/qc8960.wtr-{1}-{2}".format(baseurl, radv, suffix),
+        "{0}/qc8960.wtr5-{1}-{2}".format(baseurl, radv, suffix),
+        "{0}/qc8930.wtr5-{1}-{2}".format(baseurl, radv, suffix),
+        "{0}/qc8974.wtr2-{1}-{2}".format(baseurl, radv, suffix)
     ]
-    for i in radiourls:
-        files.append(i)
-    return files
+    return files + coreurls + radiourls
 
 
 def package_blitz(bardir, swv):
@@ -659,14 +654,54 @@ def purge_dross(files):
     :type files: list(str)
     """
     crap = [
-        "sin_ji", "common", "xander", "kate", "ava", "amelie", "thomas",
-        "anna", "alice", "kyoko", "sora", "li_li", "mei_jia", "nora",
-        "zosia", "luciana", "joana", "milena", "marisol", "angelica",
-        "arw", "bgb", "cah", "czc", "dad", "dun", "ena", "eni", "fif",
-        "frc", "frf", "ged", "grg", "iti", "jpj", "kok", "mnc", "mnt",
-        "non", "plp", "ptb", "ptp", "rur", "spe", "spm", "sws", "trt",
-        "retaildemo"
-    ]
+        "sin_ji",
+        "common",
+        "xander",
+        "kate",
+        "ava",
+        "amelie",
+        "thomas",
+        "anna",
+        "alice",
+        "kyoko",
+        "sora",
+        "li_li",
+        "mei_jia",
+        "nora",
+        "zosia",
+        "luciana",
+        "joana",
+        "milena",
+        "marisol",
+        "angelica",
+        "arw",
+        "bgb",
+        "cah",
+        "czc",
+        "dad",
+        "dun",
+        "ena",
+        "eni",
+        "fif",
+        "frc",
+        "frf",
+        "ged",
+        "grg",
+        "iti",
+        "jpj",
+        "kok",
+        "mnc",
+        "mnt",
+        "non",
+        "plp",
+        "ptb",
+        "ptp",
+        "rur",
+        "spe",
+        "spm",
+        "sws",
+        "trt",
+        "retaildemo"]
     files2 = [file for file in files if all(word not in file for word in crap)]
     return files2
 
@@ -720,7 +755,7 @@ def verify_gpg_credentials():
             if gpgkey is None:
                 gpgkey = input("PGP KEY (0x12345678): ")
                 if not gpgkey.startswith("0x"):
-                    gpgkey = "0x" + gpgkey  # add preceding 0x
+                    gpgkey = "0x{0}".format(gpgkey)   # add preceding 0x
             if gpgpass is None:
                 gpgpass = getpass.getpass(prompt="PGP PASSPHRASE: ")
                 writebool = utilities.s2b(input("SAVE PASSPHRASE (Y/N)?:"))

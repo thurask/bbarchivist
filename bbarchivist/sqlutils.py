@@ -84,7 +84,7 @@ def prepare_sw_db():
         reqs = "TEXT NOT NULL UNIQUE COLLATE NOCASE"
         reqs2 = "TEXT NOT NULL"
         table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(
-            *(reqid, reqs, reqs2))
+            reqid, reqs, reqs2)
         crs.execute("CREATE TABLE IF NOT EXISTS " + table)
 
 
@@ -171,7 +171,7 @@ def export_sql_db():
         csvpath = os.path.join(os.path.expanduser("~"), "swrelease.csv")
         csvw = csv.writer(open(csvpath, "w"), dialect='excel')
         crs = cnxn.cursor()
-        crs.execute("SELECT Os,Software,Available,Date FROM Swrelease")
+        crs.execute("SELECT Os, Software, Available, Date FROM Swrelease")
         rows = crs.fetchall()
         sortedrows = sorted(rows, key=operator.itemgetter(0))
         csvw.writerow(('OS Version', 'Software Release', 'Available', 'Date Modified'))
@@ -190,7 +190,7 @@ def list_sw_releases(avail=False):
     cnxn = sqlite3.connect(prepare_path())
     with cnxn:
         crs = cnxn.cursor()
-        query = "SELECT Os,Software,Available,Date FROM Swrelease"
+        query = "SELECT Os, Software, Available, Date FROM Swrelease"
         if avail:
             query += " WHERE Available= 'available'"
         crs.execute(query)

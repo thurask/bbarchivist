@@ -93,12 +93,12 @@ def write_links(softwareversion, osversion, radioversion,
         thename += "plusapps"
     if temp:
         thename = "TEMPFILE"
-    with open(thename + ".txt", "w") as target:
-        target.write("OS VERSION: " + osversion + "\n")
-        target.write("RADIO VERSION: " + radioversion + "\n")
-        target.write("SOFTWARE RELEASE: " + softwareversion + "\n")
+    with open("{0}.txt".format(thename), "w") as target:
+        target.write("OS VERSION: {0}\n".format(osversion))
+        target.write("RADIO VERSION: {0}\n".format(radioversion))
+        target.write("SOFTWARE RELEASE: {0}\n".format(softwareversion))
         if altsw is not None:
-            target.write("RADIO SOFTWARE RELEASE: " + altsw + "\n")
+            target.write("RADIO SOFTWARE RELEASE: {0}\n".format(altsw))
         if not avlty:
             target.write("\n!!EXISTENCE NOT GUARANTEED!!\n")
         target.write("\nDEBRICK URLS:\n")

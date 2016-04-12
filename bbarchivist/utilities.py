@@ -262,7 +262,7 @@ def win_seven_zip(talkative=False):
     else:
         if talkative:
             print("7ZIP USING INSTALLED FILES")
-        return '"' + os.path.join(path[0], "7z.exe") + '"'
+        return '"{0}"'.format(os.path.join(path[0], "7z.exe"))
 
 
 def win_seven_zip_local(talkative=False):
@@ -339,7 +339,7 @@ def increment(version, inc=3):
     """
     Increment version by given number. For repeated lookups.
 
-    :param version: w.x.y.ZZZZ, becomes w.x.y.(ZZZZ+increment).
+    :param version: w.x.y.ZZZZ, becomes w.x.y.(ZZZZ + increment).
     :type version: str
 
     :param inc: What to increment by. Default is 3.
@@ -380,34 +380,32 @@ def generate_urls(baseurl, osversion, radioversion, core=False):
     :param core: Whether or not to return core URLs as well.
     :type core: bool
     """
+    suffix = "nto+armle-v7+signed.bar"
     osurls = [
-        baseurl + "/winchester.factory_sfi.desktop-" + osversion + "-nto+armle-v7+signed.bar",
-        baseurl + "/qc8960.factory_sfi.desktop-" + osversion + "-nto+armle-v7+signed.bar",
-        baseurl + "/qc8960.factory_sfi.desktop-" + osversion + "-nto+armle-v7+signed.bar",
-        baseurl + "/qc8974.factory_sfi.desktop-" + osversion + "-nto+armle-v7+signed.bar"
+        "{0}/winchester.factory_sfi.desktop-{1}-{2}".format(baseurl, osversion, suffix),
+        "{0}/qc8960.factory_sfi.desktop-{1}-{2}".format(baseurl, osversion, suffix),
+        "{0}/qc8960.factory_sfi.desktop-{1}-{2}".format(baseurl, osversion, suffix),
+        "{0}/qc8974.factory_sfi.desktop-{1}-{2}".format(baseurl, osversion, suffix)
     ]
     radiourls = [
-        baseurl + "/m5730-" + radioversion + "-nto+armle-v7+signed.bar",
-        baseurl + "/qc8960-" + radioversion + "-nto+armle-v7+signed.bar",
-        baseurl + "/qc8960.omadm-" + radioversion + "-nto+armle-v7+signed.bar",
-        baseurl + "/qc8960.wtr-" + radioversion + "-nto+armle-v7+signed.bar",
-        baseurl + "/qc8960.wtr5-" + radioversion + "-nto+armle-v7+signed.bar",
-        baseurl + "/qc8930.wtr5-" + radioversion + "-nto+armle-v7+signed.bar",
-        baseurl + "/qc8974.wtr2-" + radioversion + "-nto+armle-v7+signed.bar"
+        "{0}/m5730-{1}-{2}".format(baseurl, radioversion, suffix),
+        "{0}/qc8960-{1}-{2}".format(baseurl, radioversion, suffix),
+        "{0}/qc8960.omadm-{1}-{2}".format(baseurl, radioversion, suffix),
+        "{0}/qc8960.wtr-{1}-{2}".format(baseurl, radioversion, suffix),
+        "{0}/qc8960.wtr5-{1}-{2}".format(baseurl, radioversion, suffix),
+        "{0}/qc8930.wtr5-{1}-{2}".format(baseurl, radioversion, suffix),
+        "{0}/qc8974.wtr2-{1}-{2}".format(baseurl, radioversion, suffix)
     ]
     coreurls = []
     splitos = osversion.split(".")
     splitos = [int(i) for i in splitos]
-    if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):  # 10.3.1+
+    if splitos[1] >= 4 or (splitos[1] == 3 and splitos[2] >= 1):  # 10.3.1+
         osurls[2] = osurls[2].replace("qc8960.factory_sfi", "qc8960.factory_sfi_hybrid_qc8x30")
         osurls[3] = osurls[3].replace("qc8974.factory_sfi", "qc8960.factory_sfi_hybrid_qc8974")
-    for url in osurls:
-        coreurls.append(url.replace(".desktop", ""))
     if core:
-        target = osurls, radiourls, coreurls
-    else:
-        target = osurls, radiourls, []
-    return target
+        for url in osurls:
+            coreurls.append(url.replace(".desktop", ""))
+    return osurls, radiourls, coreurls
 
 
 def generate_lazy_urls(baseurl, osversion, radioversion, device):
@@ -426,32 +424,31 @@ def generate_lazy_urls(baseurl, osversion, radioversion, device):
     :param device: Device to use.
     :type device: int
     """
-    splitos = osversion.split(".")
-    splitos = [int(i) for i in splitos]
-    suffix = "-nto+armle-v7+signed.bar"
+    suffix = "nto+armle-v7+signed.bar"
+    splitos = [int(i) for i in osversion.split(".")]
     if device == 0:
-        osurl = baseurl + "/winchester.factory_sfi.desktop-" + osversion + suffix
-        radiourl = baseurl + "/m5730-" + radioversion + suffix
+        osurl = "{0}/winchester.factory_sfi.desktop-{1}-{2}".format(baseurl, osversion, suffix)
+        radiourl = "{0}/m5730-{1}-{2}".format(baseurl, radioversion, suffix)
     elif device == 1:
-        osurl = baseurl + "/qc8960.factory_sfi.desktop-" + osversion + suffix
-        radiourl = baseurl + "/qc8960-" + radioversion + suffix
+        osurl = "{0}/qc8960.factory_sfi.desktop-{1}-{2}".format(baseurl, osversion, suffix)
+        radiourl = "{0}/qc8960-{1}-{2}".format(baseurl, radioversion, suffix)
     elif device == 2:
-        osurl = baseurl + "/qc8960.verizon_sfi.desktop-" + osversion + suffix
-        radiourl = baseurl + "/qc8960.omadm-" + radioversion + suffix
+        osurl = "{0}/qc8960.verizon_sfi.desktop-{1}-{2}".format(baseurl, osversion, suffix)
+        radiourl = "{0}/qc8960.omadm-{1}-{2}".format(baseurl, radioversion, suffix)
     elif device == 3:
-        osurl = baseurl + "/qc8960.factory_sfi.desktop-" + osversion + suffix
-        radiourl = baseurl + "/qc8960.wtr-" + radioversion + suffix
+        osurl = "{0}/qc8960.factory_sfi.desktop-{1}-{2}".format(baseurl, osversion, suffix)
+        radiourl = "{0}/qc8960.wtr-{1}-{2}".format(baseurl, radioversion, suffix)
     elif device == 4:
-        osurl = baseurl + "/qc8960.factory_sfi.desktop-" + osversion + suffix
-        radiourl = baseurl + "/qc8960.wtr5-" + radioversion + suffix
+        osurl = "{0}/qc8960.factory_sfi.desktop-{1}-{2}".format(baseurl, osversion, suffix)
+        radiourl = "{0}/qc8960.wtr5-{1}-{2}".format(baseurl, radioversion, suffix)
     elif device == 5:
-        osurl = baseurl + "/qc8960.factory_sfi.desktop-" + osversion + suffix
-        radiourl = baseurl + "/qc8930.wtr5-" + radioversion + suffix
+        osurl = "{0}/qc8960.factory_sfi.desktop-{1}-{2}".format(baseurl, osversion, suffix)
+        radiourl = "{0}/qc8930.wtr5-{1}-{2}".format(baseurl, radioversion, suffix)
         if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):
             osurl = osurl.replace("qc8960.factory_sfi", "qc8960.factory_sfi_hybrid_qc8x30")
     elif device == 6:
-        osurl = baseurl + "/qc8974.factory_sfi.desktop-" + osversion + suffix
-        radiourl = baseurl + "/qc8974.wtr2-" + radioversion + suffix
+        osurl = "{0}/qc8974.factory_sfi.desktop-{1}-{2}".format(baseurl, osversion, suffix)
+        radiourl = "{0}/qc8974.wtr2-{1}-{2}".format(baseurl, radioversion, suffix)
         if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):
             osurl = osurl.replace("qc8974.factory_sfi", "qc8960.factory_sfi_hybrid_qc8974")
     return osurl, radiourl
@@ -729,11 +726,8 @@ def prep_logfile():
     """
     Prepare log file, labeling it with current date. Select folder based on frozen status.
     """
-    logfile = time.strftime("%Y_%m_%d_%H%M%S") + ".txt"
-    if getattr(sys, 'frozen', False):
-        root = os.getcwd()
-    else:
-        root = os.path.expanduser("~")
+    logfile = "{0}.txt".format(time.strftime("%Y_%m_%d_%H%M%S"))
+    root = os.getcwd() if getattr(sys, 'frozen', False) else os.path.expanduser("~")
     basefolder = os.path.join(root, "lookuplogs")
     os.makedirs(basefolder, exist_ok=True)
     record = os.path.join(basefolder, logfile)
@@ -749,8 +743,7 @@ def cappath_config_loader(homepath=None):
     :type homepath: str
     """
     config = configparser.ConfigParser()
-    if homepath is None:
-        homepath = os.path.expanduser("~")
+    homepath = os.path.expanduser("~") if homepath is None else homepath
     conffile = os.path.join(homepath, "bbarchivist.ini")
     if not os.path.exists(conffile):
         open(conffile, 'w').close()
