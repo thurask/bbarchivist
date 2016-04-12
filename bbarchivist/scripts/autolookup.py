@@ -153,7 +153,7 @@ def autolookup_main(osversion, loop=False, log=False,
     scriptutils.slim_preamble("AUTOLOOKUP")
     record = utilities.prep_logfile() if log else None
     while True:
-        print("NOW SCANNING:", osversion, end="\r")
+        print("NOW SCANNING: {0}".format(osversion), end="\r")
         results = networkutils.sr_lookup_bootstrap(osversion)
         if results is None:
             raise KeyboardInterrupt

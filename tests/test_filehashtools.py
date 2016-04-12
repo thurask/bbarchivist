@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-#pylint: disable=no-self-use,unused-argument,line-too-long
 """Test the filehashtools module."""
 
 from shutil import rmtree, copyfile
@@ -48,6 +47,7 @@ class TestClassFilehashtools:
     """
     Test hash/GnuPG utilities.
     """
+
     def test_crc32hash(self):
         """
         Test CRC32 checksum.
@@ -70,25 +70,29 @@ class TestClassFilehashtools:
         """
         Test SHA-224 hash.
         """
-        assert bf.hs224("tempfile.txt") == "7bcd7b77f63633bf0f7db181106f08eb630a58c521b109be1cc4a404"
+        assert bf.hs224(
+            "tempfile.txt") == "7bcd7b77f63633bf0f7db181106f08eb630a58c521b109be1cc4a404"
 
     def test_sha256hash(self):
         """
         Test SHA-256 hash.
         """
-        assert bf.hs256("tempfile.txt") == "f118871c45171d5fe4e9049980959e033eeeabcfa12046c243fda310580e8a0b"
+        assert bf.hs256(
+            "tempfile.txt") == "f118871c45171d5fe4e9049980959e033eeeabcfa12046c243fda310580e8a0b"
 
     def test_sha384hash(self):
         """
         Test SHA-384 hash.
         """
-        assert bf.hs384("tempfile.txt") == "76620873c0d27873c137b082425c6e87e3d601c4b19241a1f2222f7f700a2fe8d3c648b26f62325a411cb020bff527be"
+        assert bf.hs384(
+            "tempfile.txt") == "76620873c0d27873c137b082425c6e87e3d601c4b19241a1f2222f7f700a2fe8d3c648b26f62325a411cb020bff527be"
 
     def test_sha512hash(self):
         """
         Test SHA-512 hash.
         """
-        assert bf.hs512("tempfile.txt") == "b66a5e8aa9b9705748c2ee585b0e1a3a41288d2dafc3be2db12fa89d2f2a3e14f9dec11de4ba865bb51eaa6c2cfeb294139455e34da7d827a19504b0906c01c1"
+        assert bf.hs512(
+            "tempfile.txt") == "b66a5e8aa9b9705748c2ee585b0e1a3a41288d2dafc3be2db12fa89d2f2a3e14f9dec11de4ba865bb51eaa6c2cfeb294139455e34da7d827a19504b0906c01c1"
 
     def test_md4hash(self):
         """
@@ -137,7 +141,8 @@ class TestClassFilehashtools:
         if "whirlpool" not in algos:
             pass
         else:
-            assert bf.hwp("tempfile.txt") == "9835d12f3cb3ea3934635e4a7cc918e489379ed69d894ebc2c09bbf99fe72567bfd26c919ad666e170752abfc4b8c37b376f5102f9e5de59af2b65efc2e01293"
+            assert bf.hwp(
+                "tempfile.txt") == "9835d12f3cb3ea3934635e4a7cc918e489379ed69d894ebc2c09bbf99fe72567bfd26c919ad666e170752abfc4b8c37b376f5102f9e5de59af2b65efc2e01293"
 
     def test_whirlpool_unavail(self, capsys):
         """
@@ -199,7 +204,7 @@ class TestClassFilehashtools:
             b"F3E191024C33768E2589E2EFCA53D55F4E4945EE tempfile.txt",
             b"WHIRLPOOL",
             b"9835D12F3CB3EA3934635E4A7CC918E489379ED69D894EBC2C09BBF99FE72567BFD26C919AD666E170752ABFC4B8C37B376F5102F9E5DE59AF2B65EFC2E01293 tempfile.txt"
-            ]
+        ]
         stocklines2 = []
         for item in stocklines:
             item2 = item.strip()
@@ -242,6 +247,7 @@ class TestClassFilehashtoolsGPG:
     """
     Test GPG-related tools.
     """
+
     def test_gpgfile(self):
         """
         Test GnuPG signing.

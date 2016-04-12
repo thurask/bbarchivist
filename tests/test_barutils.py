@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#pylint: disable=no-self-use,unused-argument,line-too-long
+# pylint: disable=no-self-use,unused-argument,line-too-long
 """Test the barutils module."""
 
 import os
@@ -30,7 +30,7 @@ def setup_module(module):
     with open("testfile.signed", "w") as targetfile:
         targetfile.write("Jackdaws love my big sphinx of quartz")
     with open("Z10_BIGLOADER.exe", "w") as targetfile:
-        targetfile.write("0"*95000000)
+        targetfile.write("0" * 95000000)
     if os.path.exists("a_temp_folder"):
         rmtree("a_temp_folder")
     os.mkdir("a_temp_folder")
@@ -48,6 +48,7 @@ class TestClassBarutils:
     """
     Test compression, extraction and related operations.
     """
+
     def test_extract_bars(self):
         """
         Test extraction.
@@ -124,6 +125,7 @@ class TestClassBarutilsCompression:
     """
     Test file compression.
     """
+
     def test_compress_sz(self):
         """
         Test 7z compression.
@@ -251,10 +253,12 @@ class TestClassBarutilsCompression:
         bb.compress_suite(suitedir, "zip", None, True)
         rmtree(suitedir, ignore_errors=True)
 
+
 class TestClassBarutilsRemovers:
     """
     Test file/folder removal.
     """
+
     def test_remove_empty_folders(self):
         """
         Test removal of empty folders.
@@ -302,6 +306,7 @@ class TestClassBarutilsMethods:
     """
     Test method filtering.
     """
+
     def test_filter_method_null(self):
         """
         Test method checking, null case.
@@ -515,7 +520,9 @@ class TestClassBarutilsSha512:
         """
         Test retrieval of SHA512 hash (in Base64) from a bar file's manifest.
         """
-        assert bb.retrieve_sha512("mfest.bar.dummy") == (b"target.signed", b"tmpeiqm5cFdIwu5YWw4aOkEojS2vw74tsS-onS8qPhT53sEd5LqGW7Ueqmws_rKUE5RV402n2CehlQSwkGwBwQ")
+        assert bb.retrieve_sha512("mfest.bar.dummy") == (
+            b"target.signed",
+            b"tmpeiqm5cFdIwu5YWw4aOkEojS2vw74tsS-onS8qPhT53sEd5LqGW7Ueqmws_rKUE5RV402n2CehlQSwkGwBwQ")
 
     def test_sha512_retrieve_fail(self, capsys):
         """
@@ -536,7 +543,9 @@ class TestClassBarutilsSha512:
         """
         Test comparison of signed file hash with that from the manifest.
         """
-        assert  bb.verify_sha512("target.signed", b"tmpeiqm5cFdIwu5YWw4aOkEojS2vw74tsS-onS8qPhT53sEd5LqGW7Ueqmws_rKUE5RV402n2CehlQSwkGwBwQ")
+        assert bb.verify_sha512(
+            "target.signed",
+            b"tmpeiqm5cFdIwu5YWw4aOkEojS2vw74tsS-onS8qPhT53sEd5LqGW7Ueqmws_rKUE5RV402n2CehlQSwkGwBwQ")
 
 
 class TestClassBarutilsLoaderMover:
@@ -549,10 +558,10 @@ class TestClassBarutilsLoaderMover:
         Create files to move.
         """
         with open("Z30_SMALLLOADER.exe", "w") as targetfile:
-            targetfile.write("0"*95000)
+            targetfile.write("0" * 95000)
         if not os.path.exists("Z10_BIGLOADER.exe"):
             with open("Z10_BIGLOADER.exe", "w") as targetfile:
-                targetfile.write("0"*95000000)
+                targetfile.write("0" * 95000000)
         copyfile("Z10_BIGLOADER.exe", "Q10_BIGZIPPED.zip")
         copyfile("Z30_SMALLLOADER.exe", "Z3_SMALLZIPPED.zip")
         bdo, bdr, ldo, ldr, zdo, zdr = bb.make_dirs(os.getcwd(), "osversion", "radioversion")
@@ -605,9 +614,9 @@ class TestClassBarutilsBarMover:
         Create files to move.
         """
         with open("BIGBAR.bar", "w") as targetfile:
-            targetfile.write("0"*95000000)
+            targetfile.write("0" * 95000000)
         with open("SMALLBAR.bar", "w") as targetfile:
-            targetfile.write("0"*95000)
+            targetfile.write("0" * 95000)
         bardir = os.path.join(os.getcwd(), "bars")
         bardir_os = os.path.join(bardir, "osversion")
         bardir_radio = os.path.join(bardir, "radioversion")
@@ -632,6 +641,7 @@ class TestClassBarutilsConfig:
     """
     Test reading/writing configs with ConfigParser.
     """
+
     def test_compress_loader(self):
         """
         Test reading compression settings.

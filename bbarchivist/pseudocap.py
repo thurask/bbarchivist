@@ -152,7 +152,7 @@ def make_autoloader(filename, files, folder=None):
         folder = os.getcwd()
     make_offset(files, folder)
     filelist = [os.path.abspath(file) for file in files if file]
-    print("CREATING:", filename)
+    print("CREATING: {0}".format(filename))
     try:
         with open(os.path.join(os.path.abspath(folder), filename), "wb") as autoloader:
             with open(os.path.normpath(utilities.grab_cap()), "rb") as capfile:
@@ -168,7 +168,7 @@ def make_autoloader(filename, files, folder=None):
             for file in filelist:
                 write_4k(file, autoloader)
     except IOError as exc:
-        print("Operation failed:", exc.strerror)
+        print("Operation failed: {0}".format(exc.strerror))
     else:
-        print(filename, "FINISHED!")
+        print("{0} FINISHED!".format(filename))
     os.remove(os.path.join(folder, "offset.hex"))

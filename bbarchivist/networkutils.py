@@ -407,8 +407,8 @@ def ptcrb_scraper(ptcrbid):
     :param ptcrbid: Numerical ID from PTCRB (end of URL).
     :type ptcrbid: str
     """
-    baseurl = "https://ptcrb.com/vendor/complete/"
-    baseurl += "view_complete_request_guest.cfm?modelid=" + ptcrbid
+    baseurl = "https://ptcrb.com/vendor/complete/view_complete_request_guest.cfm?modelid={0}".format(
+        ptcrbid)
     os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
     req = requests.get(baseurl)
     soup = BeautifulSoup(req.content, 'html.parser')

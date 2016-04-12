@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-#pylint: disable=no-self-use,unused-argument,line-too-long
 """Test the loadergen module."""
 
 import os
@@ -25,7 +24,7 @@ def setup_module(module):
         os.mkdir("temp_loadergen")
     os.chdir("temp_loadergen")
     with open("cap-3.11.0.22.dat", "w") as targetfile:
-        targetfile.write("0"*9500000)
+        targetfile.write("0" * 9500000)
 
 
 def teardown_module(module):
@@ -40,6 +39,7 @@ class TestClassLoadergen:
     """
     Test autoloader generation.
     """
+
     def test_read_os_none(self):
         """
         Test finding OS filenames when there are no OS files.
@@ -57,9 +57,9 @@ class TestClassLoadergen:
         Test creating one autoloader (lazyloader).
         """
         with open("desktop_sfi.signed", "w") as targetfile:
-            targetfile.write("Jackdaws love my big sphinx of quartz"*5000)
+            targetfile.write("Jackdaws love my big sphinx of quartz" * 5000)
         with open("radio.signed", "w") as targetfile:
-            targetfile.write("Why must I chase the cat?"*5000)
+            targetfile.write("Why must I chase the cat?" * 5000)
         bl.generate_lazy_loader("TESTING", 0)
         shahash = sha512()
         with open("Z10_TESTING_STL100-1.exe", "rb") as targetfile:
@@ -82,7 +82,7 @@ class TestClassLoadergen:
         Test creating one autoloader but no radio is given.
         """
         with open("desktop_sfi.signed", "w") as targetfile:
-            targetfile.write("Jackdaws love my big sphinx of quartz"*5000)
+            targetfile.write("Jackdaws love my big sphinx of quartz" * 5000)
         bl.generate_lazy_loader("TESTING", 0)
         assert "No radio found" in capsys.readouterr()[0]
         os.remove("desktop_sfi.signed")
@@ -92,12 +92,12 @@ class TestClassLoadergen:
         Test creating multiple autoloaders (archivist).
         """
         with open("qc8960.factory_sfi.desktop.BB.signed", "w") as targetfile:
-            targetfile.write("Jackdaws love my big sphinx of quartz"*5000)
+            targetfile.write("Jackdaws love my big sphinx of quartz" * 5000)
         copyfile("qc8960.factory_sfi.desktop.BB.signed", "qc8x30.factory_sfi.desktop.BB.signed")
         copyfile("qc8960.factory_sfi.desktop.BB.signed", "qc8974.factory_sfi.desktop.BB.signed")
         copyfile("qc8960.factory_sfi.desktop.BB.signed", "winchester.factory_sfi.desktop.BB.signed")
         with open("radio.m5730.signed", "w") as targetfile:
-            targetfile.write("Why must I chase the cat?"*5000)
+            targetfile.write("Why must I chase the cat?" * 5000)
         copyfile("radio.m5730.signed", "radio.qc8960.BB.signed")
         copyfile("radio.m5730.signed", "radio.qc8960.omadm.signed")
         copyfile("radio.m5730.signed", "radio.qc8960.wtr.signed")
@@ -116,8 +116,7 @@ class TestClassLoadergen:
                         shahash.update(data)
                     assert shahash.hexdigest() in (
                         "3143a5bdfffbab199fe071d720b374d8678e5a2baafaeaf375f747c578a314cdf10059ccfac51fbe992d6d473106c2ba18bb8a80026269b046c3e299c33adaf3",
-                        "d4872a853e19fb8512067f50555827c74ec33da6fd5d71ae3ddd1b0ce98a18e01727eb1f345f476d6d59bcb438be8780e3f1dc7b212dc63b4b7c09914093a730"
-                        )
+                        "d4872a853e19fb8512067f50555827c74ec33da6fd5d71ae3ddd1b0ce98a18e01727eb1f345f476d6d59bcb438be8780e3f1dc7b212dc63b4b7c09914093a730")
         for item in os.listdir():
             if item.endswith("desktop.signed"):
                 os.remove(item)
@@ -127,7 +126,7 @@ class TestClassLoadergen:
         Test creating multiple core autoloaders.
         """
         with open("qc8960.factory_sfi.BB.signed", "w") as targetfile:
-            targetfile.write("Jackdaws love my big sphinx of quartz"*5000)
+            targetfile.write("Jackdaws love my big sphinx of quartz" * 5000)
         copyfile("qc8960.factory_sfi.BB.signed", "qc8x30.factory_sfi.BB.signed")
         copyfile("qc8960.factory_sfi.BB.signed", "qc8974.factory_sfi.BB.signed")
         copyfile("qc8960.factory_sfi.BB.signed", "winchester.factory_sfi.BB.signed")
@@ -143,8 +142,7 @@ class TestClassLoadergen:
                         shahash.update(data)
                     assert shahash.hexdigest() in (
                         "3143a5bdfffbab199fe071d720b374d8678e5a2baafaeaf375f747c578a314cdf10059ccfac51fbe992d6d473106c2ba18bb8a80026269b046c3e299c33adaf3",
-                        "d4872a853e19fb8512067f50555827c74ec33da6fd5d71ae3ddd1b0ce98a18e01727eb1f345f476d6d59bcb438be8780e3f1dc7b212dc63b4b7c09914093a730"
-                        )
+                        "d4872a853e19fb8512067f50555827c74ec33da6fd5d71ae3ddd1b0ce98a18e01727eb1f345f476d6d59bcb438be8780e3f1dc7b212dc63b4b7c09914093a730")
 
     def test_filename_malformed(self):
         """

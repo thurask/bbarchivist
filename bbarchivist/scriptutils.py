@@ -161,15 +161,15 @@ def check_sw(baseurl, softwareversion, swchecked):
     if not swchecked:
         avlty = networkutils.availability(baseurl)
         if avlty:
-            print("SOFTWARE RELEASE", softwareversion, "EXISTS")
+            print("SOFTWARE RELEASE {0} EXISTS".format(softwareversion))
         else:
-            print("SOFTWARE RELEASE", softwareversion, "NOT FOUND")
+            print("SOFTWARE RELEASE {0} NOT FOUND".format(softwareversion))
             cont = utilities.s2b(input("CONTINUE? Y/N: "))
             if not cont:
                 print("\nEXITING...")
                 raise SystemExit
     else:
-        print("SOFTWARE RELEASE", softwareversion, "EXISTS")
+        print("SOFTWARE RELEASE {0} EXISTS".format(softwareversion))
 
 
 def check_radio_sw(alturl, altsw, altchecked):
@@ -189,15 +189,15 @@ def check_radio_sw(alturl, altsw, altchecked):
     if not altchecked:
         altavlty = networkutils.availability(alturl)
         if altavlty:
-            print("SOFTWARE RELEASE", altsw, "EXISTS")
+            print("SOFTWARE RELEASE {0} EXISTS".format(altsw))
         else:
-            print("SOFTWARE RELEASE", altsw, "NOT FOUND")
+            print("SOFTWARE RELEASE {0} NOT FOUND".format(altsw))
             cont = utilities.s2b(input("CONTINUE? Y/N: "))
             if not cont:
                 print("\nEXITING...")
                 raise SystemExit
     else:
-        print("SOFTWARE RELEASE", altsw, "EXISTS")
+        print("SOFTWARE RELEASE {0} EXISTS".format(altsw))
 
 
 def check_os_single(osurl, osversion, device):
@@ -215,7 +215,7 @@ def check_os_single(osurl, osversion, device):
     """
     osav = networkutils.availability(osurl)
     if not osav:
-        print(osversion, "NOT AVAILABLE FOR", bbconstants.DEVICES[device])
+        print("{0} NOT AVAILABLE FOR {1}".format(osversion, bbconstants.DEVICES[device]))
         cont = utilities.s2b(input("CONTINUE? Y/N: "))
         if not cont:
             print("\nEXITING...")
@@ -353,7 +353,7 @@ def test_bar_files(localdir, urllist):
     print("TESTING BAR FILES...")
     for file in os.listdir(localdir):
         if file.endswith(".bar"):
-            print("TESTING:", file)
+            print("TESTING: {0}".format(file))
             thepath = os.path.abspath(os.path.join(localdir, file))
             brokens = barutils.bar_tester(thepath)
             if brokens is not None:
@@ -379,7 +379,7 @@ def test_signed_files(localdir):
     print("TESTING SIGNED FILES...")
     for file in os.listdir(localdir):
         if file.endswith(".bar"):
-            print("TESTING:", file)
+            print("TESTING: {0}".format(file))
             signname, signhash = barutils.retrieve_sha512(file)
             sha512ver = barutils.verify_sha512(signname, signhash)
             if not sha512ver:
@@ -638,7 +638,7 @@ def package_blitz(bardir, swv):
     print("\nCREATING BLITZ...")
     barutils.create_blitz(bardir, swv)
     print("\nTESTING BLITZ...")
-    zipver = barutils.zip_verify("Blitz-" + swv + '.zip')
+    zipver = barutils.zip_verify("Blitz-{0}.zip".format(swv))
     if not zipver:
         print("BLITZ FILE IS BROKEN")
         raise SystemExit
@@ -817,7 +817,7 @@ def bulk_verify(dirs, compressed=True, deleted=True, radios=True):
     gpgkey, gpgpass = verify_gpg_credentials()
     if gpgpass is not None and gpgkey is not None:
         print("VERIFYING LOADERS...")
-        print("KEY:", gpgkey)
+        print("KEY: {0}".format(gpgkey))
         if compressed:
             filehashtools.gpgrunner(dirs[4], gpgkey, gpgpass, True)
             if radios:

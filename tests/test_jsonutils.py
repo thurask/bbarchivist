@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-#pylint: disable=no-self-use,unused-argument,line-too-long
 """Test the jsonutils module."""
 
 import os
@@ -74,7 +73,7 @@ class TestClassJsonutils:
                 'name': 'PTCDEVICE',
                 'ptcrbid': '12345',
                 'family': 'SAMSUNG'
-                },
+            },
             {
                 'device': 'GRUNTMASTER_6000',
                 'fccid': '',
@@ -82,7 +81,7 @@ class TestClassJsonutils:
                 'name': 'TEST',
                 'ptcrbid': '98765',
                 'family': 'PATHETECH'
-                },
+            },
             {
                 'device': 'ROTARY',
                 'fccid': '',
@@ -90,8 +89,8 @@ class TestClassJsonutils:
                 'name': 'UNKNOWN',
                 'ptcrbid': '',
                 'family': 'BLACKBERRY'
-                }
-            ]
+            }
+        ]
 
     def test_grab_json(self):
         """

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-#pylint: disable=no-self-use,unused-argument,line-too-long
 """Test the pseudocap module."""
 
 import os
@@ -27,7 +26,7 @@ def setup_module(module):
     with open("firstfile.signed", "w") as targetfile:
         targetfile.write("Jackdaws love my big sphinx of quartz")
     with open("cap-3.11.0.22.dat", "w") as targetfile:
-        targetfile.write("0"*9500000)
+        targetfile.write("0" * 9500000)
     bp.make_offset(["firstfile.signed"])
     copyfile("offset.hex", "offset.tmp")
     fpath = os.path.abspath("firstfile.signed")
@@ -54,6 +53,7 @@ class TestClassPseudocap:
     """
     Test pseudocap, the Python equivalent of cap.exe.
     """
+
     def test_ghetto_convert(self):
         """
         Test decimal -> little-endian hex "conversion".
@@ -231,7 +231,9 @@ class TestClassPseudocap:
         """
         with mock.patch("os.path.normpath", mock.MagicMock(side_effect=IOError)):
             with pytest.raises(IOError):
-                bp.make_autoloader("loader0.exe", ["firstfile", "secondfile", "thirdfile", "fourthfile"])
+                bp.make_autoloader(
+                    "loader0.exe", [
+                        "firstfile", "secondfile", "thirdfile", "fourthfile"])
 
     def test_fifthfile_ioerror(self):
         """
@@ -239,7 +241,9 @@ class TestClassPseudocap:
         """
         with mock.patch("os.path.normpath", mock.MagicMock(side_effect=IOError)):
             with pytest.raises(IOError):
-                bp.make_autoloader("loader0.exe", ["firstfile", "secondfile", "thirdfile", "fourthfile", "fifthfile"])
+                bp.make_autoloader(
+                    "loader0.exe", [
+                        "firstfile", "secondfile", "thirdfile", "fourthfile", "fifthfile"])
 
     def test_sixthfile_ioerror(self):
         """
@@ -247,4 +251,6 @@ class TestClassPseudocap:
         """
         with mock.patch("os.path.normpath", mock.MagicMock(side_effect=IOError)):
             with pytest.raises(IOError):
-                bp.make_autoloader("loader0.exe", ["firstfile", "secondfile", "thirdfile", "fourthfile", "fifthfile", "sixthfile"])
+                bp.make_autoloader(
+                    "loader0.exe", [
+                        "firstfile", "secondfile", "thirdfile", "fourthfile", "fifthfile", "sixthfile"])

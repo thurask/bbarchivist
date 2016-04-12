@@ -331,7 +331,7 @@ def prep_seven_zip(talkative=False):
                 return False
             else:
                 if talkative:
-                    print("7ZIP FOUND AT", path)
+                    print("7ZIP FOUND AT {0}".format(path))
                 return True
 
 

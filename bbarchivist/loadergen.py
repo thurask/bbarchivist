@@ -168,10 +168,7 @@ def format_suffix(altradio=None, radioversion=None, core=False):
     :param core: If we're using a core OS image. Default is false.
     :type core: bool
     """
-    if altradio and radioversion:
-        suffix = "_R" + radioversion
-    else:
-        suffix = ""
+    suffix = "_R{0}".format(radioversion) if altradio and radioversion else ""
     if core:
         suffix += "_CORE"
     return suffix
@@ -245,7 +242,7 @@ def wrap_pseudocap(filename, folder, first, second=None):
         pseudocap.make_autoloader(filename, [first, second], folder=folder)
     except (OSError, IndexError, SystemError) as exc:
         print(str(exc))
-        print("Could not create", filename)
+        print("Could not create {0}".format(filename))
 
 
 def generate_skeletons():
@@ -302,7 +299,7 @@ def generate_filename(device, version, suffix=None):
     dev = thed[device]
     if suffix is None:
         suffix = ""
-    return dev[0] + version + suffix + dev[1] + dev[2]
+    return "{0}{1}{2}{3}{4}".format(dev[0], version, suffix, dev[1], dev[2])
 
 
 def generate_lazy_loader(
@@ -367,4 +364,4 @@ def generate_lazy_filename(osversion, suffix, device):
         if key['id'] == device:
             fname = key['parts']
             break
-    return fname[0] + osversion + suffix + fname[1] + ".exe"
+    return "{0}{1}{2}{3}.exe".format(fname[0], osversion, suffix, fname[1])

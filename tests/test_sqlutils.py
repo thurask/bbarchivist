@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-#pylint: disable=no-self-use,unused-argument,line-too-long
 """Test the sqlutils module."""
 
 import os
@@ -42,6 +41,7 @@ class TestClassSQLUtils:
     """
     Test SQL-related tools.
     """
+
     def test_prepare_sw_db(self, capsys):
         """
         Test preparing SQL database.
@@ -70,7 +70,8 @@ class TestClassSQLUtils:
                     reqid = "INTEGER PRIMARY KEY"
                     reqs = "TEXT NOT NULL UNIQUE COLLATE NOCASE"
                     reqs2 = "TEXT"
-                    table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(*(reqid, reqs, reqs2))
+                    table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(
+                        *(reqid, reqs, reqs2))
                     crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
             except sqlite3.Error:
                 assert False
@@ -119,7 +120,8 @@ class TestClassSQLUtils:
                     reqid = "INTEGER PRIMARY KEY"
                     reqs = "TEXT NOT NULL UNIQUE COLLATE NOCASE"
                     reqs2 = "TEXT"
-                    table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(*(reqid, reqs, reqs2))
+                    table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(
+                        *(reqid, reqs, reqs2))
                     crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
             except sqlite3.Error:
                 assert False
@@ -162,7 +164,8 @@ class TestClassSQLUtils:
                     reqid = "INTEGER PRIMARY KEY"
                     reqs = "TEXT NOT NULL UNIQUE COLLATE NOCASE"
                     reqs2 = "TEXT"
-                    table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(*(reqid, reqs, reqs2))
+                    table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(
+                        *(reqid, reqs, reqs2))
                     crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
             except sqlite3.Error:
                 assert False
@@ -188,9 +191,15 @@ class TestClassSQLUtils:
                     reqid = "INTEGER PRIMARY KEY"
                     reqs = "TEXT NOT NULL UNIQUE COLLATE NOCASE"
                     reqs2 = "TEXT"
-                    table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(*(reqid, reqs, reqs2))
+                    table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(
+                        *(reqid, reqs, reqs2))
                     crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
-                    crsr.execute("INSERT INTO Swrelease(Os, Software, Available, Date) VALUES (?,?,?,?)", ("120.OSVERSION", "130.SWVERSION", "available", "1970 January 1"))
+                    crsr.execute(
+                        "INSERT INTO Swrelease(Os, Software, Available, Date) VALUES (?,?,?,?)",
+                        ("120.OSVERSION",
+                         "130.SWVERSION",
+                         "available",
+                         "1970 January 1"))
             except sqlite3.Error:
                 assert False
             bs.export_sql_db()
@@ -220,9 +229,15 @@ class TestClassSQLUtils:
                     reqid = "INTEGER PRIMARY KEY"
                     reqs = "TEXT NOT NULL UNIQUE COLLATE NOCASE"
                     reqs2 = "TEXT"
-                    table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(*(reqid, reqs, reqs2))
+                    table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(
+                        *(reqid, reqs, reqs2))
                     crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
-                    crsr.execute("INSERT INTO Swrelease(Os, Software, Available, Date) VALUES (?,?,?,?)", ("120.OSVERSION", "130.SWVERSION", "available", "1970 January 1"))
+                    crsr.execute(
+                        "INSERT INTO Swrelease(Os, Software, Available, Date) VALUES (?,?,?,?)",
+                        ("120.OSVERSION",
+                         "130.SWVERSION",
+                         "available",
+                         "1970 January 1"))
             except sqlite3.Error:
                 assert False
             rellist = bs.list_sw_releases(avail=True)

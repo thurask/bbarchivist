@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-#pylint: disable=no-self-use,unused-argument,line-too-long
 """Test the networkutils module."""
 
 import os
@@ -52,7 +51,7 @@ def download_mock(url, request):
     """
     HTTMock mock for downloading.
     """
-    content = b"Jackdaws love my big sphinx of quartz"*5000
+    content = b"Jackdaws love my big sphinx of quartz" * 5000
     headers = {'content-length': len(content)}
     return httmock.response(status_code=200,
                             content=content,
@@ -64,7 +63,7 @@ def download_mock_fail(url, request):
     """
     HTTMock mock for download failure.
     """
-    content = b"Jackdaws love my big sphinx of quartz"*5000
+    content = b"Jackdaws love my big sphinx of quartz" * 5000
     headers = {'content-length': len(content)}
     return httmock.response(status_code=404,
                             content=content,
@@ -76,14 +75,15 @@ def download_mock_huge(url, request):
     """
     HTTMock mock for downloading big files.
     """
-    content = b"Jackdaws love my big sphinx of quartz"*5000000
+    content = b"Jackdaws love my big sphinx of quartz" * 5000000
     headers = {'content-length': len(content)}
     return httmock.response(status_code=200,
                             content=content,
                             headers=headers)
 
 
-@httmock.urlmatch(scheme="http://appworld.blackberry.com/ClientAPI/checkcarrier?homemcc=302&homemnc=220&devicevendorid=-1&pin=0")
+@httmock.urlmatch(
+    scheme="http://appworld.blackberry.com/ClientAPI/checkcarrier?homemcc=302&homemnc=220&devicevendorid=-1&pin=0")
 def cc_good_mock(url, request):
     """
     Mock for carrier checking, best case.
@@ -92,7 +92,8 @@ def cc_good_mock(url, request):
     return goodbody
 
 
-@httmock.urlmatch(scheme="http://appworld.blackberry.com/ClientAPI/checkcarrier?homemcc=302&homemnc=220&devicevendorid=-1&pin=0")
+@httmock.urlmatch(
+    scheme="http://appworld.blackberry.com/ClientAPI/checkcarrier?homemcc=302&homemnc=220&devicevendorid=-1&pin=0")
 def cc_bad_mock(url, request):
     """
     Mock for carrier checking, worst case.
@@ -230,6 +231,7 @@ class TestClassNetworkutils:
     """
     Test network utilities and support functions.
     """
+
     def test_grab_pem(self):
         """
         Test finding CA certs.
@@ -327,7 +329,8 @@ class TestClassNetworkutils:
         """
         Test base URL creation.
         """
-        assert bn.create_base_url("10.3.2.9000") == "http://cdn.fs.sl.blackberry.com/fs/qnx/production/7d1bb9fefe23b1c3123f748ff9e0f80cc78f006c"
+        assert bn.create_base_url(
+            "10.3.2.9000") == "http://cdn.fs.sl.blackberry.com/fs/qnx/production/7d1bb9fefe23b1c3123f748ff9e0f80cc78f006c"
 
     def test_return_npc(self):
         """
@@ -350,11 +353,11 @@ class TestClassNetworkutils:
         assert bn.clean_availability(result, "a1") == ("SR not in system", "  ")
 
 
-
 class TestClassNetworkutilsParsing:
     """
     Test functions that require parsing of XML/HTML.
     """
+
     def test_availability_good(self):
         """
         Test availability, best case.
@@ -405,8 +408,8 @@ class TestClassNetworkutilsParsing:
                 [
                     'http://cdn.fs.sl.blackberry.com/fs/qnx/production/f6832b88958f1c4c3f9bbfd44762e0c516760d8a/com.qnx.qcfm.radio.qc8960.wtr5/10.3.1.2727/qc8960.wtr5-10.3.1.2727-nto+armle-v7+signed.bar',
                     'http://cdn.fs.sl.blackberry.com/fs/qnx/production/f6832b88958f1c4c3f9bbfd44762e0c516760d8a/com.qnx.coreos.qcfm.os.qc8960.factory_sfi.desktop/10.3.1.2726/qc8960.factory_sfi.desktop-10.3.1.2726-nto+armle-v7+signed.bar'
-                    ]
-                )
+                ]
+            )
             assert bn.carrier_query(302220, "6002E0A") == alist
 
     def test_upd_req_bad(self):
@@ -421,8 +424,8 @@ class TestClassNetworkutilsParsing:
                 [
                     'http://cdn.fs.sl.blackberry.com/fs/qnx/production/f6832b88958f1c4c3f9bbfd44762e0c516760d8a/com.qnx.qcfm.radio.qc8960.wtr5/10.3.1.2727/qc8960.wtr5-10.3.1.2727-nto+armle-v7+signed.bar',
                     'http://cdn.fs.sl.blackberry.com/fs/qnx/production/f6832b88958f1c4c3f9bbfd44762e0c516760d8a/com.qnx.coreos.qcfm.os.qc8960.factory_sfi.desktop/10.3.1.2726/qc8960.factory_sfi.desktop-10.3.1.2726-nto+armle-v7+signed.bar'
-                    ]
-                )
+                ]
+            )
             assert bn.carrier_query(302220, "6002E0A") == alist
 
     def test_sr_lookup_good(self):
@@ -484,7 +487,7 @@ class TestClassNetworkutilsParsing:
                 "10.2.1.3247",
                 "10.2.1.3442",
                 "10.3.1.2708"
-                ]
+            ]
 
     def test_bundle_lookup_small(self):
         """

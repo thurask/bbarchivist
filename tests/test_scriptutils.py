@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-#pylint: disable=no-self-use,unused-argument,line-too-long
 """Test the scriptutils module."""
 
 import os
@@ -42,6 +41,7 @@ class Dummy(object):
     """
     Dummy, with text and headers attributes.
     """
+
     def __init__(self):
         """
         Populate text and headers.
@@ -54,6 +54,7 @@ class TestClassScriptutils:
     """
     Test script-related tools.
     """
+
     def test_radio_version(self):
         """
         Test radio version non-incrementing.
@@ -93,7 +94,15 @@ class TestClassScriptutils:
         Test exporting links, with upgrade files.
         """
         with mock.patch('bbarchivist.networkutils.get_length', mock.MagicMock(return_value=12345)):
-            bs.export_cchecker(["http://sn.ek"], None, None, "10.1.1.1111", "10.2.2.2222", "10.3.3.3333", True, None)
+            bs.export_cchecker(
+                ["http://sn.ek"],
+                None,
+                None,
+                "10.1.1.1111",
+                "10.2.2.2222",
+                "10.3.3.3333",
+                True,
+                None)
             with open("10.3.3.3333plusapps.txt", "r") as afile:
                 assert len(afile.read()) == 2926
 
@@ -103,7 +112,15 @@ class TestClassScriptutils:
         """
         snek = Dummy()
         with mock.patch('requests.head', mock.MagicMock(return_value=snek)):
-            bs.export_cchecker(["http://sn.ek"], "123456", "8500090A", "10.1.1.1111", "10.2.2.2222", "10.3.3.3334", False, None)
+            bs.export_cchecker(
+                ["http://sn.ek"],
+                "123456",
+                "8500090A",
+                "10.1.1.1111",
+                "10.2.2.2222",
+                "10.3.3.3334",
+                False,
+                None)
             with open("10.3.3.3334plusapps.txt", "r") as afile:
                 assert len(afile.read()) == 2933
 
@@ -126,6 +143,7 @@ class TestClassScriptutilsSoftware:
     """
     Test software release-related utilities.
     """
+
     def test_return_swc_auto(self):
         """
         Test software release non-checking,
@@ -178,7 +196,9 @@ class TestClassScriptutilsSoftware:
         with mock.patch('bbarchivist.networkutils.sr_lookup', mock.MagicMock(return_value="SR not in system")):
             with mock.patch('builtins.input', mock.MagicMock(return_value="10.3.2.2474")):
                 with mock.patch('bbarchivist.utilities.s2b', mock.MagicMock(return_value=True)):
-                    assert bs.return_radio_sw_checked("checkme", "10.3.2.2640") == ("10.3.2.2474", False)
+                    assert bs.return_radio_sw_checked(
+                        "checkme", "10.3.2.2640") == (
+                        "10.3.2.2474", False)
 
     def test_return_rswc_exit(self):
         """
@@ -258,6 +278,7 @@ class TestClassScriptutilsIO:
     """
     Test print-related utilities.
     """
+
     def test_autolookup_printer(self, capsys):
         """
         Test writing autolookup output to stdout.
@@ -278,6 +299,7 @@ class TestClassScriptutilsURLCheck:
     """
     Test URL-related utilities.
     """
+
     def test_os_single(self, capsys):
         """
         Test single OS availability.
@@ -336,7 +358,11 @@ class TestClassScriptutilsURLCheck:
         Test single radio availability.
         """
         with mock.patch('bbarchivist.networkutils.availability', mock.MagicMock(return_value=True)):
-            assert bs.check_radio_single("http://qrrbrbirlbel.yu/", "10.3.2.2640") == ("http://qrrbrbirlbel.yu/", "10.3.2.2640")
+            assert bs.check_radio_single(
+                "http://qrrbrbirlbel.yu/",
+                "10.3.2.2640") == (
+                "http://qrrbrbirlbel.yu/",
+                "10.3.2.2640")
             assert "NOT AVAILABLE" not in capsys.readouterr()[0]
 
     def test_radio_single_fail(self):
@@ -354,7 +380,11 @@ class TestClassScriptutilsURLCheck:
         """
         with mock.patch('bbarchivist.networkutils.availability', mock.MagicMock(return_value=False)):
             with mock.patch('builtins.input', mock.MagicMock(return_value="y")):
-                assert bs.check_radio_single("http://qrrbrbirlbel.yu/", "10.3.2.2639") == ("http://qrrbrbirlbel.yu/", "y")
+                assert bs.check_radio_single(
+                    "http://qrrbrbirlbel.yu/",
+                    "10.3.2.2639") == (
+                    "http://qrrbrbirlbel.yu/",
+                    "y")
 
     def test_radio_bulk(self, capsys):
         """
@@ -419,6 +449,7 @@ class TestClassScriptutilsSevenzip:
     """
     Test 7-Zip related utilities.
     """
+
     def test_szexe_irrelevant(self):
         """
         Test 7z exe finding, without actually looking.
@@ -449,6 +480,7 @@ class TestClassScriptutilsSevenzip:
         with mock.patch('bbarchivist.utilities.prep_seven_zip', mock.MagicMock(return_value=False)):
             with mock.patch('builtins.input', mock.MagicMock(return_value="y")):
                 assert bs.get_sz_executable("7z") == ("zip", "")
+
 
 class TestClassScriptutilsArguments:
     """
@@ -612,6 +644,7 @@ class TestClassScriptutilsFHT:
     """
     Test hash/GPG-related utilities.
     """
+
     def test_gpgver_unchanged(self):
         """
         Test no modifications to GPG credentials.

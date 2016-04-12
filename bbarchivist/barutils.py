@@ -29,7 +29,7 @@ def extract_bars(filepath):
     try:
         for file in os.listdir(filepath):
             if file.endswith(".bar"):
-                print("EXTRACTING:", file)
+                print("EXTRACTING: {0}".format(file))
                 zfile = zipfile.ZipFile(file, 'r')
                 names = zfile.namelist()
                 for name in names:
@@ -179,7 +179,7 @@ def tar_compress(filepath, filename):
     :param filename: Name of file to pack.
     :type filename: str
     """
-    with tarfile.open(filepath + '.tar', 'w:') as tfile:
+    with tarfile.open("{0}.tar".format(filepath), 'w:') as tfile:
         tfile.add(filename, filter=None)
 
 
@@ -212,7 +212,7 @@ def tgz_compress(filepath, filename, strength=5):
     :param strength: Compression strength. 5 is normal, 9 is ultra.
     :type strength: int
     """
-    with tarfile.open(filepath + '.tar.gz', 'w:gz', compresslevel=strength) as gzfile:
+    with tarfile.open("{0}.tar.gz".format(filepath), 'w:gz', compresslevel=strength) as gzfile:
         gzfile.add(filename, filter=None)
 
 
@@ -245,7 +245,7 @@ def tbz_compress(filepath, filename, strength=5):
     :param strength: Compression strength. 5 is normal, 9 is ultra.
     :type strength: int
     """
-    with tarfile.open(filepath + '.tar.bz2', 'w:bz2', compresslevel=strength) as bzfile:
+    with tarfile.open("{0}.tar.bz2".format(filepath), 'w:bz2', compresslevel=strength) as bzfile:
         bzfile.add(filename, filter=None)
 
 
@@ -275,7 +275,7 @@ def txz_compress(filepath, filename):
     :param filename: Name of file to pack.
     :type filename: str
     """
-    with tarfile.open(filepath + '.tar.xz', 'w:xz') as xzfile:
+    with tarfile.open("{0}.tar.xz".format(filepath), 'w:xz') as xzfile:
         xzfile.add(filename, filter=None)
 
 
@@ -308,7 +308,7 @@ def zip_compress(filepath, filename):
     :param filename: Name of file to pack.
     :type filename: str
     """
-    with zipfile.ZipFile(filepath + '.zip', 'w', zipfile.ZIP_DEFLATED, allowZip64=True) as zfile:
+    with zipfile.ZipFile("{0}.zip".format(filepath), 'w', zipfile.ZIP_DEFLATED, allowZip64=True) as zfile:
         zfile.write(filename)
 
 
@@ -388,7 +388,7 @@ def compress(filepath, method="7z", szexe=None, selective=False, errors=False):
     for file in filt3:
         filename = os.path.splitext(os.path.basename(file))[0]
         fileloc = os.path.join(filepath, filename)
-        print("COMPRESSING: " + filename + ".exe")
+        print("COMPRESSING: {0}.exe".format(filename))
         if method == "7z":
             sz_compress(fileloc, file, szexe, calculate_strength(), errors)
         elif method == "tgz":
@@ -428,7 +428,7 @@ def verify(thepath, method="7z", szexe=None, selective=False):
         if selective:
             filt = filt and file.startswith(bbconstants.PREFIXES)
         if filt:
-            print("VERIFYING:", file)
+            print("VERIFYING: {0}".format(file))
             if file.endswith(".7z") and szexe is not None:
                 verif = sz_verify(os.path.abspath(file), szexe)
             elif file.endswith(".tar.gz"):
@@ -496,7 +496,7 @@ def remove_signed_files(a_folder):
     files = [os.path.abspath(file) for file in files]
     for file in files:
         if file.endswith(".signed") and os.path.exists(file):
-            print("REMOVING: " + os.path.basename(file))
+            print("REMOVING: {0}".format(os.path.basename(file)))
             while True:
                 try:
                     os.remove(os.path.abspath(file))
@@ -534,12 +534,12 @@ def create_blitz(a_folder, swver):
     :param swver: Software version to title the blitz.
     :type swver: str
     """
-    fname = "Blitz-" + swver + '.zip'
+    fname = "Blitz-{0}.zip".format(swver)
     with zipfile.ZipFile(fname, 'w', zipfile.ZIP_DEFLATED, allowZip64=True) as zfile:
         for root, dirs, files in os.walk(a_folder):
             del dirs
             for file in files:
-                print("ZIPPING:", utilities.stripper(file))
+                print("ZIPPING: {0}".format(utilities.stripper(file)))
                 abs_filename = os.path.join(root, file)
                 abs_arcname = os.path.basename(abs_filename)
                 zfile.write(abs_filename, abs_arcname)
@@ -586,13 +586,13 @@ def move_loaders(a_dir,
     pfx = bbconstants.PREFIXES
     loaders = [file for file in os.listdir(a_dir) if prepends(file, pfx, ".exe")]
     for file in loaders:
-        print("MOVING: " + file)
+        print("MOVING: {0}".format(file))
         exedest_os = os.path.join(exedir_os, file)
         exedest_rad = os.path.join(exedir_rad, file)
         loader_sorter(file, exedest_os, exedest_rad)
     zippeds = [file for file in os.listdir(a_dir) if prepends(file, pfx, arx)]
     for file in zippeds:
-        print("MOVING: " + file)
+        print("MOVING: {0}".format(file))
         zipdest_os = os.path.join(zipdir_os, file)
         zipdest_rad = os.path.join(zipdir_rad, file)
         loader_sorter(file, zipdest_os, zipdest_rad)
@@ -644,7 +644,7 @@ def move_bars(localdir, osdir, radiodir):
     """
     for files in os.listdir(localdir):
         if files.endswith(".bar"):
-            print("MOVING: " + files)
+            print("MOVING: {0}".format(files))
             bardest_os = os.path.join(osdir, files)
             bardest_radio = os.path.join(radiodir, files)
             # even the fattest radio is less than 90MB

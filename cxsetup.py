@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# pylint: disable = I0011, C0111, C0103, W0622
 
 from os.path import join, abspath, dirname
 from sys import exec_prefix

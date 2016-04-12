@@ -220,11 +220,11 @@ def carrierchecker_main(mcc, mnc, device,
     model, family, hwid = jsonutils.certchecker_prep(data, device)
     scriptutils.slim_preamble("CARRIERCHECKER")
     country, carrier = networkutils.carrier_checker(mcc, mnc)
-    print("COUNTRY:", country.upper())
-    print("CARRIER:", carrier.upper())
-    print("DEVICE:", model.upper())
-    print("VARIANT:", device.upper())
-    print("HARDWARE ID:", hwid.upper())
+    print("COUNTRY: {0}".format(country.upper()))
+    print("CARRIER: {0}".format(carrier.upper()))
+    print("DEVICE: {0}".format(model.upper()))
+    print("VARIANT: {0}".format(device.upper()))
+    print("HARDWARE ID: {0}".format(hwid.upper()))
     print("\nCHECKING CARRIER...")
     if bundles:
         releases = networkutils.available_bundle_lookup(mcc, mnc, hwid)
@@ -234,9 +234,9 @@ def carrierchecker_main(mcc, mnc, device,
     else:
         npc = networkutils.return_npc(mcc, mnc)
         swv, osv, radv, files = networkutils.carrier_query(npc, hwid, upgrade, blitz, forced)
-        print("SOFTWARE RELEASE:", swv)
-        print("OS VERSION:", osv)
-        print("RADIO VERSION:", radv)
+        print("SOFTWARE RELEASE: {0}".format(swv))
+        print("OS VERSION: {0}".format(osv))
+        print("RADIO VERSION: {0}".format(radv))
         if selective:
             files = scriptutils.purge_dross(files)
         if export:
@@ -245,7 +245,7 @@ def carrierchecker_main(mcc, mnc, device,
             scriptutils.export_cchecker(files, npc, hwid, osv, radv, swv, upgrade, forced)
         if download:
             suffix = "-BLITZ" if blitz else "-{0}".format(family)
-            bardir = os.path.join(directory, swv + suffix)
+            bardir = os.path.join(directory, "{0}{1}".format(swv, suffix))
             if not os.path.exists(bardir):
                 os.makedirs(bardir)
             if blitz:
