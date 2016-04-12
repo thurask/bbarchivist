@@ -13,9 +13,7 @@ README
     :target: http://bbarchivist.readthedocs.org/en/latest/?badge=latest
     :alt: Documentation Status
 
-A Python 3.2+ package for various BlackBerry 10-related functions and scripts.
-
-This can be used either as importing the bbarchivist library, or a variety of command-line scripts.
+A Python 3.2+ package for various BlackBerry 10/Priv-related functions and scripts.
 
 Packaged Executables
 --------------------
@@ -51,6 +49,9 @@ If you want the latest development version, clone from Git and install with setu
     $ cd bbarchivist
     $ python setup.py install
 
+If you have `Git LFS <https://git-lfs.github.com>`__, the data files will download automatically.
+If you don't have Git LFS, then run the :code:`download_dats.py` script in this folder.
+The data files will be considered different with regards to git, so be warned.
 
 Python Libraries
 ~~~~~~~~~~~~~~~~
@@ -66,7 +67,8 @@ Installation of shutilwhich on Python 3.3+ has no effect, so it's unnecessary.
 External Programs
 ~~~~~~~~~~~~~~~~~
 
-Copies of cap.exe and cfp.exe are included. CFP usage is Windows-only, though.
+Copies of cap.exe and cfp.exe are included.
+Windows can directly access both .exe files through the :code:`bb-cap` and :code:`bb-cfp` frontends.
 
 7-Zip compression (default) uses
 `p7zip <http://sourceforge.net/projects/p7zip/>`__
@@ -94,7 +96,7 @@ Contributing
 
 If you wish to contribute to this project, please do the following:
 
-1. Fork and clone source from GitHub (this requires `Git LFS <https://git-lfs.github.com>`__)
+1. Fork and clone source from GitHub (again, requires `Git LFS <https://git-lfs.github.com>`__)
 2. Make sure all tests run on your system (requires GPG, 7-Zip)
 3. Make your changes on a new branch without breaking any tests
 4. Open a pull request on GitHub
