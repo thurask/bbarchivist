@@ -20,7 +20,7 @@ class Datafile:
 
 
 #: App version.
-VERSION = "2.4.1"
+VERSION = "2.4.2"
 #: File location.
 LOCATION = os.path.abspath(__file__)
 #: File folder.
