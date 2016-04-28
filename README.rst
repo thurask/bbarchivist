@@ -9,8 +9,8 @@ README
     :target: https://coveralls.io/github/thurask/bbarchivist?branch=master
     :alt: Coveralls.io
 
-.. image:: https://readthedocs.org/projects/bbarchivist/badge/?version=latest
-    :target: http://bbarchivist.readthedocs.org/en/latest/?badge=latest
+.. image:: https://readthedocs.io/projects/bbarchivist/badge/?version=latest
+    :target: http://bbarchivist.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
 A Python 3.2+ package for various BlackBerry 10/Priv-related functions and scripts.
