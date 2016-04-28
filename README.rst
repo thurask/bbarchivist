@@ -9,7 +9,7 @@ README
     :target: https://coveralls.io/github/thurask/bbarchivist?branch=master
     :alt: Coveralls.io
 
-.. image:: https://readthedocs.io/projects/bbarchivist/badge/?version=latest
+.. image:: https://readthedocs.org/projects/bbarchivist/badge/?version=latest
     :target: http://bbarchivist.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
