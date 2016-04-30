@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# pylint: skip-file
 #
 # bbarchivist documentation build configuration file, created by
 # sphinx-quickstart on Sat Apr 25 17:24:48 2015.
