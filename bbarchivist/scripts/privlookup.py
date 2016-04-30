@@ -92,7 +92,7 @@ def questionnaire():
 
 
 @utilities.wrap_keyboard_except
-def privlookup_main(branch, floor=0, ceil=999, type=None):
+def privlookup_main(branch, floor=0, ceil=999, method=None):
     """
     Check the existence of Priv factory images, in a range.
 
@@ -105,13 +105,13 @@ def privlookup_main(branch, floor=0, ceil=999, type=None):
     :param ceil: Ending OS version, padded to 3 numbers. Default is 999.
     :type ceil: int
 
-    :param type: None for regular OS links, "hash256/512" for SHA256 or 512 hash.
-    :type type: str
+    :param method: None for regular OS links, "hash256/512" for SHA256 or 512 hash.
+    :type method: str
     """
     for ver in range(floor, ceil + 1):
         build = "{0}{1}".format(branch.upper(), str(ver).zfill(3))
         print("NOW SCANNING: {0}".format(build), end="\r")
-        results = networkutils.priv_scanner(build, type)
+        results = networkutils.priv_scanner(build, method)
         if results is not None:
             for result in results:
                 print("\r\n{0} AVAILABLE!\n{1}".format(build, result))

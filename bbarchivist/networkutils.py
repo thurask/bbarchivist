@@ -482,12 +482,12 @@ def kernel_scraper():
     return kernlist
 
 
-def make_priv_skeleton(type, variant, build):
+def make_priv_skeleton(method, variant, build):
     """
     Make a Priv autoloader/hash URL.
 
-    :param type: None for regular OS links, "hash256/512" for SHA256 or 512 hash.
-    :type type: str
+    :param method: None for regular OS links, "hash256/512" for SHA256 or 512 hash.
+    :type method: str
 
     :param variant:
     :type variant: str
@@ -503,21 +503,21 @@ def make_priv_skeleton(type, variant, build):
     return skel
 
 
-def priv_scanner(build, type=None):
+def priv_scanner(build, method=None):
     """
     Check for Priv autoloaders on BlackBerry's site.
 
     :param build: Build to check, 3 letters + 3 numbers.
     :type build: str
 
-    :param type: None for regular OS links, "hash256/512" for SHA256 or 512 hash.
-    :type type: str
+    :param method: None for regular OS links, "hash256/512" for SHA256 or 512 hash.
+    :type method: str
     """
     variants = ("common", "vzw-vzw", "na-tmo", "na-att")  # device variants
     with concurrent.futures.ThreadPoolExecutor(max_workers=len(variants)) as xec:
         results = []
         for var in variants:
-            skel = make_priv_skeleton(type, var, build)
+            skel = make_priv_skeleton(method, var, build)
             avail = xec.submit(availability, skel)
             if avail.result():
                 results.append(skel)
