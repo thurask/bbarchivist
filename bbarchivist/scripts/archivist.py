@@ -257,10 +257,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     # Generate download URLs
     baseurl, alturl = scriptutils.get_baseurls(softwareversion, altsw)
     osurls, radiourls, cores = utilities.generate_urls(baseurl, osversion, radioversion, True)
-    if core:
-        osurls = cores
-    else:
-        del cores
+    osurls = cores if core else osurls
     for idx, url in enumerate(osurls):
         if "qc8960.factory_sfi" in url:
             vzwurl = url

@@ -250,6 +250,30 @@ def hwp(filepath, blocksize=16 * 1024 * 1024):
         print("WHIRLPOOL HASH FAILED:\nIS IT AVAILABLE?")
 
 
+def hs0(filepath, blocksize=16 * 1024 * 1024):
+    """
+    Return SHA-0 hash of a file; depends on system SSL library.
+
+    :param filepath: File you wish to verify.
+    :type filepath: str
+
+    :param blocksize: How much of file to read at once.
+    :type blocksize: int
+    """
+    try:
+        sha0 = hashlib.new('sha')
+        with open(filepath, 'rb') as file:
+            while True:
+                data = file.read(blocksize)
+                if not data:
+                    break
+                sha0.update(data)
+        return sha0.hexdigest()
+    except ValueError as exc:
+        print(str(exc))
+        print("SHA0 HASH FAILED:\nIS IT AVAILABLE?")
+
+
 def gpgfile(filepath, gpginst, key=None, pword=None):
     """
     Make ASCII-armored signature files with a given private key.
@@ -362,6 +386,10 @@ def hash_writer(source, dest, workingdir, kwargs=None):
             h_m5 = ["MD5"]
             h_m5.append(hash_get(source, hm5, workingdir, block))
             target.write("\n".join(h_m5))
+        if kwargs['sha0']:
+            h_s0 = ["SHA0"]
+            h_s0.append(hash_get(source, hs0, workingdir, block))
+            target.write("\n".join(h_s0))
         if kwargs['sha1']:
             h_s1 = ["SHA1"]
             h_s1.append(hash_get(source, hs1, workingdir, block))
@@ -546,6 +574,7 @@ def verifier_config_loader(homepath=None):
     ini = config['hashmodes']
     results['crc32'] = bool(ini.getboolean('crc32', fallback=False))
     results['adler32'] = bool(ini.getboolean('adler32', fallback=False))
+    results['sha0'] = bool(ini.getboolean('sha0', fallback=False))
     results['sha1'] = bool(ini.getboolean('sha1', fallback=True))
     results['sha224'] = bool(ini.getboolean('sha224', fallback=False))
     results['sha256'] = bool(ini.getboolean('sha256', fallback=True))

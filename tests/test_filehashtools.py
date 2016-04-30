@@ -48,53 +48,70 @@ class TestClassFilehashtools:
     Test hash/GnuPG utilities.
     """
 
-    def test_crc32hash(self):
+    def test_crc32(self):
         """
         Test CRC32 checksum.
         """
         assert bf.hc32("tempfile.txt") == "ed5d3f26"
 
-    def test_adler32hash(self):
+    def test_adler32(self):
         """
         Test Adler32 checksum.
         """
         assert bf.ha32("tempfile.txt") == "02470dcd"
 
-    def test_sha1hash(self):
+    def test_sha0(self):
+        """
+        Test SHA-0 hash.
+        """
+        if "sha" not in algos:
+            pass
+        else:
+            assert bf.hs0("tempfile.txt") == "d26b25f6170daf49e31e68bf57f6164815c368d8"
+
+    def test_sha0_unavail(self, capsys):
+        """
+        Test SHA-0 hash, if not available.
+        """
+        with mock.patch("hashlib.new", mock.MagicMock(side_effect=ValueError)):
+            bf.hs0("tempfile.txt")
+            assert "SHA0 HASH FAILED" in capsys.readouterr()[0]
+
+    def test_sha1(self):
         """
         Test SHA-1 hash.
         """
         assert bf.hs1("tempfile.txt") == "71dc7ce8f27c11b792be3f169ecf985865e276d0"
 
-    def test_sha224hash(self):
+    def test_sha224(self):
         """
         Test SHA-224 hash.
         """
         assert bf.hs224(
             "tempfile.txt") == "7bcd7b77f63633bf0f7db181106f08eb630a58c521b109be1cc4a404"
 
-    def test_sha256hash(self):
+    def test_sha256(self):
         """
         Test SHA-256 hash.
         """
         assert bf.hs256(
             "tempfile.txt") == "f118871c45171d5fe4e9049980959e033eeeabcfa12046c243fda310580e8a0b"
 
-    def test_sha384hash(self):
+    def test_sha384(self):
         """
         Test SHA-384 hash.
         """
         assert bf.hs384(
             "tempfile.txt") == "76620873c0d27873c137b082425c6e87e3d601c4b19241a1f2222f7f700a2fe8d3c648b26f62325a411cb020bff527be"
 
-    def test_sha512hash(self):
+    def test_sha512(self):
         """
         Test SHA-512 hash.
         """
         assert bf.hs512(
             "tempfile.txt") == "b66a5e8aa9b9705748c2ee585b0e1a3a41288d2dafc3be2db12fa89d2f2a3e14f9dec11de4ba865bb51eaa6c2cfeb294139455e34da7d827a19504b0906c01c1"
 
-    def test_md4hash(self):
+    def test_md4(self):
         """
         Test MD4 hash.
         """
@@ -111,13 +128,13 @@ class TestClassFilehashtools:
             bf.hm4("tempfile.txt")
             assert "MD4 HASH FAILED" in capsys.readouterr()[0]
 
-    def test_md5hash(self):
+    def test_md5(self):
         """
         Test MD5 hash.
         """
         assert bf.hm5("tempfile.txt") == "822e1187fde7c8d55aff8cc688701650"
 
-    def test_ripemd160hash(self):
+    def test_ripemd160(self):
         """
         Test RIPEMD160 hash.
         """
@@ -134,7 +151,7 @@ class TestClassFilehashtools:
             bf.hr160("tempfile.txt")
             assert "RIPEMD160 HASH FAILED" in capsys.readouterr()[0]
 
-    def test_whirlpoolhash(self):
+    def test_whirlpool(self):
         """
         Test Whirlpool hash.
         """
@@ -170,6 +187,7 @@ class TestClassFilehashtools:
         confload['crc32'] = True
         confload['md4'] = True
         confload['md5'] = True
+        confload['sha0'] = True
         confload['sha1'] = True
         confload['sha224'] = True
         confload['sha256'] = True
@@ -190,6 +208,8 @@ class TestClassFilehashtools:
             b"DF26ADA1A895F94E1F1257FAD984E809 tempfile.txt",
             b"MD5",
             b"822E1187FDE7C8D55AFF8CC688701650 tempfile.txt",
+            b"SHA0",
+            b"D26B25F6170DAF49E31E68BF57F6164815C368D8 tempfile.txt",
             b"SHA1",
             b"71DC7CE8F27C11B792BE3F169ECF985865E276D0 tempfile.txt",
             b"SHA224",
@@ -358,6 +378,7 @@ class TestClassFilehashtoolsConfig:
         cls.hashdict['md4'] = False
         cls.hashdict['ripemd160'] = False
         cls.hashdict['whirlpool'] = False
+        cls.hashdict['sha0'] = False
         cls.hashdict['blocksize'] = 16777216
 
     def test_hash_loader(self):
