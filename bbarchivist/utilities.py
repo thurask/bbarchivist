@@ -199,6 +199,19 @@ def escreens_duration(duration):
         raise argparse.ArgumentError(argument=None, message="Invalid duration.")
 
 
+def privlookup_hashtype(type):
+    """
+    Check if Priv autoloader lookup hash type is valid.
+
+    :param type: None for regular OS links, "hash256/512" for SHA256 or 512 hash.
+    :type type: str
+    """
+    if type.lower() in ("sha512", "sha256"):
+        return type.lower()
+    else:
+        raise argparse.ArgumentError(argument=None, message="Invalid type.")
+
+
 def s2b(input_check):
     """
     Return Boolean interpretation of string input.

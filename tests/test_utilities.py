@@ -586,6 +586,20 @@ class TestClassUtilitiesArgparse:
             bu.signed_file_args([None])
             assert "requires" in str(argexc.value)
 
+    def test_privhash_good(self):
+        """
+        Test checking Priv autoloader lookup hash type, best case.
+        """
+        assert bu.privlookup_hashtype("SHA512") == "sha512"
+
+    def test_privhash_bad(self):
+        """
+        Test checking Priv autoloader lookup hash type, worst case.
+        """
+        with pytest.raises(ArgumentError) as argexc:
+            bu.privlookup_hashtype("MD5")
+            assert "Invalid" in str(argexc.value)
+
 
 class TestClassUtilitiesConfig:
     """

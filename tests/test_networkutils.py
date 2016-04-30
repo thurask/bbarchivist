@@ -163,6 +163,13 @@ def pa_bad_mock(url, request):
     thebody = "http://bbapps.download.blackberry.com/Priv/bbry_qc8992_autoloader_user-common-AAD250.zip"
     return {'status_code': 404, 'content': thebody}
 
+def pa_hash_mock(url, request):
+    """
+    Mock for Android autoloader hash lookup.
+    """
+    thebody = "http://us.blackberry.com/content/dam/bbfoundation/hashfiles_priv/default/bbry_qc8992_autoloader_user-common-AAD250.sha256sum"
+    return {'status_code': 200, 'content': thebody}
+
 
 def cq_good_mock(url, request):
     """
@@ -543,3 +550,11 @@ class TestClassNetworkutilsParsing:
         with httmock.HTTMock(pa_bad_mock):
             results = bn.priv_scanner("AAD250")
             assert results is None
+
+    def test_autoloader_scan_hash(self):
+        """
+        Test Android autoloader hash lookup.
+        """
+        with httmock.HTTMock(pa_hash_mock):
+            results = bn.priv_scanner("AAD250", "sha256")
+            assert "user-common-AAD250" in results[0]

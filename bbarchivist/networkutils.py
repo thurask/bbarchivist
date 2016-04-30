@@ -482,19 +482,42 @@ def kernel_scraper():
     return kernlist
 
 
-def priv_scanner(build):
+def make_priv_skeleton(type, variant, build):
+    """
+    Make a Priv autoloader/hash URL.
+
+    :param type: None for regular OS links, "hash256/512" for SHA256 or 512 hash.
+    :type type: str
+
+    :param variant:
+    :type variant: str
+
+    :param build: Build to check, 3 letters + 3 numbers.
+    :type build: str
+    """
+    folder = {"vzw-vzw": "verizon", "na-att": "att", "na-tmo": "tmo", "common": "default"}
+    if type is None:
+        skel = "http://bbapps.download.blackberry.com/Priv/bbry_qc8992_autoloader_user-{0}-{1}.zip".format(variant, build.upper())
+    else:
+        skel = "http://us.blackberry.com/content/dam/bbfoundation/hashfiles_priv/{2}/bbry_qc8992_autoloader_user-{0}-{1}.{3}sum".format(variant, build.upper(), folder[variant], type.lower())
+    return skel
+
+
+def priv_scanner(build, type=None):
     """
     Check for Priv autoloaders on BlackBerry's site.
 
     :param build: Build to check, 3 letters + 3 numbers.
     :type build: str
+
+    :param type: None for regular OS links, "hash256/512" for SHA256 or 512 hash.
+    :type type: str
     """
-    variants = ("common", "vzw-vzw", "na-tmo", "na-att", "apac-amx")  # device variants
+    variants = ("common", "vzw-vzw", "na-tmo", "na-att")  # device variants
     with concurrent.futures.ThreadPoolExecutor(max_workers=len(variants)) as xec:
         results = []
         for var in variants:
-            skel = "http://bbapps.download.blackberry.com/Priv/bbry_qc8992_autoloader_user-{0}-{1}.zip".format(
-                var, build.upper())
+            skel = make_priv_skeleton(type, var, build)
             avail = xec.submit(availability, skel)
             if avail.result():
                 results.append(skel)
