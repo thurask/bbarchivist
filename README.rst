@@ -5,6 +5,10 @@ README
     :target: https://travis-ci.org/thurask/bbarchivist
     :alt: Travis CI
 
+.. image:: https://ci.appveyor.com/api/projects/status/92lobvk91tbcrgc1?svg=true
+	:target: https://ci.appveyor.com/project/thurask/bbarchivist
+    :alt: Appveyor
+
 .. image:: https://coveralls.io/repos/thurask/bbarchivist/badge.svg?branch=master&service=github
     :target: https://coveralls.io/github/thurask/bbarchivist?branch=master
     :alt: Coveralls.io
