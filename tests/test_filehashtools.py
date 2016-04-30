@@ -252,7 +252,7 @@ class TestClassFilehashtoolsGPG:
         """
         Test GnuPG signing.
         """
-        if any(os.getenv("TRAVIS", "false"), os.getenv("APPVEYOR", "false")) == "true":
+        if any((os.getenv("TRAVIS", "false"), os.getenv("APPVEYOR", "false"))) == "true":
             pass
         elif NOGNUPG:
             pass
@@ -281,7 +281,7 @@ class TestClassFilehashtoolsGPG:
         """
         Test batch GnuPG signing.
         """
-        if any(os.getenv("TRAVIS", "false"), os.getenv("APPVEYOR", "false")) == "true":
+        if any((os.getenv("TRAVIS", "false"), os.getenv("APPVEYOR", "false"))) == "true":
             pass
         elif NOGNUPG:
             pass
@@ -326,7 +326,7 @@ class TestClassFilehashtoolsGPG:
         """
         Test GPGRunner going wrong during the process.
         """
-        if any(os.getenv("TRAVIS", "false"), os.getenv("APPVEYOR", "false")) == "true":
+        if any((os.getenv("TRAVIS", "false"), os.getenv("APPVEYOR", "false"))) == "true":
             pass
         elif NOGNUPG:
             pass
