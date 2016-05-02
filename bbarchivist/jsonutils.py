@@ -142,5 +142,4 @@ def list_family(table):
     :type table: list(dict)
     """
     famlist = list({key['device'] for key in table if 'secret' not in key and key['ptcrbid']})
-    for fam in famlist:
-        print(fam)
+    scriptutils.lprint(famlist)

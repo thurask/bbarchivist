@@ -35,7 +35,7 @@ def read_files(localdir, core=False):
             pairdict[rad] = oslist[2]
         else:
             pairdict[rad] = oslist[0]
-    filtdict = dict((k, v) for k, v in pairdict.items() if k)  # pop None
+    filtdict = {k: v for k, v in pairdict.items() if k}  # pop None
     return filtdict
 
 

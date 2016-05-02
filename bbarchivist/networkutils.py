@@ -522,3 +522,39 @@ def priv_scanner(build, method=None):
             if avail.result():
                 results.append(skel)
         return results if results else None
+
+
+def base_metadata(url):
+    """
+    Get BBNDK metadata, base function.
+    """
+    req = requests.get(url)
+    data = req.content
+    entries = data.split(b"\n")
+    metadata = [entry.split(b",")[1].decode("utf-8") for entry in entries if entry]
+    return metadata
+
+
+def ndk_metadata():
+    """
+    Get BBNDK target metadata.
+    """
+    data = base_metadata("http://downloads.blackberry.com/upr/developers/update/bbndk/metadata")
+    metadata = [entry for entry in data if entry.startswith(("10.0", "10.1", "10.2"))]
+    return metadata
+
+
+def sim_metadata():
+    """
+    Get BBNDK simulator metadata.
+    """
+    metadata = base_metadata("http://downloads.blackberry.com/upr/developers/update/bbndk/simulator/simulator_metadata")
+    return metadata
+
+
+def runtime_metadata():
+    """
+    Get BBNDK runtime metadata.
+    """
+    metadata = base_metadata("http://downloads.blackberry.com/upr/developers/update/bbndk/runtime/runtime_metadata")
+    return metadata

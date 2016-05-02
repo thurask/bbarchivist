@@ -75,6 +75,9 @@
     <Compile Include="bbarchivist\scripts\kernchecker.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="bbarchivist\scripts\metachecker.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="bbarchivist\scripts\privlookup.py">
       <SubType>Code</SubType>
     </Compile>

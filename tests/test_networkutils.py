@@ -227,6 +227,14 @@ def sr_fail_mock(url, request):
     return {'status_code': 200, 'content': badbody}
 
 
+def md_base_mock(url, request):
+    """
+    Mock for metadata lookup.
+    """
+    thebody = b'bbndkext,10.2.0.1155,ndktargetrepo\nbbndkext,10.3.0.1172,ndktargetrepo\nbbndkext,10.2.1.1940,ndktargetrepo'
+    return {'status_code': 200, 'content': thebody}
+
+
 def timeout_mock(url, request):
     """
     Mock for software release lookup, timeout.
@@ -558,3 +566,21 @@ class TestClassNetworkutilsParsing:
         with httmock.HTTMock(pa_hash_mock):
             results = bn.priv_scanner("AAD250", "sha256")
             assert "user-common-AAD250" in results[0]
+
+    def test_metadata_ndk(self):
+        """
+        Test grabbing old-style metadata.
+        """
+        with httmock.HTTMock(md_base_mock):
+            results = bn.ndk_metadata()
+            assert "1940" in results[1]
+
+    def test_metadata_new(self):
+        """
+        Test grabbing new-style metadata, simulator.
+        """
+        with httmock.HTTMock(md_base_mock):
+            res1 = bn.sim_metadata()
+            assert "1172" in res1[1]
+            res2 = bn.runtime_metadata()
+            assert "1155" in res2[0]

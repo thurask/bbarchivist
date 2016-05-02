@@ -2,6 +2,7 @@
 """Test the scriptutils module."""
 
 import os
+import sys
 from shutil import rmtree, copyfile
 import zipfile
 try:
@@ -138,6 +139,33 @@ class TestClassScriptutils:
         bs.standard_preamble("snek", "10.3.2.2639", "10.3.2.2474", "10.3.2.2877", "10.3.2.2836")
         assert "2836" in capsys.readouterr()[0]
 
+    def test_lprint(self, capsys):
+        """
+        Test pretty printing an iterable.
+        """
+        bs.lprint(("this", "is", "snek"))
+        assert "this\nis\nsnek" in capsys.readouterr()[0]
+
+    def test_shortversion(self):
+        """
+        Test version getting, short type.
+        """
+        sys.frozen = True
+        with open("version.txt", "w") as afile:
+            afile.write("10.0.10586.1000")
+        assert bs.shortversion() == "10.0.10586.1000"
+        sys.frozen = False
+
+    def test_longversion(self):
+        """
+        Test version getting, long type.
+        """
+        sys.frozen = True
+        with open("longversion.txt", "w") as afile:
+            afile.write("10.0.10586.1000")
+        assert bs.longversion() == "10.0.10586.1000"
+        sys.frozen = False
+
 
 class TestClassScriptutilsSoftware:
     """
@@ -198,7 +226,7 @@ class TestClassScriptutilsSoftware:
                 with mock.patch('bbarchivist.utilities.s2b', mock.MagicMock(return_value=True)):
                     assert bs.return_radio_sw_checked(
                         "checkme", "10.3.2.2640") == (
-                        "10.3.2.2474", False)
+                            "10.3.2.2474", False)
 
     def test_return_rswc_exit(self):
         """
@@ -361,8 +389,8 @@ class TestClassScriptutilsURLCheck:
             assert bs.check_radio_single(
                 "http://qrrbrbirlbel.yu/",
                 "10.3.2.2640") == (
-                "http://qrrbrbirlbel.yu/",
-                "10.3.2.2640")
+                    "http://qrrbrbirlbel.yu/",
+                    "10.3.2.2640")
             assert "NOT AVAILABLE" not in capsys.readouterr()[0]
 
     def test_radio_single_fail(self):
@@ -383,8 +411,8 @@ class TestClassScriptutilsURLCheck:
                 assert bs.check_radio_single(
                     "http://qrrbrbirlbel.yu/",
                     "10.3.2.2639") == (
-                    "http://qrrbrbirlbel.yu/",
-                    "y")
+                        "http://qrrbrbirlbel.yu/",
+                        "y")
 
     def test_radio_bulk(self, capsys):
         """

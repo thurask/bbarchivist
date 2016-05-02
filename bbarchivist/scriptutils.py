@@ -2,11 +2,11 @@
 """This module contains various utilities for the scripts folder."""
 
 import os  # path work
-import pprint  # pretty printing
 import getpass  # invisible password
 import argparse  # generic parser
 import sys  # getattr
 import shutil  # folder removal
+import glob  # file lookup
 from bbarchivist import utilities  # little things
 from bbarchivist import barutils  # file system work
 from bbarchivist import bbconstants  # constants
@@ -19,6 +19,32 @@ from bbarchivist import sqlutils  # sql
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015-2016 Thurask"
+
+
+def shortversion():
+    """
+    Get short app version (Git tag).
+    """
+    if not getattr(sys, 'frozen', False):
+        ver = bbconstants.VERSION
+    else:
+        verfile = glob.glob(os.path.join(os.getcwd(), "version.txt"))[0]
+        with open(verfile) as afile:
+            ver = afile.read()
+    return ver
+
+
+def longversion():
+    """
+    Get long app version (Git tag + commits + hash).
+    """
+    if not getattr(sys, 'frozen', False):
+        ver = bbconstants.LONGVERSION
+    else:
+        verfile = glob.glob(os.path.join(os.getcwd(), "longversion.txt"))[0]
+        with open(verfile) as afile:
+            ver = afile.read()
+    return ver
 
 
 def default_parser(name=None, desc=None, flags=None):
@@ -42,7 +68,7 @@ def default_parser(name=None, desc=None, flags=None):
         "-v",
         "--version",
         action="version",
-        version="{0} {1}".format(parser.prog, bbconstants.LONGVERSION))
+        version="{0} {1}".format(parser.prog, longversion()))
     if flags is not None:
         if "folder" in flags:
             parser.add_argument(
@@ -363,7 +389,7 @@ def test_bar_files(localdir, urllist):
                         brokenlist.append(url)
     if brokenlist:
         print("SOME FILES ARE BROKEN!")
-        pprint.pprint(brokenlist)
+        lprint(brokenlist)
         raise SystemExit
     else:
         print("BAR FILES DOWNLOADED OK")
@@ -403,8 +429,7 @@ def test_loader_files(localdir):
         brokens = utilities.verify_bulk_loaders(localdir)
         if brokens:
             print("BROKEN FILES:")
-            for file in brokens:
-                print(file)
+            lprint(brokens)
             raise SystemExit
         else:
             print("ALL FILES CREATED OK")
@@ -465,11 +490,10 @@ def prod_avail(results, mailer=False, osversion=None, password=None):
         baseurl = networkutils.create_base_url(prel)
         avail = networkutils.availability(baseurl)
         is_avail = "Available" if avail else "Unavailable"
-        if avail:
-            if mailer:
-                sqlutils.prepare_sw_db()
-                if not sqlutils.check_exists(osversion, prel):
-                    smtputils.prep_email(osversion, prel, password)
+        if avail and mailer:
+            sqlutils.prepare_sw_db()
+            if not sqlutils.check_exists(osversion, prel):
+                smtputils.prep_email(osversion, prel, password)
     else:
         pav = "  "
         is_avail = "Unavailable"
@@ -713,7 +737,18 @@ def slim_preamble(appname):
     :param appname: Name of app.
     :type appname: str
     """
-    print("~~~{0} VERSION {1}~~~".format(appname.upper(), bbconstants.VERSION))
+    print("~~~{0} VERSION {1}~~~".format(appname.upper(), shortversion()))
+
+
+def lprint(iterable):
+    """
+    A oneliner for 'for item in x: print item'.
+
+    :param iterable: Iterable to print.
+    :type iterable: list/tuple
+    """
+    for item in iterable:
+        print(item)
 
 
 def standard_preamble(appname, osversion, softwareversion, radioversion, altsw=None):

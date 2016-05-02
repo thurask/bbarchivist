@@ -19,8 +19,7 @@ def kernchecker_main():
     scriptutils.slim_preamble("KERNCHECKER")
     print("\nCHECKING KERNELS...\n")
     kernlist = networkutils.kernel_scraper()
-    for item in kernlist:
-        print(item)
+    scriptutils.lprint(kernlist)
     scriptutils.enter_to_exit(True)
 
 

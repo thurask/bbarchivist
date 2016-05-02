@@ -5,7 +5,6 @@ import argparse  # parse arguments
 import sys  # load arguments
 import os  # path work
 import subprocess  # autoloader running
-import pprint  # pretty printing
 from bbarchivist import scriptutils  # script stuff
 from bbarchivist import utilities  # input validation
 from bbarchivist import barutils  # file operations
@@ -161,7 +160,7 @@ def questionnaire():
                "4=Z30/CLASSIC/LEAP",
                "5=Z3",
                "6=PASSPORT"]
-    pprint.pprint(devlist)
+    scriptutils.lprint(devlist)
     while True:
         device = int(input("SELECTED DEVICE: "))
         if not 0 <= device <= len(devlist) - 1:

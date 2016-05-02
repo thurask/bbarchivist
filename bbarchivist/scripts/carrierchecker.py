@@ -229,8 +229,7 @@ def carrierchecker_main(mcc, mnc, device,
     if bundles:
         releases = networkutils.available_bundle_lookup(mcc, mnc, hwid)
         print("\nAVAILABLE BUNDLES:")
-        for bundle in releases:
-            print(bundle)
+        scriptutils.lprint(releases)
     else:
         npc = networkutils.return_npc(mcc, mnc)
         swv, osv, radv, files = networkutils.carrier_query(npc, hwid, upgrade, blitz, forced)

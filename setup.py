@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 from sys import version_info
 from setuptools import setup, find_packages
-from bbarchivist import bbconstants
 import versioneer
 
 
@@ -37,47 +36,50 @@ scriptlist = [
     'bb-kernchecker=bbarchivist.scripts.kernchecker:kernchecker_main',
     'bb-cfp=bbarchivist.scripts.cfp:cfp_main',
     'bb-cap=bbarchivist.scripts.cap:cap_main',
-    'bb-privlookup=bbarchivist.scripts.privlookup:grab_args'
+    'bb-privlookup=bbarchivist.scripts.privlookup:grab_args',
+    'bb-metachecker=bbarchivist.scripts.metachecker:metachecker_main'
 ]
-setup(name='bbarchivist',
-      version=versioneer.get_version().split("-")[0],
-      cmdclass=versioneer.get_cmdclass(),
-      description='BlackBerry autoloader tools',
-      long_description=readme(),
-      url='http://github.com/thurask/bbarchivist',
-      keywords='blackberry autoloader',
-      author='Thurask',
-      author_email='thuraski@hotmail.com',
-      license='WTFPL v2',
-      classifiers=[
-          "Development Status :: 5 - Production/Stable",
-          "Environment :: Console",
-          "Environment :: MacOS X",
-          "Environment :: Win32 (MS Windows)",
-          "Environment :: X11 Applications",
-          "Intended Audience :: End Users/Desktop",
-          "License :: Freely Distributable",
-          "Operating System :: MacOS",
-          "Operating System :: MacOS :: MacOS X",
-          "Operating System :: Microsoft",
-          "Operating System :: Microsoft :: Windows",
-          "Operating System :: OS Independent",
-          "Operating System :: POSIX",
-          "Operating System :: POSIX :: BSD :: FreeBSD",
-          "Operating System :: POSIX :: BSD :: NetBSD",
-          "Operating System :: POSIX :: BSD :: OpenBSD",
-          "Operating System :: POSIX :: Linux",
-          "Operating System :: Unix",
-          "Programming Language :: Python :: 3.2",
-          "Programming Language :: Python :: 3.3",
-          "Programming Language :: Python :: 3.4",
-          "Programming Language :: Python :: 3.5",
-          "Programming Language :: Python :: 3",
-          "Programming Language :: Python :: 3 :: Only",
-          "Topic :: Utilities"
-      ],
-      packages=find_packages(),
-      zip_safe=False,
-      include_package_data=True,
-      install_requires=cond_requires,
-      entry_points={'console_scripts': scriptlist})
+
+if __name__ == "__main__":
+    setup(name='bbarchivist',
+          version=versioneer.get_version().split("-")[0],
+          cmdclass=versioneer.get_cmdclass(),
+          description='BlackBerry autoloader tools',
+          long_description=readme(),
+          url='http://github.com/thurask/bbarchivist',
+          keywords='blackberry autoloader',
+          author='Thurask',
+          author_email='thuraski@hotmail.com',
+          license='WTFPL v2',
+          classifiers=[
+              "Development Status :: 5 - Production/Stable",
+              "Environment :: Console",
+              "Environment :: MacOS X",
+              "Environment :: Win32 (MS Windows)",
+              "Environment :: X11 Applications",
+              "Intended Audience :: End Users/Desktop",
+              "License :: Freely Distributable",
+              "Operating System :: MacOS",
+              "Operating System :: MacOS :: MacOS X",
+              "Operating System :: Microsoft",
+              "Operating System :: Microsoft :: Windows",
+              "Operating System :: OS Independent",
+              "Operating System :: POSIX",
+              "Operating System :: POSIX :: BSD :: FreeBSD",
+              "Operating System :: POSIX :: BSD :: NetBSD",
+              "Operating System :: POSIX :: BSD :: OpenBSD",
+              "Operating System :: POSIX :: Linux",
+              "Operating System :: Unix",
+              "Programming Language :: Python :: 3.2",
+              "Programming Language :: Python :: 3.3",
+              "Programming Language :: Python :: 3.4",
+              "Programming Language :: Python :: 3.5",
+              "Programming Language :: Python :: 3",
+              "Programming Language :: Python :: 3 :: Only",
+              "Topic :: Utilities"
+          ],
+          packages=find_packages(),
+          zip_safe=False,
+          include_package_data=True,
+          install_requires=cond_requires,
+          entry_points={'console_scripts': scriptlist})
