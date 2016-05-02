@@ -486,7 +486,7 @@ def make_priv_skeleton(method, variant, build):
     """
     Make a Priv autoloader/hash URL.
 
-    :param method: None for regular OS links, "hash256/512" for SHA256 or 512 hash.
+    :param method: None for regular OS links, "sha256/512" for SHA256 or 512 hash.
     :type method: str
 
     :param variant:
@@ -510,7 +510,7 @@ def priv_scanner(build, method=None):
     :param build: Build to check, 3 letters + 3 numbers.
     :type build: str
 
-    :param method: None for regular OS links, "hash256/512" for SHA256 or 512 hash.
+    :param method: None for regular OS links, "sha256/512" for SHA256 or 512 hash.
     :type method: str
     """
     variants = ("common", "vzw-vzw", "na-tmo", "na-att")  # device variants
