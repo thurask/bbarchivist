@@ -22,8 +22,10 @@ class Datafile:
 
 #: App version.
 VERSION = get_versions()["version"].split("-")[0]
+#: Git commit hash.
+COMMITHASH = "g{0}".format(get_versions()["full-revisionid"][0:7])
 #: App version, tag + commits.
-LONGVERSION = "-".join(get_versions()["version"].split("-")[0:3])
+LONGVERSION = "-".join((VERSION, COMMITHASH))
 #: File location.
 LOCATION = os.path.abspath(__file__)
 #: File folder.
