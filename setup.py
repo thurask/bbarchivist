@@ -2,6 +2,7 @@
 from sys import version_info
 from setuptools import setup, find_packages
 from bbarchivist import bbconstants
+import versioneer
 
 
 def readme():
@@ -39,7 +40,8 @@ scriptlist = [
     'bb-privlookup=bbarchivist.scripts.privlookup:grab_args'
 ]
 setup(name='bbarchivist',
-      version=bbconstants.VERSION,
+      version=versioneer.get_version().split("-")[0],
+      cmdclass=versioneer.get_cmdclass(),
       description='BlackBerry autoloader tools',
       long_description=readme(),
       url='http://github.com/thurask/bbarchivist',

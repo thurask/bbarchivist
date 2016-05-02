@@ -42,7 +42,7 @@ def default_parser(name=None, desc=None, flags=None):
         "-v",
         "--version",
         action="version",
-        version="{0} {1}".format(parser.prog, bbconstants.VERSION))
+        version="{0} {1}".format(parser.prog, bbconstants.LONGVERSION))
     if flags is not None:
         if "folder" in flags:
             parser.add_argument(

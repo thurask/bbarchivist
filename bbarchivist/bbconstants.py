@@ -3,6 +3,7 @@
 """This module is used to define constants for the program."""
 
 import os.path  # for producing cap location constant
+from ._version import get_versions
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -20,7 +21,9 @@ class Datafile:
 
 
 #: App version.
-VERSION = "2.4.2"
+VERSION = get_versions()["version"].split("-")[0]
+#: App version, tag + commits.
+LONGVERSION = "-".join(get_versions()["version"].split("-")[0:3])
 #: File location.
 LOCATION = os.path.abspath(__file__)
 #: File folder.

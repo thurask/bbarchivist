@@ -52,6 +52,7 @@
     <Content Include="pytest.ini" />
     <Content Include="README.rst" />
     <Content Include="requirements-devel.txt" />
+    <Content Include="setup.cfg" />
     <Content Include="test_coverage.bat" />
   </ItemGroup>
   <ItemGroup>
@@ -101,6 +102,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="bbarchivist\sqlutils.py" />
+    <Compile Include="bbarchivist\_version.py" />
     <Compile Include="download_dats.py">
       <SubType>Code</SubType>
     </Compile>
@@ -126,6 +128,7 @@
     <Compile Include="tests\__init__.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="versioneer.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bbarchivist" />
