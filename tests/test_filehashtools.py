@@ -75,7 +75,7 @@ class TestClassFilehashtools:
         """
         with mock.patch("hashlib.new", mock.MagicMock(side_effect=ValueError)):
             bf.hs0("tempfile.txt")
-            assert "SHA0 HASH FAILED" in capsys.readouterr()[0]
+            assert "SHA HASH FAILED" in capsys.readouterr()[0]
 
     def test_sha1(self):
         """

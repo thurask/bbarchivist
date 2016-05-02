@@ -158,30 +158,6 @@ def hs512(filepath, blocksize=16 * 1024 * 1024):
     return sha512.hexdigest()
 
 
-def hm4(filepath, blocksize=16 * 1024 * 1024):
-    """
-    Return MD4 hash of a file; depends on system SSL library.
-
-    :param filepath: File you wish to verify.
-    :type filepath: str
-
-    :param blocksize: How much of file to read at once.
-    :type blocksize: int
-    """
-    try:
-        md4 = hashlib.new('md4')
-        with open(filepath, 'rb') as file:
-            while True:
-                data = file.read(blocksize)
-                if not data:
-                    break
-                md4.update(data)
-        return md4.hexdigest()
-    except ValueError as exc:
-        print(str(exc))
-        print("MD4 HASH FAILED:\nIS IT AVAILABLE?")
-
-
 def hm5(filepath, blocksize=16 * 1024 * 1024):
     """
     Return MD5 hash of a file.
@@ -202,6 +178,46 @@ def hm5(filepath, blocksize=16 * 1024 * 1024):
     return md5.hexdigest()
 
 
+def ssl_hash(filepath, method, blocksize=16 * 1024 * 1024):
+    """
+    Return SSL-library dependent hash of a file.
+
+    :param filepath: File you wish to verify.
+    :type filepath: str
+
+    :param method: Method to use: algorithms in hashlib that are not guaranteed.
+    :type method: str
+
+    :param blocksize: How much of file to read at once.
+    :type blocksize: int
+    """
+    try:
+        engine = hashlib.new(method)
+        with open(filepath, 'rb') as file:
+            while True:
+                data = file.read(blocksize)
+                if not data:
+                    break
+                engine.update(data)
+        return engine.hexdigest()
+    except ValueError as exc:
+        print(str(exc))
+        print("{0} HASH FAILED".format(method.upper()))
+
+
+def hm4(filepath, blocksize=16 * 1024 * 1024):
+    """
+    Return MD4 hash of a file; depends on system SSL library.
+
+    :param filepath: File you wish to verify.
+    :type filepath: str
+
+    :param blocksize: How much of file to read at once.
+    :type blocksize: int
+    """
+    return ssl_hash(filepath, "md4", blocksize)
+
+
 def hr160(filepath, blocksize=16 * 1024 * 1024):
     """
     Return RIPEMD160 hash of a file; depends on system SSL library.
@@ -212,18 +228,7 @@ def hr160(filepath, blocksize=16 * 1024 * 1024):
     :param blocksize: How much of file to read at once.
     :type blocksize: int
     """
-    try:
-        r160 = hashlib.new('ripemd160')
-        with open(filepath, 'rb') as file:
-            while True:
-                data = file.read(blocksize)
-                if not data:
-                    break
-                r160.update(data)
-        return r160.hexdigest()
-    except ValueError as exc:
-        print(str(exc))
-        print("RIPEMD160 HASH FAILED:\nIS IT AVAILABLE?")
+    return ssl_hash(filepath, "ripemd160", blocksize)
 
 
 def hwp(filepath, blocksize=16 * 1024 * 1024):
@@ -236,18 +241,7 @@ def hwp(filepath, blocksize=16 * 1024 * 1024):
     :param blocksize: How much of file to read at once.
     :type blocksize: int
     """
-    try:
-        wpool = hashlib.new('whirlpool')
-        with open(filepath, 'rb') as file:
-            while True:
-                data = file.read(blocksize)
-                if not data:
-                    break
-                wpool.update(data)
-        return wpool.hexdigest()
-    except ValueError as exc:
-        print(str(exc))
-        print("WHIRLPOOL HASH FAILED:\nIS IT AVAILABLE?")
+    return ssl_hash(filepath, "whirlpool", blocksize)
 
 
 def hs0(filepath, blocksize=16 * 1024 * 1024):
@@ -260,18 +254,7 @@ def hs0(filepath, blocksize=16 * 1024 * 1024):
     :param blocksize: How much of file to read at once.
     :type blocksize: int
     """
-    try:
-        sha0 = hashlib.new('sha')
-        with open(filepath, 'rb') as file:
-            while True:
-                data = file.read(blocksize)
-                if not data:
-                    break
-                sha0.update(data)
-        return sha0.hexdigest()
-    except ValueError as exc:
-        print(str(exc))
-        print("SHA0 HASH FAILED:\nIS IT AVAILABLE?")
+    return ssl_hash(filepath, "sha", blocksize)
 
 
 def gpgfile(filepath, gpginst, key=None, pword=None):

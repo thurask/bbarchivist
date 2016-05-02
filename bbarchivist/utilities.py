@@ -246,10 +246,7 @@ def get_seven_zip(talkative=False):
     :param talkative: Whether to output to screen. False by default.
     :type talkative: bool
     """
-    if is_windows():
-        return win_seven_zip(talkative)
-    else:
-        return "7za"
+    return win_seven_zip(talkative) if is_windows() else "7za"
 
 
 def win_seven_zip(talkative=False):
