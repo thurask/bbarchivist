@@ -19,6 +19,8 @@ cond_requires = [
 ]
 if version_info[1] < 3:  # 3.2 and under
     cond_requires.append('shutilwhich')
+else:  # 3.3+
+    cond_requires.append('simplejson')
 scriptlist = [
     'bb-archivist=bbarchivist.scripts.archivist:grab_args',
     'bb-lazyloader=bbarchivist.scripts.lazyloader:grab_args',

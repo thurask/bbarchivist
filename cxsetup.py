@@ -31,7 +31,7 @@ if __name__ == "__main__":
     # fine tuning.
     localdir = join(dirname(abspath(__file__)), r"bbarchivist\scripts")
     sq3dll = join(exec_prefix, "DLLs", "sqlite3.dll")
-    build_options = dict(packages=["requests", "bbarchivist", "bs4", "gnupg"],
+    build_options = dict(packages=["requests", "bbarchivist", "bs4", "gnupg", "simplejson"],
                          includes=[],
                          include_files=[
                              ("version.txt", "version.txt"),

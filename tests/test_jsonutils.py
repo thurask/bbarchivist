@@ -2,7 +2,10 @@
 """Test the jsonutils module."""
 
 import os
-import json
+try:
+    import simplejson as json
+except ImportError:
+    import json
 from shutil import rmtree
 import pytest
 import bbarchivist.jsonutils as bj

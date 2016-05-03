@@ -2,7 +2,10 @@
 """This module is used for JSON tools."""
 
 import os  # path work
-import json  # duh
+try:
+    import simplejson as json
+except ImportError:
+    import json
 import glob  # filenames
 import sys  # frozen status
 from bbarchivist import bbconstants  # file location
