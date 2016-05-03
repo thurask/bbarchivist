@@ -1,6 +1,6 @@
 README
 ======
-    
+
 .. image:: https://travis-ci.org/thurask/bbarchivist.svg?branch=master
     :target: https://travis-ci.org/thurask/bbarchivist
     :alt: Travis CI
@@ -61,6 +61,9 @@ libraries. GPG support requires the `python-gnupg <https://pythonhosted.org/pyth
 
 Python 3.2 further requires `shutilwhich <https://pypi.python.org/pypi/shutilwhich/>`__.
 Installation of shutilwhich on Python 3.3+ has no effect, so it's unnecessary.
+
+The `simplejson <http://simplejson.readthedocs.io/en/latest/>`__ module is installed on Python 3.3+, for improved
+performance with dealing with JSON.
 
 External Programs
 ~~~~~~~~~~~~~~~~~
