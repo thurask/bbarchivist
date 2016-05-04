@@ -28,7 +28,7 @@ def download(url, output_directory=None):
     with open(fname, "wb") as file:
         req = requests.get(url, stream=True)
         if req.status_code == 200:  # 200 OK
-            print("DOWNLOADING {0} [{1}]".format(lfname, fsize))
+            print("DOWNLOADING {0}".format(lfname))
             for chunk in req.iter_content(chunk_size=1024):
                 file.write(chunk)
         else:
