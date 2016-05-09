@@ -469,11 +469,15 @@ def ptcrb_item_cleaner(item):
     return item
 
 
-def kernel_scraper():
+def kernel_scraper(utils=False):
     """
     Scrape BlackBerry's GitHub kernel repo for available branches.
+    
+    :param utils: Check android-utils repo instead of android-linux-kernel. Default is False.
+    :type utils: bool
     """
-    url = "https://github.com/blackberry/android-linux-kernel/branches/all"
+    repo = "android-utils" if utils else "android-linux-kernel"
+    url = "https://github.com/blackberry/{0}/branches/all".format(repo)
     os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
     req = requests.get(url)
     soup = BeautifulSoup(req.content, 'html.parser')

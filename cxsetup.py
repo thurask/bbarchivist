@@ -55,7 +55,8 @@ if __name__ == "__main__":
                              "numpy",
                              "matplotlib",
                              "PIL",
-                             "tk"
+                             "tk",
+                             "tkinter"
                              ],
                          include_msvcr=[True],
                          build_exe="lazyloader",
