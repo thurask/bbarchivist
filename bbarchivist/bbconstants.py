@@ -3,6 +3,7 @@
 """This module is used to define constants for the program."""
 
 import os.path  # for producing cap location constant
+import sys
 from ._version import get_versions
 
 __author__ = "Thurask"
@@ -20,12 +21,22 @@ class Datafile:
         self.size = size
 
 
-#: App version.
-VERSION = get_versions()["version"].split("-")[0]
-#: Git commit hash.
-COMMITHASH = "g{0}".format(get_versions()["full-revisionid"][0:7])
-#: App version, tag + commits.
-LONGVERSION = "-".join((VERSION, COMMITHASH))
+if not getattr(sys, 'frozen', False):  # regular
+    #: App version.
+    VERSION = get_versions()["version"].split("-")[0]
+    #: Git commit hash.
+    COMMITHASH = "g{0}".format(get_versions()["full-revisionid"][0:7])
+    #: App version, tag + commits.
+    LONGVERSION = "-".join((VERSION, COMMITHASH))
+else:  # cx_freeze support
+    with open("longversion.txt", "r") as longv:
+        ver = longv.read().split("-")
+    #: App version.
+    VERSION = ver[0]
+    #: Git commit hash.
+    COMMITHASH = ver[1]
+    #: App version, tag + commits.
+    LONGVERSION = "-".join(ver)
 #: File location.
 LOCATION = os.path.abspath(__file__)
 #: File folder.
