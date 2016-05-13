@@ -537,7 +537,7 @@ class TestClassScriptutilsArguments:
         """
         Test if parser has the epilog set.
         """
-        assert self.parser.epilog == "http://github.com/thurask/bbarchivist"
+        assert self.parser.epilog == "https://github.com/thurask/bbarchivist"
 
 
 class TestClassScriptutilsIntegrity:

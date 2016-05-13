@@ -152,7 +152,7 @@ def pa_good_mock(url, request):
     """
     Mock for Android autoloader lookup, best case.
     """
-    thebody = "http://bbapps.download.blackberry.com/Priv/bbry_qc8992_autoloader_user-common-AAD250.zip"
+    thebody = "https://bbapps.download.blackberry.com/Priv/bbry_qc8992_autoloader_user-common-AAD250.zip"
     return {'status_code': 200, 'content': thebody}
 
 
@@ -160,7 +160,7 @@ def pa_bad_mock(url, request):
     """
     Mock for Android autoloader lookup, worst case.
     """
-    thebody = "http://bbapps.download.blackberry.com/Priv/bbry_qc8992_autoloader_user-common-AAD250.zip"
+    thebody = "https://bbapps.download.blackberry.com/Priv/bbry_qc8992_autoloader_user-common-AAD250.zip"
     return {'status_code': 404, 'content': thebody}
 
 def pa_hash_mock(url, request):

@@ -63,7 +63,7 @@ def default_parser(name=None, desc=None, flags=None):
     parser = argparse.ArgumentParser(
         prog=name,
         description=desc,
-        epilog="http://github.com/thurask/bbarchivist")
+        epilog="https://github.com/thurask/bbarchivist")
     parser.add_argument(
         "-v",
         "--version",

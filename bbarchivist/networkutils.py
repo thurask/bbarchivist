@@ -472,7 +472,7 @@ def ptcrb_item_cleaner(item):
 def kernel_scraper(utils=False):
     """
     Scrape BlackBerry's GitHub kernel repo for available branches.
-    
+
     :param utils: Check android-utils repo instead of android-linux-kernel. Default is False.
     :type utils: bool
     """
@@ -501,7 +501,7 @@ def make_priv_skeleton(method, variant, build):
     """
     folder = {"vzw-vzw": "verizon", "na-att": "att", "na-tmo": "tmo", "common": "default"}
     if method is None:
-        skel = "http://bbapps.download.blackberry.com/Priv/bbry_qc8992_autoloader_user-{0}-{1}.zip".format(variant, build.upper())
+        skel = "https://bbapps.download.blackberry.com/Priv/bbry_qc8992_autoloader_user-{0}-{1}.zip".format(variant, build.upper())
     else:
         skel = "http://us.blackberry.com/content/dam/bbfoundation/hashfiles_priv/{2}/bbry_qc8992_autoloader_user-{0}-{1}.{3}sum".format(variant, build.upper(), folder[variant], method.lower())
     return skel

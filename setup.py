@@ -48,7 +48,7 @@ if __name__ == "__main__":
           cmdclass=versioneer.get_cmdclass(),
           description='BlackBerry autoloader tools',
           long_description=readme(),
-          url='http://github.com/thurask/bbarchivist',
+          url='https://github.com/thurask/bbarchivist',
           keywords='blackberry autoloader',
           author='Thurask',
           author_email='thuraski@hotmail.com',

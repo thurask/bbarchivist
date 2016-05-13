@@ -14,7 +14,7 @@ README
     :alt: Coveralls.io
 
 .. image:: https://readthedocs.org/projects/bbarchivist/badge/?version=latest
-    :target: http://bbarchivist.readthedocs.io/en/latest/?badge=latest
+    :target: https://bbarchivist.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
 A Python 3.2+ package for various BlackBerry 10/Priv-related functions and scripts.
@@ -56,13 +56,13 @@ Python Libraries
 
 This library requires the
 `Requests <http://docs.python-requests.org/en/latest/user/install/>`__
-and `Beautiful Soup 4 <http://www.crummy.com/software/BeautifulSoup/#Download>`__
+and `Beautiful Soup 4 <https://www.crummy.com/software/BeautifulSoup/#Download>`__
 libraries. GPG support requires the `python-gnupg <https://pythonhosted.org/python-gnupg/index.html>`__ library.
 
 Python 3.2 further requires `shutilwhich <https://pypi.python.org/pypi/shutilwhich/>`__.
 Installation of shutilwhich on Python 3.3+ has no effect, so it's unnecessary.
 
-The `simplejson <http://simplejson.readthedocs.io/en/latest/>`__ module is installed on Python 3.3+, for improved
+The `simplejson <https://simplejson.readthedocs.io/en/latest/>`__ module is installed on Python 3.3+, for improved
 performance with dealing with JSON.
 
 External Programs
@@ -72,20 +72,20 @@ Copies of cap.exe and cfp.exe are included.
 Windows can directly access both .exe files through the :code:`bb-cap` and :code:`bb-cfp` frontends.
 
 7-Zip compression (default) uses
-`p7zip <http://sourceforge.net/projects/p7zip/>`__
+`p7zip <https://sourceforge.net/projects/p7zip/>`__
 (Linux/Mac/BSD) or `7-Zip <http://www.7-zip.org/download.html>`__ (Windows).
 Zip and tar.xxx compression don't require external programs.
 
 GPG support also requires some form of GPG client installed:
 
-- Windows: `Gpg4Win <http://www.gpg4win.org>`__.
+- Windows: `Gpg4Win <https://www.gpg4win.org>`__.
 - Mac: `GPGTools <https://gpgtools.org>`__.
 - Linux/BSD: `GnuPG <https://www.gnupg.org>`__, if not already installed.
 
 Testing
 -------
 
-If you want to run the tests yourself, you'll also need `pytest <http://pytest.org/latest/>`__
+If you want to run the tests yourself, you'll also need `pytest <https://pytest.org/latest/>`__
 and `httmock <https://github.com/patrys/httmock>`__. Install from the :code:`requirements-devel.txt` file with pip.
 
 If you're testing on Python 3.2, install the `mock backport <https://pypi.python.org/pypi/mock>`__ as well.
@@ -107,7 +107,7 @@ If you wish to contribute to this project, please do the following:
 Documentation
 -------------
 
-Online documentation is hosted at `ReadTheDocs <http://bbarchivist.readthedocs.io>`__.
+Online documentation is hosted at `ReadTheDocs <https://bbarchivist.readthedocs.io>`__.
 
 Docs use Sphinx for automatic generation.
 
