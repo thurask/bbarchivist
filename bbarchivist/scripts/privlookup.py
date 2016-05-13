@@ -25,6 +25,7 @@ def grab_args():
             "floor",
             help="Start of search range",
             default=0,
+            nargs="?",
             type=int,
             choices=range(0, 999),
             metavar="INT")
@@ -32,6 +33,7 @@ def grab_args():
             "ceil",
             help="End of search range",
             default=999,
+            nargs="?",
             type=int,
             choices=range(1, 1000),
             metavar="INT")
