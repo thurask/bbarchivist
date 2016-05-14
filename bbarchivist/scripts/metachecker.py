@@ -20,9 +20,9 @@ def metachecker_main():
     runt = networkutils.ndk_metadata() + networkutils.runtime_metadata()
     simu = networkutils.sim_metadata()
     print("RUNTIME METADATA")
-    scriptutils.lprint(runt)
+    scriptutils.lprint(sorted(runt))
     print("\nSIMULATOR METADATA")
-    scriptutils.lprint(simu)
+    scriptutils.lprint(sorted(simu))
     scriptutils.enter_to_exit(True)
 
 
