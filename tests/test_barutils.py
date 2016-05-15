@@ -158,16 +158,14 @@ class TestClassBarutilsCompression:
         Test zip compression.
         """
         bb.compress(os.getcwd(), "zip")
-        smeg = bb.zip_verify("Z10_BIGLOADER.zip")
-        assert smeg
+        assert bb.zip_verify("Z10_BIGLOADER.zip")
 
     def test_compress_zip_fail(self):
         """
         Test zip compression failure.
         """
         with mock.patch("bbarchivist.barutils.bar_tester", mock.MagicMock(return_value="Z10_BIGLOADER.zip")):
-            smeg = bb.zip_verify("Z10_BIGLOADER.zip")
-            assert not smeg
+            assert not bb.zip_verify("Z10_BIGLOADER.zip")
 
     def test_compress_tar(self):
         """
@@ -183,7 +181,7 @@ class TestClassBarutilsCompression:
         Test tar packing failure.
         """
         with mock.patch("tarfile.TarFile.getmembers", mock.MagicMock(return_value=False)):
-            assert not bb.zip_verify("Z10_BIGLOADER.tar")
+            assert not bb.tar_verify("Z10_BIGLOADER.tar")
 
     def test_compress_gzip(self):
         """
@@ -199,7 +197,7 @@ class TestClassBarutilsCompression:
         Test gzip compression failure.
         """
         with mock.patch("tarfile.TarFile.getmembers", mock.MagicMock(return_value=False)):
-            assert not bb.zip_verify("Z10_BIGLOADER.tar.gz")
+            assert not bb.tgz_verify("Z10_BIGLOADER.tar.gz")
 
     def test_compress_bz2(self):
         """
@@ -215,7 +213,7 @@ class TestClassBarutilsCompression:
         Test bz2 compression failure.
         """
         with mock.patch("tarfile.TarFile.getmembers", mock.MagicMock(return_value=False)):
-            assert not bb.zip_verify("Z10_BIGLOADER.tar.bz2")
+            assert not bb.tbz_verify("Z10_BIGLOADER.tar.bz2")
 
     def test_compress_lzma(self):
         """
@@ -237,7 +235,7 @@ class TestClassBarutilsCompression:
             pass
         else:
             with mock.patch("tarfile.TarFile.getmembers", mock.MagicMock(return_value=False)):
-                assert not bb.zip_verify("Z10_BIGLOADER.tar.xz")
+                assert not bb.txz_verify("Z10_BIGLOADER.tar.xz")
 
     def test_compress_suite(self):
         """
@@ -344,6 +342,32 @@ class TestClassBarutilsMethods:
             assert bb.filter_method("txz", None) == "zip"
 
 
+class TestClassBarutilsSmartTarfile:
+    """
+    Test verification that a file is a valid tar.xxx file.
+    """
+    def test_is_tarfile(self):
+        """
+        Test if a file is a tar.xxx file.
+        """
+        with mock.patch('tarfile.is_tarfile', mock.MagicMock(return_value=True)):
+            assert bb.smart_is_tarfile("BADTAR.tar")
+
+    def test_is_tarfile_fail(self):
+        """
+        Test if a file is not a tar.xxx file.
+        """
+        with mock.patch('tarfile.is_tarfile', mock.MagicMock(return_value=False)):
+            assert not bb.smart_is_tarfile("BADTAR.tar")
+
+    def test_is_tarfile_except(self):
+        """
+        Test if a file raises an exception when checking.
+        """
+        with mock.patch('tarfile.is_tarfile', mock.MagicMock(side_effect=OSError)):
+            assert not bb.smart_is_tarfile("BADTAR.tar")
+
+
 class TestClassBarutilsVerifier:
     """
     Test verification of archives.
@@ -424,7 +448,7 @@ class TestClassBarutilsVerifier:
         """
         Test tar.gz verification failure.
         """
-        with mock.patch('tarfile.is_tarfile', mock.MagicMock(return_value=False)):
+        with mock.patch('bbarchivist.barutils.smart_is_tarfile', mock.MagicMock(return_value=False)):
             verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
             filepath = os.path.join(verdir, "Q10.tar.gz")
             assert not bb.tgz_verify(filepath)
@@ -443,7 +467,7 @@ class TestClassBarutilsVerifier:
         """
         Test tar.bz2 verification failure.
         """
-        with mock.patch('tarfile.is_tarfile', mock.MagicMock(return_value=False)):
+        with mock.patch('bbarchivist.barutils.smart_is_tarfile', mock.MagicMock(return_value=False)):
             verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
             filepath = os.path.join(verdir, "Q10.tar.bz2")
             assert not bb.tbz_verify(filepath)
@@ -468,7 +492,7 @@ class TestClassBarutilsVerifier:
         if version_info[1] < 3:
             pass
         else:
-            with mock.patch('tarfile.is_tarfile', mock.MagicMock(return_value=False)):
+            with mock.patch('bbarchivist.barutils.smart_is_tarfile', mock.MagicMock(return_value=False)):
                 verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
                 filepath = os.path.join(verdir, "Q10.tar.xz")
                 assert not bb.txz_verify(filepath)

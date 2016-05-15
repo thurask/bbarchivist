@@ -56,8 +56,12 @@
     <Content Include="test_coverage.bat" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="bbarchivist\barutils.py" />
-    <Compile Include="bbarchivist\bbconstants.py" />
+    <Compile Include="bbarchivist\barutils.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="bbarchivist\bbconstants.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="bbarchivist\compat.py">
       <SubType>Code</SubType>
     </Compile>
@@ -67,8 +71,12 @@
     <Compile Include="bbarchivist\dummy.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="bbarchivist\filehashtools.py" />
-    <Compile Include="bbarchivist\loadergen.py" />
+    <Compile Include="bbarchivist\filehashtools.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="bbarchivist\loadergen.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="bbarchivist\scripts\cap.py">
       <SubType>Code</SubType>
     </Compile>
@@ -93,60 +101,126 @@
     <Compile Include="bbarchivist\scriptutils.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="bbarchivist\networkutils.py" />
-    <Compile Include="bbarchivist\pseudocap.py" />
-    <Compile Include="bbarchivist\scripts\archivist.py" />
-    <Compile Include="bbarchivist\scripts\autolookup.py" />
-    <Compile Include="bbarchivist\scripts\pseudocap.py" />
-    <Compile Include="bbarchivist\scripts\carrierchecker.py" />
-    <Compile Include="bbarchivist\scripts\certchecker.py" />
-    <Compile Include="bbarchivist\scripts\escreens.py" />
-    <Compile Include="bbarchivist\scripts\filehasher.py" />
-    <Compile Include="bbarchivist\scripts\gpgrunner.py" />
+    <Compile Include="bbarchivist\networkutils.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="bbarchivist\pseudocap.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="bbarchivist\scripts\archivist.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="bbarchivist\scripts\autolookup.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="bbarchivist\scripts\pseudocap.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="bbarchivist\scripts\carrierchecker.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="bbarchivist\scripts\certchecker.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="bbarchivist\scripts\escreens.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="bbarchivist\scripts\filehasher.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="bbarchivist\scripts\gpgrunner.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="bbarchivist\scripts\kompressor.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="bbarchivist\scripts\lazyloader.py" />
-    <Compile Include="bbarchivist\scripts\linkgen.py" />
-    <Compile Include="bbarchivist\scripts\sqlexport.py" />
-    <Compile Include="bbarchivist\scripts\__init__.py" />
+    <Compile Include="bbarchivist\scripts\lazyloader.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="bbarchivist\scripts\linkgen.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="bbarchivist\scripts\sqlexport.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="bbarchivist\scripts\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="bbarchivist\smtputils.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="bbarchivist\sqlutils.py" />
-    <Compile Include="bbarchivist\_version.py" />
+    <Compile Include="bbarchivist\sqlutils.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="bbarchivist\_version.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="download_dats.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="tests\test_barutils.py" />
+    <Compile Include="tests\test_barutils.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="tests\test_compat.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="tests\test_dummy.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="tests\test_filehashtools.py" />
+    <Compile Include="tests\test_filehashtools.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="tests\test_jsonutils.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="tests\test_loadergen.py" />
-    <Compile Include="tests\test_networkutils.py" />
-    <Compile Include="tests\test_pseudocap.py" />
-    <Compile Include="tests\test_scriptutils.py" />
-    <Compile Include="tests\test_smtputils.py" />
-    <Compile Include="tests\test_sqlutils.py" />
-    <Compile Include="tests\test_textgenerator.py" />
-    <Compile Include="tests\test_utilities.py" />
-    <Compile Include="bbarchivist\textgenerator.py" />
-    <Compile Include="bbarchivist\utilities.py" />
-    <Compile Include="bbarchivist\__init__.py" />
-    <Compile Include="cxsetup.py" />
-    <Compile Include="docs\conf.py" />
-    <Compile Include="setup.py" />
+    <Compile Include="tests\test_loadergen.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="tests\test_networkutils.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="tests\test_pseudocap.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="tests\test_scriptutils.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="tests\test_smtputils.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="tests\test_sqlutils.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="tests\test_textgenerator.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="tests\test_utilities.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="bbarchivist\textgenerator.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="bbarchivist\utilities.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="bbarchivist\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="cxsetup.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="docs\conf.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="setup.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="tests\__init__.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="versioneer.py" />
+    <Compile Include="versioneer.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bbarchivist" />

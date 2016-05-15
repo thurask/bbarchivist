@@ -112,6 +112,21 @@ def bar_tester(filepath):
     return brokens
 
 
+def smart_is_tarfile(filepath):
+    """
+    :func:`tarfile.is_tarfile` plus error handling.
+
+    :param filepath: Filename.
+    :type filepath: str
+    """
+    try:
+        istar = tarfile.is_tarfile(filepath)
+    except (FileNotFoundError, OSError):
+        return False
+    else:
+        return istar
+
+
 @decorators.timer
 def sz_compress(filepath, filename, szexe=None, strength=5, errors=False):
     """
@@ -191,7 +206,7 @@ def tar_verify(filepath):
     :param filepath: Filename.
     :type filepath: str
     """
-    if tarfile.is_tarfile(filepath):
+    if smart_is_tarfile(filepath):
         with tarfile.open(filepath, "r:") as thefile:
             mems = thefile.getmembers()
         return False if not mems else True
@@ -224,7 +239,7 @@ def tgz_verify(filepath):
     :param filepath: Filename.
     :type filepath: str
     """
-    if tarfile.is_tarfile(filepath):
+    if smart_is_tarfile(filepath):
         with tarfile.open(filepath, "r:gz") as thefile:
             mems = thefile.getmembers()
         return False if not mems else True
@@ -257,7 +272,7 @@ def tbz_verify(filepath):
     :param filepath: Filename.
     :type filepath: str
     """
-    if tarfile.is_tarfile(filepath):
+    if smart_is_tarfile(filepath):
         with tarfile.open(filepath, "r:bz2") as thefile:
             mems = thefile.getmembers()
         return False if not mems else True
@@ -290,7 +305,7 @@ def txz_verify(filepath):
     if sys.version_info[1] < 3:
         pass
     else:
-        if tarfile.is_tarfile(filepath):
+        if smart_is_tarfile(filepath):
             with tarfile.open(filepath, "r:xz") as thefile:
                 mems = thefile.getmembers()
             return False if not mems else True
