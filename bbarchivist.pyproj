@@ -58,6 +58,15 @@
   <ItemGroup>
     <Compile Include="bbarchivist\barutils.py" />
     <Compile Include="bbarchivist\bbconstants.py" />
+    <Compile Include="bbarchivist\compat.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="bbarchivist\decorators.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="bbarchivist\dummy.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="bbarchivist\filehashtools.py" />
     <Compile Include="bbarchivist\loadergen.py" />
     <Compile Include="bbarchivist\scripts\cap.py">
@@ -110,6 +119,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="tests\test_barutils.py" />
+    <Compile Include="tests\test_compat.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="tests\test_dummy.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="tests\test_filehashtools.py" />
     <Compile Include="tests\test_jsonutils.py">
       <SubType>Code</SubType>

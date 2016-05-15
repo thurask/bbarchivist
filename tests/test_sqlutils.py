@@ -211,8 +211,10 @@ class TestClassSQLUtils:
                     if idx == 1:
                         assert "120.OSVERSION" in row[0]
             with mock.patch("sqlite3.connect", mock.MagicMock(side_effect=sqlite3.Error)):
-                bs.export_sql_db()
-                assert "\n" in capsys.readouterr()[0]
+                with mock.patch("bbarchivist.sqlutils.prepare_path", mock.MagicMock(return_value=sqlpath)):
+                    with mock.patch("os.path.exists", mock.MagicMock(return_value=True)):
+                        bs.export_sql_db()
+                        assert "\n" in capsys.readouterr()[0]
             with mock.patch("os.path.exists", mock.MagicMock(return_value=False)):
                 with pytest.raises(SystemExit):
                     bs.export_sql_db()
@@ -247,8 +249,10 @@ class TestClassSQLUtils:
                     rellist = bs.list_sw_releases(avail=True)
             assert rellist[0] == ("120.OSVERSION", "130.SWVERSION", "available", "1970 January 1")
             with mock.patch("sqlite3.connect", mock.MagicMock(side_effect=sqlite3.Error)):
-                bs.list_sw_releases()
-                assert "\n" in capsys.readouterr()[0]
+                with mock.patch("bbarchivist.sqlutils.prepare_path", mock.MagicMock(return_value=sqlpath)):
+                    with mock.patch("os.path.exists", mock.MagicMock(return_value=True)):
+                        bs.list_sw_releases()
+                        assert "\n" in capsys.readouterr()[0]
             with mock.patch("os.path.exists", mock.MagicMock(return_value=False)):
                 with pytest.raises(SystemExit):
                     bs.list_sw_releases()
