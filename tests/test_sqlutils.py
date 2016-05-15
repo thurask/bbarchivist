@@ -203,7 +203,8 @@ class TestClassSQLUtils:
             except sqlite3.Error:
                 assert False
             with mock.patch("bbarchivist.sqlutils.prepare_path", mock.MagicMock(return_value=sqlpath)):
-                bs.export_sql_db()
+                with mock.patch("os.path.exists", mock.MagicMock(return_value=True)):
+                    bs.export_sql_db()
             with open(csvpath, 'r', newline="\n") as csvfile:
                 csvr = csv.reader(csvfile, dialect='excel')
                 for idx, row in enumerate(csvr):
@@ -242,7 +243,8 @@ class TestClassSQLUtils:
             except sqlite3.Error:
                 assert False
             with mock.patch("bbarchivist.sqlutils.prepare_path", mock.MagicMock(return_value=sqlpath)):
-                rellist = bs.list_sw_releases(avail=True)
+                with mock.patch("os.path.exists", mock.MagicMock(return_value=True)):
+                    rellist = bs.list_sw_releases(avail=True)
             assert rellist[0] == ("120.OSVERSION", "130.SWVERSION", "available", "1970 January 1")
             with mock.patch("sqlite3.connect", mock.MagicMock(side_effect=sqlite3.Error)):
                 bs.list_sw_releases()
