@@ -6,6 +6,7 @@ from bbarchivist import networkutils  # lookup
 from bbarchivist import utilities  # incrementer
 from bbarchivist import smtputils  # email
 from bbarchivist import scriptutils  # default parser
+from bbarchivist import decorators  # Ctrl+C wrapper
 from bbarchivist.scripts import linkgen  # automatic generation
 
 __author__ = "Thurask"
@@ -107,7 +108,7 @@ def grab_args():
         scriptutils.enter_to_exit(True)
 
 
-@utilities.wrap_keyboard_except
+@decorators.wrap_keyboard_except
 def autolookup_main(osversion, loop=False, log=False,
                     autogen=False, inc=3, sql=False,
                     quiet=False, ceiling=9996, mailer=False):

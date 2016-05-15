@@ -5,6 +5,7 @@ import os  # filesystem read
 import sys  # load arguments
 from bbarchivist import scriptutils  # script stuff
 from bbarchivist import utilities  # input validation
+from bbarchivist import decorators  # timer
 from bbarchivist import barutils  # file/folder work
 from bbarchivist import networkutils  # download/lookup
 from bbarchivist import loadergen  # cap, in Python
@@ -15,7 +16,7 @@ __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015-2016 Thurask"
 
 
-@utilities.timer
+@decorators.timer
 def grab_args():
     """
     Parse arguments from argparse/questionnaire.

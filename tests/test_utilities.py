@@ -113,7 +113,7 @@ class TestClassUtilities7z:
         Test availability of 7z, best case.
         """
         with mock.patch('platform.system', mock.MagicMock(return_value="Wandows")):
-            with mock.patch("bbarchivist.utilities.where_which", mock.MagicMock(return_value="/usr/bin/7za")):
+            with mock.patch("bbarchivist.compat.where_which", mock.MagicMock(return_value="/usr/bin/7za")):
                 assert bu.prep_seven_zip(True)
 
     def test_prep_seven_zip_bad(self):
@@ -121,7 +121,7 @@ class TestClassUtilities7z:
         Test availability of 7z, worst case.
         """
         with mock.patch('platform.system', mock.MagicMock(return_value="Wandows")):
-            with mock.patch("bbarchivist.utilities.where_which", mock.MagicMock(return_value=None)):
+            with mock.patch("bbarchivist.compat.where_which", mock.MagicMock(return_value=None)):
                 assert not bu.prep_seven_zip(True)
 
     def test_prep_seven_zip_which(self):
@@ -129,7 +129,7 @@ class TestClassUtilities7z:
         Test availability of 7z, no which.
         """
         with mock.patch('platform.system', mock.MagicMock(return_value="Wandows")):
-            with mock.patch("bbarchivist.utilities.where_which", mock.MagicMock(side_effect=ImportError)):
+            with mock.patch("bbarchivist.compat.where_which", mock.MagicMock(side_effect=ImportError)):
                 assert not bu.prep_seven_zip(True)
 
 
@@ -170,7 +170,7 @@ class TestClassUtilitiesPlatform:
         """
         Test core count.
         """
-        with mock.patch('bbarchivist.utilities.enum_cpus', mock.MagicMock(return_value="123")):
+        with mock.patch('bbarchivist.compat.enum_cpus', mock.MagicMock(return_value="123")):
             assert bu.get_core_count() == "123"
 
 
@@ -251,13 +251,6 @@ class TestClassUtilities:
         """
         assert os.path.dirname(bu.grab_cfp()) == os.getcwd()
 
-    def test_where_which(self):
-        """
-        Test implementation of where.
-        """
-        with mock.patch("shutil.which", mock.MagicMock(return_value="here")):
-            assert bu.where_which("woodo") == "here"
-
     def test_str2bool_good(self):
         """
         Test checking of input parsing, best case.
@@ -310,18 +303,6 @@ class TestClassUtilities:
         sys.frozen = False
         with mock.patch("os.path.expanduser", mock.MagicMock(return_value=os.getcwd())):
             assert "temp_utilities" in bu.prep_logfile()
-
-
-class TestClassUtilitiesStdout:
-    """
-    Test UselessStdout and related things.
-    """
-
-    def test_uselessstdout_tty(self):
-        """
-        Test if UselessStdout is a terminal.
-        """
-        assert bu.UselessStdout.isatty()
 
     def test_spinner_interrupt(self):
         """

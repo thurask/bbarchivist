@@ -12,6 +12,7 @@ import hashlib   # get hashes
 import configparser  # config parsing, duh
 from bbarchivist import utilities  # platform determination
 from bbarchivist import bbconstants  # premade stuff
+from bbarchivist import decorators  # timer
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -111,7 +112,7 @@ def bar_tester(filepath):
     return brokens
 
 
-@utilities.timer
+@decorators.timer
 def sz_compress(filepath, filename, szexe=None, strength=5, errors=False):
     """
     Pack a file into a LZMA2 7z file.
@@ -168,7 +169,7 @@ def sz_verify(filepath, szexe=None):
     return excode == 0
 
 
-@utilities.timer
+@decorators.timer
 def tar_compress(filepath, filename):
     """
     Pack a file into an uncompressed tarfile.
@@ -198,7 +199,7 @@ def tar_verify(filepath):
         return False
 
 
-@utilities.timer
+@decorators.timer
 def tgz_compress(filepath, filename, strength=5):
     """
     Pack a file into a gzip tarfile.
@@ -231,7 +232,7 @@ def tgz_verify(filepath):
         return False
 
 
-@utilities.timer
+@decorators.timer
 def tbz_compress(filepath, filename, strength=5):
     """
     Pack a file into a bzip2 tarfile.
@@ -264,7 +265,7 @@ def tbz_verify(filepath):
         return False
 
 
-@utilities.timer
+@decorators.timer
 def txz_compress(filepath, filename):
     """
     Pack a file into a LZMA tarfile.
@@ -297,7 +298,7 @@ def txz_verify(filepath):
             return False
 
 
-@utilities.timer
+@decorators.timer
 def zip_compress(filepath, filename):
     """
     Pack a file into a DEFLATE zipfile.

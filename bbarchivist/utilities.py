@@ -7,42 +7,18 @@ import platform  # platform info
 import glob  # cap grabbing
 import configparser  # config parsing, duh
 import threading  # get thread for spinner
-import time  # spinner delay, timer decorator
+import time  # spinner delay
 import sys  # streams, version info
 import itertools  # spinners gonna spin
 import subprocess  # loader verification
 import math  # rounding
 from bbarchivist import bbconstants  # cap location, version, filename bits
+from bbarchivist import compat  # backwards compat
+from bbarchivist import dummy  # useless stdout
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015-2016 Thurask"
-
-
-def enum_cpus():
-    """
-    Backwards compatibility wrapper for CPU count.
-    """
-    try:
-        from os import cpu_count
-    except ImportError:
-        from multiprocessing import cpu_count
-    finally:
-        cpus = cpu_count()
-    return cpus
-
-
-def where_which(path):
-    """
-    Backwards compatibility wrapper for approximating which/where.
-    """
-    try:
-        from shutil import which
-    except ImportError:
-        from shutilwhich import which
-    finally:
-        thepath = which(path)
-    return thepath
 
 
 def grab_cap():
@@ -306,11 +282,11 @@ def get_core_count():
     Find out how many CPU cores this system has.
     """
     try:
-        cores = str(enum_cpus())  # 3.4 and up
+        cores = str(compat.enum_cpus())  # 3.4 and up
     except NotImplementedError:
         cores = "1"  # 3.2-3.3
     else:
-        if enum_cpus() is None:
+        if compat.enum_cpus() is None:
             cores = "1"
     return cores
 
@@ -328,7 +304,7 @@ def prep_seven_zip(talkative=False):
         return get_seven_zip(talkative) != "error"
     else:
         try:
-            path = where_which("7za")
+            path = compat.where_which("7za")
         except ImportError:
             if talkative:
                 print("PLEASE INSTALL SHUTILWHICH WITH PIP")
@@ -529,7 +505,7 @@ class Spinner(object):
 
     def __init__(self):
         self.wheel = itertools.cycle(['-', '/', '|', '\\'])
-        self.file = UselessStdout()
+        self.file = dummy.UselessStdout()
 
     def after(self):
         """
@@ -547,7 +523,7 @@ class Spinner(object):
         """
         Kill output.
         """
-        self.file = UselessStdout()
+        self.file = dummy.UselessStdout()
 
 
 class SpinManager(object):
@@ -561,7 +537,7 @@ class SpinManager(object):
         self.thread = threading.Thread(target=self.loop, args=())
         self.thread.daemon = True
         self.scanning = False
-        self.spinner.file = UselessStdout()
+        self.spinner.file = dummy.UselessStdout()
 
     def start(self):
         """
@@ -594,39 +570,6 @@ class SpinManager(object):
         line_begin()
         if not is_windows():  # pragma: no cover
             print("\n")
-
-
-class UselessStdout(object):
-    """
-    A dummy IO stream. Does nothing, by design.
-    """
-    @staticmethod
-    def write(inp):
-        """
-        Do nothing.
-        """
-        pass
-
-    @staticmethod
-    def flush():
-        """
-        Do nothing.
-        """
-        pass
-
-    @staticmethod
-    def isatty():
-        """
-        Convince module we're in a terminal.
-        """
-        return True
-
-
-class DummyException(Exception):
-    """
-    Exception that is not raised at all.
-    """
-    pass
 
 
 def return_and_delete(target):
@@ -682,27 +625,6 @@ def verify_bulk_loaders(a_dir):
         return brokens
 
 
-def timer(method):
-    """
-    Decorator to time a function.
-
-    :param method: Method to time.
-    :type method: function
-    """
-    def wrapper(*args, **kwargs):
-        """
-        Start clock, do function with args, print rounded elapsed time.
-        """
-        starttime = time.clock()
-        method(*args, **kwargs)
-        endtime = time.clock() - starttime
-        endtime_proper = math.ceil(endtime * 100) / 100  # rounding
-        mins, secs = divmod(endtime_proper, 60)
-        hrs, mins = divmod(mins, 60)
-        print("COMPLETED IN {0:02d}:{1:02d}:{2:02d}".format(int(hrs), int(mins), int(secs)))
-    return wrapper
-
-
 def workers(input_data):
     """
     Count number of CPU workers, smaller of number of threads and length of data.
@@ -710,26 +632,8 @@ def workers(input_data):
     :param input_data: Input data, some iterable.
     :type input_data: list
     """
-    runners = len(input_data) if len(input_data) < enum_cpus() else enum_cpus()
+    runners = len(input_data) if len(input_data) < compat.enum_cpus() else compat.enum_cpus()
     return runners
-
-
-def wrap_keyboard_except(method):
-    """
-    Decorator to absorb KeyboardInterrupt.
-
-    :param method: Method to use.
-    :type method: function
-    """
-    def wrapper(*args, **kwargs):
-        """
-        Try function, absorb KeyboardInterrupt and leave gracefully.
-        """
-        try:
-            method(*args, **kwargs)
-        except KeyboardInterrupt:
-            pass
-    return wrapper
 
 
 def prep_logfile():

@@ -6,6 +6,7 @@ import sys  # load arguments
 import os  # path work
 import subprocess  # autoloader running
 from bbarchivist import scriptutils  # script stuff
+from bbarchivist import decorators  # timer
 from bbarchivist import utilities  # input validation
 from bbarchivist import barutils  # file operations
 from bbarchivist import bbconstants  # constants/versions
@@ -17,7 +18,7 @@ __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015-2016 Thurask"
 
 
-@utilities.timer
+@decorators.timer
 def grab_args():
     """
     Parse arguments from argparse/questionnaire.

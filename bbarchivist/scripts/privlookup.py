@@ -3,7 +3,8 @@
 
 import sys  # load arguments
 from bbarchivist import networkutils  # lookup
-from bbarchivist import utilities  # Ctrl+C wrapping
+from bbarchivist import decorators  # Ctrl+C wrapping
+from bbarchivist import utilities  # argument filters
 from bbarchivist import scriptutils  # default parser
 
 __author__ = "Thurask"
@@ -93,7 +94,7 @@ def questionnaire():
     scriptutils.enter_to_exit(True)
 
 
-@utilities.wrap_keyboard_except
+@decorators.wrap_keyboard_except
 def privlookup_main(branch, floor=0, ceil=999, method=None):
     """
     Check the existence of Priv factory images, in a range.
