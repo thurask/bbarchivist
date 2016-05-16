@@ -121,7 +121,7 @@ def smart_is_tarfile(filepath):
     """
     try:
         istar = tarfile.is_tarfile(filepath)
-    except (FileNotFoundError, OSError):
+    except OSError:
         return False
     else:
         return istar
