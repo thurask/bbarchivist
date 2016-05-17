@@ -63,7 +63,7 @@ def default_parser(name=None, desc=None, flags=None, vers=None):
     :param vers: Versions: [git commit hash, git commit date]
     :param vers: list(str)
     """
-    if vers == None:
+    if vers is None:
         vers = longversion()
     parser = argparse.ArgumentParser(
         prog=name,
