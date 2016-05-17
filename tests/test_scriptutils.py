@@ -162,8 +162,8 @@ class TestClassScriptutils:
         """
         sys.frozen = True
         with open("longversion.txt", "w") as afile:
-            afile.write("10.0.10586.1000")
-        assert bs.longversion() == "10.0.10586.1000"
+            afile.write("10.0.10586.1000\n1970-01-01")
+        assert bs.longversion() == ["10.0.10586.1000", "1970-01-01"]
         sys.frozen = False
 
 
@@ -519,7 +519,7 @@ class TestClassScriptutilsArguments:
         """
         Create parser for testing.
         """
-        cls.parser = bs.default_parser("name", "Formats C:")
+        cls.parser = bs.default_parser("name", "Formats C:", vers=["deadbeef", "1970-01-01"])
 
     def test_parser_name(self):
         """

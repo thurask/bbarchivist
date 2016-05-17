@@ -5,7 +5,7 @@ from os.path import join, abspath, dirname
 from sys import exec_prefix
 from cx_Freeze import setup, Executable
 from requests import certs
-from bbarchivist.bbconstants import VERSION, LONGVERSION, CAP, JSONFILE
+from bbarchivist.bbconstants import VERSION, LONGVERSION, CAP, JSONFILE, COMMITDATE
 
 
 def write_versions():
@@ -15,7 +15,7 @@ def write_versions():
     with open("version.txt", "w") as afile:
         afile.write(VERSION)
     with open("longversion.txt", "w") as afile:
-        afile.write(LONGVERSION)
+        afile.write("{0}\n{1}".format(LONGVERSION, COMMITDATE))
 
 
 def clean_versions():

@@ -39,15 +39,15 @@ def longversion():
     Get long app version (Git tag + commits + hash).
     """
     if not getattr(sys, 'frozen', False):
-        ver = bbconstants.LONGVERSION
+        ver = (bbconstants.FULLVERSION, bbconstants.COMMITDATE)
     else:
         verfile = glob.glob(os.path.join(os.getcwd(), "longversion.txt"))[0]
         with open(verfile) as afile:
-            ver = afile.read()
+            ver = afile.read().split("\n")
     return ver
 
 
-def default_parser(name=None, desc=None, flags=None):
+def default_parser(name=None, desc=None, flags=None, vers=None):
     """
     A generic form of argparse's ArgumentParser.
 
@@ -59,7 +59,12 @@ def default_parser(name=None, desc=None, flags=None):
 
     :param flags: Tuple of sections to add.
     :type flags: tuple(str)
+
+    :param vers: Versions: [git commit hash, git commit date]
+    :param vers: list(str)
     """
+    if vers == None:
+        vers = longversion()
     parser = argparse.ArgumentParser(
         prog=name,
         description=desc,
@@ -68,7 +73,7 @@ def default_parser(name=None, desc=None, flags=None):
         "-v",
         "--version",
         action="version",
-        version="{0} {1}".format(parser.prog, longversion()))
+        version="{0} {1} committed {2}".format(parser.prog, vers[0], vers[1]))
     if flags is not None:
         if "folder" in flags:
             parser.add_argument(

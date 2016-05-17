@@ -24,19 +24,28 @@ class Datafile:
 if not getattr(sys, 'frozen', False):  # regular
     #: App version.
     VERSION = get_versions()["version"].split("-")[0]
+    #: If we're in a development build.
+    DIRTY = "+devel" if get_versions()["version"] != VERSION else ""
     #: Git commit hash.
     COMMITHASH = "g{0}".format(get_versions()["full-revisionid"][0:7])
     #: App version, tag + commits.
-    LONGVERSION = "-".join((VERSION, COMMITHASH))
+    LONGVERSION = "-".join((VERSION + DIRTY, COMMITHASH)) 
+    #: Git commit timestamp.
+    COMMITDATE = get_versions()["time"]
 else:  # cx_freeze support
     with open("longversion.txt", "r") as longv:
-        ver = longv.read().split("-")
+        data = longv.read().split("\n")
+        ver = data[0].split("-")
     #: App version.
     VERSION = ver[0]
+    #: If we're in a development build.
+    DIRTY = "+devel" if data[0] != VERSION else ""
     #: Git commit hash.
     COMMITHASH = ver[1]
     #: App version, tag + commits.
     LONGVERSION = "-".join(ver)
+    #: Git commit timestamp.
+    COMMITDATE = data[1]
 #: File location.
 LOCATION = os.path.abspath(__file__)
 #: File folder.

@@ -25,7 +25,9 @@ def get_keywords():
     # get_keywords().
     git_refnames = "$Format:%d$"
     git_full = "$Format:%H$"
-    keywords = {"refnames": git_refnames, "full": git_full}
+    git_time = "$Format:%ci$"
+
+    keywords = {"refnames": git_refnames, "full": git_full, "time": git_time}
     return keywords
 
 
@@ -114,7 +116,7 @@ def versions_from_parentdir(parentdir_prefix, root, verbose):
         raise NotThisMethod("rootdir doesn't start with parentdir_prefix")
     return {"version": dirname[len(parentdir_prefix):],
             "full-revisionid": None,
-            "dirty": False, "error": None}
+            "dirty": False, "error": None, "time": None}
 
 
 @register_vcs_handler("git", "get_keywords")
@@ -136,6 +138,10 @@ def git_get_keywords(versionfile_abs):
                 mo = re.search(r'=\s*"(.*)"', line)
                 if mo:
                     keywords["full"] = mo.group(1)
+            if line.strip().startswith("git_time ="):
+                mo = re.search(r'=\s*"(.*)"', line)
+                if mo:
+                    keywords["time"] = mo.group(1)
         f.close()
     except EnvironmentError:
         pass
@@ -178,14 +184,14 @@ def git_versions_from_keywords(keywords, tag_prefix, verbose):
                 print("picking %s" % r)
             return {"version": r,
                     "full-revisionid": keywords["full"].strip(),
-                    "dirty": False, "error": None
-                    }
+                    "dirty": False, "error": None,
+                    "time": keywords["time"].strip()}
     # no suitable tags, so version is "0+unknown", but full hex is still there
     if verbose:
         print("no suitable tags, using unknown + full revision id")
     return {"version": "0+unknown",
             "full-revisionid": keywords["full"].strip(),
-            "dirty": False, "error": "no suitable tags"}
+            "dirty": False, "error": "no suitable tags", "time": None}
 
 
 @register_vcs_handler("git", "pieces_from_vcs")
@@ -268,6 +274,10 @@ def git_pieces_from_vcs(tag_prefix, root, verbose, run_command=run_command):
         count_out = run_command(GITS, ["rev-list", "HEAD", "--count"],
                                 cwd=root)
         pieces["distance"] = int(count_out)  # total number of commits
+    
+    # commit time
+    pieces["time"] = run_command(GITS, ["show", "-s", "--format=%ci", "HEAD"],
+                                cwd=root)
 
     return pieces
 
@@ -415,7 +425,8 @@ def render(pieces, style):
         return {"version": "unknown",
                 "full-revisionid": pieces.get("long"),
                 "dirty": None,
-                "error": pieces["error"]}
+                "error": pieces["error"],
+                "time": None}
 
     if not style or style == "default":
         style = "pep440"  # the default
@@ -436,7 +447,7 @@ def render(pieces, style):
         raise ValueError("unknown style '%s'" % style)
 
     return {"version": rendered, "full-revisionid": pieces["long"],
-            "dirty": pieces["dirty"], "error": None}
+            "dirty": pieces["dirty"], "error": None, "time": pieces["time"]}
 
 
 def get_versions():
@@ -465,7 +476,8 @@ def get_versions():
     except NameError:
         return {"version": "0+unknown", "full-revisionid": None,
                 "dirty": None,
-                "error": "unable to find root of source tree"}
+                "error": "unable to find root of source tree",
+                "time": None}
 
     try:
         pieces = git_pieces_from_vcs(cfg.tag_prefix, root, verbose)
@@ -481,4 +493,5 @@ def get_versions():
 
     return {"version": "0+unknown", "full-revisionid": None,
             "dirty": None,
-            "error": "unable to compute version"}
+            "error": "unable to compute version",
+            "time": None}
