@@ -39,7 +39,7 @@ def longversion():
     Get long app version (Git tag + commits + hash).
     """
     if not getattr(sys, 'frozen', False):
-        ver = (bbconstants.FULLVERSION, bbconstants.COMMITDATE)
+        ver = (bbconstants.LONGVERSION, bbconstants.COMMITDATE)
     else:
         verfile = glob.glob(os.path.join(os.getcwd(), "longversion.txt"))[0]
         with open(verfile) as afile:
