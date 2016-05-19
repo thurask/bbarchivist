@@ -313,6 +313,12 @@ class TestClassUtilities:
                 spin = bu.Spinner()
                 spin.after()
 
+    def test_prepends(self):
+        """
+        Test checking the start and end of a string.
+        """
+        assert bu.prepends("AAAloader.exe.bak", "AAA", "bak")
+
 
 class TestClassUtilitiesUrls:
     """

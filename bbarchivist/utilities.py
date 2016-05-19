@@ -649,6 +649,22 @@ def prep_logfile():
     return record
 
 
+def prepends(file, pre, suf):
+    """
+    Check if filename starts with/ends with stuff.
+
+    :param file: File to check.
+    :type file: str
+
+    :param pre: Prefix(es) to check.
+    :type pre: str or list or tuple
+
+    :param suf: Suffix(es) to check.
+    :type suf: str or list or tuple
+    """
+    return file.startswith(pre) and file.endswith(suf)
+
+
 def cappath_config_loader(homepath=None):
     """
     Read a ConfigParser file to get cap preferences.

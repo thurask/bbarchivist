@@ -12,10 +12,10 @@ tests.test_barutils module
     :undoc-members:
     :show-inheritance:
 
-tests.test_filehashtools module
+tests.test_hashutils module
 -------------------------------
 
-.. automodule:: tests.test_filehashtools
+.. automodule:: tests.test_hashutils
     :members:
     :undoc-members:
     :show-inheritance:

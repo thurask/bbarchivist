@@ -4,7 +4,7 @@
 import sys  # load arguments
 import os  # path operations
 import getpass  # invisible passwords (cf. sudo)
-from bbarchivist import filehashtools  # main program
+from bbarchivist import hashutils  # main program
 from bbarchivist import utilities  # bool parsing
 from bbarchivist import scriptutils  # default parser
 
@@ -17,7 +17,7 @@ def gpgrunner_main():
     """
     Parse arguments from argparse/questionnaire.
 
-    Invoke :func:`bbarchivist.filehashtools.gpgrunner` with those arguments.
+    Invoke :func:`bbarchivist.hashutils.gpgrunner` with those arguments.
     """
     parser = scriptutils.default_parser("bb-gpgrunner", "GPG-sign files")
     parser.add_argument(
@@ -30,7 +30,7 @@ def gpgrunner_main():
     if args.folder is None:
         args.folder = os.getcwd()
     workfolder = args.folder
-    key, password = filehashtools.gpg_config_loader()
+    key, password = hashutils.gpg_config_loader()
     if key is None or password is None:
         if key is None:
             key = input("PGP KEY (0x12345678): ")
@@ -38,9 +38,9 @@ def gpgrunner_main():
             password = getpass.getpass(prompt="PGP PASSPHRASE: ")
             write = utilities.s2b(input("SAVE PASSPHRASE (Y/N)?: "))
         password2 = password if write else None
-        filehashtools.gpg_config_writer(key, password2)
+        hashutils.gpg_config_writer(key, password2)
     print(" ")
-    filehashtools.gpgrunner(workfolder, key, password)
+    hashutils.gpgrunner(workfolder, key, password)
 
 
 if __name__ == "__main__":

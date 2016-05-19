@@ -3,7 +3,7 @@
 
 import sys  # load arguments
 import os  # path operations
-from bbarchivist import filehashtools  # main program
+from bbarchivist import hashutils  # main program
 from bbarchivist import utilities  # input validation
 from bbarchivist import scriptutils  # default parser
 
@@ -16,10 +16,10 @@ def filehasher_main():
     """
     Parse arguments from argparse/questionnaire.
 
-    Invoke :func:`bbarchivist.filehashtools.verifier` with those arguments.
+    Invoke :func:`bbarchivist.hashutils.verifier` with those arguments.
     """
-    hashdict = filehashtools.verifier_config_loader()
-    filehashtools.verifier_config_writer(hashdict)
+    hashdict = hashutils.verifier_config_loader()
+    hashutils.verifier_config_writer(hashdict)
     if len(sys.argv) > 1:
         parser = scriptutils.default_parser("bb-filehasher", "Hash files")
         parser.add_argument(
@@ -32,11 +32,11 @@ def filehasher_main():
         args = parser.parse_args(sys.argv[1:])
         if args.folder is None:
             args.folder = os.getcwd()
-        filehashtools.verifier(args.folder, hashdict)
+        hashutils.verifier(args.folder, hashdict)
     else:
         folder = os.getcwd()
         print(" ")
-        filehashtools.verifier(folder, hashdict)
+        hashutils.verifier(folder, hashdict)
 
 
 if __name__ == "__main__":

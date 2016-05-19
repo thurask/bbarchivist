@@ -20,10 +20,10 @@ bbarchivist.bbconstants module
     :undoc-members:
     :show-inheritance:
 
-bbarchivist.filehashtools module
+bbarchivist.hashutils module
 --------------------------------
 
-.. automodule:: bbarchivist.filehashtools
+.. automodule:: bbarchivist.hashutils
     :members:
     :undoc-members:
     :show-inheritance:

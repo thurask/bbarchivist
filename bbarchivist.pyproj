@@ -71,7 +71,7 @@
     <Compile Include="bbarchivist\dummy.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="bbarchivist\filehashtools.py">
+    <Compile Include="bbarchivist\hashutils.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="bbarchivist\loadergen.py">

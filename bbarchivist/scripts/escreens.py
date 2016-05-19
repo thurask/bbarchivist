@@ -2,7 +2,7 @@
 """Calculates escreens codes."""
 
 import sys  # load arguments
-from bbarchivist import filehashtools  # main program
+from bbarchivist import hashutils  # main program
 from bbarchivist import utilities  # input validation
 from bbarchivist import scriptutils  # default parser
 
@@ -15,7 +15,7 @@ def escreens_main():
     """
     Parse arguments from argparse/questionnaire.
 
-    Invoke :func:`bbarchivist.filehashtools.calculate_escreens` with arguments.
+    Invoke :func:`bbarchivist.hashutils.calculate_escreens` with arguments.
     """
     if len(sys.argv) > 1:
         parser = scriptutils.default_parser("bb-escreens", "Calculate escrens codes")
@@ -31,7 +31,7 @@ def escreens_main():
                             help="1/3/6/15/30 days",
                             type=utilities.escreens_duration)
         args = parser.parse_args(sys.argv[1:])
-        key = filehashtools.calculate_escreens(
+        key = hashutils.calculate_escreens(
             args.pin,
             args.app,
             str(args.uptime),
@@ -52,7 +52,7 @@ def questionnaire():
     pin = utilities.escreens_pin(pin)
     uptime = utilities.positive_integer(uptime)
     duration = utilities.escreens_duration(duration)
-    key = filehashtools.calculate_escreens(pin.lower(), app, str(uptime), duration)
+    key = hashutils.calculate_escreens(pin.lower(), app, str(uptime), duration)
     print("\n{0}".format(key))
     scriptutils.enter_to_exit(True)
 

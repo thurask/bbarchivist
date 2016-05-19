@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Test the filehashtools module."""
+"""Test the hashutils module."""
 
 from shutil import rmtree, copyfile
 from hashlib import algorithms_available as algos
@@ -16,7 +16,7 @@ except ImportError:
     NOGNUPG = True
 else:
     NOGNUPG = False
-from bbarchivist import filehashtools as bf
+from bbarchivist import hashutils as bh
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -27,9 +27,9 @@ def setup_module(module):
     """
     Create necessary files.
     """
-    if not os.path.exists("temp_filehashtools"):
-        os.mkdir("temp_filehashtools")
-    os.chdir("temp_filehashtools")
+    if not os.path.exists("temp_hashutils"):
+        os.mkdir("temp_hashutils")
+    os.chdir("temp_hashutils")
     with open("tempfile.txt", "w") as targetfile:
         targetfile.write("Jackdaws love my big sphinx of quartz")
     os.mkdir("skipme")
@@ -40,10 +40,10 @@ def teardown_module(module):
     Delete necessary files.
     """
     os.chdir("..")
-    rmtree("temp_filehashtools", ignore_errors=True)
+    rmtree("temp_hashutils", ignore_errors=True)
 
 
-class TestClassFilehashtools:
+class TestClasshashutils:
     """
     Test hash/GnuPG utilities.
     """
@@ -52,13 +52,13 @@ class TestClassFilehashtools:
         """
         Test CRC32 checksum.
         """
-        assert bf.hc32("tempfile.txt") == "ed5d3f26"
+        assert bh.hc32("tempfile.txt") == "ed5d3f26"
 
     def test_adler32(self):
         """
         Test Adler32 checksum.
         """
-        assert bf.ha32("tempfile.txt") == "02470dcd"
+        assert bh.ha32("tempfile.txt") == "02470dcd"
 
     def test_sha0(self):
         """
@@ -67,48 +67,48 @@ class TestClassFilehashtools:
         if "sha" not in algos:
             pass
         else:
-            assert bf.hs0("tempfile.txt") == "d26b25f6170daf49e31e68bf57f6164815c368d8"
+            assert bh.hs0("tempfile.txt") == "d26b25f6170daf49e31e68bf57f6164815c368d8"
 
     def test_sha0_unavail(self, capsys):
         """
         Test SHA-0 hash, if not available.
         """
         with mock.patch("hashlib.new", mock.MagicMock(side_effect=ValueError)):
-            bf.hs0("tempfile.txt")
+            bh.hs0("tempfile.txt")
             assert "SHA HASH FAILED" in capsys.readouterr()[0]
 
     def test_sha1(self):
         """
         Test SHA-1 hash.
         """
-        assert bf.hs1("tempfile.txt") == "71dc7ce8f27c11b792be3f169ecf985865e276d0"
+        assert bh.hs1("tempfile.txt") == "71dc7ce8f27c11b792be3f169ecf985865e276d0"
 
     def test_sha224(self):
         """
         Test SHA-224 hash.
         """
-        assert bf.hs224(
+        assert bh.hs224(
             "tempfile.txt") == "7bcd7b77f63633bf0f7db181106f08eb630a58c521b109be1cc4a404"
 
     def test_sha256(self):
         """
         Test SHA-256 hash.
         """
-        assert bf.hs256(
+        assert bh.hs256(
             "tempfile.txt") == "f118871c45171d5fe4e9049980959e033eeeabcfa12046c243fda310580e8a0b"
 
     def test_sha384(self):
         """
         Test SHA-384 hash.
         """
-        assert bf.hs384(
+        assert bh.hs384(
             "tempfile.txt") == "76620873c0d27873c137b082425c6e87e3d601c4b19241a1f2222f7f700a2fe8d3c648b26f62325a411cb020bff527be"
 
     def test_sha512(self):
         """
         Test SHA-512 hash.
         """
-        assert bf.hs512(
+        assert bh.hs512(
             "tempfile.txt") == "b66a5e8aa9b9705748c2ee585b0e1a3a41288d2dafc3be2db12fa89d2f2a3e14f9dec11de4ba865bb51eaa6c2cfeb294139455e34da7d827a19504b0906c01c1"
 
     def test_md4(self):
@@ -118,21 +118,21 @@ class TestClassFilehashtools:
         if "md4" not in algos:
             pass
         else:
-            assert bf.hm4("tempfile.txt") == "df26ada1a895f94e1f1257fad984e809"
+            assert bh.hm4("tempfile.txt") == "df26ada1a895f94e1f1257fad984e809"
 
     def test_md4_unavail(self, capsys):
         """
         Test MD4 hash, if not available.
         """
         with mock.patch("hashlib.new", mock.MagicMock(side_effect=ValueError)):
-            bf.hm4("tempfile.txt")
+            bh.hm4("tempfile.txt")
             assert "MD4 HASH FAILED" in capsys.readouterr()[0]
 
     def test_md5(self):
         """
         Test MD5 hash.
         """
-        assert bf.hm5("tempfile.txt") == "822e1187fde7c8d55aff8cc688701650"
+        assert bh.hm5("tempfile.txt") == "822e1187fde7c8d55aff8cc688701650"
 
     def test_ripemd160(self):
         """
@@ -141,14 +141,14 @@ class TestClassFilehashtools:
         if "ripemd160" not in algos:
             pass
         else:
-            assert bf.hr160("tempfile.txt") == "f3e191024c33768e2589e2efca53d55f4e4945ee"
+            assert bh.hr160("tempfile.txt") == "f3e191024c33768e2589e2efca53d55f4e4945ee"
 
     def test_ripemd160_unavail(self, capsys):
         """
         Test RIPEMD160 hash, if not available.
         """
         with mock.patch("hashlib.new", mock.MagicMock(side_effect=ValueError)):
-            bf.hr160("tempfile.txt")
+            bh.hr160("tempfile.txt")
             assert "RIPEMD160 HASH FAILED" in capsys.readouterr()[0]
 
     def test_whirlpool(self):
@@ -158,7 +158,7 @@ class TestClassFilehashtools:
         if "whirlpool" not in algos:
             pass
         else:
-            assert bf.hwp(
+            assert bh.hwp(
                 "tempfile.txt") == "9835d12f3cb3ea3934635e4a7cc918e489379ed69d894ebc2c09bbf99fe72567bfd26c919ad666e170752abfc4b8c37b376f5102f9e5de59af2b65efc2e01293"
 
     def test_whirlpool_unavail(self, capsys):
@@ -166,7 +166,7 @@ class TestClassFilehashtools:
         Test Whirlpool hash, if not available.
         """
         with mock.patch("hashlib.new", mock.MagicMock(side_effect=ValueError)):
-            bf.hwp("tempfile.txt")
+            bh.hwp("tempfile.txt")
             assert "WHIRLPOOL HASH FAILED" in capsys.readouterr()[0]
 
     def test_escreens(self):
@@ -176,7 +176,7 @@ class TestClassFilehashtools:
         pin = "acdcacdc"
         app = "10.3.2.500"
         uptime = "69696969"
-        assert bf.calculate_escreens(pin, app, uptime, duration=2) == "E4A25067"
+        assert bh.calculate_escreens(pin, app, uptime, duration=2) == "E4A25067"
 
     def test_verifier(self):
         """
@@ -197,8 +197,8 @@ class TestClassFilehashtools:
         confload['whirlpool'] = True
         confload['blocksize'] = "16777216"
         print(confload)
-        with mock.patch('bbarchivist.filehashtools.verifier_config_loader', mock.MagicMock(return_value=confload)):
-            bf.verifier(os.getcwd())
+        with mock.patch('bbarchivist.hashutils.verifier_config_loader', mock.MagicMock(return_value=confload)):
+            bh.verifier(os.getcwd())
         stocklines = [
             b"ADLER32",
             b"02470DCD tempfile.txt",
@@ -259,11 +259,11 @@ class TestClassFilehashtools:
         """
         with mock.patch("concurrent.futures.ThreadPoolExecutor.submit", mock.MagicMock(side_effect=Exception)):
             with pytest.raises(SystemExit):
-                bf.verifier(os.getcwd())
+                bh.verifier(os.getcwd())
                 assert "SOMETHING WENT WRONG" in capsys.readouterr()[0]
 
 
-class TestClassFilehashtoolsGPG:
+class TestClasshashutilsGPG:
     """
     Test GPG-related tools.
     """
@@ -277,14 +277,14 @@ class TestClassFilehashtoolsGPG:
         elif NOGNUPG:
             pass
         else:
-            gpgkey, gpgpass = bf.gpg_config_loader()
+            gpgkey, gpgpass = bh.gpg_config_loader()
             if gpgkey is None or gpgpass is None:
                 pass
             else:
                 gpginst = gnupg.GPG()
                 # Note: if you get a "Unknown status message 'NEWSIG'" error, then look here:
                 # https://bitbucket.org/vinay.sajip/python-gnupg/issues/35/status-newsig-missing-in-verify
-                bf.gpgfile("tempfile.txt", gpginst, gpgkey, gpgpass)
+                bh.gpgfile("tempfile.txt", gpginst, gpgkey, gpgpass)
                 with open("tempfile.txt.asc", "rb") as sig:
                     try:
                         verified = gpginst.verify_file(sig, 'tempfile.txt')
@@ -306,12 +306,12 @@ class TestClassFilehashtoolsGPG:
         elif NOGNUPG:
             pass
         else:
-            gpgkey, gpgpass = bf.gpg_config_loader()
+            gpgkey, gpgpass = bh.gpg_config_loader()
             if gpgkey is None or gpgpass is None:
                 pass
             else:
                 gpginst = gnupg.GPG()
-                bf.gpgrunner(os.getcwd(), gpgkey, gpgpass, False)
+                bh.gpgrunner(os.getcwd(), gpgkey, gpgpass, False)
                 with open("tempfile.txt.asc", "rb") as sig:
                     try:
                         verified = gpginst.verify_file(sig, 'tempfile.txt')
@@ -339,7 +339,7 @@ class TestClassFilehashtoolsGPG:
         """
         with mock.patch("gnupg.GPG", mock.MagicMock(side_effect=ValueError)):
             with pytest.raises(SystemExit):
-                bf.gpgrunner(os.getcwd(), "12345678", "hunter2", False)
+                bh.gpgrunner(os.getcwd(), "12345678", "hunter2", False)
                 assert "COULD NOT FIND GnuPG" in capsys.readouterr()[0]
 
     def test_gpgrunner_failure(self, capsys):
@@ -353,11 +353,11 @@ class TestClassFilehashtoolsGPG:
         else:
             with mock.patch("concurrent.futures.ThreadPoolExecutor.submit", mock.MagicMock(side_effect=Exception)):
                 with pytest.raises(SystemExit):
-                    bf.gpgrunner(os.getcwd(), "12345678", "hunter2", False)
+                    bh.gpgrunner(os.getcwd(), "12345678", "hunter2", False)
                     assert "SOMETHING WENT WRONG" in capsys.readouterr()[0]
 
 
-class TestClassFilehashtoolsConfig:
+class TestClasshashutilsConfig:
     """
     Test reading/writing configs with ConfigParser.
     """
@@ -390,7 +390,7 @@ class TestClassFilehashtoolsConfig:
         except (OSError, IOError):
             pass
         with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
-            assert bf.verifier_config_loader() == self.hashdict
+            assert bh.verifier_config_loader() == self.hashdict
 
     def test_hash_writer(self):
         """
@@ -403,10 +403,10 @@ class TestClassFilehashtoolsConfig:
         except (OSError, IOError):
             pass
         with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
-            with mock.patch('bbarchivist.filehashtools.verifier_config_loader',
+            with mock.patch('bbarchivist.hashutils.verifier_config_loader',
                             mock.MagicMock(return_value=hash2)):
-                bf.verifier_config_writer()
-            assert bf.verifier_config_loader() == hash2
+                bh.verifier_config_writer()
+            assert bh.verifier_config_loader() == hash2
 
     def test_gpg_loader_empty(self):
         """
@@ -417,7 +417,7 @@ class TestClassFilehashtoolsConfig:
         except (OSError, IOError):
             pass
         with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
-            assert bf.gpg_config_loader() == (None, None)
+            assert bh.gpg_config_loader() == (None, None)
 
     def test_gpg_loader_loaded(self):
         """
@@ -431,7 +431,7 @@ class TestClassFilehashtoolsConfig:
         config['gpgrunner']['pass'] = "hunter2"
         with open("bbarchivist.ini", "w") as configfile:
             config.write(configfile)
-        assert bf.gpg_config_loader(os.getcwd()) == ("0xDEADBEEF", "hunter2")
+        assert bh.gpg_config_loader(os.getcwd()) == ("0xDEADBEEF", "hunter2")
 
     def test_gpg_writer(self):
         """
@@ -442,5 +442,5 @@ class TestClassFilehashtoolsConfig:
         except (OSError, IOError):
             pass
         with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
-            bf.gpg_config_writer("0xDEADF00D", "swordfish")
-            assert bf.gpg_config_loader() == ("0xDEADF00D", "swordfish")
+            bh.gpg_config_writer("0xDEADF00D", "swordfish")
+            assert bh.gpg_config_loader() == ("0xDEADF00D", "swordfish")

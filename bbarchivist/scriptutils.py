@@ -9,8 +9,9 @@ import shutil  # folder removal
 import glob  # file lookup
 from bbarchivist import utilities  # little things
 from bbarchivist import barutils  # file system work
+from bbarchivist import archiveutils  # archive support
 from bbarchivist import bbconstants  # constants
-from bbarchivist import filehashtools  # gpg
+from bbarchivist import hashutils  # gpg
 from bbarchivist import networkutils  # network tools
 from bbarchivist import textgenerator  # writing text to file
 from bbarchivist import smtputils  # email
@@ -787,7 +788,7 @@ def verify_gpg_credentials():
     """
     Read GPG key/pass from file, verify if incomplete.
     """
-    gpgkey, gpgpass = filehashtools.gpg_config_loader()
+    gpgkey, gpgpass = hashutils.gpg_config_loader()
     if gpgkey is None or gpgpass is None:
         print("NO PGP KEY/PASS FOUND")
         cont = utilities.s2b(input("CONTINUE (Y/N)?: "))
@@ -802,7 +803,7 @@ def verify_gpg_credentials():
             else:
                 writebool = False
             gpgpass2 = gpgpass if writebool else None
-            filehashtools.gpg_config_writer(gpgkey, gpgpass2)
+            hashutils.gpg_config_writer(gpgkey, gpgpass2)
         else:
             gpgkey = None
     return gpgkey, gpgpass
@@ -829,13 +830,13 @@ def bulk_hash(dirs, compressed=True, deleted=True, radios=True, hashdict=None):
     """
     print("HASHING LOADERS...")
     if compressed:
-        filehashtools.verifier(dirs[4], hashdict)
+        hashutils.verifier(dirs[4], hashdict)
         if radios:
-            filehashtools.verifier(dirs[5], hashdict)
+            hashutils.verifier(dirs[5], hashdict)
     if not deleted:
-        filehashtools.verifier(dirs[2], hashdict)
+        hashutils.verifier(dirs[2], hashdict)
         if radios:
-            filehashtools.verifier(dirs[3], hashdict)
+            hashutils.verifier(dirs[3], hashdict)
 
 
 def bulk_verify(dirs, compressed=True, deleted=True, radios=True):
@@ -859,10 +860,10 @@ def bulk_verify(dirs, compressed=True, deleted=True, radios=True):
         print("VERIFYING LOADERS...")
         print("KEY: {0}".format(gpgkey))
         if compressed:
-            filehashtools.gpgrunner(dirs[4], gpgkey, gpgpass, True)
+            hashutils.gpgrunner(dirs[4], gpgkey, gpgpass, True)
             if radios:
-                filehashtools.gpgrunner(dirs[5], gpgkey, gpgpass, True)
+                hashutils.gpgrunner(dirs[5], gpgkey, gpgpass, True)
         if not deleted:
-            filehashtools.gpgrunner(dirs[2], gpgkey, gpgpass, True)
+            hashutils.gpgrunner(dirs[2], gpgkey, gpgpass, True)
             if radios:
-                filehashtools.gpgrunner(dirs[3], gpgkey, gpgpass, True)
+                hashutils.gpgrunner(dirs[3], gpgkey, gpgpass, True)

@@ -10,7 +10,6 @@ import concurrent.futures  # parallelization
 import gnupg  # interface b/w Python, GPG
 from bbarchivist import bbconstants  # premade stuff
 from bbarchivist import utilities  # cores
-from bbarchivist.barutils import prepends  # file parsing
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -475,7 +474,7 @@ def gpgrunner(workingdir, keyid=None, pword=None, selective=False):
                 if not file.endswith(sup):
                     aps = bbconstants.ARCSPLUS
                     pfx = bbconstants.PREFIXES
-                    if (prepends(file, pfx, aps)) if selective else True:
+                    if (utilities.prepends(file, pfx, aps)) if selective else True:
                         print("VERIFYING:", str(file))
                         thepath = os.path.join(workingdir, file)
                         try:

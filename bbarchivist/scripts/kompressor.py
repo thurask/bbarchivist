@@ -3,7 +3,7 @@
 
 import sys  # load arguments
 import os  # path operations
-from bbarchivist import barutils  # main program
+from bbarchivist import archiveutils  # main program
 from bbarchivist import utilities  # bool parsing
 from bbarchivist import scriptutils  # default parser
 
@@ -37,7 +37,7 @@ def kompressor_main():
     if args.folder is None:
         args.folder = os.getcwd()
     if args.method is None:
-        method = barutils.compress_config_loader()
+        method = archiveutils.compress_config_loader()
         if method == "7z" and not utilities.prep_seven_zip(False):
             method = "zip"
     else:
@@ -45,9 +45,9 @@ def kompressor_main():
     psz = utilities.prep_seven_zip(False)
     szexe = utilities.get_seven_zip(False) if (method == "7z" and psz) else None
     workfolder = args.folder
-    barutils.compress_config_writer()
+    archiveutils.compress_config_writer()
     print(" ")
-    barutils.compress_suite(workfolder, method, szexe, False)
+    archiveutils.compress_suite(workfolder, method, szexe, False)
 
 
 if __name__ == "__main__":

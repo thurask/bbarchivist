@@ -7,9 +7,10 @@ from bbarchivist import scriptutils  # script stuff
 from bbarchivist import utilities  # input validation
 from bbarchivist import decorators  # timer
 from bbarchivist import barutils  # file/folder work
+from bbarchivist import archiveutils  # archive work
 from bbarchivist import networkutils  # download/lookup
 from bbarchivist import loadergen  # cap, in Python
-from bbarchivist import filehashtools  # hashes, GPG
+from bbarchivist import hashutils  # hashes, GPG
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -124,14 +125,14 @@ def grab_args():
             args.folder = os.getcwd()
         if getattr(sys, 'frozen', False):
             args.gpg = False
-            hashdict = filehashtools.verifier_config_loader(os.getcwd())
+            hashdict = hashutils.verifier_config_loader(os.getcwd())
             args.method = "7z"
         else:
-            hashdict = filehashtools.verifier_config_loader()
-        filehashtools.verifier_config_writer(hashdict)
+            hashdict = hashutils.verifier_config_loader()
+        hashutils.verifier_config_writer(hashdict)
         if args.method is None:
-            compmethod = barutils.compress_config_loader()
-            barutils.compress_config_writer(compmethod)
+            compmethod = archiveutils.compress_config_loader()
+            archiveutils.compress_config_writer(compmethod)
         else:
             compmethod = args.method
         archivist_main(args.os, args.radio, args.swrelease,
@@ -168,12 +169,12 @@ def questionnaire():
     deleted = utilities.s2b(input("DELETE UNCOMPRESSED LOADERS (Y/N)?: ")) if compressed else False
     hashed = utilities.s2b(input("GENERATE HASHES (Y/N)?: "))
     if getattr(sys, 'frozen', False):
-        hashdict = filehashtools.verifier_config_loader(os.getcwd())
+        hashdict = hashutils.verifier_config_loader(os.getcwd())
         compmethod = "7z"
     else:
-        hashdict = filehashtools.verifier_config_loader()
-        filehashtools.verifier_config_writer(hashdict)
-        compmethod = barutils.compress_config_loader()
+        hashdict = hashutils.verifier_config_loader()
+        hashutils.verifier_config_writer(hashdict)
+        compmethod = archiveutils.compress_config_loader()
     print(" ")
     archivist_main(osversion, radioversion, softwareversion,
                    localdir, radios, compressed, deleted, hashed,
@@ -251,8 +252,8 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     if localdir is None:
         localdir = os.getcwd()
     if hashed and hashdict is None:
-        hashdict = filehashtools.verifier_config_loader()
-        filehashtools.verifier_config_writer(hashdict)
+        hashdict = hashutils.verifier_config_loader()
+        hashutils.verifier_config_writer(hashdict)
     scriptutils.standard_preamble("archivist", osversion, softwareversion, radioversion, altsw)
 
     # Generate download URLs
@@ -328,11 +329,11 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     # If compression = true, compress
     if compressed:
         print("COMPRESSING...")
-        barutils.compress(localdir, compmethod, szexe, True)
+        archiveutils.compress(localdir, compmethod, szexe, True)
 
     if integrity and compressed:
         print("TESTING ARCHIVES...")
-        barutils.verify(localdir, compmethod, szexe, True)
+        archiveutils.verify(localdir, compmethod, szexe, True)
 
     # Move zipped/unzipped loaders
     print("MOVING LOADERS...")
