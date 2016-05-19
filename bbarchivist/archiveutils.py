@@ -3,12 +3,9 @@
 
 import os  # filesystem read
 import subprocess  # invocation of 7z, cap
-import zipfile  # zip extract, zip compresssion
-import tarfile  # txz/tbz/tgz compression
+import zipfile  # zip compresssion
+import tarfile  # txz/tbz/tgz/tar compression
 import sys  # version info
-import shutil  # folder operations
-import base64  # encoding for hashes
-import hashlib   # get hashes
 import configparser  # config parsing, duh
 from bbarchivist import utilities  # platform determination
 from bbarchivist import bbconstants  # premade stuff

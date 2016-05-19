@@ -77,6 +77,9 @@
     <Compile Include="bbarchivist\loadergen.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="bbarchivist\archiveutils.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="bbarchivist\scripts\cap.py">
       <SubType>Code</SubType>
     </Compile>
@@ -158,6 +161,9 @@
     <Compile Include="download_dats.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="tests\test_archiveutils.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="tests\test_barutils.py">
       <SubType>Code</SubType>
     </Compile>
@@ -167,7 +173,7 @@
     <Compile Include="tests\test_dummy.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="tests\test_filehashtools.py">
+    <Compile Include="tests\test_hashutils.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="tests\test_jsonutils.py">
