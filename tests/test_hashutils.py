@@ -185,16 +185,16 @@ class TestClasshashutils:
         confload = {}
         confload['adler32'] = True
         confload['crc32'] = True
-        confload['md4'] = True
+        confload['md4'] = True if "md4" in algos else False
         confload['md5'] = True
-        confload['sha0'] = True
+        confload['sha0'] = True if "sha" in algos else False
         confload['sha1'] = True
         confload['sha224'] = True
         confload['sha256'] = True
         confload['sha384'] = True
         confload['sha512'] = True
-        confload['ripemd160'] = True
-        confload['whirlpool'] = True
+        confload['ripemd160'] = True if "ripemd160" in algos else False
+        confload['whirlpool'] = True if "whirlpool" in algos else False
         confload['blocksize'] = "16777216"
         print(confload)
         with mock.patch('bbarchivist.hashutils.verifier_config_loader', mock.MagicMock(return_value=confload)):
@@ -203,13 +203,19 @@ class TestClasshashutils:
             b"ADLER32",
             b"02470DCD tempfile.txt",
             b"CRC32",
-            b"ED5D3F26 tempfile.txt",
+            b"ED5D3F26 tempfile.txt"]
+        if confload["md4"]:
+            stocklines.extend([
             b"MD4",
-            b"DF26ADA1A895F94E1F1257FAD984E809 tempfile.txt",
+            b"DF26ADA1A895F94E1F1257FAD984E809 tempfile.txt"])
+        stocklines.extend([
             b"MD5",
-            b"822E1187FDE7C8D55AFF8CC688701650 tempfile.txt",
+            b"822E1187FDE7C8D55AFF8CC688701650 tempfile.txt"])
+        if confload["sha0"]:
+            stocklines.extend([
             b"SHA0",
-            b"D26B25F6170DAF49E31E68BF57F6164815C368D8 tempfile.txt",
+            b"D26B25F6170DAF49E31E68BF57F6164815C368D8 tempfile.txt"])
+        stocklines.extend([
             b"SHA1",
             b"71DC7CE8F27C11B792BE3F169ECF985865E276D0 tempfile.txt",
             b"SHA224",
@@ -219,12 +225,15 @@ class TestClasshashutils:
             b"SHA384",
             b"76620873C0D27873C137B082425C6E87E3D601C4B19241A1F2222F7F700A2FE8D3C648B26F62325A411CB020BFF527BE tempfile.txt",
             b"SHA512",
-            b"B66A5E8AA9B9705748C2EE585B0E1A3A41288D2DAFC3BE2DB12FA89D2F2A3E14F9DEC11DE4BA865BB51EAA6C2CFEB294139455E34DA7D827A19504B0906C01C1 tempfile.txt",
+            b"B66A5E8AA9B9705748C2EE585B0E1A3A41288D2DAFC3BE2DB12FA89D2F2A3E14F9DEC11DE4BA865BB51EAA6C2CFEB294139455E34DA7D827A19504B0906C01C1 tempfile.txt"])
+        if confload["ripemd160"]:
+            stocklines.extend([
             b"RIPEMD160",
-            b"F3E191024C33768E2589E2EFCA53D55F4E4945EE tempfile.txt",
-            b"WHIRLPOOL",
-            b"9835D12F3CB3EA3934635E4A7CC918E489379ED69D894EBC2C09BBF99FE72567BFD26C919AD666E170752ABFC4B8C37B376F5102F9E5DE59AF2B65EFC2E01293 tempfile.txt"
-        ]
+            b"F3E191024C33768E2589E2EFCA53D55F4E4945EE tempfile.txt"])
+        if confload["whirlpool"]:
+            stocklines.extend([
+                b"WHIRLPOOL",
+                b"9835D12F3CB3EA3934635E4A7CC918E489379ED69D894EBC2C09BBF99FE72567BFD26C919AD666E170752ABFC4B8C37B376F5102F9E5DE59AF2B65EFC2E01293 tempfile.txt"])
         stocklines2 = []
         for item in stocklines:
             item2 = item.strip()
