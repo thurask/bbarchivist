@@ -499,11 +499,53 @@ def prod_avail(results, mailer=False, osversion=None, password=None):
         if avail and mailer:
             sqlutils.prepare_sw_db()
             if not sqlutils.check_exists(osversion, prel):
+                rad = utilities.increment(osversion, 1)
+                linkgen(osversion, rad, prel, temp=True)
                 smtputils.prep_email(osversion, prel, password)
     else:
         pav = "  "
         is_avail = "Unavailable"
     return prel, pav, is_avail
+
+
+def linkgen(osversion, radioversion=None, softwareversion=None, altsw=None, temp=False):
+    """
+    Generate debrick/core/radio links for given OS, radio, software release.
+
+    :param osversion: OS version, 10.x.y.zzzz.
+    :type osversion: str
+
+    :param radioversion: Radio version, 10.x.y.zzzz. Can be guessed.
+    :type radioversion: str
+
+    :param softwareversion: Software version, 10.x.y.zzzz. Can be guessed.
+    :type softwareversion: str
+
+    :param altsw: Radio software release, if not the same as OS.
+    :type altsw: str
+
+    :param temp: If file we write to is temporary.
+    :type temp: bool
+    """
+    radioversion = return_radio_version(osversion, radioversion)
+    softwareversion, swc = return_sw_checked(softwareversion, osversion)
+    del swc
+    if altsw is not None:
+        altsw, aswc = return_radio_sw_checked(altsw, radioversion)
+        del aswc
+    baseurl = networkutils.create_base_url(softwareversion)
+
+    # List of debrick urls
+    oses, cores, radios = textgenerator.url_gen(osversion, radioversion, softwareversion)
+    if altsw is not None:
+        del radios
+        dbks, cors, radios = textgenerator.url_gen(osversion, radioversion, altsw)
+        del dbks
+        del cors
+
+    avlty = networkutils.availability(baseurl)
+    textgenerator.write_links(softwareversion, osversion, radioversion, oses, cores, radios,
+                              avlty, False, None, temp, altsw)
 
 
 def clean_swrel(swrelset):

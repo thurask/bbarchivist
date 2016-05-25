@@ -7,7 +7,6 @@ from bbarchivist import utilities  # incrementer
 from bbarchivist import smtputils  # email
 from bbarchivist import scriptutils  # default parser
 from bbarchivist import decorators  # Ctrl+C wrapper
-from bbarchivist.scripts import linkgen  # automatic generation
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -170,7 +169,7 @@ def autolookup_main(osversion, loop=False, log=False,
             scriptutils.autolookup_printer(out, avail, log, quiet, record)
         if autogen and avail == "Available":
             rad = utilities.increment(osversion, 1)
-            linkgen.linkgen_main(osversion, rad, prel)
+            scriptutils.linkgen(osversion, rad, prel)
         if not loop:
             raise KeyboardInterrupt  # hack, but whatever
         else:

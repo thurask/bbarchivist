@@ -88,25 +88,7 @@ def linkgen_main(osversion, radioversion=None,
     :param temp: If file we write to is temporary.
     :type temp: bool
     """
-    radioversion = scriptutils.return_radio_version(osversion, radioversion)
-    softwareversion, swc = scriptutils.return_sw_checked(softwareversion, osversion)
-    del swc
-    if altsw is not None:
-        altsw, aswc = scriptutils.return_radio_sw_checked(altsw, radioversion)
-        del aswc
-    baseurl = networkutils.create_base_url(softwareversion)
-
-    # List of debrick urls
-    oses, cores, radios = textgenerator.url_gen(osversion, radioversion, softwareversion)
-    if altsw is not None:
-        del radios
-        dbks, cors, radios = textgenerator.url_gen(osversion, radioversion, altsw)
-        del dbks
-        del cors
-
-    avlty = networkutils.availability(baseurl)
-    textgenerator.write_links(softwareversion, osversion, radioversion, oses, cores, radios,
-                              avlty, False, None, temp, altsw)
+    scriptutils.linkgen(osversion, radioversion, softwareversion, altsw, temp)
 
 
 if __name__ == "__main__":

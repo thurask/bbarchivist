@@ -11,6 +11,7 @@ except ImportError:
     import mock
 import pytest
 import bbarchivist.scriptutils as bs
+from bbarchivist.bbconstants import LONGVERSION, COMMITDATE, VERSION
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -156,6 +157,13 @@ class TestClassScriptutils:
         assert bs.shortversion() == "10.0.10586.1000"
         sys.frozen = False
 
+    def test_shortversion_unfrozen(self):
+        """
+        Test version getting, short type, not frozen.
+        """
+        sys.frozen = False
+        assert bs.shortversion() == VERSION
+
     def test_longversion(self):
         """
         Test version getting, long type.
@@ -165,6 +173,23 @@ class TestClassScriptutils:
             afile.write("10.0.10586.1000\n1970-01-01")
         assert bs.longversion() == ["10.0.10586.1000", "1970-01-01"]
         sys.frozen = False
+
+    def test_longversion_unfrozen(self):
+        """
+        Test version getting, long type, not frozen.
+        """
+        sys.frozen = False
+        assert bs.longversion() == (LONGVERSION, COMMITDATE)
+
+    def test_linkgen(self):
+        """
+        Test link generation.
+        """
+        bs.linkgen("10.9.8.7654", "10.2.3.4567", "10.1.0.9283", "10.9.2.8374", True)
+        with open("TEMPFILE.txt", "r") as afile:
+            data = afile.read()
+        assert len(data) == 3010
+
 
 
 class TestClassScriptutilsSoftware:
@@ -313,6 +338,15 @@ class TestClassScriptutilsIO:
         """
         bs.autolookup_printer("SNEK", "Available", False, False)
         assert "SNEK" in capsys.readouterr()[0]
+
+    def test_autolookup_printer_log(self):
+        """
+        Test writing autolookup output to file.
+        """
+        bs.autolookup_printer("SNEK", "Available", True, True, "snek.txt")
+        with open("snek.txt", "r") as afile:
+            data = afile.read()
+        assert data == "SNEK\n"
 
     def test_autolookup_out(self):
         """
@@ -519,7 +553,7 @@ class TestClassScriptutilsArguments:
         """
         Create parser for testing.
         """
-        cls.parser = bs.default_parser("name", "Formats C:", vers=["deadbeef", "1970-01-01"])
+        cls.parser = bs.default_parser("name", "Formats C:", flags=("folder", "osr"), vers=["deadbeef", "1970-01-01"])
 
     def test_parser_name(self):
         """
@@ -538,6 +572,17 @@ class TestClassScriptutilsArguments:
         Test if parser has the epilog set.
         """
         assert self.parser.epilog == "https://github.com/thurask/bbarchivist"
+
+    def test_parser_args(self):
+        """
+        Test arg parsing.
+        """
+        pargs = self.parser.parse_args(["10.3.2.2876"])
+        args = vars(pargs)
+        assert args["folder"] is None
+        assert args["radio"] is None
+        assert args["swrelease"] is None
+        assert args["os"] == "10.3.2.2876"
 
 
 class TestClassScriptutilsIntegrity:
