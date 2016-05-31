@@ -1,5 +1,5 @@
 include README.rst
-include bbarchivist/cap-3.11.0.22.dat
+include bbarchivist/cap-3.11.0.27.dat
 include bbarchivist/cfp-3.10.0.57.dat
 include bbarchivist/bbconstants.json
 include versioneer.py

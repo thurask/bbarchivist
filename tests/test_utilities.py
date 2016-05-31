@@ -25,14 +25,14 @@ def setup_module(module):
     if not os.path.exists("temp_utilities"):
         os.mkdir("temp_utilities")
     os.chdir("temp_utilities")
-    with open("cap-3.11.0.22.dat", "w") as targetfile:
+    with open("cap-3.11.0.27.dat", "w") as targetfile:
         targetfile.write("Jackdaws love my big sphinx of quartz")
-    copyfile("cap-3.11.0.22.dat", "cfp-3.10.0.57.dat")
-    copyfile("cap-3.11.0.22.dat", "7za.exe")
-    copyfile("cap-3.11.0.22.dat", "7za64.exe")
-    copyfile("cap-3.11.0.22.dat", "Z10_loader1.exe")
-    copyfile("cap-3.11.0.22.dat", "Z10_loader2.exe")
-    copyfile("cap-3.11.0.22.dat", "Z10_loader3.exe")
+    copyfile("cap-3.11.0.27.dat", "cfp-3.10.0.57.dat")
+    copyfile("cap-3.11.0.27.dat", "7za.exe")
+    copyfile("cap-3.11.0.27.dat", "7za64.exe")
+    copyfile("cap-3.11.0.27.dat", "Z10_loader1.exe")
+    copyfile("cap-3.11.0.27.dat", "Z10_loader2.exe")
+    copyfile("cap-3.11.0.27.dat", "Z10_loader3.exe")
 
 
 def teardown_module(module):
@@ -76,7 +76,7 @@ class TestClassUtilities7z:
             with mock.patch('winreg.QueryValueEx', mock.MagicMock(return_value=OSError)):
                 with mock.patch('platform.machine', mock.MagicMock(return_value="AMD64")):
                     if not os.path.exists("7za.exe"):
-                        copyfile("cap-3.11.0.22.dat", "7za.exe")
+                        copyfile("cap-3.11.0.27.dat", "7za.exe")
                     if os.path.exists("7za64.exe"):
                         os.remove("7za64.exe")
                     assert bu.win_seven_zip(True) == "error"
@@ -93,7 +93,7 @@ class TestClassUtilities7z:
             with mock.patch('winreg.QueryValueEx', mock.MagicMock(return_value=OSError)):
                 with mock.patch('platform.machine', mock.MagicMock(return_value="AMD64")):
                     if not os.path.exists("7za64.exe"):
-                        copyfile("cap-3.11.0.22.dat", "7za64.exe")
+                        copyfile("cap-3.11.0.27.dat", "7za64.exe")
                     assert bu.win_seven_zip(True) == "7za64.exe"
                     if os.path.exists("7za64.exe"):
                         os.remove("7za64.exe")

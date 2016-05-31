@@ -51,7 +51,7 @@ LOCATION = os.path.abspath(__file__)
 #: File folder.
 DIRECTORY = os.path.dirname(LOCATION)
 #: CAP
-CAP = Datafile("3.11.0.22", "cap", 9252400)
+CAP = Datafile("3.11.0.27", "cap", 9252412)
 #: CFP
 CFP = Datafile("3.10.0.57", "cfp", 16361984)
 #: JSON storage file.
