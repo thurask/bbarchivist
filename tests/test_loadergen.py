@@ -23,7 +23,7 @@ def setup_module(module):
     if not os.path.exists("temp_loadergen"):
         os.mkdir("temp_loadergen")
     os.chdir("temp_loadergen")
-    with open("cap-3.11.0.22.dat", "w") as targetfile:
+    with open("cap-3.11.0.27.dat", "w") as targetfile:
         targetfile.write("0" * 9500000)
 
 

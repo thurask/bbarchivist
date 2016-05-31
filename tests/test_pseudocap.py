@@ -25,7 +25,7 @@ def setup_module(module):
     os.chdir("temp_pseudocap")
     with open("firstfile.signed", "w") as targetfile:
         targetfile.write("Jackdaws love my big sphinx of quartz")
-    with open("cap-3.11.0.22.dat", "w") as targetfile:
+    with open("cap-3.11.0.27.dat", "w") as targetfile:
         targetfile.write("0" * 9500000)
     bp.make_offset(["firstfile.signed"])
     copyfile("offset.hex", "offset.tmp")
