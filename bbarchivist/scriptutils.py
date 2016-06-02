@@ -102,6 +102,21 @@ def default_parser(name=None, desc=None, flags=None, vers=None):
     return parser
 
 
+def external_version(parser, addition):
+    """
+    Modify the version string of argparse.ArgumentParser, adding something.
+
+    :param parser: Parser to modify.
+    :type parser: argparse.ArgumentParser
+
+    :param addition: What to add.
+    :type addition: str
+    """
+    verarg = [arg for arg in parser._actions if type(arg) == argparse._VersionAction][0]
+    verarg.version = "{1}{0}".format(addition, verarg.version)
+    return parser
+
+
 def return_radio_version(osversion, radioversion=None):
     """
     Increment radio version, if need be.

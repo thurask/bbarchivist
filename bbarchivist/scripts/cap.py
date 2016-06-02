@@ -3,6 +3,7 @@
 
 import sys  # load arguments
 import subprocess  # running cap
+from bbarchivist import bbconstants  # cap version
 from bbarchivist import scriptutils  # default parser
 from bbarchivist import utilities  # platform
 
@@ -16,6 +17,8 @@ def cap_main():
     Run cap.
     """
     parser = scriptutils.default_parser("bb-cap", "BlackBerry CAP.")
+    capver = "|{0}".format(bbconstants.CAP.version)
+    parser = scriptutils.external_version(parser, capver)
     parser.parse_known_args(sys.argv[1:])
     if utilities.is_windows():
         subprocess.call([utilities.grab_cap()] + sys.argv[1:])

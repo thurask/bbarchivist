@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Test the scriptutils module."""
 
+import argparse
 import os
 import sys
 from shutil import rmtree, copyfile
@@ -573,6 +574,13 @@ class TestClassScriptutilsArguments:
         """
         assert self.parser.epilog == "https://github.com/thurask/bbarchivist"
 
+    def test_parser_version(self):
+        """
+        Test if parser has the version set.
+        """
+        verarg = [x for x in self.parser._actions if type(x) == argparse._VersionAction][0]
+        assert verarg.version == "name deadbeef committed 1970-01-01"
+
     def test_parser_args(self):
         """
         Test arg parsing.
@@ -583,6 +591,14 @@ class TestClassScriptutilsArguments:
         assert args["radio"] is None
         assert args["swrelease"] is None
         assert args["os"] == "10.3.2.2876"
+
+    def test_external_version(self):
+        """
+        Test version modification.
+        """
+        newpar = bs.external_version(self.parser, "|SNEKSNEK")
+        verarg = [x for x in newpar._actions if type(x) == argparse._VersionAction][0]
+        assert verarg.version == "name deadbeef committed 1970-01-01|SNEKSNEK"
 
 
 class TestClassScriptutilsIntegrity:
