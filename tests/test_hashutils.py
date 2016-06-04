@@ -272,17 +272,29 @@ class TestClasshashutils:
                 assert "SOMETHING WENT WRONG" in capsys.readouterr()[0]
 
 
+class GPGFileMock(object):
+    """Mock a gnupg.GPG instance."""
+
+    def sign_file(self, file, detach, keyid, passphrase, output):
+        """
+        "Sign a file".
+        """
+        print("MOCKED!")
+
+
 class TestClasshashutilsGPG:
     """
     Test GPG-related tools.
     """
 
-    def test_gpgfile(self):
+    def test_gpgfile(self, capsys):
         """
         Test GnuPG signing.
         """
         if any((os.getenv("TRAVIS", "false"), os.getenv("APPVEYOR", "false"))) == "true":
-            pass
+            gpginst = GPGFileMock()
+            bh.gpgfile("tempfile.txt", gpginst, "asdasdad", "hunter2")
+            assert "MOCKED!" in capsys.readouterr()[0]
         elif NOGNUPG:
             pass
         else:

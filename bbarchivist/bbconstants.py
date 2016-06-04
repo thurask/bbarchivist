@@ -11,7 +11,7 @@ __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015-2016 Thurask"
 
 
-class Datafile:
+class Datafile(object):
     """Structure for information about a data file included with this app."""
 
     def __init__(self, version, datatype, size):
@@ -29,7 +29,7 @@ if not getattr(sys, 'frozen', False):  # regular
     #: Git commit hash.
     COMMITHASH = "g{0}".format(get_versions()["full-revisionid"][0:7])
     #: App version, tag + commits.
-    LONGVERSION = "-".join((VERSION + DIRTY, COMMITHASH)) 
+    LONGVERSION = "-".join((VERSION + DIRTY, COMMITHASH))
     #: Git commit timestamp.
     COMMITDATE = get_versions()["time"]
 else:  # cx_freeze support
