@@ -56,10 +56,10 @@ def new_enough(minver):
     """
     Check if we're at or above a minimum Python version.
 
-    :param minver: What we should be equal or greater to.
+    :param minver: Minimum Python version (3.minver).
     :type minver: int
     """
-    return True if minver >= sys.version_info[1] else False
+    return False if minver > sys.version_info[1] else True
 
 
 def fsizer(file_size):

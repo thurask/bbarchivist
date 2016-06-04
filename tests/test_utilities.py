@@ -184,7 +184,7 @@ class TestClassUtilitiesPlatform:
         """
         Test if our Python version is too old.
         """
-        assert not bu.new_enough(sys.version_info[1] - 1)
+        assert not bu.new_enough(sys.version_info[1] + 1)
 
 
 class TestClassUtilitiesLoaders:
@@ -264,8 +264,8 @@ class TestClassUtilities:
         """
         with mock.patch("os.path.join", mock.MagicMock(side_effect=IndexError)):
             with mock.patch("bbarchivist.utilities.cappath_config_writer", mock.MagicMock(side_effect=None)):
-                with mock.patch("bbarchivist.utilities.cappath_config_loader", mock.MagicMock(side_effect="cap.dat")):
-                    with mock.patch("glob.glob", mock.MagicMock(side_effect=["cap.dat"])):
+                with mock.patch("bbarchivist.utilities.cappath_config_loader", mock.MagicMock(return_value="cap.dat")):
+                    with mock.patch("glob.glob", mock.MagicMock(return_value=["cap.dat"])):
                         assert os.path.dirname(bu.grab_cap()) == os.getcwd()
 
     def test_grab_cap_system(self):
@@ -274,7 +274,7 @@ class TestClassUtilities:
         """
         with mock.patch("glob.glob", mock.MagicMock(side_effect=IndexError)):
             with mock.patch("bbarchivist.utilities.cappath_config_writer", mock.MagicMock(side_effect=None)):
-                with mock.patch("bbarchivist.utilities.cappath_config_loader", mock.MagicMock(side_effect=None)):
+                with mock.patch("bbarchivist.utilities.cappath_config_loader", mock.MagicMock(return_value=None)):
                     assert os.path.dirname(bu.grab_cfp()) == os.path.dirname(bc.CAP.location)
 
     def test_grab_cfp(self):

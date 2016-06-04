@@ -3,7 +3,6 @@
 
 import os
 from shutil import rmtree, copyfile
-from sys import version_info
 from hashlib import sha512
 import zipfile
 try:
