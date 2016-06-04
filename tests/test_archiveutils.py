@@ -3,7 +3,6 @@
 
 import os
 from shutil import rmtree, copyfile
-from sys import version_info
 from hashlib import sha512
 import zipfile
 try:
@@ -12,7 +11,7 @@ except ImportError:
     import mock
 import pytest
 import bbarchivist.archiveutils as ba
-from bbarchivist.utilities import prep_seven_zip, get_seven_zip
+from bbarchivist.utilities import prep_seven_zip, get_seven_zip, new_enough
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -161,7 +160,7 @@ class TestClassArchiveutilsCompression:
         """
         Test xz compression.
         """
-        if version_info[1] < 3:
+        if not new_enough(3):
             pass
         else:
             ba.compress(os.getcwd(), "txz")
@@ -173,7 +172,7 @@ class TestClassArchiveutilsCompression:
         """
         Test xz compression failure.
         """
-        if version_info[1] < 3:
+        if not new_enough(3):
             pass
         else:
             with mock.patch("tarfile.TarFile.getmembers", mock.MagicMock(return_value=False)):
@@ -230,7 +229,7 @@ class TestClassArchiveutilsMethods:
         """
         Test method checking, Python 3.2.
         """
-        if version_info[1] > 2:
+        if new_enough(3):
             pass
         else:
             assert ba.filter_method("txz", None) == "zip"
@@ -379,7 +378,7 @@ class TestClassArchiveutilsVerifier:
         """
         Test tar.xz verification.
         """
-        if version_info[1] < 3:
+        if not new_enough(3):
             pass
         else:
             verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
@@ -392,7 +391,7 @@ class TestClassArchiveutilsVerifier:
         """
         Test tar.xz verification failure.
         """
-        if version_info[1] < 3:
+        if not new_enough(3):
             pass
         else:
             with mock.patch('bbarchivist.archiveutils.smart_is_tarfile', mock.MagicMock(return_value=False)):
@@ -421,7 +420,7 @@ class TestClassArchiveutilsConfig:
         """
         Test reading compression settings, Python 3.2.
         """
-        if version_info[1] > 2:
+        if new_enough(3):
             pass
         else:
             try:

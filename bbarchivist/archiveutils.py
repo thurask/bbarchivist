@@ -5,7 +5,6 @@ import os  # filesystem read
 import subprocess  # invocation of 7z, cap
 import zipfile  # zip compresssion
 import tarfile  # txz/tbz/tgz/tar compression
-import sys  # version info
 import configparser  # config parsing, duh
 from bbarchivist import utilities  # platform determination
 from bbarchivist import bbconstants  # premade stuff
@@ -195,8 +194,11 @@ def txz_compress(filepath, filename):
     :param filename: Name of file to pack.
     :type filename: str
     """
-    with tarfile.open("{0}.tar.xz".format(filepath), 'w:xz') as xzfile:
-        xzfile.add(filename, filter=None)
+    if not utilities.new_enough(3):
+        pass
+    else:
+        with tarfile.open("{0}.tar.xz".format(filepath), 'w:xz') as xzfile:
+            xzfile.add(filename, filter=None)
 
 
 def txz_verify(filepath):
@@ -206,8 +208,8 @@ def txz_verify(filepath):
     :param filepath: Filename.
     :type filepath: str
     """
-    if sys.version_info[1] < 3:
-        pass
+    if not utilities.new_enough(3):
+        return None
     else:
         if smart_is_tarfile(filepath):
             with tarfile.open(filepath, "r:xz") as thefile:
@@ -260,7 +262,7 @@ def filter_method(method, szexe=None):
     :param szexe: Path to 7z executable, if needed.
     :type szexe: str
     """
-    if sys.version_info[1] < 3 and method == "txz":
+    if not utilities.new_enough(3) and method == "txz":
         method = "zip"  # fallback
     if method == "7z" and szexe is None:
         ifexists = utilities.prep_seven_zip()  # see if 7z exists
@@ -408,7 +410,7 @@ def compress_config_loader(homepath=None):
         config['compression'] = {}
     compini = config['compression']
     method = compini.get('method', fallback="7z")
-    if sys.version_info[1] <= 2 and method == "txz":
+    if not utilities.new_enough(3) and method == "txz":
         method = "zip"  # for 3.2 compatibility
     return method
 

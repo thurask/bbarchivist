@@ -30,7 +30,7 @@
     <Content Include=".travis.yml" />
     <Content Include="appveyor.yml" />
     <Content Include="bbarchivist\bbconstants.json" />
-    <Content Include="bbarchivist\cap-3.11.0.22.dat" />
+    <Content Include="bbarchivist\cap-3.11.0.27.dat" />
     <Content Include="bbarchivist\cfp-3.10.0.57.dat" />
     <Content Include="build_exe.bat" />
     <Content Include="docs\bbarchivist.rst" />

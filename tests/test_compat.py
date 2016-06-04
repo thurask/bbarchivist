@@ -35,6 +35,16 @@ def teardown_module(module):
     rmtree("temp_compat", ignore_errors=True)
 
 
+def imp_side_effect(*args):
+    """
+    Side effect for import mocking.
+    """
+    if args[0] in ["os", "shutil"]:
+        raise ImportError
+    else:
+        pass
+
+
 class TestClassCompat:
     """
     Test backwards compatibility utilities.
@@ -47,9 +57,25 @@ class TestClassCompat:
         with mock.patch('bbarchivist.compat.enum_cpus', mock.MagicMock(return_value="123")):
             assert bc.enum_cpus() == "123"
 
+    def test_enum_cpus_legacy(self):
+        """
+        Test implementation of core counting, legacy.
+        """
+        with mock.patch('bbarchivist.compat.enum_cpus', mock.MagicMock(return_value="123")):
+            with mock.patch('builtins.__import__', mock.MagicMock(side_effect=imp_side_effect)):
+                assert bc.enum_cpus() == "123"
+
     def test_where_which(self):
         """
         Test implementation of where.
         """
         with mock.patch("shutil.which", mock.MagicMock(return_value="here")):
             assert bc.where_which("woodo") == "here"
+
+    def test_where_which_legacy(self):
+        """
+        Test implementation of where, legacy.
+        """
+        with mock.patch('bbarchivist.compat.where_which', mock.MagicMock(return_value="here")):
+            with mock.patch('builtins.__import__', mock.MagicMock(side_effect=imp_side_effect)):
+                assert bc.where_which("woodo") == "here"

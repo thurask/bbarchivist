@@ -12,6 +12,7 @@ except ImportError:
     import mock
 import pytest
 import bbarchivist.utilities as bu
+import bbarchivist.bbconstants as bc
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -173,6 +174,18 @@ class TestClassUtilitiesPlatform:
         with mock.patch('bbarchivist.compat.enum_cpus', mock.MagicMock(return_value="123")):
             assert bu.get_core_count() == "123"
 
+    def test_new_enough_new(self):
+        """
+        Test if we're at or above some Python version.
+        """
+        assert bu.new_enough(sys.version_info[1])
+
+    def test_new_enough_old(self):
+        """
+        Test if our Python version is too old.
+        """
+        assert not bu.new_enough(sys.version_info[1] - 1)
+
 
 class TestClassUtilitiesLoaders:
     """
@@ -245,11 +258,37 @@ class TestClassUtilities:
         """
         assert os.path.dirname(bu.grab_cap()) == os.getcwd()
 
+    def test_grab_cap_loader(self):
+        """
+        Test finding cap location, from INI.
+        """
+        with mock.patch("os.path.join", mock.MagicMock(side_effect=IndexError)):
+            with mock.patch("bbarchivist.utilities.cappath_config_writer", mock.MagicMock(side_effect=None)):
+                with mock.patch("bbarchivist.utilities.cappath_config_loader", mock.MagicMock(side_effect="cap.dat")):
+                    with mock.patch("glob.glob", mock.MagicMock(side_effect=["cap.dat"])):
+                        assert os.path.dirname(bu.grab_cap()) == os.getcwd()
+
+    def test_grab_cap_system(self):
+        """
+        Test finding cap location, system supplied.
+        """
+        with mock.patch("glob.glob", mock.MagicMock(side_effect=IndexError)):
+            with mock.patch("bbarchivist.utilities.cappath_config_writer", mock.MagicMock(side_effect=None)):
+                with mock.patch("bbarchivist.utilities.cappath_config_loader", mock.MagicMock(side_effect=None)):
+                    assert os.path.dirname(bu.grab_cfp()) == os.path.dirname(bc.CAP.location)
+
     def test_grab_cfp(self):
         """
         Test finding cfp location.
         """
         assert os.path.dirname(bu.grab_cfp()) == os.getcwd()
+
+    def test_grab_cfp_system(self):
+        """
+        Test finding cfp location, system supplied.
+        """
+        with mock.patch("glob.glob", mock.MagicMock(side_effect=IndexError)):
+            assert os.path.dirname(bu.grab_cfp()) == os.path.dirname(bc.CFP.location)
 
     def test_str2bool_good(self):
         """
@@ -498,6 +537,15 @@ class TestClassUtilitiesArgparse:
         with pytest.raises(ArgumentError) as argexc:
             bu.valid_method("jackdaw")
             assert "invalid method" in argexc
+
+    def test_valid_method_legacy(self):
+        """
+        Test compression method validity, Python 3.2.
+        """
+        with mock.patch("bbarchivist.utilities.new_enough", mock.MagicMock(return_value=False)):
+            with pytest.raises(ArgumentError) as argexc:
+                bu.valid_method("txz")
+                assert "invalid method" in argexc
 
     def test_valid_carrier_good(self):
         """

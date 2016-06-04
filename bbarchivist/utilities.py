@@ -52,6 +52,16 @@ def grab_cfp():
     return os.path.abspath(cfpfile)  # local cfp
 
 
+def new_enough(minver):
+    """
+    Check if we're at or above a minimum Python version.
+
+    :param minver: What we should be equal or greater to.
+    :type minver: int
+    """
+    return True if minver >= sys.version_info[1] else False
+
+
 def fsizer(file_size):
     """
     Raw byte file size to human-readable string.
@@ -119,7 +129,7 @@ def valid_method(method):
     :type method: str
     """
     methodlist = bbconstants.METHODS
-    if sys.version_info[1] <= 2:
+    if not new_enough(3):
         methodlist = [x for x in bbconstants.METHODS if x != "txz"]
     if method not in methodlist:
         info = "Invalid method {0}.".format(method)

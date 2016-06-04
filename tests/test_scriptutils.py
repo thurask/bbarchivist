@@ -729,7 +729,7 @@ class TestClassScriptutilsIntegrity:
             assert bs.test_loader_files(os.getcwd()) is None
 
 
-class TestClassScriptutilsFHT:
+class TestClassScriptutilsHash:
     """
     Test hash/GPG-related utilities.
     """
