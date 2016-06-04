@@ -347,6 +347,14 @@ class TestClasshashutilsGPG:
                     else:
                         assert verified
 
+    def test_gpgrunner_ci(self):
+        """
+        Test batch GnuPG signing, just with Travis/Appveyor.
+        """
+        with mock.patch("concurrent.futures.ThreadPoolExecutor.submit", mock.MagicMock(side_effect=None)):
+            bh.gpgrunner(os.getcwd(), "12345678", "hunter2", False)
+            assert True
+
     def test_gpgrunner_single(self):
         """
         Test GPGRunner, but with just one file (ThreadPoolExecutor worker count).
@@ -369,16 +377,10 @@ class TestClasshashutilsGPG:
         """
         Test GPGRunner going wrong during the process.
         """
-        envs = (os.getenv("TRAVIS", "false"), os.getenv("APPVEYOR", "false"))
-        if any(env for env in envs if env == "true"):
-            pass
-        elif NOGNUPG:
-            pass
-        else:
-            with mock.patch("concurrent.futures.ThreadPoolExecutor.submit", mock.MagicMock(side_effect=Exception)):
-                with pytest.raises(SystemExit):
-                    bh.gpgrunner(os.getcwd(), "12345678", "hunter2", False)
-                    assert "SOMETHING WENT WRONG" in capsys.readouterr()[0]
+        with mock.patch("concurrent.futures.ThreadPoolExecutor.submit", mock.MagicMock(side_effect=Exception)):
+            with pytest.raises(SystemExit):
+                bh.gpgrunner(os.getcwd(), "12345678", "hunter2", False)
+                assert "SOMETHING WENT WRONG" in capsys.readouterr()[0]
 
 
 class TestClasshashutilsConfig:
