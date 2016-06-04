@@ -247,6 +247,17 @@ class TestClassUtilitiesLoaders:
             assert bu.verify_bulk_loaders(os.devnull) is None
 
 
+def glob_side_effect(*args):
+    """
+    Side effect for glob mocking.
+    """
+    print(args[0])
+    if "cap" in args[0]:
+        return [os.path.join(os.getcwd(), "cap.dat")]
+    else:
+        raise IndexError
+
+
 class TestClassUtilities:
     """
     Test miscellaneous utilities.
@@ -262,11 +273,10 @@ class TestClassUtilities:
         """
         Test finding cap location, from INI.
         """
-        with mock.patch("os.path.join", mock.MagicMock(side_effect=IndexError)):
-            with mock.patch("bbarchivist.utilities.cappath_config_writer", mock.MagicMock(side_effect=None)):
-                with mock.patch("bbarchivist.utilities.cappath_config_loader", mock.MagicMock(return_value="cap.dat")):
-                    with mock.patch("glob.glob", mock.MagicMock(return_value=["cap.dat"])):
-                        assert os.path.dirname(bu.grab_cap()) == os.getcwd()
+        with mock.patch("bbarchivist.utilities.cappath_config_writer", mock.MagicMock(side_effect=None)):
+            with mock.patch("bbarchivist.utilities.cappath_config_loader", mock.MagicMock(return_value=os.path.join(os.getcwd(), "cap.dat"))):
+                with mock.patch("glob.glob", mock.MagicMock(side_effect=glob_side_effect)):
+                    assert os.path.dirname(bu.grab_cap()) == os.getcwd()
 
     def test_grab_cap_system(self):
         """
