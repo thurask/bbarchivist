@@ -291,7 +291,8 @@ class TestClasshashutilsGPG:
         """
         Test GnuPG signing.
         """
-        if any((os.getenv("TRAVIS", "false"), os.getenv("APPVEYOR", "false"))) == "true":
+        envs = (os.getenv("TRAVIS", "false"), os.getenv("APPVEYOR", "false"))
+        if any(env for env in envs if env == "true"):
             gpginst = GPGFileMock()
             bh.gpgfile("tempfile.txt", gpginst, "asdasdad", "hunter2")
             assert "MOCKED!" in capsys.readouterr()[0]
@@ -322,7 +323,8 @@ class TestClasshashutilsGPG:
         """
         Test batch GnuPG signing.
         """
-        if any((os.getenv("TRAVIS", "false"), os.getenv("APPVEYOR", "false"))) == "true":
+        envs = (os.getenv("TRAVIS", "false"), os.getenv("APPVEYOR", "false"))
+        if any(env for env in envs if env == "true"):
             pass
         elif NOGNUPG:
             pass
@@ -367,7 +369,8 @@ class TestClasshashutilsGPG:
         """
         Test GPGRunner going wrong during the process.
         """
-        if any((os.getenv("TRAVIS", "false"), os.getenv("APPVEYOR", "false"))) == "true":
+        envs = (os.getenv("TRAVIS", "false"), os.getenv("APPVEYOR", "false"))
+        if any(env for env in envs if env == "true"):
             pass
         elif NOGNUPG:
             pass
