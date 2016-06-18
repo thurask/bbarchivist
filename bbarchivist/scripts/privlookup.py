@@ -44,8 +44,17 @@ def grab_args():
             help="Check SHA256/512 hashes instead",
             default=None,
             type=utilities.privlookup_hashtype)
+        parser.add_argument(
+            "-s",
+            "--single",
+            dest="single",
+            help="Only scan one version",
+            action="store_true",
+            default=False)
         args = parser.parse_args(sys.argv[1:])
         parser.set_defaults()
+        if args.single:
+            args.ceil = args.floor  # range(x, x+1) == x
         privlookup_main(args.branch, args.floor, args.ceil, args.type)
     else:
         questionnaire()
@@ -55,41 +64,60 @@ def questionnaire():
     """
     Questions to ask if no arguments given.
     """
-    while True:
-        branch = input("BRANCH (ex. AAD): ")
-        if len(branch) != 3:
-            print("BRANCH MUST BE 3 LETTERS, TRY AGAIN")
-            continue
-        else:
+    single = utilities.s2b(input("SINGLE OS (Y/N)?: "))
+    if single:
+        while True:
+            scanos = input("OS (ex. AAD250): ")
+            if len(scanos) != 6:
+                print("OS MUST BE 3 LETTERS AND 3 NUMBERS, TRY AGAIN")
+                continue
+            branch = scanos[:3]
+            if not branch.isalpha():
+                print("OS MUST BE 3 LETTERS AND 3 NUMBERS, TRY AGAIN")
+                continue
+            floor = scanos[3:6]
+            if not floor.isdigit():
+                print("OS MUST BE 3 LETTERS AND 3 NUMBERS, TRY AGAIN")
+                continue
+            floor = int(floor)
+            ceil = floor
             break
-    while True:
-        try:
-            floor = int(input("INITIAL OS (0-998): "))
-        except ValueError:
-            floor = 0
-        else:
-            if floor < 0:
-                print("INITIAL < 0, TRY AGAIN")
-                continue
-            elif floor > 998:
-                print("INITIAL > 998, TRY AGAIN")
+    else:
+        while True:
+            branch = input("BRANCH (ex. AAD): ")
+            if len(branch) != 3 or not branch.isalpha():
+                print("BRANCH MUST BE 3 LETTERS, TRY AGAIN")
                 continue
             else:
                 break
-    while True:
-        try:
-            ceil = int(input("FINAL OS (1-999): "))
-        except ValueError:
-            ceil = 999
-        else:
-            if ceil < floor:
-                print("FINAL < INITIAL, TRY AGAIN")
-                continue
-            elif ceil > 999:
-                print("FINAL > 999, TRY AGAIN")
+        while True:
+            try:
+                floor = int(input("INITIAL OS (0-998): "))
+            except ValueError:
                 continue
             else:
-                break
+                if floor < 0:
+                    print("INITIAL < 0, TRY AGAIN")
+                    continue
+                elif floor > 998:
+                    print("INITIAL > 998, TRY AGAIN")
+                    continue
+                else:
+                    break
+        while True:
+            try:
+                ceil = int(input("FINAL OS (1-999): "))
+            except ValueError:
+                ceil = 999
+            else:
+                if ceil < floor:
+                    print("FINAL < INITIAL, TRY AGAIN")
+                    continue
+                elif ceil > 999:
+                    print("FINAL > 999, TRY AGAIN")
+                    continue
+                else:
+                    break
     privlookup_main(branch, floor, ceil)
     scriptutils.enter_to_exit(True)
 
