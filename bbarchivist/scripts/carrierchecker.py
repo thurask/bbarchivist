@@ -3,6 +3,7 @@
 
 import sys  # load arguments
 import os  # file/path operations
+import webbrowser  # code list
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import networkutils  # check function
 from bbarchivist import utilities  # input validation
@@ -23,11 +24,24 @@ def grab_args():
         parser = scriptutils.default_parser("bb-cchecker", "Carrier info checking")
         parser.add_argument("mcc",
                             help="1-3 digit country code",
-                            type=utilities.valid_carrier)
+                            type=utilities.valid_carrier,
+                            nargs="?",
+                            default=None)
         parser.add_argument("mnc",
                             help="1-3 digit carrier code",
-                            type=utilities.valid_carrier)
-        parser.add_argument("device", help="'STL100-1', 'SQW100-3', etc.")
+                            type=utilities.valid_carrier,
+                            nargs="?",
+                            default=None)
+        parser.add_argument("device",
+                            help="'STL100-1', 'SQW100-3', etc.",
+                            nargs="?",
+                            default=None)
+        parser.add_argument(
+            "-c", "--codes",
+            dest="codes",
+            help="Open browser for MCC/MNC list",
+            action="store_true",
+            default=False)
         parser.add_argument(
             "-a", "--available-bundles",
             dest="bundles",
@@ -85,36 +99,39 @@ def grab_args():
             metavar="OS")
         parser.set_defaults()
         args = parser.parse_args(sys.argv[1:])
-        if args.folder is None:
-            args.folder = os.getcwd()
-        if args.blitz:
-            args.download = True
-            args.upgrade = True  # blitz takes precedence
-        if args.bundles:
-            args.download = False
-            args.upgrade = False
-            args.export = False
-            args.blitz = False
-        if args.forcedos is not None and args.forcedsw is None:
-            avail = networkutils.sr_lookup(args.forcedos,
-                                           bbconstants.SERVERS['p'])
-            forced = avail if avail != "SR not in system" else None
-        elif args.forcedos is None and args.forcedsw is not None:
-            forced = args.forcedsw
+        if args.codes:
+            webbrowser.open("https://en.wikipedia.org/wiki/Mobile_country_code")
         else:
-            forced = None
-        carrierchecker_main(
-            args.mcc,
-            args.mnc,
-            args.device,
-            args.download,
-            args.upgrade,
-            args.folder,
-            args.export,
-            args.blitz,
-            args.bundles,
-            forced,
-            args.selective)
+            if args.folder is None:
+                args.folder = os.getcwd()
+            if args.blitz:
+                args.download = True
+                args.upgrade = True  # blitz takes precedence
+            if args.bundles:
+                args.download = False
+                args.upgrade = False
+                args.export = False
+                args.blitz = False
+            if args.forcedos is not None and args.forcedsw is None:
+                avail = networkutils.sr_lookup(args.forcedos,
+                                               bbconstants.SERVERS['p'])
+                forced = avail if avail != "SR not in system" else None
+            elif args.forcedos is None and args.forcedsw is not None:
+                forced = args.forcedsw
+            else:
+                forced = None
+            carrierchecker_main(
+                args.mcc,
+                args.mnc,
+                args.device,
+                args.download,
+                args.upgrade,
+                args.folder,
+                args.export,
+                args.blitz,
+                args.bundles,
+                forced,
+                args.selective)
     else:
         questionnaire()
     scriptutils.enter_to_exit(True)
@@ -125,13 +142,21 @@ def questionnaire():
     Questions to ask if no arguments given.
     """
     while True:
-        mcc = int(input("MCC: "))
-        if mcc == utilities.valid_carrier(mcc):
-            break
+        try:
+            mcc = int(input("MCC: "))
+        except ValueError:
+            continue
+        else:
+            if mcc == utilities.valid_carrier(mcc):
+                break
     while True:
-        mnc = int(input("MNC: "))
-        if mnc == utilities.valid_carrier(mnc):
-            break
+        try:
+            mnc = int(input("MNC: "))
+        except ValueError:
+            continue
+        else:
+            if mnc == utilities.valid_carrier(mnc):
+                break
     device = input("DEVICE (SXX100-#): ")
     if not device:
         print("NO DEVICE SPECIFIED!")
@@ -213,6 +238,15 @@ def carrierchecker_main(mcc, mnc, device,
     :param selective: Whether or not to exclude Nuance/other dross. Default is false.
     :type selective: bool
     """
+    if mcc is None:
+        print("INVALID MCC!")
+        raise SystemExit
+    elif mnc is None:
+        print("INVALID MNC!")
+        raise SystemExit
+    elif device is None:
+        print("INVALID DEVICE!")
+        raise SystemExit
     device = device.upper()
     if directory is None:
         directory = os.getcwd()
