@@ -9,8 +9,9 @@ def readme():
     Read ReST readme file, use as long description.
     """
     with open('README.rst') as file:
-        return file.read()
-
+        x = file.read()
+        x = x.replace("`LICENSE <LICENSE>`__", "LICENSE")
+        return x
 
 cond_requires = [
     'requests',
