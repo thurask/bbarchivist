@@ -575,7 +575,26 @@ def series_generator(osversion):
     return "BB{0}_{1}_{2}".format(*splits[0:3])
 
 
-def devalpha_urls(osversion, skeletons):
+def devalpha_urls(osversion, skel):
+    """
+    Check individual Dev Alpha autoloader URLs.
+
+    :param osversion: OS version.
+    :type osversion: str
+
+    :param skel: Individual skeleton format to try.
+    :type skel: str
+    """
+    url = "http://downloads.blackberry.com/upr/developers/downloads/{0}{1}.exe".format(skel, osversion)
+    req = requests.head(url)
+    if req.status_code == 200:
+        finals = (url, req.headers["content-length"])
+    else:
+        finals = ()
+    return finals
+
+
+def devalpha_urls_bootstrap(osversion, skeletons):
     """
     Get list of valid Dev Alpha autoloader URLs.
 
@@ -585,15 +604,20 @@ def devalpha_urls(osversion, skeletons):
     :param skeletons: List of skeleton formats to try.
     :type skeletons: list
     """
-    finals = {}
-    for skel in skeletons:
-        if "<SERIES>" in skel:
-            skel = skel.replace("<SERIES>", series_generator(osversion))
-        url = "http://downloads.blackberry.com/upr/developers/downloads/{0}{1}.exe".format(skel, osversion)
-        req = requests.head(url)
-        if req.status_code == 200:
-            finals[url] = req.headers["content-length"]
-    return finals
+    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as xec:
+        try:
+            finals = {}
+            skels = skeletons
+            for idx, skel in enumerate(skeletons):
+                if "<SERIES>" in skel:
+                    skels[idx] = skel.replace("<SERIES>", series_generator(osversion))
+            for skel in skels:
+                final = xec.submit(devalpha_urls, osversion, skel).result()
+                if final:
+                    finals[final[0]] = final[1]
+            return finals
+        except KeyboardInterrupt:  # pragma: no cover
+            xec.shutdown(wait=False)
 
 
 def dev_dupe_cleaner(finals):
