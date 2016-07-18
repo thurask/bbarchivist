@@ -562,3 +562,53 @@ def runtime_metadata():
     """
     metadata = base_metadata("http://downloads.blackberry.com/upr/developers/update/bbndk/runtime/runtime_metadata")
     return metadata
+
+
+def series_generator(osversion):
+    """
+    Generate series/branch name from OS version.
+
+    :param osversion: OS version.
+    :type osversion: str
+    """
+    splits = osversion.split(".")
+    return "BB{0}_{1}_{2}".format(*splits[0:3])
+
+
+def devalpha_urls(osversion, skeletons):
+    """
+    Get list of valid Dev Alpha autoloader URLs.
+
+    :param osversion: OS version.
+    :type osversion: str
+
+    :param skeletons: List of skeleton formats to try.
+    :type skeletons: list
+    """
+    finals = {}
+    for skel in skeletons:
+        if "<SERIES>" in skel:
+            skel = skel.replace("<SERIES>", series_generator(osversion))
+        url = "http://downloads.blackberry.com/upr/developers/downloads/{0}{1}.exe".format(skel, osversion)
+        req = requests.head(url)
+        if req.status_code == 200:
+            finals[url] = req.headers["content-length"]
+    return finals
+
+
+def dev_dupe_cleaner(finals):
+    """
+    Clean duplicate autoloader entries.
+
+    :param finals: Dict of URL:content-length pairs.
+    :type finals: dict(str: str)
+    """
+    revo = {}
+    for key, val in finals.items():
+        revo.setdefault(val, set()).add(key)
+    dupelist = [val for key, val in revo.items() if len(val) > 1]
+    for dupe in dupelist:
+        for entry in dupe:
+            if "DevAlpha" in entry:
+                del finals[entry]
+    return finals

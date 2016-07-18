@@ -596,7 +596,7 @@
             "hwid": "C001A06",
             "fccid": "REF31LW",
             "ptcrbid": "",
-            "secret":  "True"
+            "secret": "True"
         },
         {
             "device": "PLAYBOOK_HSPA+",
@@ -632,5 +632,34 @@
             "ptcrbid": "",
             "secret": "True"
         }
+    ],
+    "devskeletons": [
+        "Autoload-DevAlpha-",
+        "Autoload-DevAlphaA_B-",
+        "Autoload-DevAlphaB-",
+        "Autoload-DevAlphaC-",
+        "Autoload-SQN-100-1-",
+        "Autoload-SQN100-1-",
+        "Autoload-SQN100-3-DevAlphaC-",
+        "Autoload-SQW-100-1-",
+        "Autoload-SQW100-1-",
+        "Autoload-STA-100-5-",
+        "Autoload-STA100-5-",
+        "Autoload-STJ-100-1-",
+        "Autoload-STJ100-1-",
+        "Autoload-STL-100-1-",
+        "Autoload-STL-100-3-",
+        "Autoload-STL-100-4-",
+        "Autoload-STL100-1-",
+        "Autoload-STL100-1-DevAlphaB-",
+        "Autoload-STL100-3-",
+        "Autoload-STL100-4-",
+        "SQN100-1.Q10.<SERIES>.",
+        "SQW100-1.Passport.<SERIES>.",
+        "STA100-6.Z30.<SERIES>.",
+        "STJ100-1.Z3.<SERIES>.",
+        "STL100-1.Z10.<SERIES>.",
+        "STL100-2.Z10.<SERIES>.",
+        "STL100-4.Z10.<SERIES>."
     ]
 }

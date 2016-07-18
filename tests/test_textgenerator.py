@@ -46,6 +46,8 @@ class TestClassTextGenerator:
         cls.deb = deb
         cls.cor = cor
         cls.rad = rad
+        cls.finals = {"http://smack.dat/Autoload-DevAlphaX-10.2.3.4567.exe":"12345",
+                      "http://smack.dat/Autoload-SnekTL100-1-10.2.3.4567.exe":"987654321"}
 
     def test_generator_debrick_length(self):
         """
@@ -129,3 +131,13 @@ class TestClassTextGenerator:
             data = file.read()
             data = data.replace(b"\r", b"")
             assert len(data) == 3060
+
+    def test_export_devloader(self):
+        """
+        Test writing Dev Alpha URLs to file.
+        """
+        bt.export_devloader("10.2.3.4567", self.finals)
+        with open("DevAlpha-10.2.3.4567.txt", 'rb') as file:
+            data = file.read()
+            data = data.replace(b"\r", b"")
+            assert len(data) == 127

@@ -49,6 +49,20 @@ def app_link_writer(target, urls):
             target.write("{0} [{1}] {2}\n".format(base, fsizer(fsize), app))
 
 
+def dev_link_writer(target, finals):
+    """
+    Write Dev Alpha autooloader links to file.
+
+    :param target: File to write to.
+    :type target: file
+
+    :param finals: Dict of URL:content-length pairs.
+    :type finals: dict(str: str)
+    """
+    for key, val in finals.items():
+        target.write("{0} [{1}]\n".format(key, fsizer(int(val))))
+
+
 def write_links(softwareversion, osversion, radioversion,
                 osurls, coreurls, radiourls, avlty=False,
                 appendbars=False, appurls=None, temp=False, altsw=None):
@@ -110,6 +124,20 @@ def write_links(softwareversion, osversion, radioversion,
         if appendbars:
             target.write("\nAPP URLS:\n")
             app_link_writer(target, appurls)
+
+
+def export_devloader(osversion, finals):
+    """
+    Export Dev Alpha URLs to file.
+
+    :param osversion: OS version.
+    :type osversion: str
+
+    :param finals: Dict of URL:content-length pairs.
+    :type finals: dict(str: str)
+    """
+    with open("DevAlpha-{0}.txt".format(osversion), "w") as target:
+        dev_link_writer(target, finals)
 
 
 def url_gen(osversion, radioversion, softwareversion):

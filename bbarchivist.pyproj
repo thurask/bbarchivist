@@ -86,6 +86,9 @@
     <Compile Include="bbarchivist\scripts\cfp.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="bbarchivist\scripts\devloader.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="bbarchivist\scripts\downloader.py">
       <SubType>Code</SubType>
     </Compile>

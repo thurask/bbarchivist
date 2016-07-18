@@ -235,6 +235,17 @@ def md_base_mock(url, request):
     return {'status_code': 200, 'content': thebody}
 
 
+def da_mock(url, request):
+    """
+    Mock for Dev Alpha autoloader URL generation.
+    """
+    csize = "987654321" if "Snek" in request.url else "12345"
+    code = 404 if "BB10" in request.url else 200
+    headers = {'content-length': csize}
+    return httmock.response(status_code=code,
+                            headers=headers)
+
+
 def timeout_mock(url, request):
     """
     Mock for software release lookup, timeout.
@@ -367,6 +378,15 @@ class TestClassNetworkutils:
         result = {"a1": "SR not in system"}
         assert bn.clean_availability(result, "a1") == ("SR not in system", "  ")
 
+    def test_devalpha_export(self):
+        """
+        Test generating Dev Alpha URLs.
+        """
+        skels = ["Autoload-DevAlphaX-", "Autoload-DevAlphaSnek", "Autoload-SnekTL100-1-", "Autoload-<SERIES>-"]
+        finals = {"http://downloads.blackberry.com/upr/developers/downloads/Autoload-DevAlphaX-10.2.3.4567.exe":"12345",
+                  "http://downloads.blackberry.com/upr/developers/downloads/Autoload-SnekTL100-1-10.2.3.4567.exe":"987654321"}
+        with httmock.HTTMock(da_mock):
+            assert bn.dev_dupe_cleaner(bn.devalpha_urls("10.2.3.4567", skels)) == finals
 
 class TestClassNetworkutilsParsing:
     """
