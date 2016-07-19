@@ -67,10 +67,7 @@ def extract_cert(table, device):
             fccid = key['fccid']
             break
     else:
-        print("NO PTCRB ID!")
-        decorators.enter_to_exit(True)
-        if not getattr(sys, 'frozen', False):
-            raise SystemExit
+        fubar("NO PTCRBID!")
     return name, ptcrbid, hwid, fccid
 
 
@@ -117,10 +114,7 @@ def certchecker_prep(table, device):
             hwid = key['hwid']
             break
     else:
-        print("INVALID DEVICE!")
-        decorators.enter_to_exit(True)
-        if not getattr(sys, 'frozen', False):
-            raise SystemExit
+        fubar("INVALID DEVICE!")
     return model, family, hwid
 
 
@@ -147,3 +141,16 @@ def list_family(table):
     """
     famlist = list({key['device'] for key in table if 'secret' not in key and key['ptcrbid']})
     utilities.lprint(famlist)
+
+
+def fubar(message):
+    """
+    What to do when things go bad.
+
+    :param message: Error message.
+    :type message: str
+    """
+    print(message)
+    decorators.enter_to_exit(True)
+    if not getattr(sys, 'frozen', False):
+        raise SystemExit
