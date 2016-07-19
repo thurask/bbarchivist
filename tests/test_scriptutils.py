@@ -74,8 +74,9 @@ class TestClassScriptutils:
         """
         Test excluding useless garbage from a list of apps.
         """
+        craplist = ["retaildemo", "nuance", "pajeetmyson"]
         apps = ["os.bar", "radio.bar", "retaildemo.bar", "nuance_common.bar"]
-        assert bs.purge_dross(apps) == apps[:2]
+        assert bs.purge_dross(apps, craplist) == apps[:2]
 
     def test_blitz_links(self):
         """
@@ -140,13 +141,6 @@ class TestClassScriptutils:
         """
         bs.standard_preamble("snek", "10.3.2.2639", "10.3.2.2474", "10.3.2.2877", "10.3.2.2836")
         assert "2836" in capsys.readouterr()[0]
-
-    def test_lprint(self, capsys):
-        """
-        Test pretty printing an iterable.
-        """
-        bs.lprint(("this", "is", "snek"))
-        assert "this\nis\nsnek" in capsys.readouterr()[0]
 
     def test_shortversion(self):
         """

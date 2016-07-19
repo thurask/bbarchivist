@@ -4,6 +4,7 @@
 import sys  # load arguments
 import os  # file/path operations
 import webbrowser  # code list
+from bbarchivist import decorators  # enter to exit
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import networkutils  # check function
 from bbarchivist import utilities  # input validation
@@ -134,7 +135,7 @@ def grab_args():
                 args.selective)
     else:
         questionnaire()
-    scriptutils.enter_to_exit(True)
+    decorators.enter_to_exit(True)
 
 
 def questionnaire():
@@ -160,7 +161,7 @@ def questionnaire():
     device = input("DEVICE (SXX100-#): ")
     if not device:
         print("NO DEVICE SPECIFIED!")
-        scriptutils.enter_to_exit(True)
+        decorators.enter_to_exit(True)
         if not getattr(sys, 'frozen', False):
             raise SystemExit
     bundles = utilities.s2b(input("CHECK BUNDLES?: "))
@@ -250,7 +251,7 @@ def carrierchecker_main(mcc, mnc, device,
     device = device.upper()
     if directory is None:
         directory = os.getcwd()
-    data = jsonutils.load_json('devices')
+    data = jsonutils.load_json("devices")
     model, family, hwid = jsonutils.certchecker_prep(data, device)
     scriptutils.slim_preamble("CARRIERCHECKER")
     country, carrier = networkutils.carrier_checker(mcc, mnc)
@@ -263,7 +264,7 @@ def carrierchecker_main(mcc, mnc, device,
     if bundles:
         releases = networkutils.available_bundle_lookup(mcc, mnc, hwid)
         print("\nAVAILABLE BUNDLES:")
-        scriptutils.lprint(releases)
+        utilities.lprint(releases)
     else:
         npc = networkutils.return_npc(mcc, mnc)
         swv, osv, radv, files = networkutils.carrier_query(npc, hwid, upgrade, blitz, forced)
@@ -271,7 +272,8 @@ def carrierchecker_main(mcc, mnc, device,
         print("OS VERSION: {0}".format(osv))
         print("RADIO VERSION: {0}".format(radv))
         if selective:
-            files = scriptutils.purge_dross(files)
+            craplist = jsonutils.load_json("apps_to_remove")
+            files = scriptutils.purge_dross(files, craplist)
         if export:
             print("\nEXPORTING...")
             npc = networkutils.return_npc(mcc, mnc)

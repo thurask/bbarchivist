@@ -410,7 +410,7 @@ def test_bar_files(localdir, urllist):
                         brokenlist.append(url)
     if brokenlist:
         print("SOME FILES ARE BROKEN!")
-        lprint(brokenlist)
+        utilities.lprint(brokenlist)
         raise SystemExit
     else:
         print("BAR FILES DOWNLOADED OK")
@@ -450,7 +450,7 @@ def test_loader_files(localdir):
         brokens = utilities.verify_bulk_loaders(localdir)
         if brokens:
             print("BROKEN FILES:")
-            lprint(brokens)
+            utilities.lprint(brokens)
             raise SystemExit
         else:
             print("ALL FILES CREATED OK")
@@ -472,21 +472,6 @@ def test_single_loader(loaderfile):
             raise SystemExit
         else:
             print("LOADER CREATED OK")
-
-
-def enter_to_exit(checkfreeze=True):
-    """
-    Press enter to exit a script.
-
-    :param checkfreeze: If this triggers only in frozen executables. Default is true.
-    :type checkfreeze: bool
-    """
-    greenlight = bool(getattr(sys, 'frozen', False)) if checkfreeze else True
-    if greenlight:
-        print("")
-        smeg = input("Press Enter to exit")
-        if smeg or not smeg:
-            raise SystemExit
 
 
 def prod_avail(results, mailer=False, osversion=None, password=None):
@@ -725,7 +710,7 @@ def package_blitz(bardir, swv):
     print("\nCREATING BLITZ...")
     barutils.create_blitz(bardir, swv)
     print("\nTESTING BLITZ...")
-    zipver = barutils.zip_verify("Blitz-{0}.zip".format(swv))
+    zipver = archiveutils.zip_verify("Blitz-{0}.zip".format(swv))
     if not zipver:
         print("BLITZ FILE IS BROKEN")
         raise SystemExit
@@ -733,63 +718,17 @@ def package_blitz(bardir, swv):
         shutil.rmtree(bardir)
 
 
-def purge_dross(files):
+def purge_dross(files, craplist):
     """
     Get rid of Nuance/retaildemo apps in a list of apps.
 
-    :param files: List of URLs.
+    :param files: List of URLs to clean.
     :type files: list(str)
+
+    :param craplist: List of fragments to check for and remove.
+    :type craplist: list(str)
     """
-    crap = [
-        "sin_ji",
-        "common",
-        "xander",
-        "kate",
-        "ava",
-        "amelie",
-        "thomas",
-        "anna",
-        "alice",
-        "kyoko",
-        "sora",
-        "li_li",
-        "mei_jia",
-        "nora",
-        "zosia",
-        "luciana",
-        "joana",
-        "milena",
-        "marisol",
-        "angelica",
-        "arw",
-        "bgb",
-        "cah",
-        "czc",
-        "dad",
-        "dun",
-        "ena",
-        "eni",
-        "fif",
-        "frc",
-        "frf",
-        "ged",
-        "grg",
-        "iti",
-        "jpj",
-        "kok",
-        "mnc",
-        "mnt",
-        "non",
-        "plp",
-        "ptb",
-        "ptp",
-        "rur",
-        "spe",
-        "spm",
-        "sws",
-        "trt",
-        "retaildemo"]
-    files2 = [file for file in files if all(word not in file for word in crap)]
+    files2 = [file for file in files if all(word not in file for word in craplist)]
     return files2
 
 
@@ -801,17 +740,6 @@ def slim_preamble(appname):
     :type appname: str
     """
     print("~~~{0} VERSION {1}~~~".format(appname.upper(), shortversion()))
-
-
-def lprint(iterable):
-    """
-    A oneliner for 'for item in x: print item'.
-
-    :param iterable: Iterable to print.
-    :type iterable: list/tuple
-    """
-    for item in iterable:
-        print(item)
 
 
 def standard_preamble(appname, osversion, softwareversion, radioversion, altsw=None):

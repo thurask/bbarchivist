@@ -2,10 +2,9 @@
 """Generate links from OS/radio/software."""
 
 import sys  # load arguments
+from bbarchivist import decorators  # enter to exit
 from bbarchivist import scriptutils  # script stuff
-from bbarchivist import networkutils  # lookup, if sw not specified
 from bbarchivist import utilities  # increment version, if radio not specified
-from bbarchivist import textgenerator  # actually writing
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -65,7 +64,7 @@ def questionnaire():
         radioversion,
         softwareversion,
         altsw)
-    scriptutils.enter_to_exit(True)
+    decorators.enter_to_exit(True)
 
 
 def linkgen_main(osversion, radioversion=None,

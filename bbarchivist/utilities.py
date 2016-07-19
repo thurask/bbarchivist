@@ -11,7 +11,6 @@ import time  # spinner delay
 import sys  # streams, version info
 import itertools  # spinners gonna spin
 import subprocess  # loader verification
-import math  # rounding
 from bbarchivist import bbconstants  # cap location, version, filename bits
 from bbarchivist import compat  # backwards compat
 from bbarchivist import dummy  # useless stdout
@@ -673,6 +672,17 @@ def prepends(file, pre, suf):
     :type suf: str or list or tuple
     """
     return file.startswith(pre) and file.endswith(suf)
+
+
+def lprint(iterable):
+    """
+    A oneliner for 'for item in x: print item'.
+
+    :param iterable: Iterable to print.
+    :type iterable: list/tuple
+    """
+    for item in iterable:
+        print(item)
 
 
 def cappath_config_loader(homepath=None):

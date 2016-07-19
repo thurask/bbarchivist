@@ -119,7 +119,7 @@ def questionnaire():
                 else:
                     break
     privlookup_main(branch, floor, ceil)
-    scriptutils.enter_to_exit(True)
+    decorators.enter_to_exit(True)
 
 
 @decorators.wrap_keyboard_except

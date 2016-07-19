@@ -2,6 +2,7 @@
 """Calculates escreens codes."""
 
 import sys  # load arguments
+from bbarchivist import decorators  # enter to exit
 from bbarchivist import hashutils  # main program
 from bbarchivist import utilities  # input validation
 from bbarchivist import scriptutils  # default parser
@@ -54,7 +55,7 @@ def questionnaire():
     duration = utilities.escreens_duration(duration)
     key = hashutils.calculate_escreens(pin.lower(), app, str(uptime), duration)
     print("\n{0}".format(key))
-    scriptutils.enter_to_exit(True)
+    decorators.enter_to_exit(True)
 
 
 if __name__ == "__main__":

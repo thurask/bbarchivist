@@ -53,7 +53,7 @@ def grab_args():
         export = utilities.s2b(input("EXPORT TO FILE?: "))
         print(" ")
         devloader_main(osversion, export)
-        scriptutils.enter_to_exit(True)
+        decorators.enter_to_exit(True)
 
 
 @decorators.wrap_keyboard_except
@@ -87,7 +87,7 @@ def devloader_main(osversion, export=False, loop=False, ceiling=9999):
                 print("EXPORTING...")
                 textgenerator.export_devloader(osversion, urls)
             else:
-                scriptutils.lprint(urls.keys())
+                utilities.lprint(urls.keys())
             if not loop:
                 break
         else:

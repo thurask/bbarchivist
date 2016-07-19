@@ -3,6 +3,7 @@
 
 import os  # filesystem read
 import sys  # load arguments
+from bbarchivist import decorators  # enter to exit
 from bbarchivist import scriptutils  # script stuff
 from bbarchivist import utilities  # input validation
 from bbarchivist import networkutils  # download/lookup
@@ -12,6 +13,7 @@ __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015-2016 Thurask"
 
 
+@decorators.timer
 def grab_args():
     """
     Parse arguments from argparse/questionnaire.
@@ -80,7 +82,7 @@ def questionnaire():
     print(" ")
     downloader_main(osversion, radioversion, softwareversion,
                     localdir, debricks, radios, cores, altsw)
-    scriptutils.enter_to_exit(True)
+    decorators.enter_to_exit(True)
 
 
 def downloader_main(osversion, radioversion=None, softwareversion=None,

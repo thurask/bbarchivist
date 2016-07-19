@@ -4,6 +4,7 @@
 import time  # spinner delay, timer decorator
 import math  # rounding
 import os  # path check
+import sys  # frozen
 import sqlite3  # the sql library
 from bbarchivist import dummy  # useless stdout, dummy exception
 
@@ -26,7 +27,7 @@ def wrap_keyboard_except(method):
         try:
             method(*args, **kwargs)
         except KeyboardInterrupt:
-            pass
+            dummy.UselessStdout.write("ASDASDASD")
     return wrapper
 
 
@@ -106,3 +107,18 @@ def sql_existhandler(sqlpath):
                 raise SystemExit
         return wrapper
     return existdecorator
+
+
+def enter_to_exit(checkfreeze=True):
+    """
+    Press enter to exit a script.
+
+    :param checkfreeze: If this triggers only in frozen executables. Default is true.
+    :type checkfreeze: bool
+    """
+    greenlight = bool(getattr(sys, 'frozen', False)) if checkfreeze else True
+    if greenlight:
+        print("")
+        smeg = input("Press Enter to exit")
+        if smeg or not smeg:
+            raise SystemExit

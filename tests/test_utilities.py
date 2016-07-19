@@ -368,6 +368,13 @@ class TestClassUtilities:
         """
         assert bu.prepends("AAAloader.exe.bak", "AAA", "bak")
 
+    def test_lprint(self, capsys):
+        """
+        Test pretty printing an iterable.
+        """
+        bu.lprint(("this", "is", "snek"))
+        assert "this\nis\nsnek" in capsys.readouterr()[0]
+
 
 class TestClassUtilitiesUrls:
     """

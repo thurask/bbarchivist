@@ -104,7 +104,7 @@ def grab_args():
             False,
             9996,
             False)
-        scriptutils.enter_to_exit(True)
+        decorators.enter_to_exit(True)
 
 
 @decorators.wrap_keyboard_except

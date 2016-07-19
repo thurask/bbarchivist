@@ -161,7 +161,7 @@ def questionnaire():
                "4=Z30/CLASSIC/LEAP",
                "5=Z3",
                "6=PASSPORT"]
-    scriptutils.lprint(devlist)
+    utilities.lprint(devlist)
     while True:
         device = int(input("SELECTED DEVICE: "))
         if not 0 <= device <= len(devlist) - 1:
@@ -299,4 +299,4 @@ def lazyloader_main(device, osversion, radioversion=None,
 
 if __name__ == "__main__":
     grab_args()
-    scriptutils.enter_to_exit(True)
+    decorators.enter_to_exit(True)

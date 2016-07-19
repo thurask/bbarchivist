@@ -9,7 +9,8 @@ except ImportError:
 import glob  # filenames
 import sys  # frozen status
 from bbarchivist import bbconstants  # file location
-from bbarchivist import scriptutils  # enter to exit
+from bbarchivist import decorators  # enter to exit
+from bbarchivist import utilities  # lprint
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -30,9 +31,9 @@ def grab_json():
 
 def load_json(table, jfile=None):
     """
-    Load JSON file, return specific table as dict.
+    Load JSON file, return specific table (dict or list).
 
-    :param table: Name of sub-structure to return
+    :param table: Name of sub-structure to return.
     :type table: str
 
     :param jfile: Path to JSON file.
@@ -67,7 +68,7 @@ def extract_cert(table, device):
             break
     else:
         print("NO PTCRB ID!")
-        scriptutils.enter_to_exit(True)
+        decorators.enter_to_exit(True)
         if not getattr(sys, 'frozen', False):
             raise SystemExit
     return name, ptcrbid, hwid, fccid
@@ -117,7 +118,7 @@ def certchecker_prep(table, device):
             break
     else:
         print("INVALID DEVICE!")
-        scriptutils.enter_to_exit(True)
+        decorators.enter_to_exit(True)
         if not getattr(sys, 'frozen', False):
             raise SystemExit
     return model, family, hwid
@@ -145,4 +146,4 @@ def list_family(table):
     :type table: list(dict)
     """
     famlist = list({key['device'] for key in table if 'secret' not in key and key['ptcrbid']})
-    scriptutils.lprint(famlist)
+    utilities.lprint(famlist)

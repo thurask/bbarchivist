@@ -2,9 +2,11 @@
 """Checks certifications for a given device."""
 
 import sys  # load arguments
+from bbarchivist import decorators  # enter to exit
 from bbarchivist import networkutils  # check function
 from bbarchivist import jsonutils  # json
 from bbarchivist import scriptutils  # default parser
+from bbarchivist import utilities  # lprint
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -76,12 +78,12 @@ def grab_args():
         device = input("DEVICE (SXX100-#/FCCID/HWID): ")
         if not device:
             print("NO DEVICE SPECIFIED!")
-            scriptutils.enter_to_exit(True)
+            decorators.enter_to_exit(True)
             if not getattr(sys, 'frozen', False):
                 raise SystemExit
         print(" ")
         certchecker_main(device)
-        scriptutils.enter_to_exit(True)
+        decorators.enter_to_exit(True)
 
 
 def certchecker_main(device):
@@ -103,7 +105,7 @@ def certchecker_main(device):
         print("FCC ID: {0}".format(fccid.upper()))
     print("\nCHECKING CERTIFICATIONS...\n")
     certlist = networkutils.ptcrb_scraper(ptcrbid)
-    scriptutils.lprint(certlist)
+    utilities.lprint(certlist)
 
 if __name__ == "__main__":
     grab_args()

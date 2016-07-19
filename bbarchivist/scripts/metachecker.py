@@ -2,8 +2,10 @@
 """Checks BlackBerry's developer website for metadata."""
 
 import sys  # load arguments
+from bbarchivist import decorators  # enter to exit
 from bbarchivist import networkutils  # check function
 from bbarchivist import scriptutils  # default parser
+from bbarchivist import utilities  # lprint
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -20,10 +22,10 @@ def metachecker_main():
     runt = networkutils.ndk_metadata() + networkutils.runtime_metadata()
     simu = networkutils.sim_metadata()
     print("RUNTIME METADATA")
-    scriptutils.lprint(sorted(runt))
+    utilities.lprint(sorted(runt))
     print("\nSIMULATOR METADATA")
-    scriptutils.lprint(sorted(simu))
-    scriptutils.enter_to_exit(True)
+    utilities.lprint(sorted(simu))
+    decorators.enter_to_exit(True)
 
 
 if __name__ == "__main__":

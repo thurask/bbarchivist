@@ -359,4 +359,4 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
 
 if __name__ == "__main__":
     grab_args()
-    scriptutils.enter_to_exit(False)
+    decorators.enter_to_exit(False)

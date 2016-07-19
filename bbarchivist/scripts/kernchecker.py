@@ -2,8 +2,10 @@
 """Checks BlackBerry's Android kernel repo for available branches."""
 
 import sys  # load arguments
+from bbarchivist import decorators  # enter to exit
 from bbarchivist import networkutils  # check function
 from bbarchivist import scriptutils  # default parser
+from bbarchivist import utilities  # lprint
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -27,8 +29,8 @@ def kernchecker_main():
     tocheck = "UTILS" if args.utils else "KERNELS"
     print("\nCHECKING {0}...\n".format(tocheck))
     kernlist = networkutils.kernel_scraper(args.utils)
-    scriptutils.lprint(kernlist)
-    scriptutils.enter_to_exit(True)
+    utilities.lprint(kernlist)
+    decorators.enter_to_exit(True)
 
 
 if __name__ == "__main__":

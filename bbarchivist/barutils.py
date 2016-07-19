@@ -285,6 +285,43 @@ def move_bars(localdir, osdir, radiodir):
                     os.remove(bardest_radio)
 
 
+def make_folder(localdir, root):
+    """
+    Make a folder if it doesn't exist.
+
+    :param localdir: Top level folder.
+    :type localdir: str
+
+    :param root: Folder to create.
+    :type root: str
+    """
+    if not os.path.exists(os.path.join(localdir, root)):
+        os.makedirs(os.path.join(localdir, root), exist_ok=True)
+    return os.path.join(localdir, root)
+
+
+def make_dirpairs(localdir, root, osversion, radioversion):
+    """
+    Create a pair of directories, with OS/radio versions for names.
+
+    :param localdir: Top level folder.
+    :type localdir: str
+
+    :param root: Name for folder containing OS/radio pairs.
+    :type root: str
+
+    :param osversion: OS version.
+    :type osversion: str
+
+    :param radioversion: Radio version.
+    :type radioversion: str
+    """
+    rootdir = make_folder(localdir, root)
+    osdir = make_folder(rootdir, osversion)
+    radiodir = make_folder(rootdir, radioversion)
+    return osdir, radiodir
+
+
 def make_dirs(localdir, osversion, radioversion):
     """
     Create the directory tree needed for archivist/lazyloader.
@@ -299,36 +336,7 @@ def make_dirs(localdir, osversion, radioversion):
     :type radioversion: str
     """
     os.makedirs(localdir, exist_ok=True)
-
-    if not os.path.exists(os.path.join(localdir, 'bars')):
-        os.makedirs(os.path.join(localdir, 'bars'), exist_ok=True)
-    bardir = os.path.join(localdir, 'bars')
-    if not os.path.exists(os.path.join(bardir, osversion)):
-        os.makedirs(os.path.join(bardir, osversion), exist_ok=True)
-    bardir_os = os.path.join(bardir, osversion)
-    if not os.path.exists(os.path.join(bardir, radioversion)):
-        os.makedirs(os.path.join(bardir, radioversion), exist_ok=True)
-    bardir_radio = os.path.join(bardir, radioversion)
-
-    if not os.path.exists(os.path.join(localdir, 'loaders')):
-        os.makedirs(os.path.join(localdir, 'loaders'), exist_ok=True)
-    loaderdir = os.path.join(localdir, 'loaders')
-    if not os.path.exists(os.path.join(loaderdir, osversion)):
-        os.makedirs(os.path.join(loaderdir, osversion), exist_ok=True)
-    loaderdir_os = os.path.join(loaderdir, osversion)
-    if not os.path.exists(os.path.join(loaderdir, radioversion)):
-        os.makedirs(os.path.join(loaderdir, radioversion), exist_ok=True)
-    loaderdir_radio = os.path.join(loaderdir, radioversion)
-
-    if not os.path.exists(os.path.join(localdir, 'zipped')):
-        os.makedirs(os.path.join(localdir, 'zipped'), exist_ok=True)
-    zipdir = os.path.join(localdir, 'zipped')
-    if not os.path.exists(os.path.join(zipdir, osversion)):
-        os.makedirs(os.path.join(zipdir, osversion), exist_ok=True)
-    zipdir_os = os.path.join(zipdir, osversion)
-    if not os.path.exists(os.path.join(zipdir, radioversion)):
-        os.makedirs(os.path.join(zipdir, radioversion), exist_ok=True)
-    zipdir_radio = os.path.join(zipdir, radioversion)
-
+    bardir_os, bardir_radio = make_dirpairs(localdir, "bars", osversion, radioversion)
+    loaderdir_os, loaderdir_radio = make_dirpairs(localdir, "loaders", osversion, radioversion)
+    zipdir_os, zipdir_radio = make_dirpairs(localdir, "zipped", osversion, radioversion)
     return (bardir_os, bardir_radio, loaderdir_os, loaderdir_radio, zipdir_os, zipdir_radio)
-
