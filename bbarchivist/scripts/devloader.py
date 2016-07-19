@@ -77,7 +77,7 @@ def devloader_main(osversion, export=False, loop=False, ceiling=9999):
     scriptutils.slim_preamble("DEVLOADER")
     while True:
         if loop and int(osversion.split(".")[3]) > ceiling:
-                break
+            break
         print("OS VERSION: {0}".format(osversion), end="\r")
         urls = networkutils.devalpha_urls_bootstrap(osversion, skels)
         if urls:
