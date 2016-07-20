@@ -50,7 +50,7 @@ def grab_args():
         devloader_main(args.os, args.export, args.recurse, args.ceiling)
     else:
         osversion = input("OS VERSION: ")
-        export = utilities.s2b(input("EXPORT TO FILE?: "))
+        export = utilities.s2b(input("EXPORT TO FILE (Y/N)?: "))
         print(" ")
         devloader_main(osversion, export)
         decorators.enter_to_exit(True)
@@ -92,7 +92,7 @@ def devloader_main(osversion, export=False, loop=False, ceiling=9999):
                 break
         else:
             if not loop:
-                print("NOT FOUND!")
+                print("NOT FOUND!                ", end="\r")
                 break
         if loop:
             osversion = utilities.increment(osversion)
