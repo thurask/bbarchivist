@@ -573,6 +573,22 @@
             "secret": "True"
         },
         {
+            "device": "DTEK50",
+            "family": "DTEK50",
+            "name": "STH100-1",
+            "hwid": "",
+            "fccid": "RJE181LW",
+            "ptcrbid": ""
+        },
+        {
+            "device": "DTEK50",
+            "family": "DTEK50",
+            "name": "STH100-2",
+            "hwid": "",
+            "fccid": "RJD211LW",
+            "ptcrbid": ""
+        },
+        {
             "device": "UNKNOWN",
             "family": "UNRELEASED",
             "name": "SQE100-1",
