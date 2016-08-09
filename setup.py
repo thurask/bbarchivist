@@ -14,14 +14,13 @@ def readme():
         return x
 
 cond_requires = [
-    'requests',
     'python-gnupg',
     'beautifulsoup4'
 ]
 if version_info[1] < 3:  # 3.2 and under
-    cond_requires.append('shutilwhich')
+    cond_requires.extend(['shutilwhich', 'requests==2.10'])
 else:  # 3.3+
-    cond_requires.append('simplejson')
+    cond_requires.extend(['simplejson', 'requests'])
 scriptlist = [
     'bb-archivist=bbarchivist.scripts.archivist:grab_args',
     'bb-lazyloader=bbarchivist.scripts.lazyloader:grab_args',
