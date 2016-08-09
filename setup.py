@@ -39,7 +39,7 @@ scriptlist = [
     'bb-kernchecker=bbarchivist.scripts.kernchecker:kernchecker_main',
     'bb-cfp=bbarchivist.scripts.cfp:cfp_main',
     'bb-cap=bbarchivist.scripts.cap:cap_main',
-    'bb-privlookup=bbarchivist.scripts.privlookup:grab_args',
+    'bb-droidlookup=bbarchivist.scripts.droidlookup:grab_args',
     'bb-metachecker=bbarchivist.scripts.metachecker:metachecker_main',
     'bb-devloader=bbarchivist.scripts.devloader:grab_args'
 ]

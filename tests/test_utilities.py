@@ -638,18 +638,32 @@ class TestClassUtilitiesArgparse:
             bu.signed_file_args([None])
             assert "requires" in str(argexc.value)
 
-    def test_privhash_good(self):
+    def test_droidhash_good(self):
         """
-        Test checking Priv autoloader lookup hash type, best case.
+        Test checking Android autoloader lookup hash type, best case.
         """
-        assert bu.privlookup_hashtype("SHA512") == "sha512"
+        assert bu.droidlookup_hashtype("SHA512") == "sha512"
 
-    def test_privhash_bad(self):
+    def test_droidhash_bad(self):
         """
-        Test checking Priv autoloader lookup hash type, worst case.
+        Test checking Android autoloader lookup hash type, worst case.
         """
         with pytest.raises(ArgumentError) as argexc:
-            bu.privlookup_hashtype("MD5")
+            bu.droidlookup_hashtype("MD5")
+            assert "Invalid" in str(argexc.value)
+
+    def test_droiddev_good(self):
+        """
+        Test checking Android autoloader lookup hash type, best case.
+        """
+        assert bu.droidlookup_devicetype("dTeK50") == "DTEK50"
+
+    def test_droiddev_bad(self):
+        """
+        Test checking Android autoloader lookup hash type, worst case.
+        """
+        with pytest.raises(ArgumentError) as argexc:
+            bu.droidlookup_devicetype("Neon")
             assert "Invalid" in str(argexc.value)
 
 

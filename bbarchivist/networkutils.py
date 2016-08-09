@@ -486,33 +486,42 @@ def kernel_scraper(utils=False):
     return kernlist
 
 
-def make_priv_skeleton(method, variant, build):
+def make_droid_skeleton(method, build, device, variant="common"):
     """
-    Make a Priv autoloader/hash URL.
+    Make an Android autoloader/hash URL.
 
     :param method: None for regular OS links, "sha256/512" for SHA256 or 512 hash.
     :type method: str
 
-    :param variant:
-    :type variant: str
-
     :param build: Build to check, 3 letters + 3 numbers.
     :type build: str
+
+    :param device: Device to check.
+    :type device: str
+
+    :param variant: Autoloader variant. Default is "common".
+    :type variant: str
     """
     folder = {"vzw-vzw": "verizon", "na-att": "att", "na-tmo": "tmo", "common": "default"}
+    devices = {"Priv": "qc8992", "DTEK50": "qc8952_64_sfi"}
+    roots = {"Priv": "bbfoundation/hashfiles_priv/{0}".format(folder[variant]), "DTEK50": "bbSupport/DTEK50"}
+    base = "bbry_{2}_autoloader_user-{0}-{1}".format(variant, build.upper(), devices[device])
     if method is None:
-        skel = "https://bbapps.download.blackberry.com/Priv/bbry_qc8992_autoloader_user-{0}-{1}.zip".format(variant, build.upper())
+        skel = "https://bbapps.download.blackberry.com/Priv/{0}.zip".format(base)
     else:
-        skel = "http://us.blackberry.com/content/dam/bbfoundation/hashfiles_priv/{2}/bbry_qc8992_autoloader_user-{0}-{1}.{3}sum".format(variant, build.upper(), folder[variant], method.lower())
+        skel = "http://ca.blackberry.com/content/dam/{1}/{0}.{2}sum".format(base, roots[device], method.lower())
     return skel
 
 
-def priv_scanner(build, method=None):
+def droid_scanner(build, device, method=None):
     """
-    Check for Priv autoloaders on BlackBerry's site.
+    Check for Android autoloaders on BlackBerry's site.
 
     :param build: Build to check, 3 letters + 3 numbers.
     :type build: str
+
+    :param device: Device to check.
+    :type device: str
 
     :param method: None for regular OS links, "sha256/512" for SHA256 or 512 hash.
     :type method: str
@@ -521,7 +530,7 @@ def priv_scanner(build, method=None):
     with concurrent.futures.ThreadPoolExecutor(max_workers=len(variants)) as xec:
         results = []
         for var in variants:
-            skel = make_priv_skeleton(method, var, build)
+            skel = make_droid_skeleton(method, build, device, var)
             avail = xec.submit(availability, skel)
             if avail.result():
                 results.append(skel)

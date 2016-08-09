@@ -184,9 +184,9 @@ def escreens_duration(duration):
         raise argparse.ArgumentError(argument=None, message="Invalid duration.")
 
 
-def privlookup_hashtype(method):
+def droidlookup_hashtype(method):
     """
-    Check if Priv autoloader lookup hash type is valid.
+    Check if Android autoloader lookup hash type is valid.
 
     :param method: None for regular OS links, "sha256/512" for SHA256 or 512 hash.
     :type method: str
@@ -195,6 +195,21 @@ def privlookup_hashtype(method):
         return method.lower()
     else:
         raise argparse.ArgumentError(argument=None, message="Invalid type.")
+
+
+def droidlookup_devicetype(device):
+    """
+    Check if Android autoloader device type is valid.
+
+    :param device: Android autoloader types to check.
+    :type device: str
+    """
+    devices = ("Priv", "DTEK50")
+    for dev in devices:
+        if dev.lower() == device.lower():
+            return dev
+    else:
+        raise argparse.ArgumentError(argument=None, message="Invalid device.")
 
 
 def s2b(input_check):

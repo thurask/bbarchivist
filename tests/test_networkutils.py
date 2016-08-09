@@ -568,7 +568,7 @@ class TestClassNetworkutilsParsing:
         Test Android autoloader lookup, best case.
         """
         with httmock.HTTMock(pa_good_mock):
-            results = bn.priv_scanner("AAD250")
+            results = bn.droid_scanner("AAD250", "Priv")
             assert "user-common-AAD250" in results[0]
 
     def test_autoloader_scan_bad(self):
@@ -576,7 +576,7 @@ class TestClassNetworkutilsParsing:
         Test Android autoloader lookup, worst case.
         """
         with httmock.HTTMock(pa_bad_mock):
-            results = bn.priv_scanner("AAD250")
+            results = bn.droid_scanner("AAD250", "Priv")
             assert results is None
 
     def test_autoloader_scan_hash(self):
@@ -584,7 +584,7 @@ class TestClassNetworkutilsParsing:
         Test Android autoloader hash lookup.
         """
         with httmock.HTTMock(pa_hash_mock):
-            results = bn.priv_scanner("AAD250", "sha256")
+            results = bn.droid_scanner("AAD250", "Priv", "sha256")
             assert "user-common-AAD250" in results[0]
 
     def test_metadata_ndk(self):
