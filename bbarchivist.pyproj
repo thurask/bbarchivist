@@ -101,7 +101,7 @@
     <Compile Include="bbarchivist\scripts\metachecker.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="bbarchivist\scripts\privlookup.py">
+    <Compile Include="bbarchivist\scripts\droidlookup.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="bbarchivist\scriptutils.py">
