@@ -97,7 +97,7 @@ def sql_existhandler(sqlpath):
         """
         def wrapper(*args, **kwargs):
             """
-            Try function, absorb KeyboardInterrupt and leave gracefully.
+            Check existence of database, leave if it doesn't.
             """
             if os.path.exists(sqlpath):
                 result = method(*args, **kwargs)

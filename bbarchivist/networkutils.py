@@ -29,6 +29,23 @@ def grab_pem():
         return os.path.abspath(pemfile)  # local cacerts
 
 
+def pem_wrapper(method):
+    """
+    Decorator to set REQUESTS_CA_BUNDLE.
+
+    :param method: Method to use.
+    :type method: function
+    """
+    def wrapper(*args, **kwargs):
+        """
+        Set REQUESTS_CA_BUNDLE before doing function.
+        """
+        os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
+        return method(*args, **kwargs)
+    return wrapper
+
+
+@pem_wrapper
 def get_length(url):
     """
     Get content-length header from some URL.
@@ -36,7 +53,6 @@ def get_length(url):
     :param url: The URL to check.
     :type url: str
     """
-    os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
     if url is None:
         return 0
     try:
@@ -47,6 +63,7 @@ def get_length(url):
         return 0
 
 
+@pem_wrapper
 def download(url, output_directory=None):
     """
     Download file from given URL.
@@ -61,7 +78,6 @@ def download(url, output_directory=None):
         output_directory = os.getcwd()
     lfname = url.split('/')[-1]
     sname = utilities.stripper(lfname)
-    os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
     fname = os.path.join(output_directory, lfname)
     with open(fname, "wb") as file:
         req = requests.get(url, stream=True)
@@ -118,6 +134,7 @@ def create_base_url(softwareversion):
     return baseurl
 
 
+@pem_wrapper
 def availability(url):
     """
     Check HTTP status code of given URL.
@@ -126,7 +143,6 @@ def availability(url):
     :param url: URL to check.
     :type url: str
     """
-    os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
     try:
         avlty = requests.head(url)
         status = int(avlty.status_code)
@@ -151,6 +167,7 @@ def clean_availability(results, server):
     return rel, avail
 
 
+@pem_wrapper
 def carrier_checker(mcc, mnc):
     """
     Query BlackBerry World to map a MCC and a MNC to a country and carrier.
@@ -164,7 +181,6 @@ def carrier_checker(mcc, mnc):
     url = "http://appworld.blackberry.com/ClientAPI/checkcarrier?homemcc={0}&homemnc={1}&devicevendorid=-1&pin=0".format(
         mcc, mnc)
     user_agent = {'User-agent': 'AppWorld/5.1.0.60'}
-    os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
     req = requests.get(url, headers=user_agent)
     root = xml.etree.ElementTree.fromstring(req.text)
     for child in root:
@@ -188,6 +204,7 @@ def return_npc(mcc, mnc):
     return "{0}{1}30".format(str(mcc).zfill(3), str(mnc).zfill(3))
 
 
+@pem_wrapper
 def carrier_query(npc, device, upgrade=False, blitz=False, forced=None):
     """
     Query BlackBerry servers, check which update is out for a carrier.
@@ -243,7 +260,6 @@ def carrier_query(npc, device, upgrade=False, blitz=False, forced=None):
     query += "</resultPackageSetCriteria>"
     query += "</updateDetailRequest>"
     header = {"Content-Type": "text/xml;charset=UTF-8"}
-    os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
     req = requests.post(url, headers=header, data=query)
     return parse_carrier_xml(req.text, blitz)
 
@@ -287,6 +303,7 @@ def parse_carrier_xml(data, blitz=False):
     return(swver, osver, radver, files)
 
 
+@pem_wrapper
 def sr_lookup(osver, server):
     """
     Software release lookup, with choice of server.
@@ -318,7 +335,6 @@ def sr_lookup(osver, server):
     query += '</software></clientProperties>'
     query += '</srVersionLookupRequest>'
     header = {"Content-Type": "text/xml;charset=UTF-8"}
-    os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
     try:
         req = requests.post(server, headers=header, data=query, timeout=1)
     except (requests.exceptions.Timeout, requests.exceptions.ConnectionError):
@@ -361,6 +377,7 @@ def sr_lookup_bootstrap(osv):
             xec.shutdown(wait=False)
 
 
+@pem_wrapper
 def available_bundle_lookup(mcc, mnc, device):
     """
     Check which software releases were ever released for a carrier.
@@ -392,7 +409,6 @@ def available_bundle_lookup(mcc, mnc, device):
     query += '</bundleVersionFilter></updateDirectives>'
     query += '</availableBundlesRequest>'
     header = {"Content-Type": "text/xml;charset=UTF-8"}
-    os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
     req = requests.post(server, headers=header, data=query)
     root = xml.etree.ElementTree.fromstring(req.text)
     package = root.find('./data/content')
@@ -400,6 +416,7 @@ def available_bundle_lookup(mcc, mnc, device):
     return bundlelist
 
 
+@pem_wrapper
 def ptcrb_scraper(ptcrbid):
     """
     Get the PTCRB results for a given device.
@@ -409,7 +426,6 @@ def ptcrb_scraper(ptcrbid):
     """
     baseurl = "https://ptcrb.com/vendor/complete/view_complete_request_guest.cfm?modelid={0}".format(
         ptcrbid)
-    os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
     req = requests.get(baseurl)
     soup = BeautifulSoup(req.content, 'html.parser')
     text = soup.get_text()
@@ -469,6 +485,7 @@ def ptcrb_item_cleaner(item):
     return item
 
 
+@pem_wrapper
 def kernel_scraper(utils=False):
     """
     Scrape BlackBerry's GitHub kernel repo for available branches.
@@ -478,7 +495,6 @@ def kernel_scraper(utils=False):
     """
     repo = "android-utils" if utils else "android-linux-kernel"
     url = "https://github.com/blackberry/{0}/branches/all".format(repo)
-    os.environ["REQUESTS_CA_BUNDLE"] = grab_pem()
     req = requests.get(url)
     soup = BeautifulSoup(req.content, 'html.parser')
     text = soup.get_text()
