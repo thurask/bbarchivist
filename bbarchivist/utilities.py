@@ -205,11 +205,14 @@ def droidlookup_devicetype(device):
     :type device: str
     """
     devices = ("Priv", "DTEK50")
-    for dev in devices:
-        if dev.lower() == device.lower():
-            return dev
+    if device is None:
+        return None
     else:
-        raise argparse.ArgumentError(argument=None, message="Invalid device.")
+        for dev in devices:
+            if dev.lower() == device.lower():
+                return dev
+        else:
+            raise argparse.ArgumentError(argument=None, message="Invalid device.")
 
 
 def s2b(input_check):

@@ -727,5 +727,9 @@
         "sws",
         "trt",
         "retaildemo"
+    ],
+    "droidfamilies": [
+        "Priv",
+        "DTEK50"
     ]
 }

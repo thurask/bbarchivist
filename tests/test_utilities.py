@@ -666,6 +666,12 @@ class TestClassUtilitiesArgparse:
             bu.droidlookup_devicetype("Neon")
             assert "Invalid" in str(argexc.value)
 
+    def test_droiddev_none(self):
+        """
+        Test checking Android autoloader lookup hash type, None case.
+        """
+        assert bu.droidlookup_devicetype(None) == None
+
 
 class TestClassUtilitiesConfig:
     """

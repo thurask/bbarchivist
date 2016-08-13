@@ -4,6 +4,7 @@
 import sys  # load arguments
 from bbarchivist import networkutils  # lookup
 from bbarchivist import decorators  # Ctrl+C wrapping
+from bbarchivist import jsonutils  # json
 from bbarchivist import utilities  # argument filters
 from bbarchivist import scriptutils  # default parser
 
@@ -20,10 +21,6 @@ def grab_args():
     if len(sys.argv) > 1:
         parser = scriptutils.default_parser("bb-droidlookup", "Get Android autoloaders")
         parser.add_argument(
-            "device",
-            help="Device to check",
-            type=utilities.droidlookup_devicetype)
-        parser.add_argument(
             "branch",
             help="OS branch, 3 letters")
         parser.add_argument(
@@ -33,15 +30,23 @@ def grab_args():
             nargs="?",
             type=int,
             choices=range(0, 999),
-            metavar="INT")
+            metavar="floor")
         parser.add_argument(
-            "ceil",
+            "device",
+            help="Device to check",
+            nargs="?",
+            type=utilities.droidlookup_devicetype,
+            default=None)
+        parser.add_argument(
+            "-c",
+            "--ceiling",
+            dest="ceil",
             help="End of search range",
             default=999,
             nargs="?",
             type=int,
             choices=range(1, 1000),
-            metavar="INT")
+            metavar="ceil")
         parser.add_argument(
             "-t",
             "--type",
@@ -52,14 +57,28 @@ def grab_args():
             "-s",
             "--single",
             dest="single",
-            help="Only scan one version",
+            help="Only scan one OS build",
+            action="store_true",
+            default=False)
+        parser.add_argument(
+            "-a",
+            "--all",
+            dest="all",
+            help="Scan for all devices (slow)",
             action="store_true",
             default=False)
         args = parser.parse_args(sys.argv[1:])
+        if args.device is None and not args.all:
+            raise argparse.ArgumentError(argument=None, message="Invalid device.")
         parser.set_defaults()
         if args.single:
             args.ceil = args.floor  # range(x, x+1) == x
-        droidlookup_main(args.device, args.branch, args.floor, args.ceil, args.type)
+        if args.all:
+            famlist = jsonutils.load_json("droidfamilies")
+            for dev in famlist:
+                droidlookup_main(dev, args.branch, args.floor, args.ceil, args.type)
+        else:
+            droidlookup_main(args.device, args.branch, args.floor, args.ceil, args.type)
     else:
         questionnaire()
 
