@@ -74,7 +74,8 @@ if __name__ == "__main__":
         Executable(join(localdir, 'escreens.py'), base=base, targetName="escreens.exe"),
         Executable(join(localdir, 'droidlookup.py'), base=base, targetName="droidlookup.exe"),
         Executable(join(localdir, 'metachecker.py'), base=base, targetName="metachecker.exe"),
-        Executable(join(localdir, 'devloader.py'), base=base, targetName="devloader.exe")
+        Executable(join(localdir, 'devloader.py'), base=base, targetName="devloader.exe"),
+        Executable(join(localdir, 'swlookup.py'), base=base, targetName="swlookup.exe")
     ]
 
     write_versions()

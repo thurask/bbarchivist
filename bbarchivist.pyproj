@@ -104,6 +104,9 @@
     <Compile Include="bbarchivist\scripts\droidlookup.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="bbarchivist\scripts\swlookup.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="bbarchivist\scriptutils.py">
       <SubType>Code</SubType>
     </Compile>

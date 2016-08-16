@@ -90,7 +90,7 @@ def grab_args():
             args.email)
     else:
         osversion = input("OS VERSION: ")
-        recurse = utilities.s2b(input("LOOP?: "))
+        recurse = utilities.s2b(input("LOOP (Y/N)?: "))
         if recurse:
             print("Press Ctrl+C to stop loop")
         print(" ")
@@ -115,7 +115,7 @@ def autolookup_main(osversion, loop=False, log=False,
     Lookup a software release from an OS. Can iterate.
 
     :param osversion: OS version, 10.x.y.zzzz.
-    :type osversion: str:param mcc: Country code.
+    :type osversion: str
 
     :param loop: Whether or not to automatically lookup. Default is false.
     :type loop: bool

@@ -40,7 +40,8 @@ scriptlist = [
     'bb-cap=bbarchivist.scripts.cap:cap_main',
     'bb-droidlookup=bbarchivist.scripts.droidlookup:grab_args',
     'bb-metachecker=bbarchivist.scripts.metachecker:metachecker_main',
-    'bb-devloader=bbarchivist.scripts.devloader:grab_args'
+    'bb-devloader=bbarchivist.scripts.devloader:grab_args',
+    'bb-swlookup=bbarchivist.scripts.swlookup:grab_args'
 ]
 
 if __name__ == "__main__":
