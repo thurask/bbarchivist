@@ -88,7 +88,7 @@ def default_parser(name=None, desc=None, flags=None, vers=None):
         if "osr" in flags:
             parser.add_argument(
                 "os",
-                help="OS version, 10.x.y.zzzz")
+                help="OS version")
             parser.add_argument(
                 "radio",
                 help="Radio version, 10.x.y.zzzz",
@@ -852,3 +852,96 @@ def bulk_verify(dirs, compressed=True, deleted=True, radios=True):
             hashutils.gpgrunner(dirs[2], gpgkey, gpgpass, True)
             if radios:
                 hashutils.gpgrunner(dirs[3], gpgkey, gpgpass, True)
+
+
+def enn_ayy(quant):
+    """
+    Cheeky way to put a N/A placeholder for a string.
+
+    :param quant: What to check if it's None.
+    :type quant: str
+    """
+    return "N/A" if quant is None else quant
+
+
+def make_info(filepath, osver, radio=None, software=None, device=None):
+    """
+    Create a new-style info (names, sizes and hashes) file.
+
+    :param filepath: Path to folder to analyze.
+    :type filepath: str
+
+    :param osver: OS version, required for both types.
+    :type osver: str
+
+    :param radio: Radio version, required for QNX.
+    :type radio: str
+
+    :param software: Software release, required for QNX.
+    :type software: str
+
+    :param device: Device type, required for Android.
+    :type device: str
+    """
+    fileext = ".zip" if device else ".7z"
+    files = os.listdir(filepath)
+    absfiles = [os.path.join(filepath, x) for x in files if x.endswith((fileext, ".exe"))]
+    fname = os.path.join(filepath, "!{0}_OSINFO!.txt".format(osver))
+    with open(fname, "w") as afile:
+        afile.write("OS: {0}\n".format(osver))
+        if device:
+            afile.write("Device: {0}\n".format(enn_ayy(device)))
+        else:
+            afile.write("Radio: {0}\n".format(enn_ayy(radio)))
+            afile.write("Software: {0}\n".format(enn_ayy(software)))
+        afile.write("{0}\n".format("~"*40))
+        for indx, file in enumerate(absfiles):
+            fsize = os.stat(file).st_size
+            afile.write("File: {0}\n".format(os.path.basename(file)))
+            afile.write("\tSize: {0} ({1})\n".format(fsize, utilities.fsizer(fsize)))
+            afile.write("\tHashes:\n")
+            afile.write("\t\tMD5: {0}\n".format(hashutils.hm5(file).upper()))
+            afile.write("\t\tSHA1: {0}\n".format(hashutils.hs1(file).upper()))
+            afile.write("\t\tSHA256: {0}\n".format(hashutils.hs256(file).upper()))
+            afile.write("\t\tSHA512: {0}\n".format(hashutils.hs512(file).upper()))
+            if indx != len(absfiles) - 1:
+                afile.write("\n")
+
+
+def bulk_info(dirs, osv, compressed=True, deleted=True, radios=True, rad=None, swv=None, dev=None):
+    """
+    Generate info files in several folders based on flags.
+
+    :param dirs: Folders: [OS_bars, radio_bars, OS_exes, radio_exes, OS_zips, radio_zips]
+    :type dirs: list(str)
+
+    :param osver: OS version, required for both types.
+    :type osver: str
+
+    :param compressed: Whether to hash compressed files. True by default.
+    :type compressed: bool
+
+    :param deleted: Whether to delete uncompressed files. True by default.
+    :type deleted: bool
+
+    :param radios: Whether to hash radio autoloaders. True by default.
+    :type radios: bool
+
+    :param rad: Radio version, required for QNX.
+    :type rad: str
+
+    :param swv: Software release, required for QNX.
+    :type swv: str
+
+    :param dev: Device type, required for Android.
+    :type dev: str
+    """
+    print("GENERATING INFO FILES...")
+    if compressed:
+        make_info(dirs[4], osv, rad, swv, dev)
+        if radios:
+            make_info(dirs[5], osv, rad, swv, dev)
+    if not deleted:
+        make_info(dirs[2], osv, rad, swv, dev)
+        if radios:
+            make_info(dirs[3], osv, rad, swv, dev)

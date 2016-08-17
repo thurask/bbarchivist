@@ -119,6 +119,13 @@ def grab_args():
             help="Make core/radio loaders",
             default=False,
             action="store_true")
+        parser.add_argument(
+            "-o",
+            "--old-style",
+            dest="oldstyle",
+            help="Make old-style checksum files",
+            default=False,
+            action="store_true")
         parser.set_defaults(compmethod="7z")
         args = parser.parse_args(sys.argv[1:])
         if args.folder is None:
@@ -139,8 +146,8 @@ def grab_args():
                        args.folder, args.radloaders,
                        args.compress, args.delete, args.verify,
                        hashdict, args.download,
-                       args.extract, args.signed, compmethod,
-                       args.gpg, args.integrity, args.altsw, args.core)
+                       args.extract, args.signed, compmethod, args.gpg,
+                       args.integrity, args.altsw, args.core, args.oldstyle)
     else:
         questionnaire()
 
@@ -180,7 +187,7 @@ def questionnaire():
                    localdir, radios, compressed, deleted, hashed,
                    hashdict, download=True, extract=True, signed=True,
                    compmethod=compmethod, gpg=False, integrity=True,
-                   altsw=None, core=False)
+                   altsw=None, core=False, oldstyle=False)
 
 
 def archivist_main(osversion, radioversion=None, softwareversion=None,
@@ -188,7 +195,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
                    hashed=True, hashdict=None, download=True,
                    extract=True, signed=True, compmethod="7z",
                    gpg=False, integrity=True, altsw=None,
-                   core=False):
+                   core=False, oldstyle=False):
     """
     Wrap around multi-autoloader creation code.
     Some combination of creating, downloading, hashing,
@@ -244,6 +251,9 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
 
     :param core: Whether to create a core/radio loader. Default is false.
     :type core: bool
+
+    :param oldstyle: Whether to make old-style checksum files. Default is false.
+    :type oldstyle: bool
     """
     radioversion = scriptutils.return_radio_version(osversion, radioversion)
     softwareversion, swchecked = scriptutils.return_sw_checked(softwareversion, osversion)
@@ -341,7 +351,11 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
 
     # Get hashes/signatures (if specified)
     if hashed:
-        scriptutils.bulk_hash(dirs, compressed, deleted, radios, hashdict)
+        if oldstyle:
+            scriptutils.bulk_hash(dirs, compressed, deleted, radios, hashdict)
+        else:
+            scriptutils.bulk_info(dirs, osversion, compressed, deleted, radios,
+                                  radioversion, softwareversion)
     if gpg:
         scriptutils.bulk_verify(dirs, compressed, deleted, radios)
 

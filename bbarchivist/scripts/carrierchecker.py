@@ -20,7 +20,8 @@ def grab_args():
     """
     Parse arguments from argparse/questionnaire.
 
-    Invoke :func:`carrierchecker.carrierchecker_main` with those arguments."""
+    Invoke :func:`carrierchecker.carrierchecker_main` with those arguments.
+    """
     if len(sys.argv) > 1:
         parser = scriptutils.default_parser("bb-cchecker", "Carrier info checking")
         parser.add_argument("mcc",

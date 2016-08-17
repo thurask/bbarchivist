@@ -89,7 +89,8 @@ def download(url, output_directory=None):
                 file.write(chunk)
         else:
             print("ERROR: HTTP {0} IN {1}".format(req.status_code, lfname))
-
+    if os.stat(fname).st_size == 0:
+        os.remove(fname)
 
 def download_bootstrap(urls, outdir=None, workers=5):
     """

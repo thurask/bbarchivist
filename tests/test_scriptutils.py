@@ -30,6 +30,9 @@ def setup_module(module):
         targetfile.write("Jackdaws love my big sphinx of quartz")
     copyfile("Z10_loader1.exe", "Z10_loader2.exe")
     copyfile("Z10_loader1.exe", "Z10_loader3.exe")
+    copyfile("Z10_loader1.exe", "Z10_loader2.7z")
+    copyfile("Z10_loader1.exe", "Z10_loader2.zip")
+    copyfile("Z10_loader1.exe", "Z10_loader3.zip")
 
 
 def teardown_module(module):
@@ -779,4 +782,68 @@ class TestClassScriptutilsHash:
         dirs = (os.getcwd(), os.getcwd(), os.getcwd(), os.getcwd(), os.getcwd(), os.getcwd())
         with mock.patch('bbarchivist.hashutils.verifier', mock.MagicMock(side_effect=None)):
             bs.bulk_hash(dirs, True, False, True)
+            assert True
+
+
+class TestClassScriptutilsInfo:
+    """
+    Test info file generation.
+    """
+    @classmethod
+    def setup_class(cls):
+        """
+        Safeguard .exe files.
+        """
+        os.rename("Z10_loader1.exe", "Z10_loader1.exe.bak")
+        os.rename("Z10_loader2.exe", "Z10_loader2.exe.bak")
+        os.rename("Z10_loader3.exe", "Z10_loader3.exe.bak")
+
+    @classmethod
+    def teardown_class(cls):
+        """
+        Replace .exe files.
+        """
+        os.rename("Z10_loader1.exe.bak", "Z10_loader1.exe")
+        os.rename("Z10_loader2.exe.bak", "Z10_loader2.exe")
+        os.rename("Z10_loader3.exe.bak", "Z10_loader3.exe")
+
+    def test_enn_ayy_good(self):
+        """
+        Test placeholder, best case.
+        """
+        assert bs.enn_ayy("SNEK") == "SNEK"
+
+    def test_enn_ayy_bad(self):
+        """
+        Test placeholder, worst case.
+        """
+        assert bs.enn_ayy(None) == "N/A"
+
+    def test_info_droid(self):
+        """
+        Test info file generation, Android autoloaders.
+        """
+        bs.make_info(os.getcwd(), "ABC123", None, None, "Priv")
+        final = b"OS: ABC123\r\nDevice: Priv\r\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\nFile: Z10_loader2.zip\r\n\tSize: 37 (37.00B)\r\n\tHashes:\r\n\t\tMD5: 822E1187FDE7C8D55AFF8CC688701650\r\n\t\tSHA1: 71DC7CE8F27C11B792BE3F169ECF985865E276D0\r\n\t\tSHA256: F118871C45171D5FE4E9049980959E033EEEABCFA12046C243FDA310580E8A0B\r\n\t\tSHA512: B66A5E8AA9B9705748C2EE585B0E1A3A41288D2DAFC3BE2DB12FA89D2F2A3E14F9DEC11DE4BA865BB51EAA6C2CFEB294139455E34DA7D827A19504B0906C01C1\r\n\r\nFile: Z10_loader3.zip\r\n\tSize: 37 (37.00B)\r\n\tHashes:\r\n\t\tMD5: 822E1187FDE7C8D55AFF8CC688701650\r\n\t\tSHA1: 71DC7CE8F27C11B792BE3F169ECF985865E276D0\r\n\t\tSHA256: F118871C45171D5FE4E9049980959E033EEEABCFA12046C243FDA310580E8A0B\r\n\t\tSHA512: B66A5E8AA9B9705748C2EE585B0E1A3A41288D2DAFC3BE2DB12FA89D2F2A3E14F9DEC11DE4BA865BB51EAA6C2CFEB294139455E34DA7D827A19504B0906C01C1\r\n"
+        with open("!ABC123_OSINFO!.txt", "rb") as afile:
+            content = afile.read()
+        assert final == content
+
+    def test_info_qnx(self):
+        """
+        Test info file generation, BB10/PlayBook autoloaders.
+        """
+        bs.make_info(os.getcwd(), "10.2.3.4567", "10.2.3.4568", "10.2.3.1234", None)
+        final = b"OS: 10.2.3.4567\r\nRadio: 10.2.3.4568\r\nSoftware: 10.2.3.1234\r\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\nFile: Z10_loader2.7z\r\n\tSize: 37 (37.00B)\r\n\tHashes:\r\n\t\tMD5: 822E1187FDE7C8D55AFF8CC688701650\r\n\t\tSHA1: 71DC7CE8F27C11B792BE3F169ECF985865E276D0\r\n\t\tSHA256: F118871C45171D5FE4E9049980959E033EEEABCFA12046C243FDA310580E8A0B\r\n\t\tSHA512: B66A5E8AA9B9705748C2EE585B0E1A3A41288D2DAFC3BE2DB12FA89D2F2A3E14F9DEC11DE4BA865BB51EAA6C2CFEB294139455E34DA7D827A19504B0906C01C1\r\n"
+        with open("!10.2.3.4567_OSINFO!.txt", "rb") as afile:
+            content = afile.read()
+        assert final == content
+
+    def test_info_bulk(self):
+        """
+        Test flag-based per-folder info generation.
+        """
+        dirs = (os.getcwd(), os.getcwd(), os.getcwd(), os.getcwd(), os.getcwd(), os.getcwd())
+        with mock.patch('bbarchivist.scriptutils.make_info', mock.MagicMock(side_effect=None)):
+            bs.bulk_info(dirs, "ABC123", True, False, True, None, None, None)
             assert True

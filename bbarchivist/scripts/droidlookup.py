@@ -17,7 +17,8 @@ def grab_args():
     """
     Parse arguments from argparse/questionnaire.
 
-    Invoke :func:`droidlookup.droidlookup_main` with those arguments."""
+    Invoke :func:`droidlookup.droidlookup_main` with those arguments.
+    """
     if len(sys.argv) > 1:
         parser = scriptutils.default_parser("bb-droidlookup", "Get Android autoloaders")
         parser.add_argument(
