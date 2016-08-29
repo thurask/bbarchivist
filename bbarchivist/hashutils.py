@@ -402,7 +402,7 @@ def hash_writer(source, dest, workingdir, kwargs=None):
             target.write("\n".join(h_wp))
 
 
-def filefilter(file, workingdir):
+def filefilter(file, workingdir, extras=()):
     """
     Check if file in folder is a folder, or if it's got a forbidden extension.
 
@@ -411,11 +411,14 @@ def filefilter(file, workingdir):
 
     :param workingdir: Path containing files you wish to verify.
     :type workingdir: str
+
+    :param extras: Tuple of extra extensions.
+    :type extras: tuple
     """
-    return not (os.path.isdir(os.path.join(workingdir, file)) or file.endswith(bbconstants.SUPPS))
+    return not (os.path.isdir(os.path.join(workingdir, file)) or file.endswith(bbconstants.SUPPS + extras))
 
 
-def verifier(workingdir, kwargs=None):
+def verifier(workingdir, kwargs=None, selective=False):
     """
     For all files in a directory, perform various hash/checksum functions.
     Take dict to define hashes, write output to a/individual .cksum file(s).
@@ -428,7 +431,8 @@ def verifier(workingdir, kwargs=None):
     """
     if kwargs is None:
         kwargs = verifier_config_loader()
-    files = [file for file in os.listdir(workingdir) if filefilter(file, workingdir)]
+    extras = (".txt",) if selective else ()
+    files = [file for file in os.listdir(workingdir) if filefilter(file, workingdir, extras)]
     with concurrent.futures.ThreadPoolExecutor(max_workers=utilities.workers(files)) as xec:
         for file in files:
             print("HASHING:", str(file))
@@ -470,7 +474,7 @@ def gpgrunner(workingdir, keyid=None, pword=None, selective=False):
         files = [file for file in dirlist if not os.path.isdir(file)]
         with concurrent.futures.ThreadPoolExecutor(max_workers=utilities.workers(files)) as xec:
             for file in files:
-                sup = bbconstants.SUPPS
+                sup = bbconstants.SUPPS + (".txt",) if selective else bbconstants.SUPPS
                 if not file.endswith(sup):
                     aps = bbconstants.ARCSPLUS
                     pfx = bbconstants.PREFIXES

@@ -23,6 +23,8 @@ def setup_module(module):
     """
     Create necessary files.
     """
+    if os.path.exists("temp_sqlutils"):
+        rmtree("temp_sqlutils", ignore_errors=True)
     if not os.path.exists("temp_utilities"):
         os.mkdir("temp_utilities")
     os.chdir("temp_utilities")
