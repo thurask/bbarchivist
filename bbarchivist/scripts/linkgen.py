@@ -18,8 +18,7 @@ def grab_args():
     Invoke :func:`linkgen.linkgen_main` with those arguments.
     """
     if len(sys.argv) > 1:
-        parser = scriptutils.default_parser("bb-linkgen", "Bar link generation",
-                                            ("osr"))
+        parser = scriptutils.default_parser("bb-linkgen", "Bar link generation", ("osr"))
         parser.add_argument(
             "-r",
             "--radiosw",
@@ -28,13 +27,21 @@ def grab_args():
             help="Radio software version, if not same as OS",
             nargs="?",
             default=None)
+        parser.add_argument(
+            "-s",
+            "--sdk",
+            dest="sdk",
+            help="Force SDK images",
+            action="store_true",
+            default=False)
         parser.set_defaults()
         args = parser.parse_args(sys.argv[1:])
         linkgen_main(
             args.os,
             args.radio,
             args.swrelease,
-            args.altsw)
+            args.altsw,
+            args.sdk)
     else:
         questionnaire()
 
@@ -67,8 +74,8 @@ def questionnaire():
     decorators.enter_to_exit(True)
 
 
-def linkgen_main(osversion, radioversion=None,
-                 softwareversion=None, altsw=None, temp=False):
+def linkgen_main(osversion, radioversion=None, softwareversion=None,
+                 altsw=None, sdk=False):
     """
     Generate debrick/core/radio links for given OS, radio, software release.
 
@@ -84,10 +91,10 @@ def linkgen_main(osversion, radioversion=None,
     :param altsw: Radio software release, if not the same as OS.
     :type altsw: str
 
-    :param temp: If file we write to is temporary.
-    :type temp: bool
+    :param sdk: If we specifically want SDK images. Default is False.
+    :type sdk: bool
     """
-    scriptutils.linkgen(osversion, radioversion, softwareversion, altsw, temp)
+    scriptutils.linkgen(osversion, radioversion, softwareversion, altsw, False, sdk)
 
 
 if __name__ == "__main__":

@@ -74,6 +74,12 @@ def grab_args():
             type=int,
             choices=range(1, 9997),
             metavar="INT")
+        parser.add_argument(
+            "-p", "--prod-only",
+            dest="production",
+            help="Only check production server",
+            action="store_true",
+            default=False)
         args = parser.parse_args(sys.argv[1:])
         parser.set_defaults()
         if getattr(sys, 'frozen', False):
@@ -88,7 +94,8 @@ def grab_args():
             args.sql,
             args.quiet,
             args.ceiling,
-            args.email)
+            args.email,
+            args.production)
     else:
         osversion = input("OS VERSION: ")
         recurse = utilities.s2b(input("LOOP (Y/N)?: "))
@@ -104,14 +111,14 @@ def grab_args():
             False,
             False,
             9996,
+            False,
             False)
         decorators.enter_to_exit(True)
 
 
 @decorators.wrap_keyboard_except
-def autolookup_main(osversion, loop=False, log=False,
-                    autogen=False, inc=3, sql=False,
-                    quiet=False, ceiling=9996, mailer=False):
+def autolookup_main(osversion, loop=False, log=False, autogen=False, inc=3, sql=False,
+                    quiet=False, ceiling=9996, mailer=False, prod=False):
     """
     Lookup a software release from an OS. Can iterate.
 
@@ -141,6 +148,9 @@ def autolookup_main(osversion, loop=False, log=False,
 
     :param mailer: Whether to email new valid links. Default is false.
     :type mailer: bool
+
+    :param prod: Whether to check only the production server. Default is false.
+    :type prod: bool
     """
     if mailer:
         sql = True
@@ -157,7 +167,11 @@ def autolookup_main(osversion, loop=False, log=False,
         if loop and int(osversion.split(".")[3]) > ceiling:
             raise KeyboardInterrupt
         print("NOW SCANNING: {0}".format(osversion), end="\r")
-        results = networkutils.sr_lookup_bootstrap(osversion)
+        if not prod:
+            results = networkutils.sr_lookup_bootstrap(osversion)
+        else:
+            res = networkutils.sr_lookup(osversion, networkutils.SERVERS["p"])
+            results = {"p": res, "a1": None, "a2": None, "b1": None, "b2": None}
         if results is None:
             raise KeyboardInterrupt
         a1rel, a1av = networkutils.clean_availability(results, 'a1')

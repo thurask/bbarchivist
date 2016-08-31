@@ -63,9 +63,8 @@ def dev_link_writer(target, finals):
         target.write("{0} [{1}]\n".format(key, fsizer(int(val))))
 
 
-def write_links(softwareversion, osversion, radioversion,
-                osurls, coreurls, radiourls, avlty=False,
-                appendbars=False, appurls=None, temp=False, altsw=None):
+def write_links(softwareversion, osversion, radioversion, osurls, coreurls, radiourls,
+                avlty=False, appendbars=False, appurls=None, temp=False, altsw=None):
     """
     Write lookup links to file. Check for availability, can include app bars.
 
@@ -96,7 +95,7 @@ def write_links(softwareversion, osversion, radioversion,
     :param appurls: App bar URLs to add.
     :type softwareversion: list
 
-    :param temp: If file we write to is temporary.
+    :param temp: If file we write to is temporary. Default is false.
     :type temp: bool
 
     :param altsw: Radio software release version, if different.

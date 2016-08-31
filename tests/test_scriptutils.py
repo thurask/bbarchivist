@@ -183,10 +183,19 @@ class TestClassScriptutils:
         """
         Test link generation.
         """
-        bs.linkgen("10.9.8.7654", "10.2.3.4567", "10.1.0.9283", "10.9.2.8374", True)
+        bs.linkgen("10.9.8.7654", "10.2.3.4567", "10.1.0.9283", "10.9.2.8374", True, False)
         with open("TEMPFILE.txt", "r") as afile:
             data = afile.read()
         assert len(data) == 3010
+
+    def test_linkgen_sdk(self):
+        """
+        Test link generation, with SDK OSes.
+        """
+        bs.linkgen("10.9.8.7654", "10.2.3.4567", "10.1.0.9283", "10.9.2.8374", True, True)
+        with open("TEMPFILE.txt", "r") as afile:
+            data = afile.read()
+        assert len(data) == 2930
 
 
 

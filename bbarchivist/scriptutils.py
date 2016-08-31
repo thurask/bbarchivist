@@ -508,7 +508,7 @@ def prod_avail(results, mailer=False, osversion=None, password=None):
     return prel, pav, is_avail
 
 
-def linkgen(osversion, radioversion=None, softwareversion=None, altsw=None, temp=False):
+def linkgen(osversion, radioversion=None, softwareversion=None, altsw=None, temp=False, sdk=False):
     """
     Generate debrick/core/radio links for given OS, radio, software release.
 
@@ -524,8 +524,11 @@ def linkgen(osversion, radioversion=None, softwareversion=None, altsw=None, temp
     :param altsw: Radio software release, if not the same as OS.
     :type altsw: str
 
-    :param temp: If file we write to is temporary.
+    :param temp: If file we write to is temporary. Default is False.
     :type temp: bool
+
+    :param sdk: If we specifically want SDK images. Default is False.
+    :type sdk: bool
     """
     radioversion = return_radio_version(osversion, radioversion)
     softwareversion, swc = return_sw_checked(softwareversion, osversion)
@@ -534,16 +537,18 @@ def linkgen(osversion, radioversion=None, softwareversion=None, altsw=None, temp
         altsw, aswc = return_radio_sw_checked(altsw, radioversion)
         del aswc
     baseurl = networkutils.create_base_url(softwareversion)
-
-    # List of debrick urls
     oses, cores, radios = textgenerator.url_gen(osversion, radioversion, softwareversion)
     if altsw is not None:
         del radios
         dbks, cors, radios = textgenerator.url_gen(osversion, radioversion, altsw)
         del dbks
         del cors
-
     avlty = networkutils.availability(baseurl)
+    if sdk:
+        oses2 = {key: val.replace("factory_sfi", "sdk") for key, val in oses.items()}
+        cores2 = {key: val.replace("factory_sfi", "sdk") for key, val in cores.items()}
+        oses = {key: val.replace("verizon_sfi", "sdk") for key, val in oses2.items()}
+        cores = {key: val.replace("verizon_sfi", "sdk") for key, val in cores2.items()}
     textgenerator.write_links(softwareversion, osversion, radioversion, oses, cores, radios,
                               avlty, False, None, temp, altsw)
 
