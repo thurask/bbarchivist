@@ -144,7 +144,7 @@ def gh_mock(url, request):
     """
     Mock for kernel lookup.
     """
-    thebody = '<a href="/blackberry/android-linux-kernel/tree/msm8992/AAC724" class="branch-name css-truncate-target">msm8992/AAC724</a>'
+    thebody = '<a href="/blackberry/android-linux-kernel/tree/msm8992/AAC724" class="branch-name css-truncate-target">msm8992/AAC724</a>' if "=3" not in request.url else '<div class="no-results-message">There aren’t any more  branches.</div>'
     return {'status_code': 200, 'content': thebody}
 
 

@@ -495,11 +495,16 @@ def kernel_scraper(utils=False):
     :type utils: bool
     """
     repo = "android-utils" if utils else "android-linux-kernel"
-    url = "https://github.com/blackberry/{0}/branches/all".format(repo)
-    req = requests.get(url)
-    soup = BeautifulSoup(req.content, 'html.parser')
-    text = soup.get_text()
-    kernlist = re.findall(r"msm[0-9]{4}\/[A-Z0-9]{6}", text, re.IGNORECASE)
+    kernlist = []
+    for page in range(1, 10):
+        url = "https://github.com/blackberry/{0}/branches/all?page={1}".format(repo, page)
+        req = requests.get(url)
+        soup = BeautifulSoup(req.content, 'html.parser')
+        if soup.find("div", {"class": "no-results-message"}):
+            break
+        else:
+            text = soup.get_text()
+            kernlist.extend(re.findall(r"msm[0-9]{4}\/[A-Z0-9]{6}", text, re.IGNORECASE))
     return kernlist
 
 
