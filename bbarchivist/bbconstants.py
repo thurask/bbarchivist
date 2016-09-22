@@ -31,7 +31,7 @@ if not getattr(sys, 'frozen', False):  # regular
     #: App version, tag + commits.
     LONGVERSION = "-".join((VERSION + DIRTY, COMMITHASH))
     #: Git commit timestamp.
-    COMMITDATE = get_versions()["time"]
+    COMMITDATE = get_versions()["date"]
 else:  # cx_freeze support
     with open("longversion.txt", "r") as longv:
         data = longv.read().split("\n")
