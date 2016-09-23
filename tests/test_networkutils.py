@@ -587,6 +587,14 @@ class TestClassNetworkutilsParsing:
             results = bn.droid_scanner("AAD250", "Priv", "sha256")
             assert "user-common-AAD250" in results[0]
 
+    def test_autoloader_scan_list(self):
+        """
+        Test Android autoloader lookup, list of devices.
+        """
+        with httmock.HTTMock(pa_good_mock):
+            results = bn.droid_scanner("AAD250", ["Priv"])
+            assert "user-common-AAD250" in results[0]
+
     def test_metadata_ndk(self):
         """
         Test grabbing old-style metadata.

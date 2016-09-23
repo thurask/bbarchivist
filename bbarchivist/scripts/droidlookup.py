@@ -33,7 +33,9 @@ def grab_args():
             choices=range(0, 999),
             metavar="floor")
         parser.add_argument(
-            "device",
+            "-d",
+            "--device",
+            dest="device",
             help="Device to check",
             nargs="?",
             type=utilities.droidlookup_devicetype,
@@ -61,23 +63,13 @@ def grab_args():
             help="Only scan one OS build",
             action="store_true",
             default=False)
-        parser.add_argument(
-            "-a",
-            "--all",
-            dest="all",
-            help="Scan for all devices (slow)",
-            action="store_true",
-            default=False)
         args = parser.parse_args(sys.argv[1:])
-        if args.device is None and not args.all:
-            raise argparse.ArgumentError(argument=None, message="Invalid device.")
         parser.set_defaults()
         if args.single:
             args.ceil = args.floor  # range(x, x+1) == x
-        if args.all:
+        if args.device is None:
             famlist = jsonutils.load_json("droidfamilies")
-            for dev in famlist:
-                droidlookup_main(dev, args.branch, args.floor, args.ceil, args.type)
+            droidlookup_main(famlist, args.branch, args.floor, args.ceil, args.type)
         else:
             droidlookup_main(args.device, args.branch, args.floor, args.ceil, args.type)
     else:
@@ -88,17 +80,6 @@ def questionnaire():
     """
     Questions to ask if no arguments given.
     """
-    print("DEVICES:")
-    devlist = ["0=Priv",
-               "1=DTEK50",]
-    utilities.lprint(devlist)
-    while True:
-        devdex = int(input("SELECTED DEVICE: "))
-        if not 0 <= devdex <= len(devlist) - 1:
-            continue
-        else:
-            break
-    device = devlist[devdex].split("=")[1]
     single = utilities.s2b(input("SINGLE OS (Y/N)?: "))
     if single:
         while True:
@@ -153,7 +134,8 @@ def questionnaire():
                     continue
                 else:
                     break
-    droidlookup_main(device, branch, floor, ceil)
+    famlist = jsonutils.load_json("droidfamilies")
+    droidlookup_main(famlist, branch, floor, ceil)
     decorators.enter_to_exit(True)
 
 
@@ -178,7 +160,10 @@ def droidlookup_main(device, branch, floor=0, ceil=999, method=None):
     :type method: str
     """
     scriptutils.slim_preamble("DROIDLOOKUP")
-    print("DEVICE: {0}".format(device.upper()))
+    if isinstance(device, list):
+        print("DEVICE: ALL")
+    else:
+        print("DEVICE: {0}".format(device.upper()))
     for ver in range(floor, ceil + 1):
         build = "{0}{1}".format(branch.upper(), str(ver).zfill(3))
         print("NOW SCANNING: {0}".format(build), end="\r")

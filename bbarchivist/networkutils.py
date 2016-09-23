@@ -548,11 +548,22 @@ def droid_scanner(build, device, method=None):
     :param method: None for regular OS links, "sha256/512" for SHA256 or 512 hash.
     :type method: str
     """
-    variants = ("common", "vzw-vzw", "na-tmo", "na-att")  # device variants
-    with concurrent.futures.ThreadPoolExecutor(max_workers=len(variants)) as xec:
+    if isinstance(device, list):
+        devs = device
+    else:
+        devs = []
+        devs.append(device)
+    carrier_variants = ("common", "vzw-vzw", "na-tmo", "na-att")  # device variants
+    common_variants = ("common", )  # no Americans
+    skels = []
+    for dev in devs:
+        varlist = carrier_variants if dev == "Priv" else common_variants
+        for var in varlist:
+            skel = make_droid_skeleton(method, build, dev, var)
+            skels.append(skel)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=len(skels)) as xec:
         results = []
-        for var in variants:
-            skel = make_droid_skeleton(method, build, device, var)
+        for skel in skels:
             avail = xec.submit(availability, skel)
             if avail.result():
                 results.append(skel)
