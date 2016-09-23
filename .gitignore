@@ -115,3 +115,4 @@ htmlcov/
 *.user
 /test_**
 flake8.txt
+/temp_**
