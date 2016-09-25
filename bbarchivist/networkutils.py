@@ -508,6 +508,28 @@ def kernel_scraper(utils=False):
     return kernlist
 
 
+def root_generator(folder, build, variant="common"):
+    """
+    Generate roots for the SHAxxx hash lookup URLs.
+
+    :param folder: Dictionary of variant: loader name pairs.
+    :type folder: dict(str: str)
+
+    :param build: Build to check, 3 letters + 3 numbers.
+    :type build: str
+
+    :param variant: Autoloader variant. Default is "common".
+    :type variant: str
+    """
+    #Priv specific
+    privx = "bbfoundation/hashfiles_priv/{0}".format(folder[variant])
+    #DTEK50 specific
+    dtek50x = "bbSupport/DTEK50" if build[:3] == "AAF" else "bbfoundation/hashfiles_priv/dtek50"
+    #Pack it up
+    roots = {"Priv": privx, "DTEK50": dtek50x}
+    return roots
+
+
 def make_droid_skeleton(method, build, device, variant="common"):
     """
     Make an Android autoloader/hash URL.
@@ -526,7 +548,7 @@ def make_droid_skeleton(method, build, device, variant="common"):
     """
     folder = {"vzw-vzw": "verizon", "na-att": "att", "na-tmo": "tmo", "common": "default"}
     devices = {"Priv": "qc8992", "DTEK50": "qc8952_64_sfi"}
-    roots = {"Priv": "bbfoundation/hashfiles_priv/{0}".format(folder[variant]), "DTEK50": "bbSupport/DTEK50"}
+    roots = root_generator(folder, build, variant)
     base = "bbry_{2}_autoloader_user-{0}-{1}".format(variant, build.upper(), devices[device])
     if method is None:
         skel = "https://bbapps.download.blackberry.com/Priv/{0}.zip".format(base)
@@ -557,7 +579,7 @@ def droid_scanner(build, device, method=None):
     common_variants = ("common", )  # no Americans
     skels = []
     for dev in devs:
-        varlist = carrier_variants if dev == "Priv" else common_variants
+        varlist = carrier_variants if dev in ("Priv") else common_variants
         for var in varlist:
             skel = make_droid_skeleton(method, build, dev, var)
             skels.append(skel)
