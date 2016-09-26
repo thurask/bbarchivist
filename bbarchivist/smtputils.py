@@ -146,17 +146,35 @@ def send_email(kwargs):
         "port": port,
         "username": username,
         "password": password,
-        "message": message
+        "message": message,
+        "is_ssl": kwargs["is_ssl"]
     }
-    if utilities.s2b(kwargs['is_ssl']):
-        send_email_ssl(payload)
+    send_email_post(payload)
+
+
+def prep_smtp_instance(kwargs):
+    """
+    Prepare a smtplib.SMTP/SMTP_SSL instance.
+
+    :param is_ssl: True if server uses SSL, False if TLS only.
+    :type is_ssl: bool
+
+    :param server: SMTP email server.
+    :type server: str
+
+    :param port: Port to use.
+    :type port: int
+    """
+    if kwargs['is_ssl']:
+        smt = smtplib.SMTP_SSL(kwargs['server'], kwargs['port'])
     else:
-        send_email_tls(payload)
+        smt = smtplib.SMTP(kwargs['server'], kwargs['port'])
+    return smt
 
 
-def send_email_ssl(kwargs):
+def send_email_post(kwargs):
     """
-    Send email through SSL.
+    Send email through SSL/TLS.
 
     :param server: SMTP email server.
     :type server: str
@@ -173,35 +191,10 @@ def send_email_ssl(kwargs):
     :param message: Message to send, with body and subject.
     :type message: MIMEText
     """
-    smt = smtplib.SMTP_SSL(kwargs['server'], kwargs['port'])
+    smt = prep_smtp_instance(kwargs)
     smt.ehlo()
-    smt.login(kwargs['username'], kwargs['password'])
-    smt.sendmail(kwargs['username'], kwargs['username'], kwargs['message'].as_string())
-    smt.quit()
-
-
-def send_email_tls(kwargs):
-    """
-    Send email through TLS.
-
-    :param server: SMTP email server.
-    :type server: str
-
-    :param port: Port to use.
-    :type port: int
-
-    :param username: Email address.
-    :type username: str
-
-    :param password: Email password.
-    :type password: str
-
-    :param message: Message to send, with body and subject.
-    :type message: MIMEText
-    """
-    smt = smtplib.SMTP(kwargs['server'], kwargs['port'])
-    smt.ehlo()
-    smt.starttls()
+    if not kwargs['is_ssl']:
+        smt.starttls()
     smt.login(kwargs['username'], kwargs['password'])
     smt.sendmail(kwargs['username'], kwargs['username'], kwargs['message'].as_string())
     smt.quit()

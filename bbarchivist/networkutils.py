@@ -112,7 +112,7 @@ def download_bootstrap(urls, outdir=None, workers=5):
             spinman.start()
             for url in urls:
                 xec.submit(download, url, outdir)
-        except (KeyboardInterrupt, SystemExit):  # pragma: no cover
+        except (KeyboardInterrupt, SystemExit):
             xec.shutdown()
             spinman.stop()
     spinman.stop()
@@ -374,7 +374,7 @@ def sr_lookup_bootstrap(osv):
             for key in results:
                 results[key] = xec.submit(sr_lookup, osv, SERVERS[key]).result()
             return results
-        except KeyboardInterrupt:  # pragma: no cover
+        except KeyboardInterrupt:
             xec.shutdown(wait=False)
 
 
@@ -680,7 +680,7 @@ def devalpha_urls_bootstrap(osversion, skeletons):
                 if final:
                     finals[final[0]] = final[1]
             return finals
-        except KeyboardInterrupt:  # pragma: no cover
+        except KeyboardInterrupt:
             xec.shutdown(wait=False)
 
 

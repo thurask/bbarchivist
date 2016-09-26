@@ -340,18 +340,18 @@ class TestClassUtilities:
             afile.write("You can call me Al")
         assert bu.return_and_delete("TEST.txt") == "You can call me Al"
 
-    def test_logfile_localfolder(self):
+    def test_logfile_localfolder(self, monkeypatch):
         """
         Test creating a logfile in the current folder.
         """
-        sys.frozen = True
+        monkeypatch.setattr("sys.frozen", True, raising=False)
         assert "temp_utilities" in bu.prep_logfile()
 
-    def test_logfile_homefolder(self):
+    def test_logfile_homefolder(self, monkeypatch):
         """
         Test creating a logfile in the home folder.
         """
-        sys.frozen = False
+        monkeypatch.setattr("sys.frozen", False, raising=False)
         with mock.patch("os.path.expanduser", mock.MagicMock(return_value=os.getcwd())):
             assert "temp_utilities" in bu.prep_logfile()
 

@@ -211,8 +211,7 @@ def droidlookup_devicetype(device):
         for dev in devices:
             if dev.lower() == device.lower():
                 return dev
-        else:
-            raise argparse.ArgumentError(argument=None, message="Invalid device.")
+        raise argparse.ArgumentError(argument=None, message="Invalid device.")
 
 
 def s2b(input_check):
@@ -543,7 +542,7 @@ class Spinner(object):
             self.file.flush()
             self.file.write("\b\r")
             self.file.flush()
-        except (KeyboardInterrupt, SystemExit):  # pragma: no cover
+        except (KeyboardInterrupt, SystemExit):
             self.stop()
 
     def stop(self):
@@ -583,7 +582,7 @@ class SpinManager(object):
             try:
                 line_begin()
                 self.spinner.after()
-            except (KeyboardInterrupt, SystemExit):  # pragma: no cover
+            except (KeyboardInterrupt, SystemExit):
                 self.scanning = False
                 self.stop()
 
@@ -595,7 +594,7 @@ class SpinManager(object):
         self.scanning = False
         spinner_clear()
         line_begin()
-        if not is_windows():  # pragma: no cover
+        if not is_windows():
             print("\n")
 
 

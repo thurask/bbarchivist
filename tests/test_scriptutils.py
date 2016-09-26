@@ -145,38 +145,38 @@ class TestClassScriptutils:
         bs.standard_preamble("snek", "10.3.2.2639", "10.3.2.2474", "10.3.2.2877", "10.3.2.2836")
         assert "2836" in capsys.readouterr()[0]
 
-    def test_shortversion(self):
+    def test_shortversion(self, monkeypatch):
         """
         Test version getting, short type.
         """
-        sys.frozen = True
+        monkeypatch.setattr("sys.frozen", True, raising=False)
         with open("version.txt", "w") as afile:
             afile.write("10.0.10586.1000")
         assert bs.shortversion() == "10.0.10586.1000"
-        sys.frozen = False
+        monkeypatch.setattr("sys.frozen", False, raising=False)
 
-    def test_shortversion_unfrozen(self):
+    def test_shortversion_unfrozen(self, monkeypatch):
         """
         Test version getting, short type, not frozen.
         """
-        sys.frozen = False
+        monkeypatch.setattr("sys.frozen", False, raising=False)
         assert bs.shortversion() == VERSION
 
-    def test_longversion(self):
+    def test_longversion(self, monkeypatch):
         """
         Test version getting, long type.
         """
-        sys.frozen = True
+        monkeypatch.setattr("sys.frozen", True, raising=False)
         with open("longversion.txt", "w") as afile:
             afile.write("10.0.10586.1000\n1970-01-01")
         assert bs.longversion() == ["10.0.10586.1000", "1970-01-01"]
-        sys.frozen = False
+        monkeypatch.setattr("sys.frozen", False, raising=False)
 
-    def test_longversion_unfrozen(self):
+    def test_longversion_unfrozen(self, monkeypatch):
         """
         Test version getting, long type, not frozen.
         """
-        sys.frozen = False
+        monkeypatch.setattr("sys.frozen", False, raising=False)
         assert bs.longversion() == (LONGVERSION, COMMITDATE)
 
     def test_linkgen(self):
