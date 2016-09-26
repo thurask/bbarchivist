@@ -205,6 +205,7 @@ def droidlookup_devicetype(device):
     :type device: str
     """
     devices = ("Priv", "DTEK50")
+    #devices = ("Priv", "DTEK50", "DTEK60")
     if device is None:
         return None
     else:

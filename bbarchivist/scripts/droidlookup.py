@@ -68,8 +68,8 @@ def grab_args():
         if args.single:
             args.ceil = args.floor  # range(x, x+1) == x
         if args.device is None:
-            famlist = jsonutils.load_json("droidfamilies")
-            droidlookup_main(famlist, args.branch, args.floor, args.ceil, args.type)
+            famlist = jsonutils.load_json("droidfamilies")  # make sure to skip DTEK60 for now
+            droidlookup_main(famlist[:2], args.branch, args.floor, args.ceil, args.type)
         else:
             droidlookup_main(args.device, args.branch, args.floor, args.ceil, args.type)
     else:
@@ -134,8 +134,8 @@ def questionnaire():
                     continue
                 else:
                     break
-    famlist = jsonutils.load_json("droidfamilies")
-    droidlookup_main(famlist, branch, floor, ceil)
+    famlist = jsonutils.load_json("droidfamilies")  # same here
+    droidlookup_main(famlist[:2], branch, floor, ceil)
     decorators.enter_to_exit(True)
 
 

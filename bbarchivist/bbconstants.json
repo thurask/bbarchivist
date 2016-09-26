@@ -589,6 +589,22 @@
             "ptcrbid": ""
         },
         {
+            "device": "DTEK60",
+            "family": "DTEK60",
+            "name": "BBA100-1",
+            "hwid": "",
+            "fccid": "BBA1001",
+            "ptcrbid": ""
+        },
+        {
+            "device": "DTEK60",
+            "family": "DTEK60",
+            "name": "BBA100-2",
+            "hwid": "",
+            "fccid": "BBA1002",
+            "ptcrbid": ""
+        },
+        {
             "device": "UNKNOWN",
             "family": "UNRELEASED",
             "name": "SQE100-1",
@@ -730,6 +746,7 @@
     ],
     "droidfamilies": [
         "Priv",
-        "DTEK50"
+        "DTEK50",
+        "DTEK60"
     ]
 }
