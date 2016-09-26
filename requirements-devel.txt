@@ -1,9 +1,9 @@
 requests>0.0
-python-gnupg>0.0
+python-gnupg>=0.39
 shutilwhich>0.0
 beautifulsoup4>0.0
 mock>0.0
-pytest>0.0
+pytest>=2.8.0
 pytest-cov>0.0
 httmock>0.0
 sphinx>0.0
