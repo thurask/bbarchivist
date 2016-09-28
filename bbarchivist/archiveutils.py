@@ -365,6 +365,42 @@ def compress(filepath, method="7z", szexe=None, selective=False, errors=False):
     return True
 
 
+def tarzip_verifier(file):
+    """
+    Assign .tar.xxx, .tar and .zip verifiers.
+
+    :param file: Filename.
+    :type file: str
+    """
+    maps = {".tar.gz": tgz_verify, ".tar.xz": txz_verify,
+            ".tar.bz2": tbz_verify, ".tar": tar_verify,
+            ".zip": zip_verify}
+    for key, value in maps.items():
+        if file.endswith(key):
+            verif = value(file)
+    return verif
+
+
+def decide_verifier(file, szexe=None):
+    """
+    Decide which verifier function to use.
+
+    :param file: Filename.
+    :type file: str
+
+    :param szexe: Path to 7z executable, if needed.
+    :type szexe: str
+    """
+    print("VERIFYING: {0}".format(file))
+    if file.endswith(".7z") and szexe is not None:
+        verif = sz_verify(os.path.abspath(file), szexe)
+    else:
+        verif = tarzip_verifier(file)
+    if not verif:
+        print("{0} IS BROKEN!".format((file)))
+    return verif
+
+
 def verify(thepath, method="7z", szexe=None, selective=False):
     """
     Verify specific archive files in a given folder.
@@ -389,22 +425,7 @@ def verify(thepath, method="7z", szexe=None, selective=False):
         if selective:
             filt = filt and file.startswith(bbconstants.PREFIXES)
         if filt:
-            print("VERIFYING: {0}".format(file))
-            if file.endswith(".7z") and szexe is not None:
-                verif = sz_verify(os.path.abspath(file), szexe)
-            elif file.endswith(".tar.gz"):
-                verif = tgz_verify(file)
-            elif file.endswith(".tar.xz"):
-                verif = txz_verify(file)
-            elif file.endswith(".tar.bz2"):
-                verif = tbz_verify(file)
-            elif file.endswith(".tar"):
-                verif = tar_verify(file)
-            elif file.endswith(".zip"):
-                verif = zip_verify(file)
-            if not verif:
-                print("{0} IS BROKEN!".format((file)))
-            return verif
+            return decide_verifier(file, szexe)
 
 
 def compress_suite(filepath, method="7z", szexe=None, selective=False):

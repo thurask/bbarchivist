@@ -433,15 +433,34 @@ def generate_urls(baseurl, osversion, radioversion, core=False):
         "{0}/qc8974.wtr2-{1}-{2}".format(baseurl, radioversion, suffix)
     ]
     coreurls = []
-    splitos = osversion.split(".")
-    splitos = [int(i) for i in splitos]
-    if splitos[1] >= 4 or (splitos[1] == 3 and splitos[2] >= 1):  # 10.3.1+
-        osurls[2] = osurls[2].replace("qc8960.factory_sfi", "qc8960.factory_sfi_hybrid_qc8x30")
-        osurls[3] = osurls[3].replace("qc8974.factory_sfi", "qc8960.factory_sfi_hybrid_qc8974")
+    splitos = [int(i) for i in osversion.split(".")]
+    osurls[2] = filter_1031(osurls[2], splitos, 5)
+    osurls[3] = filter_1031(osurls[3], splitos, 6)
     if core:
         for url in osurls:
             coreurls.append(url.replace(".desktop", ""))
     return osurls, radiourls, coreurls
+
+
+def filter_1031(osurl, splitos, device):
+    """
+    Modify URLs to reflect changes in 10.3.1+.
+
+    :param osurl: OS URL to modify.
+    :type osurl: str
+
+    :param splitos: OS version, split and cast to int: [10, 3, 2, 2876]
+    :type splitos: list(int)
+
+    :param device: Device to use.
+    :type device: int
+    """
+    if ((splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1)):
+        if device == 5:
+            osurl = osurl.replace("qc8960.factory_sfi", "qc8960.factory_sfi_hybrid_qc8x30")
+        elif device == 6:
+            osurl = osurl.replace("qc8974.factory_sfi", "qc8960.factory_sfi_hybrid_qc8974")
+    return osurl
 
 
 def generate_lazy_urls(baseurl, osversion, radioversion, device):
@@ -462,31 +481,14 @@ def generate_lazy_urls(baseurl, osversion, radioversion, device):
     """
     suffix = "nto+armle-v7+signed.bar"
     splitos = [int(i) for i in osversion.split(".")]
-    if device == 0:
-        osurl = "{0}/winchester.factory_sfi.desktop-{1}-{2}".format(baseurl, osversion, suffix)
-        radiourl = "{0}/m5730-{1}-{2}".format(baseurl, radioversion, suffix)
-    elif device == 1:
-        osurl = "{0}/qc8960.factory_sfi.desktop-{1}-{2}".format(baseurl, osversion, suffix)
-        radiourl = "{0}/qc8960-{1}-{2}".format(baseurl, radioversion, suffix)
-    elif device == 2:
-        osurl = "{0}/qc8960.verizon_sfi.desktop-{1}-{2}".format(baseurl, osversion, suffix)
-        radiourl = "{0}/qc8960.omadm-{1}-{2}".format(baseurl, radioversion, suffix)
-    elif device == 3:
-        osurl = "{0}/qc8960.factory_sfi.desktop-{1}-{2}".format(baseurl, osversion, suffix)
-        radiourl = "{0}/qc8960.wtr-{1}-{2}".format(baseurl, radioversion, suffix)
-    elif device == 4:
-        osurl = "{0}/qc8960.factory_sfi.desktop-{1}-{2}".format(baseurl, osversion, suffix)
-        radiourl = "{0}/qc8960.wtr5-{1}-{2}".format(baseurl, radioversion, suffix)
-    elif device == 5:
-        osurl = "{0}/qc8960.factory_sfi.desktop-{1}-{2}".format(baseurl, osversion, suffix)
-        radiourl = "{0}/qc8930.wtr5-{1}-{2}".format(baseurl, radioversion, suffix)
-        if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):
-            osurl = osurl.replace("qc8960.factory_sfi", "qc8960.factory_sfi_hybrid_qc8x30")
-    elif device == 6:
-        osurl = "{0}/qc8974.factory_sfi.desktop-{1}-{2}".format(baseurl, osversion, suffix)
-        radiourl = "{0}/qc8974.wtr2-{1}-{2}".format(baseurl, radioversion, suffix)
-        if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):
-            osurl = osurl.replace("qc8974.factory_sfi", "qc8960.factory_sfi_hybrid_qc8974")
+    rads = ["m5730", "qc8960", "qc8960.omadm", "qc8960.wtr",
+            "qc8960.wtr5", "qc8930.wtr4", "qc8974.wtr2"]
+    oses = ["winchester.factory", "qc8960.factory", "qc8960.verizon",
+            "qc8974.factory"]
+    maps = {0:0, 1:1, 2:2, 3:1, 4:1, 5:1, 6:3}
+    osurl = "{0}/{1}_sfi.desktop-{2}-{3}".format(baseurl, oses[maps[device]], osversion, suffix)
+    radiourl = "{0}/{1}-{2}-{3}".format(baseurl, rads[device], osversion, suffix)
+    osurl = filter_1031(osurl, splitos, device)
     return osurl, radiourl
 
 

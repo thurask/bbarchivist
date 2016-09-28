@@ -32,6 +32,71 @@ def ghetto_convert(intsize):
         return binascii.unhexlify(bytes(ghetto_hex.upper(), 'ascii'))
 
 
+def make_sizes(filelist):
+    """
+    Get sizes of list of signed files.
+
+    :param filelist: List of 1-6 signed files.
+    :type filelist: list(str)
+    """
+    first = str(glob.glob(filelist[0])[0])
+    size1 = os.path.getsize(first)  # required
+    size2 = size3 = size4 = size5 = 0
+    if len(filelist) >= 2:
+        second = str(glob.glob(filelist[1])[0])
+        size2 = os.path.getsize(second)
+    if len(filelist) >= 3:
+        third = str(glob.glob(filelist[2])[0])
+        size3 = os.path.getsize(third)
+    if len(filelist) >= 4:
+        fourth = str(glob.glob(filelist[3])[0])
+        size4 = os.path.getsize(fourth)
+    if len(filelist) >= 5:
+        fifth = str(glob.glob(filelist[4])[0])
+        size5 = os.path.getsize(fifth)
+    return [size1, size2, size3, size4, size5]
+
+
+def make_starts(beginlength, capsize, pad, sizes, filecount):
+    """
+    Get list of starting positions for each signed file.
+
+    :param beginlength: Length of beginning offset.
+    :type beginlength: int
+
+    :param capsize: Size of cap executable.
+    :type capsize: int
+
+    :param pad: Padding character.
+    :type pad: bytes
+
+    :param sizes: List of signed file sizes.
+    :type sizes: list(int)
+   
+    :param filecount: Number of signed files.
+    :type filecount: int
+    """
+    firstoffset = beginlength + capsize
+    start1 = ghetto_convert(firstoffset)
+    start2 = start3 = start4 = start5 = start6 = pad * 8
+    if filecount >= 2:
+        secondoffset = firstoffset + sizes[0]  # start of second file
+        start2 = ghetto_convert(secondoffset)
+    if filecount >= 3:
+        thirdoffset = secondoffset + sizes[1]  # start of third file
+        start3 = ghetto_convert(thirdoffset)
+    if filecount >= 4:
+        fourthoffset = thirdoffset + sizes[2]  # start of fourth file
+        start4 = ghetto_convert(fourthoffset)
+    if filecount >= 5:
+        fifthoffset = fourthoffset + sizes[3]  # start of fifth file
+        start5 = ghetto_convert(fifthoffset)
+    if filecount == 6:
+        sixthoffset = fifthoffset + sizes[4]  # start of sixth file
+        start6 = ghetto_convert(sixthoffset)
+    return [start1, start2, start3, start4, start5, start6]
+
+
 def make_offset(files, folder=None):
     """
     Create magic offset file for use in autoloader creation.
@@ -44,8 +109,7 @@ def make_offset(files, folder=None):
     :param folder: Working folder. Optional. Default is local.
     :type folder: str
     """
-    if folder is None:
-        folder = os.getcwd()
+    folder = os.getcwd() if folder is None else folder
     capfile = utilities.grab_cap()
     filelist = [file for file in files if file]
     filecount = len(filelist)
@@ -60,40 +124,10 @@ def make_offset(files, folder=None):
     capsize = os.path.getsize(capfile)
     if not filecount:  # we need at least one file
         raise SystemExit
-    first = str(glob.glob(filelist[0])[0])
-    firstsize = os.path.getsize(first)  # required
-    if filecount >= 2:
-        second = str(glob.glob(filelist[1])[0])
-        secondsize = os.path.getsize(second)
-    if filecount >= 3:
-        third = str(glob.glob(filelist[2])[0])
-        thirdsize = os.path.getsize(third)
-    if filecount >= 4:
-        fourth = str(glob.glob(filelist[3])[0])
-        fourthsize = os.path.getsize(fourth)
-    if filecount >= 5:
-        fifth = str(glob.glob(filelist[4])[0])
-        fifthsize = os.path.getsize(fifth)
+    sizes = make_sizes(filelist)
     # start of first file; length of cap + length of offset
     beginlength = len(separator) + len(password) + 64
-    firstoffset = beginlength + capsize
-    firststart = ghetto_convert(firstoffset)
-    secondstart = thirdstart = fourthstart = fifthstart = sixthstart = pad * 8
-    if filecount >= 2:
-        secondoffset = firstoffset + firstsize  # start of second file
-        secondstart = ghetto_convert(secondoffset)
-    if filecount >= 3:
-        thirdoffset = secondoffset + secondsize  # start of third file
-        thirdstart = ghetto_convert(thirdoffset)
-    if filecount >= 4:
-        fourthoffset = thirdoffset + thirdsize  # start of fourth file
-        fourthstart = ghetto_convert(fourthoffset)
-    if filecount >= 5:
-        fifthoffset = fourthoffset + fourthsize  # start of fifth file
-        fifthstart = ghetto_convert(fifthoffset)
-    if filecount == 6:
-        sixthoffset = fifthoffset + fifthsize  # start of sixth file
-        sixthstart = ghetto_convert(sixthoffset)
+    starts = make_starts(beginlength, capsize, pad, sizes, filecount)
     makeuplen = 64 - 6 * len(pad * 8) - 2 * len(pad * 2) - 2 * \
         len(pad) - len(trailers) - len(filepad)
     makeup = b'\x00' * makeuplen  # pad to match offset begin
@@ -103,19 +137,19 @@ def make_offset(files, folder=None):
         file.write(filepad)
         file.write(pad * 2)
         file.write(pad)
-        file.write(firststart)
-        file.write(secondstart)
-        file.write(thirdstart)
-        file.write(fourthstart)
-        file.write(fifthstart)
-        file.write(sixthstart)
+        file.write(starts[0])
+        file.write(starts[1])
+        file.write(starts[2])
+        file.write(starts[3])
+        file.write(starts[4])
+        file.write(starts[5])
         file.write(pad)
         file.write(pad * 2)
         file.write(trailers)
         file.write(makeup)
 
 
-def write_4k(infile, outfile):
+def write_4k(infile, outfile, text="FILE"):
     """
     Write a file from another file, 4k bytes at a time.
 
@@ -124,9 +158,12 @@ def write_4k(infile, outfile):
 
     :param outfile: Open (!!!) file handle. Output file.
     :type outfile: str
+
+    :param text: Writing <text>...
+    :type text: str
     """
     with open(os.path.abspath(infile), "rb") as afile:
-        print("WRITING FILE...\n{0}".format(os.path.basename(infile)))
+        print("WRITING {1}...\n{0}".format(os.path.basename(infile), text))
         while True:
             chunk = afile.read(4096)  # 4k chunks
             if not chunk:
@@ -148,23 +185,15 @@ def make_autoloader(filename, files, folder=None):
     :param folder: Working folder. Optional. Default is local.
     :type folder: str
     """
-    if folder is None:
-        folder = os.getcwd()
+    folder = os.getcwd() if folder is None else folder
     make_offset(files, folder)
     filelist = [os.path.abspath(file) for file in files if file]
     print("CREATING: {0}".format(filename))
     try:
         with open(os.path.join(os.path.abspath(folder), filename), "wb") as autoloader:
-            with open(os.path.normpath(utilities.grab_cap()), "rb") as capfile:
-                print("WRITING CAP VERSION {0}...".format(bbconstants.CAP.version))
-                while True:
-                    chunk = capfile.read(4096)  # 4k chunks
-                    if not chunk:
-                        break
-                    autoloader.write(chunk)
-            with open(os.path.join(folder, "offset.hex"), "rb") as offset:
-                print("WRITING MAGIC OFFSET...")
-                autoloader.write(offset.read())
+            capskel = "CAP VERSION {0}".format(bbconstants.CAP.version)
+            write_4k(os.path.normpath(utilities.grab_cap()), autoloader, capskel)
+            write_4k(os.path.join(folder, "offset.hex"), autoloader, "MAGIC OFFSET")
             for file in filelist:
                 write_4k(file, autoloader)
     except IOError as exc:

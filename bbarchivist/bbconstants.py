@@ -34,18 +34,18 @@ if not getattr(sys, 'frozen', False):  # regular
     COMMITDATE = get_versions()["date"]
 else:  # cx_freeze support
     with open("longversion.txt", "r") as longv:
-        data = longv.read().split("\n")
-        ver = data[0].split("-")
+        DATA = longv.read().split("\n")
+        VER = DATA[0].split("-")
     #: App version.
-    VERSION = ver[0]
+    VERSION = VER[0]
     #: If we're in a development build.
-    DIRTY = "+devel" if data[0] != VERSION else ""
+    DIRTY = "+devel" if DATA[0] != VERSION else ""
     #: Git commit hash.
-    COMMITHASH = ver[1]
+    COMMITHASH = VER[1]
     #: App version, tag + commits.
-    LONGVERSION = "-".join(ver)
+    LONGVERSION = "-".join(VER)
     #: Git commit timestamp.
-    COMMITDATE = data[1]
+    COMMITDATE = DATA[1]
 #: File location.
 LOCATION = os.path.abspath(__file__)
 #: File folder.
