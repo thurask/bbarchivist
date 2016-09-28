@@ -318,6 +318,44 @@ def get_core_count():
     return cores
 
 
+def prep_seven_zip_path(path, talkative=False):
+    """
+    Print p7zip path on POSIX, or notify if not there.
+
+    :param path: Path to use.
+    :type path: str
+
+    :param talkative: Whether to output to screen. False by default.
+    :type talkative: bool
+    """
+    if path is None:
+        if talkative:
+            print("NO 7ZIP")
+            print("PLEASE INSTALL p7zip")
+        return False
+    else:
+        if talkative:
+            print("7ZIP FOUND AT {0}".format(path))
+        return True
+
+
+def prep_seven_zip_posix(talkative=False):
+    """
+    Check for p7zip on POSIX.
+
+    :param talkative: Whether to output to screen. False by default.
+    :type talkative: bool
+    """
+    try:
+        path = compat.where_which("7za")
+    except ImportError:
+        if talkative:
+            print("PLEASE INSTALL SHUTILWHICH WITH PIP")
+        return False
+    else:
+        return prep_seven_zip_path(path, talkative)
+
+
 def prep_seven_zip(talkative=False):
     """
     Check for presence of 7-Zip.
@@ -330,22 +368,7 @@ def prep_seven_zip(talkative=False):
     if is_windows():
         return get_seven_zip(talkative) != "error"
     else:
-        try:
-            path = compat.where_which("7za")
-        except ImportError:
-            if talkative:
-                print("PLEASE INSTALL SHUTILWHICH WITH PIP")
-            return False
-        else:
-            if path is None:
-                if talkative:
-                    print("NO 7ZIP")
-                    print("PLEASE INSTALL p7zip")
-                return False
-            else:
-                if talkative:
-                    print("7ZIP FOUND AT {0}".format(path))
-                return True
+        return prep_seven_zip_posix(talkative)
 
 
 def increment(version, inc=3):

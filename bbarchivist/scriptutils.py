@@ -869,6 +869,34 @@ def enn_ayy(quant):
     return "N/A" if quant is None else quant
 
 
+def info_header(afile, osver, radio=None, software=None, device=None):
+    """
+    Write header for info file.
+
+    :param afile: Open file to write to.
+    :type afile: File object
+
+    :param osver: OS version, required for both types.
+    :type osver: str
+
+    :param radio: Radio version, required for QNX.
+    :type radio: str
+
+    :param software: Software release, required for QNX.
+    :type software: str
+
+    :param device: Device type, required for Android.
+    :type device: str
+    """
+    afile.write("OS: {0}\n".format(osver))
+    if device:
+        afile.write("Device: {0}\n".format(enn_ayy(device)))
+    else:
+        afile.write("Radio: {0}\n".format(enn_ayy(radio)))
+        afile.write("Software: {0}\n".format(enn_ayy(software)))
+    afile.write("{0}\n".format("~"*40))
+
+
 def make_info(filepath, osver, radio=None, software=None, device=None):
     """
     Create a new-style info (names, sizes and hashes) file.
@@ -893,13 +921,7 @@ def make_info(filepath, osver, radio=None, software=None, device=None):
     absfiles = [os.path.join(filepath, x) for x in files if x.endswith((fileext, ".exe"))]
     fname = os.path.join(filepath, "!{0}_OSINFO!.txt".format(osver))
     with open(fname, "w") as afile:
-        afile.write("OS: {0}\n".format(osver))
-        if device:
-            afile.write("Device: {0}\n".format(enn_ayy(device)))
-        else:
-            afile.write("Radio: {0}\n".format(enn_ayy(radio)))
-            afile.write("Software: {0}\n".format(enn_ayy(software)))
-        afile.write("{0}\n".format("~"*40))
+        info_header(afile, osver, radio, software, device)
         for indx, file in enumerate(absfiles):
             fsize = os.stat(file).st_size
             afile.write("File: {0}\n".format(os.path.basename(file)))

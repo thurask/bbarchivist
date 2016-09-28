@@ -281,6 +281,29 @@ def calculate_strength():
     return strength
 
 
+def compressfilter(filepath, selective=False):
+    """
+    Filter directory listing of working directory.
+
+    :param filepath: Working directory. Required.
+    :type filepath: str
+
+    :param selective: Only compress autoloaders. Default is false.
+    :type selective: bool
+    """
+    arx = bbconstants.ARCS
+    pfx = bbconstants.PREFIXES
+    files = [file for file in os.listdir(filepath) if not os.path.isdir(file)]
+    if selective:
+        filt0 = [file for file in files if utilities.prepends(file, pfx, "")]
+        filt1 = [file for file in filt0 if not utilities.prepends(file, "", arx)]
+        filt2 = [file for file in filt1 if utilities.prepends(file, "", ".exe")]
+    else:
+        filt2 = [file for file in files if not utilities.prepends(file, "", arx)]
+    filt3 = [os.path.join(filepath, file) for file in filt2]
+    return filt3
+
+
 def compress(filepath, method="7z", szexe=None, selective=False, errors=False):
     """
     Compress all autoloader files in a given folder, with a given method.
@@ -301,17 +324,8 @@ def compress(filepath, method="7z", szexe=None, selective=False, errors=False):
     :type errors: bool
     """
     method = filter_method(method, szexe)
-    arx = bbconstants.ARCS
-    pfx = bbconstants.PREFIXES
-    files = [file for file in os.listdir(filepath) if not os.path.isdir(file)]
-    if selective:
-        filt0 = [file for file in files if utilities.prepends(file, pfx, "")]
-        filt1 = [file for file in filt0 if not utilities.prepends(file, "", arx)]
-        filt2 = [file for file in filt1 if utilities.prepends(file, "", ".exe")]
-    else:
-        filt2 = [file for file in files if not utilities.prepends(file, "", arx)]
-    filt3 = [os.path.join(filepath, file) for file in filt2]
-    for file in filt3:
+    files = compressfilter(filepath, selective)
+    for file in files:
         filename = os.path.splitext(os.path.basename(file))[0]
         fileloc = os.path.join(filepath, filename)
         print("COMPRESSING: {0}.exe".format(filename))

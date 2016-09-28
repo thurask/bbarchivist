@@ -557,6 +557,46 @@ def make_droid_skeleton(method, build, device, variant="common"):
     return skel
 
 
+def bulk_droid_skeletons(devs, build, method=None):
+    """
+    Prepare list of Android autoloader/hash URLs.
+
+    :param devs: List of devices.
+    :type devs: list(str)
+
+    :param build: Build to check, 3 letters + 3 numbers.
+    :type build: str
+
+    :param method: None for regular OS links, "sha256/512" for SHA256 or 512 hash.
+    :type method: str
+    """
+    carrier_variants = ("common", "vzw-vzw", "na-tmo", "na-att")  # device variants
+    common_variants = ("common", )  # no Americans
+    carrier_devices = ("Priv", )  # may this list never expand in the future
+    skels = []
+    for dev in devs:
+        varlist = carrier_variants if dev in carrier_devices else common_variants
+        for var in varlist:
+            skel = make_droid_skeleton(method, build, dev, var)
+            skels.append(skel)
+    return skels
+
+
+def prepare_droid_list(device):
+    """
+    Convert single devices to a list, if necessary.
+
+    :param device: Device to check.
+    :type device: str
+    """
+    if isinstance(device, list):
+        devs = device
+    else:
+        devs = []
+        devs.append(device)
+    return devs
+
+
 def droid_scanner(build, device, method=None):
     """
     Check for Android autoloaders on BlackBerry's site.
@@ -570,26 +610,15 @@ def droid_scanner(build, device, method=None):
     :param method: None for regular OS links, "sha256/512" for SHA256 or 512 hash.
     :type method: str
     """
-    if isinstance(device, list):
-        devs = device
-    else:
-        devs = []
-        devs.append(device)
-    carrier_variants = ("common", "vzw-vzw", "na-tmo", "na-att")  # device variants
-    common_variants = ("common", )  # no Americans
-    skels = []
-    for dev in devs:
-        varlist = carrier_variants if dev in ("Priv") else common_variants
-        for var in varlist:
-            skel = make_droid_skeleton(method, build, dev, var)
-            skels.append(skel)
+    devs = prepare_droid_list(device)
+    skels = bulk_droid_skeletons(devs, build, method)
     with concurrent.futures.ThreadPoolExecutor(max_workers=len(skels)) as xec:
         results = []
         for skel in skels:
             avail = xec.submit(availability, skel)
             if avail.result():
                 results.append(skel)
-        return results if results else None
+    return results if results else None
 
 
 def base_metadata(url):
