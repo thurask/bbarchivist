@@ -281,6 +281,27 @@ def calculate_strength():
     return strength
 
 
+def filtercomp(files, criterion, critargs, boolfilt=True):
+    """
+    :param files: Files to work on.
+    :type files: list(str)
+
+    :param criterion: Function to use for evaluation.
+    :type criterion: func
+
+    :param critargs: Arguments for function, other than file.
+    :type critargs: list
+
+    :param boolfilt: True if comparing criterion, False if comparing not criterion.
+    :type boolfilt: bool
+    """
+    if boolfilt:
+        fx2 = [file for file in files if criterion(file, *critargs)]
+    else:
+        fx2 = [file for file in files if not criterion(file, *critargs)]
+    return fx2
+
+
 def compressfilter(filepath, selective=False):
     """
     Filter directory listing of working directory.
@@ -295,11 +316,11 @@ def compressfilter(filepath, selective=False):
     pfx = bbconstants.PREFIXES
     files = [file for file in os.listdir(filepath) if not os.path.isdir(file)]
     if selective:
-        filt0 = [file for file in files if utilities.prepends(file, pfx, "")]
-        filt1 = [file for file in filt0 if not utilities.prepends(file, "", arx)]
-        filt2 = [file for file in filt1 if utilities.prepends(file, "", ".exe")]
+        filt0 = filtercomp(files, utilities.prepends, (pfx, ""))
+        filt1 = filtercomp(filt0, utilities.prepends, ("", arx), False)
+        filt2 = filtercomp(filt1, utilities.prepends, ("", ".exe"))
     else:
-        filt2 = [file for file in files if not utilities.prepends(file, "", arx)]
+        filt2 = filtercomp(files, utilities.prepends, ("", arx), False)
     filt3 = [os.path.join(filepath, file) for file in filt2]
     return filt3
 
