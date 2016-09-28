@@ -44,9 +44,12 @@ def grab_args():
     sqlexport_main(args.list, args.avail, args.popsw)
 
 
-def pprint():
+def pprint(avail):
     """
     Pretty print the release list.
+
+    :param avail: List only available entries in database (implies listing in the first place).
+    :type avail: bool
     """
     rellist = sqlutils.list_sw_releases(avail)
     if rellist is not None:
@@ -56,12 +59,12 @@ def pprint():
                 rel[0], rel[1], (rel[2] + affix), rel[3]))
 
 
-def sqlexport_main(list, avail, popsw):
+def sqlexport_main(listed, avail, popsw):
     """
     Wrapper around CSV export function/other SQL-related stuff.
 
-    :param list: List entries in database.
-    :type list: bool
+    :param listed: List entries in database.
+    :type listed: bool
 
     :param avail: List only available entries in database (implies listing in the first place).
     :type avail: bool
@@ -69,13 +72,13 @@ def sqlexport_main(list, avail, popsw):
     :param popsw: If we're popping a software release: False if not, ("OS", "SW") tuple if we are.
     :type popsw: tuple
     """
-    if not popsw and not list and not avail:
+    if not popsw and not listed and not avail:
         sqlutils.export_sql_db()
     elif popsw:
         sqlutils.pop_sw_release(*popsw)
         print("POPPED: OS {0} - SW {1}".format(*popsw))
     else:
-        pprint()
+        pprint(avail)
 
 
 if __name__ == "__main__":
