@@ -10,11 +10,9 @@ __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015-2016 Thurask"
 
 
-def sqlexport_main():
+def grab_args():
     """
-    Wrapper around CSV export function.
-
-    Invoke :func:`bbarchivist.sqlutils.export_sql_db`.
+    Parse arguments from argparse/questionnaire.
     """
     parser = scriptutils.default_parser("bb-sqlexport", "SQL-related tools")
     parser.add_argument(
@@ -43,19 +41,42 @@ def sqlexport_main():
     args = parser.parse_args(sys.argv[1:])
     if args.list or args.avail:
         args.popsw = False
-    if not args.popsw and not args.list and not args.avail:
+    sqlexport_main(args.list, args.avail, args.popsw)
+
+
+def pprint():
+    """
+    Pretty print the release list.
+    """
+    rellist = sqlutils.list_sw_releases(avail)
+    if rellist is not None:
+        for rel in rellist:
+            affix = "  " if rel[2] == "available" else ""
+            print("OS {0} - SR {1} - {2} - {3}".format(
+                rel[0], rel[1], (rel[2] + affix), rel[3]))
+
+
+def sqlexport_main(list, avail, popsw):
+    """
+    Wrapper around CSV export function/other SQL-related stuff.
+
+    :param list: List entries in database.
+    :type list: bool
+
+    :param avail: List only available entries in database (implies listing in the first place).
+    :type avail: bool
+
+    :param popsw: If we're popping a software release: False if not, ("OS", "SW") tuple if we are.
+    :type popsw: tuple
+    """
+    if not popsw and not list and not avail:
         sqlutils.export_sql_db()
-    elif args.popsw:
-        sqlutils.pop_sw_release(*args.popsw)
-        print("POPPED: OS {0} - SW {1}".format(*args.popsw))
+    elif popsw:
+        sqlutils.pop_sw_release(*popsw)
+        print("POPPED: OS {0} - SW {1}".format(*popsw))
     else:
-        rellist = sqlutils.list_sw_releases(args.avail)
-        if rellist is not None:
-            for rel in rellist:
-                affix = "  " if rel[2] == "available" else ""
-                print("OS {0} - SR {1} - {2} - {3}".format(
-                    rel[0], rel[1], (rel[2] + affix), rel[3]))
+        pprint()
 
 
 if __name__ == "__main__":
-    sqlexport_main()
+    grab_args()

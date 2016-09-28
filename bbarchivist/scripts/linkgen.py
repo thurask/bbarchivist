@@ -53,13 +53,9 @@ def questionnaire():
     osversion = input("OS VERSION (REQUIRED): ")
     radioversion = input("RADIO VERSION (PRESS ENTER TO GUESS): ")
     softwareversion = input("OS SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
-    if not radioversion:
-        radioversion = None
-        usealt = False
-    else:
-        usealt = utilities.s2b(input("ALTERNATE RADIO (Y/N)?: "))
-    if not softwareversion:
-        softwareversion = None
+    radioversion = None if not radioversion else radioversion
+    usealt = False if not radioversion else utilities.s2b(input("ALTERNATE RADIO (Y/N)?: "))
+    softwareversion = None if not softwareversion else softwareversion
     if usealt:
         altsw = input("RADIO SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
         if not altsw:

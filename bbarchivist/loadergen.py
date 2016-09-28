@@ -23,18 +23,13 @@ def read_files(localdir, core=False):
     :type core: bool
     """
     oslist = read_os_files(localdir, core)
+    # [8960, 8x30, 8974, ti]
     radlist = read_radio_files(localdir)
-    pairdict = {}
     # [ti, z10, z10_vzw, q10, z30, z3, 8974]
+    pairdict = {}
+    mapping = {0:3, 1:0, 2:0, 3:0, 4:0, 5:1, 6:2}
     for idx, rad in enumerate(radlist):
-        if idx == 0:
-            pairdict[rad] = oslist[3]
-        elif idx == 5:
-            pairdict[rad] = oslist[1]
-        elif idx == 6:
-            pairdict[rad] = oslist[2]
-        else:
-            pairdict[rad] = oslist[0]
+        pairdict[rad] = oslist[mapping[idx]]
     filtdict = {k: v for k, v in pairdict.items() if k}  # pop None
     return filtdict
 

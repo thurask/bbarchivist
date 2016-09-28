@@ -52,6 +52,24 @@ def grab_args():
         decorators.enter_to_exit(True)
 
 
+def terminator(swversion, ceiling, loop=None):
+    """
+    Handle KeyboardInterrupt calling.
+
+    :param swversion: Software version, 10.x.y.zzzz.
+    :type swversion: str
+
+    :param loop: Whether or not to automatically lookup. Default is None.
+    :type loop: bool
+
+    :param ceiling: When to stop loop. Default is 9999 (i.e. 10.x.y.9999).
+    :type ceiling: int
+    """
+    goloop = True if loop is None else loop
+    if goloop and int(swversion.split(".")[3]) > ceiling:
+        raise KeyboardInterrupt
+
+
 @decorators.wrap_keyboard_except
 def swlookup_main(swversion, loop=False, ceiling=9999):
     """
@@ -68,8 +86,7 @@ def swlookup_main(swversion, loop=False, ceiling=9999):
     """
     scriptutils.slim_preamble("SWLOOKUP")
     while True:
-        if loop and int(swversion.split(".")[3]) > ceiling:
-            raise KeyboardInterrupt
+        terminator(swversion, ceiling, loop)
         print("NOW SCANNING: {0}".format(swversion), end="\r")
         baseurl = networkutils.create_base_url(swversion)
         avail = networkutils.availability(baseurl)
@@ -78,11 +95,9 @@ def swlookup_main(swversion, loop=False, ceiling=9999):
         if not loop:
             raise KeyboardInterrupt  # hack, but whatever
         else:
-            if int(swversion.split(".")[3]) > ceiling:
-                raise KeyboardInterrupt
-            else:
-                swversion = utilities.increment(swversion, 1)
-                continue
+            terminator(swversion, ceiling)
+            swversion = utilities.increment(swversion, 1)
+            continue
 
 
 if __name__ == "__main__":
