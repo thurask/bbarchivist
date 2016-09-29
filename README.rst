@@ -13,6 +13,10 @@ README
     :target: https://coveralls.io/github/thurask/bbarchivist?branch=master
     :alt: Coveralls.io
 
+.. image:: https://scrutinizer-ci.com/g/thurask/bbarchivist/badges/quality-score.png?b=master
+    :target: https://scrutinizer-ci.com/g/thurask/bbarchivist/?branch=master
+    :alt: Scrutinizer Code Quality
+
 .. image:: https://readthedocs.org/projects/bbarchivist/badge/?version=latest
     :target: https://bbarchivist.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
