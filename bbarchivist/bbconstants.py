@@ -26,19 +26,19 @@ def frozen_versions():
     Version grabbing when frozen with cx_Freeze.
     """
     with open("longversion.txt", "r") as longv:
-        DATA = longv.read().split("\n")
-        VER = DATA[0].split("-")
+        data = longv.read().split("\n")
+        ver = data[0].split("-")
     #: App version.
-    VERSION = VER[0]
+    version = ver[0]
     #: If we're in a development build.
-    DIRTY = "+devel" if DATA[0] != VERSION else ""
+    dirty = "+devel" if data[0] != version else ""
     #: Git commit hash.
-    COMMITHASH = VER[1]
+    commithash = ver[1]
     #: App version, tag + commits.
-    LONGVERSION = "-".join(VER)
+    longversion = "-".join(ver)
     #: Git commit timestamp.
-    COMMITDATE = DATA[1]
-    return VERSION, DIRTY, COMMITHASH, LONGVERSION, COMMITDATE
+    commitdate = data[1]
+    return version, dirty, commithash, longversion, commitdate
 
 
 if not getattr(sys, 'frozen', False):  # regular

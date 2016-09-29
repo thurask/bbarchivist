@@ -210,18 +210,26 @@ def archivist_checksw(baseurl, softwareversion, swchecked, alturl, altsw, altche
     :param altchecked: If we checked the radio sw release already.
     :type altchecked: bool
     """
-    # 
     scriptutils.check_sw(baseurl, softwareversion, swchecked)
     if altsw:
         scriptutils.check_radio_sw(alturl, altsw, altchecked)
 
 
-def archivist_download(download=True):
+def archivist_download(download=True, osurls, radiourls, localdir):
     """
     Download function.
 
     :param download: Whether to download bar files. True by default.
     :type download: bool
+
+    :param osurls: OS file list.
+    :type osurls: list(str)
+
+    :param radiourls: Radio file list.
+    :type radiourls: list(str)
+
+    :param localdir: Working directory. Local by default.
+    :type localdir: str
     """
     if download:
         print("BEGIN DOWNLOADING...")
@@ -602,7 +610,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     compmethod, szexe = scriptutils.get_sz_executable(compmethod)
     # Make dirs: bd_o, bd_r, ld_o, ld_r, zd_o, zd_r
     dirs = barutils.make_dirs(localdir, osversion, radioversion)
-    archivist_download(download)
+    archivist_download(download, osurls, radiourls, localdir)
     archivist_integritybars(integrity, osurls, radiourls)
     archivist_extractbars(extract, localdir)
     archivist_integritysigned(extract, localdir)
