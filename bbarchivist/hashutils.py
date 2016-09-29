@@ -334,6 +334,34 @@ def hash_get(filename, hashfunc, workingdir, blocksize=16777216):
     return "{0} {1}\n".format(result.upper(), filename)
 
 
+def base_hash(hashtype, source, workingdir, block, hashfunc, target, kwargs=None):
+    """
+    Generic hash function; get hash, write to file.
+
+    :param hashtype: Hash type.
+    :type hashtype: str
+
+    :param source: File to be hashed; foobar.ext
+    :type source: str
+
+    :param workingdir: Path containing files you wish to verify.
+    :type workingdir: str
+
+    :param block: Blocksize, in bytes.
+    :type block: int
+
+    :param target: File to write to.
+    :type target: file
+
+    :param kwargs: Values. Refer to `:func:verifier_config_loader`.
+    :type kwargs: dict
+    """
+    if kwargs[hashtype]:
+        hash_generic = [hashtype.upper()]
+        hash_generic.append(hash_get(source, hashfunc, workingdir, block))
+        target.write("\n".join(hash_generic))
+
+
 def hash_writer(source, dest, workingdir, kwargs=None):
     """
     Write per-file hashes.
@@ -352,54 +380,18 @@ def hash_writer(source, dest, workingdir, kwargs=None):
     """
     block = int(kwargs['blocksize'])
     with open(dest, 'w') as target:
-        if kwargs['adler32']:
-            h_a32 = ["ADLER32"]
-            h_a32.append(hash_get(source, ha32, workingdir, block))
-            target.write("\n".join(h_a32))
-        if kwargs['crc32']:
-            h_c32 = ["CRC32"]
-            h_c32.append(hash_get(source, hc32, workingdir, block))
-            target.write("\n".join(h_c32))
-        if kwargs['md4']:
-            h_m4 = ["MD4"]
-            h_m4.append(hash_get(source, hm4, workingdir, block))
-            target.write("\n".join(h_m4))
-        if kwargs['md5']:
-            h_m5 = ["MD5"]
-            h_m5.append(hash_get(source, hm5, workingdir, block))
-            target.write("\n".join(h_m5))
-        if kwargs['sha0']:
-            h_s0 = ["SHA0"]
-            h_s0.append(hash_get(source, hs0, workingdir, block))
-            target.write("\n".join(h_s0))
-        if kwargs['sha1']:
-            h_s1 = ["SHA1"]
-            h_s1.append(hash_get(source, hs1, workingdir, block))
-            target.write("\n".join(h_s1))
-        if kwargs['sha224']:
-            h_s224 = ["SHA224"]
-            h_s224.append(hash_get(source, hs224, workingdir, block))
-            target.write("\n".join(h_s224))
-        if kwargs['sha256']:
-            h_s256 = ["SHA256"]
-            h_s256.append(hash_get(source, hs256, workingdir, block))
-            target.write("\n".join(h_s256))
-        if kwargs['sha384']:
-            h_s384 = ["SHA384"]
-            h_s384.append(hash_get(source, hs384, workingdir, block))
-            target.write("\n".join(h_s384))
-        if kwargs['sha512']:
-            h_s512 = ["SHA512"]
-            h_s512.append(hash_get(source, hs512, workingdir, block))
-            target.write("\n".join(h_s512))
-        if kwargs['ripemd160']:
-            h_r160 = ["RIPEMD160"]
-            h_r160.append(hash_get(source, hr160, workingdir, block))
-            target.write("\n".join(h_r160))
-        if kwargs['whirlpool']:
-            h_wp = ["WHIRLPOOL"]
-            h_wp.append(hash_get(source, hwp, workingdir, block))
-            target.write("\n".join(h_wp))
+        base_hash("adler32", source, workingdir, block, ha32, target, kwargs)
+        base_hash("crc32", source, workingdir, block, hc32, target, kwargs)
+        base_hash("md4", source, workingdir, block, hm4, target, kwargs)
+        base_hash("md5", source, workingdir, block, hm5, target, kwargs)
+        base_hash("sha0", source, workingdir, block, hs0, target, kwargs)
+        base_hash("sha1", source, workingdir, block, hs1, target, kwargs)
+        base_hash("sha224", source, workingdir, block, hs224, target, kwargs)
+        base_hash("sha256", source, workingdir, block, hs256, target, kwargs)
+        base_hash("sha384", source, workingdir, block, hs384, target, kwargs)
+        base_hash("sha512", source, workingdir, block, hs512, target, kwargs)
+        base_hash("ripemd160", source, workingdir, block, hr160, target, kwargs)
+        base_hash("whirlpool", source, workingdir, block, hwp, target, kwargs)
 
 
 def filefilter(file, workingdir, extras=()):
@@ -468,25 +460,50 @@ def gpgrunner(workingdir, keyid=None, pword=None, selective=False):
         print("COULD NOT FIND GnuPG!")
         raise SystemExit
     else:
-        if not keyid.startswith("0x"):
-            keyid = "0x" + keyid.upper()
+        keyid = "0x" + keyid.upper() if not keyid.startswith("0x") else keyid.upper()
         dirlist = os.listdir(workingdir)
         files = [file for file in dirlist if not os.path.isdir(file)]
         with concurrent.futures.ThreadPoolExecutor(max_workers=utilities.workers(files)) as xec:
             for file in files:
-                sup = bbconstants.SUPPS + (".txt",) if selective else bbconstants.SUPPS
-                if not file.endswith(sup):
-                    aps = bbconstants.ARCSPLUS
-                    pfx = bbconstants.PREFIXES
-                    if (utilities.prepends(file, pfx, aps)) if selective else True:
-                        print("VERIFYING:", str(file))
-                        thepath = os.path.join(workingdir, file)
-                        try:
-                            xec.submit(gpgfile, thepath, gpg, keyid, pword)
-                        except Exception as exc:
-                            print("SOMETHING WENT WRONG")
-                            print(str(exc))
-                            raise SystemExit
+                gpgwriter(gpg, xec, file, workingdir, selective, keyid, pword)
+
+
+def gpgwriter(gpg, xec, file, workingdir, selective=False, keyid=None, pword=None):
+    """
+    :param gpg: Instance of Python GnuPG executable.
+    :type gpg: gnupg.GPG()
+
+    :param xec: ThreadPoolExecutor instance.
+    :type xec: concurrent.futures.ThreadPoolExecutor
+
+    :param file: File inside workingdir that is being verified.
+    :type file: str
+
+    :param workingdir: Path containing files you wish to verify.
+    :type workingdir: str
+
+    :param selective: Filtering filenames/extensions. Default is false.
+    :type selective: bool
+
+    :param keyid: Key to use. 8-character hexadecimal, with or without 0x.
+    :type keyid: str
+
+    :param pword: Passphrase for given key.
+    :type pword: str
+    """
+    sup = bbconstants.SUPPS + (".txt",) if selective else bbconstants.SUPPS
+    if not file.endswith(sup):
+        aps = bbconstants.ARCSPLUS
+        pfx = bbconstants.PREFIXES
+        if (utilities.prepends(file, pfx, aps)) if selective else True:
+            print("VERIFYING:", str(file))
+            thepath = os.path.join(workingdir, file)
+            try:
+                xec.submit(gpgfile, thepath, gpg, keyid, pword)
+            except Exception as exc:
+                print("SOMETHING WENT WRONG")
+                print(str(exc))
+                raise SystemExit
 
 
 def gpg_config_loader(homepath=None):

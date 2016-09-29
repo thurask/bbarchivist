@@ -35,24 +35,33 @@ def download(url, output_directory=None):
             print("ERROR: HTTP {0} IN {1}".format(req.status_code, lfname))
 
 
+def prep_file(datafile, filelist):
+    """
+    Prepare a file for download if necessary.
+
+    :param datafile: Datafile instance.
+    :type datafile: bbarchivist.bbconstants.Datafile
+
+    :param filelist: List of files that need downloading.
+    :type filelist: list(str)
+    """
+    basename = "https://github.com/thurask/bbarchivist/raw/master/bbarchivist/"
+    afile = os.path.basename(datafile.location)
+    try:
+        if os.path.getsize(datafile.location) != datafile.size:
+            filelist.append(basename + afile)
+    except FileNotFoundError:
+        filelist.append(basename + afile)
+    return filelist
+
+
 def main():
     """
     Download cap and cfp files, in lieu of Git-LFS.
     """
-    basename = "https://github.com/thurask/bbarchivist/raw/master/bbarchivist/"
     files = []
-    capfile = os.path.basename(CAP.location)
-    try:
-        if os.path.getsize(CAP.location) != CAP.size:
-            files.append(basename + capfile)
-    except FileNotFoundError:
-        files.append(basename + capfile)
-    cfpfile = os.path.basename(CFP.location)
-    try:
-        if os.path.getsize(CFP.location) != CFP.size:
-            files.append(basename + cfpfile)
-    except FileNotFoundError:
-        files.append(basename + cfpfile)
+    files = prep_file(CAP, files)
+    files = prep_file(CFP, files)
     outdir = os.path.join(os.getcwd(), "bbarchivist")
     if files:
         for file in files:
