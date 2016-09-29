@@ -265,6 +265,70 @@ def carrier_query(npc, device, upgrade=False, blitz=False, forced=None):
     return parse_carrier_xml(req.text, blitz)
 
 
+def carrier_swver_get(root):
+    """
+    Get software release from carrier XML.
+
+    :param root: ElementTree we're barking up.
+    :type root: xml.etree.ElementTree.ElementTree
+    """
+    for child in root.iter("softwareReleaseMetadata"):
+        swver = child.get("softwareReleaseVersion")
+    return swver
+
+
+def carrier_child_fileappend(child, files, baseurl, blitz=False):
+    """
+    Append bar file links to a list from a child element.
+
+    :param child: Child element in use.
+    :type child: xml.etree.ElementTree.Element
+
+    :param files: Filelist.
+    :type files: list(str)
+
+    :param baseurl: Base URL, URL minus the filename.
+    :type baseurl: str
+
+    :param blitz: Whether or not to create a blitz package. False by default.
+    :type blitz: bool
+    """
+    if not blitz:
+        files.append(baseurl + child.get("path"))
+    else:
+        if child.get("type") not in ["system:radio", "system:desktop", "system:os"]:
+            files.append(baseurl + child.get("path"))
+    return files
+
+
+def carrier_child_finder(root, files, baseurl, blitz=False):
+    """
+    Extract filenames, radio and OS from child elements.
+
+    :param root: ElementTree we're barking up.
+    :type root: xml.etree.ElementTree.ElementTree
+
+    :param files: Filelist.
+    :type files: list(str)
+
+    :param baseurl: Base URL, URL minus the filename.
+    :type baseurl: str
+
+    :param blitz: Whether or not to create a blitz package. False by default.
+    :type blitz: bool
+    """
+    osver = radver = ""
+    for child in root.iter("package"):
+        files = carrier_child_fileappend(child, files, baseurl, blitz)
+        if child.get("type") == "system:radio":
+            radver = child.get("version")
+        elif child.get("type") == "system:desktop":
+            osver = child.get("version")
+        elif child.get("type") == "system:os":
+            osver = child.get("version")
+    return osver, radver, files
+
+
 def parse_carrier_xml(data, blitz=False):
     """
     Parse the response to a carrier update request and return the juicy bits.
@@ -279,28 +343,13 @@ def parse_carrier_xml(data, blitz=False):
     sw_exists = root.find('./data/content/softwareReleaseMetadata')
     swver = "N/A" if sw_exists is None else ""
     if sw_exists is not None:
-        for child in root.iter("softwareReleaseMetadata"):
-            swver = child.get("softwareReleaseVersion")
+        swver = carrier_swver_get(root)
     files = []
-    osver = ""
-    radver = ""
     package_exists = root.find('./data/content/fileSets/fileSet')
+    osver = radver = ""
     if package_exists is not None:
         baseurl = "{0}/".format(package_exists.get("url"))
-        for child in root.iter("package"):
-            if not blitz:
-                files.append(baseurl + child.get("path"))
-            else:
-                if child.get("type") not in ["system:radio", "system:desktop", "system:os"]:
-                    files.append(baseurl + child.get("path"))
-            if child.get("type") == "system:radio":
-                radver = child.get("version")
-            if child.get("type") == "system:desktop":
-                osver = child.get("version")
-            if child.get("type") == "system:os":
-                osver = child.get("version")
-            else:
-                pass
+        osver, radver, files = carrier_child_finder(root, files, baseurl, blitz)
     return(swver, osver, radver, files)
 
 
