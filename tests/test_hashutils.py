@@ -151,6 +151,82 @@ class TestClasshashutils:
             bh.hr160("tempfile.txt")
             assert "RIPEMD160 HASH FAILED" in capsys.readouterr()[0]
 
+    def test_sha3224(self):
+        """
+        Test SHA3-224 hash.
+        """
+        if "sha3_224" not in algos:
+            pass
+        else:
+            assert bh.hs3224("tempfile.txt") == "93cc89107b9bd807dead1ae95ce8c4b0f9b8acb2a3eef704e2fad109"
+
+    def test_sha3224_unavail(self, capsys):
+        """
+        Test SHA3-224 hash, if not available.
+        """
+        if "sha3_224" in algos:
+            pass
+        else:
+            bh.hs3224("tempfile.txt")
+            assert "REQUIRES PYTHON 3.6+" in capsys.readouterr()[0]
+
+    def test_sha3256(self):
+        """
+        Test SHA3-256 hash.
+        """
+        if "sha3_256" not in algos:
+            pass
+        else:
+            assert bh.hs3256("tempfile.txt") == "a9797b62d8b3573c9134406f42e601219e086150e6c2f32c90c5cee0149b6877"
+
+    def test_sha3256_unavail(self, capsys):
+        """
+        Test SHA3-256 hash, if not available.
+        """
+        if "sha3_256" in algos:
+            pass
+        else:
+            bh.hs3256("tempfile.txt")
+            assert "REQUIRES PYTHON 3.6+" in capsys.readouterr()[0]
+
+    def test_sha3384(self):
+        """
+        Test SHA3-384 hash.
+        """
+        if "sha3_384" not in algos:
+            pass
+        else:
+            assert bh.hs3384("tempfile.txt") == "1ae83352968f601e16eff076f5967dd356edce4c4c5629e3939123b7507efbaafd1dabc1e459f8e47f7a05df718e5927"
+
+    def test_sha3384_unavail(self, capsys):
+        """
+        Test SHA3-384 hash, if not available.
+        """
+        if "sha3_384" in algos:
+            pass
+        else:
+            bh.hs3384("tempfile.txt")
+            assert "REQUIRES PYTHON 3.6+" in capsys.readouterr()[0]
+
+    def test_sha3512(self):
+        """
+        Test SHA3-512 hash.
+        """
+        if "sha3_512" not in algos:
+            pass
+        else:
+            assert bh.hs3512("tempfile.txt") == "2ca12b585486d0f775f9fd438a73525b37b1214bc36a8b0ae611d0f1261e8d32b47b923b406c46cc80cc178598d41d42abee3eae5b1c23164b817342e22580e2"
+
+    def test_sha3512_unavail(self, capsys):
+        """
+        Test SHA3-512 hash, if not available.
+        """
+        if "sha3_512" in algos:
+            pass
+        else:
+            bh.hs3512("tempfile.txt")
+            assert "REQUIRES PYTHON 3.6+" in capsys.readouterr()[0]
+
     def test_whirlpool(self):
         """
         Test Whirlpool hash.
@@ -195,6 +271,10 @@ class TestClasshashutils:
         confload['sha512'] = True
         confload['ripemd160'] = True if "ripemd160" in algos else False
         confload['whirlpool'] = True if "whirlpool" in algos else False
+        confload['sha3224'] = True if "sha3_224" in algos else False
+        confload['sha3256'] = True if "sha3_256" in algos else False
+        confload['sha3384'] = True if "sha3_384" in algos else False
+        confload['sha3512'] = True if "sha3_512" in algos else False
         confload['blocksize'] = "16777216"
         print(confload)
         with mock.patch('bbarchivist.hashutils.verifier_config_loader', mock.MagicMock(return_value=confload)):
@@ -234,6 +314,22 @@ class TestClasshashutils:
             stocklines.extend([
                 b"WHIRLPOOL",
                 b"9835D12F3CB3EA3934635E4A7CC918E489379ED69D894EBC2C09BBF99FE72567BFD26C919AD666E170752ABFC4B8C37B376F5102F9E5DE59AF2B65EFC2E01293 tempfile.txt"])
+        if confload["sha3224"]:
+            stocklines.extend([
+            b"SHA3224",
+            b"93CC89107B9BD807DEAD1AE95CE8C4B0F9B8ACB2A3EEF704E2FAD109 tempfile.txt"])
+        if confload["sha3256"]:
+            stocklines.extend([
+            b"SHA3256",
+            b"A9797B62D8B3573C9134406F42E601219E086150E6C2F32C90C5CEE0149B6877 tempfile.txt"])
+        if confload["sha3384"]:
+            stocklines.extend([
+            b"SHA3384",
+            b"1AE83352968F601E16EFF076F5967DD356EDCE4C4C5629E3939123B7507EFBAAFD1DABC1E459F8E47F7A05DF718E5927 tempfile.txt"])
+        if confload["sha3512"]:
+            stocklines.extend([
+            b"SHA3512",
+            b"2CA12B585486D0F775F9FD438A73525B37B1214BC36A8B0AE611D0F1261E8D32B47B923B406C46CC80CC178598D41D42ABEE3EAE5B1C23164B817342E22580E2 tempfile.txt"])
         stocklines2 = []
         for item in stocklines:
             item2 = item.strip()
@@ -400,6 +496,10 @@ class TestClasshashutilsConfig:
         cls.hashdict['sha256'] = True
         cls.hashdict['sha384'] = False
         cls.hashdict['sha512'] = False
+        cls.hashdict['sha3224'] = False
+        cls.hashdict['sha3256'] = False
+        cls.hashdict['sha3384'] = False
+        cls.hashdict['sha3512'] = False
         cls.hashdict['md5'] = True
         cls.hashdict['md4'] = False
         cls.hashdict['ripemd160'] = False

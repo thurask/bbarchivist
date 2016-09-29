@@ -157,6 +157,102 @@ def hs512(filepath, blocksize=16 * 1024 * 1024):
     return sha512.hexdigest()
 
 
+def hs3224(filepath, blocksize=16 * 1024 * 1024):
+    """
+    Return SHA3-224 hash of a file.
+
+    :param filepath: File you wish to verify.
+    :type filepath: str
+
+    :param blocksize: How much of file to read at once.
+    :type blocksize: int
+    """
+    try:
+        sha3224 = hashlib.sha3_224()
+    except AttributeError:
+        print("REQUIRES PYTHON 3.6+")
+    else:
+        with open(filepath, 'rb') as file:
+            while True:
+                data = file.read(blocksize)
+                if not data:
+                    break
+                sha3224.update(data)
+        return sha3224.hexdigest()
+
+
+def hs3256(filepath, blocksize=16 * 1024 * 1024):
+    """
+    Return SHA3-256 hash of a file.
+
+    :param filepath: File you wish to verify.
+    :type filepath: str
+
+    :param blocksize: How much of file to read at once.
+    :type blocksize: int
+    """
+    try:
+        sha3256 = hashlib.sha3_256()
+    except AttributeError:
+        print("REQUIRES PYTHON 3.6+")
+    else:
+        with open(filepath, 'rb') as file:
+            while True:
+                data = file.read(blocksize)
+                if not data:
+                    break
+                sha3256.update(data)
+        return sha3256.hexdigest()
+
+
+def hs3384(filepath, blocksize=16 * 1024 * 1024):
+    """
+    Return SHA3-384 hash of a file.
+
+    :param filepath: File you wish to verify.
+    :type filepath: str
+
+    :param blocksize: How much of file to read at once.
+    :type blocksize: int
+    """
+    try:
+        sha3384 = hashlib.sha3_384()
+    except AttributeError:
+        print("REQUIRES PYTHON 3.6+")
+    else:
+        with open(filepath, 'rb') as file:
+            while True:
+                data = file.read(blocksize)
+                if not data:
+                    break
+                sha3384.update(data)
+        return sha3384.hexdigest()
+
+
+def hs3512(filepath, blocksize=16 * 1024 * 1024):
+    """
+    Return SHA3-512 hash of a file.
+
+    :param filepath: File you wish to verify.
+    :type filepath: str
+
+    :param blocksize: How much of file to read at once.
+    :type blocksize: int
+    """
+    try:
+        sha3512 = hashlib.sha3_512()
+    except AttributeError:
+        print("REQUIRES PYTHON 3.6+")
+    else:
+        with open(filepath, 'rb') as file:
+            while True:
+                data = file.read(blocksize)
+                if not data:
+                    break
+                sha3512.update(data)
+        return sha3512.hexdigest()
+
+
 def hm5(filepath, blocksize=16 * 1024 * 1024):
     """
     Return MD5 hash of a file.
@@ -392,6 +488,10 @@ def hash_writer(source, dest, workingdir, kwargs=None):
         base_hash("sha512", source, workingdir, block, hs512, target, kwargs)
         base_hash("ripemd160", source, workingdir, block, hr160, target, kwargs)
         base_hash("whirlpool", source, workingdir, block, hwp, target, kwargs)
+        base_hash("sha3224", source, workingdir, block, hs3224, target, kwargs)
+        base_hash("sha3256", source, workingdir, block, hs3256, target, kwargs)
+        base_hash("sha3384", source, workingdir, block, hs3384, target, kwargs)
+        base_hash("sha3512", source, workingdir, block, hs3512, target, kwargs)
 
 
 def filefilter(file, workingdir, extras=()):
@@ -588,6 +688,10 @@ def verifier_config_loader(homepath=None):
     results['ripemd160'] = bool(ini.getboolean('ripemd160', fallback=False))
     results['whirlpool'] = bool(ini.getboolean('whirlpool', fallback=False))
     results['blocksize'] = int(ini.getint('blocksize', fallback=16777216))
+    results['sha3224'] = bool(ini.getboolean('sha3224', fallback=False))
+    results['sha3256'] = bool(ini.getboolean('sha3256', fallback=False))
+    results['sha3384'] = bool(ini.getboolean('sha3384', fallback=False))
+    results['sha3512'] = bool(ini.getboolean('sha3512', fallback=False))
     return results
 
 
