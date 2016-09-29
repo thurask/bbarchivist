@@ -72,7 +72,7 @@ def make_starts(beginlength, capsize, pad, sizes, filecount):
 
     :param sizes: List of signed file sizes.
     :type sizes: list(int)
-   
+
     :param filecount: Number of signed files.
     :type filecount: int
     """

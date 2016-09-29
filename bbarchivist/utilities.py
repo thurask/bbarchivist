@@ -455,7 +455,7 @@ def filter_1031(osurl, splitos, device):
     :param device: Device to use.
     :type device: int
     """
-    if ((splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1)):
+    if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):
         if device == 5:
             osurl = osurl.replace("qc8960.factory_sfi", "qc8960.factory_sfi_hybrid_qc8x30")
         elif device == 6:
@@ -487,7 +487,7 @@ def generate_lazy_urls(baseurl, osversion, radioversion, device):
             "qc8974.factory"]
     maps = {0:0, 1:1, 2:2, 3:1, 4:1, 5:1, 6:3}
     osurl = "{0}/{1}_sfi.desktop-{2}-{3}".format(baseurl, oses[maps[device]], osversion, suffix)
-    radiourl = "{0}/{1}-{2}-{3}".format(baseurl, rads[device], osversion, suffix)
+    radiourl = "{0}/{1}-{2}-{3}".format(baseurl, rads[device], radioversion, suffix)
     osurl = filter_1031(osurl, splitos, device)
     return osurl, radiourl
 
