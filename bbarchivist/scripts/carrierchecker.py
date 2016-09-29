@@ -139,9 +139,9 @@ def grab_args():
     decorators.enter_to_exit(True)
 
 
-def questionnaire():
+def questionnaire_mcc():
     """
-    Questions to ask if no arguments given.
+    Get MCC from questionnaire.
     """
     while True:
         try:
@@ -150,7 +150,13 @@ def questionnaire():
             continue
         else:
             if mcc == utilities.valid_carrier(mcc):
-                break
+                return mcc
+
+
+def questionnaire_mnc():
+    """
+    Get MNC from questionnaire.
+    """
     while True:
         try:
             mnc = int(input("MNC: "))
@@ -158,13 +164,29 @@ def questionnaire():
             continue
         else:
             if mnc == utilities.valid_carrier(mnc):
-                break
+                return mnc
+
+
+def questionnaire_devices():
+    """
+    Get device from questionnaire.
+    """
     device = input("DEVICE (SXX100-#): ")
     if not device:
         print("NO DEVICE SPECIFIED!")
         decorators.enter_to_exit(True)
         if not getattr(sys, 'frozen', False):
             raise SystemExit
+    return device
+
+
+def questionnaire():
+    """
+    Questions to ask if no arguments given.
+    """
+    mcc = questionnaire_mcc()
+    mnc = questionnaire_mnc()
+    device = questionnaire_devices()
     bundles = utilities.s2b(input("CHECK BUNDLES?: "))
     if bundles:
         download = False
@@ -174,12 +196,8 @@ def questionnaire():
     else:
         export = utilities.s2b(input("EXPORT TO FILE?: "))
         download = utilities.s2b(input("DOWNLOAD?: "))
-        if download:
-            upgrade = utilities.s2b(input("Y=UPGRADE BARS, N=DEBRICK BARS?: "))
-            blitz = utilities.s2b(input("CREATE BLITZ?: ")) if upgrade else False
-        else:
-            upgrade = False
-            blitz = False
+        upgrade = False if not download else utilities.s2b(input("Y=UPGRADE BARS, N=DEBRICK BARS?: "))
+        blitz = False if not download else (utilities.s2b(input("CREATE BLITZ?: ")) if upgrade else False)
     directory = os.getcwd()
     print(" ")
     carrierchecker_main(

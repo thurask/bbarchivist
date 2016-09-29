@@ -159,11 +159,9 @@ def questionnaire():
     localdir = os.getcwd()
     osversion = input("OS VERSION (REQUIRED): ")
     radioversion = input("RADIO VERSION (PRESS ENTER TO GUESS): ")
-    if not radioversion:
-        radioversion = None
+    radioversion = None if not radioversion else radioversion
     softwareversion = input("OS SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
-    if not softwareversion:
-        softwareversion = None
+    softwareversion = None if not softwareversion else softwareversion
     altcheck = utilities.s2b(input("USING ALTERNATE RADIO (Y/N)?: "))
     if altcheck:
         altsw = input("RADIO SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
@@ -188,6 +186,321 @@ def questionnaire():
                    hashdict, download=True, extract=True, signed=True,
                    compmethod=compmethod, gpg=False, integrity=True,
                    altsw=None, core=False, oldstyle=False)
+
+
+def archivist_checksw(baseurl, softwareversion, swchecked, alturl, altsw, altchecked):
+    """
+    Check availability of software releases.
+
+    :param baseurl: Base URL for download links.
+    :type baseurl: str
+
+    :param softwareversion: Software release, 10.x.y.zzzz. Can be guessed.
+    :type softwareversion: str
+
+    :param swchecked: If we checked the sw release already.
+    :type swchecked: bool
+
+    :param alturl: Alternate radio base URL.
+    :type alturl: str
+
+    :param altsw: Radio software release, if not the same as OS.
+    :type altsw: str
+
+    :param altchecked: If we checked the radio sw release already.
+    :type altchecked: bool
+    """
+    # 
+    scriptutils.check_sw(baseurl, softwareversion, swchecked)
+    if altsw:
+        scriptutils.check_radio_sw(alturl, altsw, altchecked)
+
+
+def archivist_download(download=True):
+    """
+    Download function.
+
+    :param download: Whether to download bar files. True by default.
+    :type download: bool
+    """
+    if download:
+        print("BEGIN DOWNLOADING...")
+        networkutils.download_bootstrap(radiourls + osurls, localdir, 3)
+        print("ALL FILES DOWNLOADED")
+
+
+def archivist_integritybars(integrity, osurls, radiourls):
+    """
+    Check integrity of bar files, redownload if necessary.
+
+    :param integrity: Whether to test downloaded files. True by default.
+    :type integrity: bool
+
+    :param osurls: OS file list.
+    :type osurls: list(str)
+
+    :param radiourls: Radio file list.
+    :type radiourls: list(str)
+    """
+    if integrity:
+        urllist = osurls + radiourls
+        scriptutils.test_bar_files(localdir, urllist)
+
+
+def archivist_extractbars(extract, localdir):
+    """
+    Extract signed files from bar files.
+
+    :param extract: Whether to extract bar files. True by default.
+    :type extract: bool
+
+    :param localdir: Working directory. Local by default.
+    :type localdir: str
+    """
+    if extract:
+        print("EXTRACTING...")
+        barutils.extract_bars(localdir)
+
+
+def archivist_integritysigned(integrity, localdir):
+    """
+    Check integrity of signed files.
+
+    :param integrity: Whether to test downloaded files. True by default.
+    :type integrity: bool
+
+    :param localdir: Working directory. Local by default.
+    :type localdir: str
+    """
+    if integrity:
+        scriptutils.test_signed_files(localdir)
+
+
+def archivist_movebars(dirs, localdir):
+    """
+    Move bar files.
+
+    :param dirs: List of OS/radio bar/loader/zipped folders.
+    :type dirs: list(str)
+
+    :param localdir: Working directory. Local by default.
+    :type localdir: str
+    """
+    print("MOVING BAR FILES...")
+    barutils.move_bars(localdir, dirs[0], dirs[1])
+
+
+def archivist_generateloaders(osversion, radioversion, radios, localdir, altsw, core):
+    """
+    Generate loaders.
+
+    :param osversion: OS version, 10.x.y.zzzz. Required.
+    :type osversion: str
+
+    :param radioversion: Radio version, 10.x.y.zzzz. Can be guessed.
+    :type radioversion: str
+
+    :param radios: Whether to create radio autoloaders. True by default.
+    :type radios: bool
+
+    :param localdir: Working directory. Local by default.
+    :type localdir: str
+
+    :param altsw: Radio software release, if not the same as OS.
+    :type altsw: str
+
+    :param core: Whether to create a core/radio loader. Default is false.
+    :type core: bool
+    """
+    print("GENERATING LOADERS...")
+    altradio = altsw is not None
+    loadergen.generate_loaders(osversion, radioversion, radios, localdir, altradio, core)
+
+
+def archivist_integrityloaders(integrity, localdir):
+    """
+    Check integrity of build loaders.
+
+    :param integrity: Whether to test downloaded files. True by default.
+    :type integrity: bool
+
+    :param localdir: Working directory. Local by default.
+    :type localdir: str
+    """
+    if integrity:
+        scriptutils.test_loader_files(localdir)
+
+
+def archivist_removesigned(signed, localdir):
+    """
+    Remove signed files.
+
+    :param signed: Whether to delete signed files. True by default.
+    :type signed: bool
+
+    :param localdir: Working directory. Local by default.
+    :type localdir: str
+    """
+    if signed:
+        print("REMOVING SIGNED FILES...")
+        barutils.remove_signed_files(localdir)
+
+
+def archivist_compressor(compressed, integrity, localdir, compmethod, szexe):
+    """
+    Compress and optionally verify loaders.
+
+    :param compressed: Whether to compress files. True by default.
+    :type compressed: bool
+
+    :param integrity: Whether to test downloaded files. True by default.
+    :type integrity: bool
+
+    :param localdir: Working directory. Local by default.
+    :type localdir: str
+
+    :param compmethod: Compression method. Default is "7z", fallback "zip".
+    :type compmethod: str
+
+    :param szexe: Path to 7z executable.
+    :type szexe: str
+    """
+    if compressed:
+        print("COMPRESSING...")
+        archiveutils.compress(localdir, compmethod, szexe, True)
+        if integrity:
+            print("TESTING ARCHIVES...")
+            archiveutils.verify(localdir, compmethod, szexe, True)
+
+
+def archivist_moveloaders(dirs, localdir):
+    """
+    Move loaders.
+
+    :param dirs: List of OS/radio bar/loader/zipped folders.
+    :type dirs: list(str)
+
+    :param localdir: Working directory. Local by default.
+    :type localdir: str
+    """
+    print("MOVING LOADERS...")
+    barutils.move_loaders(localdir, dirs[2], dirs[3], dirs[4], dirs[5])
+
+
+def archivist_gethashes(dirs, hashed, compressed, deleted, radios, osversion, radioversion, softwareversion, oldstyle):
+    """
+    Make new-style info files.
+
+    :param dirs: List of OS/radio bar/loader/zipped folders.
+    :type dirs: list(str)
+
+    :param hashed: Whether to hash files. True by default.
+    :type hashed: bool
+
+    :param compressed: Whether to compress files. True by default.
+    :type compressed: bool
+
+    :param deleted: Whether to delete uncompressed files. True by default.
+    :type deleted: bool
+
+    :param radios: Whether to create radio autoloaders. True by default.
+    :type radios: bool
+
+    :param osversion: OS version, 10.x.y.zzzz. Required.
+    :type osversion: str
+
+    :param radioversion: Radio version, 10.x.y.zzzz. Can be guessed.
+    :type radioversion: str
+
+    :param softwareversion: Software release, 10.x.y.zzzz. Can be guessed.
+    :type softwareversion: str
+
+    :param oldstyle: Whether to make old-style checksum files. Default is false.
+    :type oldstyle: bool
+    """
+    if hashed and not oldstyle:
+        scriptutils.bulk_info(dirs, osversion, compressed, deleted, radios,
+                                  radioversion, softwareversion)
+
+def archivist_getoldhashes(dirs, hashed, compressed, deleted, radios, hashdict, oldstyle):
+    """
+    Make old-style checksum files.
+
+    :param dirs: List of OS/radio bar/loader/zipped folders.
+    :type dirs: list(str)
+
+    :param hashed: Whether to hash files. True by default.
+    :type hashed: bool
+
+    :param compressed: Whether to compress files. True by default.
+    :type compressed: bool
+
+    :param deleted: Whether to delete uncompressed files. True by default.
+    :type deleted: bool
+
+    :param radios: Whether to create radio autoloaders. True by default.
+    :type radios: bool
+
+    :param hashdict: Dictionary of hash rules, in ~\bbarchivist.ini.
+    :type hashdict: dict({str: bool})
+
+    :param oldstyle: Whether to make old-style checksum files. Default is false.
+    :type oldstyle: bool
+    """
+    if hashed and oldstyle:
+        scriptutils.bulk_hash(dirs, compressed, deleted, radios, hashdict)
+
+
+def archivist_gpg(gpg, dirs, compressed, deleted, radios):
+    """
+    GPG-sign everything.
+
+    :param gpg: Whether to use GnuPG verification. False by default.
+    :type gpg: bool
+
+    :param dirs: List of OS/radio bar/loader/zipped folders.
+    :type dirs: list(str)
+
+    :param compressed: Whether to compress files. True by default.
+    :type compressed: bool
+
+    :param deleted: Whether to delete uncompressed files. True by default.
+    :type deleted: bool
+
+    :param radios: Whether to create radio autoloaders. True by default.
+    :type radios: bool
+    """
+    if gpg:
+        scriptutils.bulk_verify(dirs, compressed, deleted, radios)
+
+
+def archivist_deleteuncompressed(dirs, deleted, radios):
+    """
+    Delete uncompressed loaders.
+
+    :param dirs: List of OS/radio bar/loader/zipped folders.
+    :type dirs: list(str)
+
+    :param deleted: Whether to delete uncompressed files. True by default.
+    :type deleted: bool
+
+    :param radios: Whether to create radio autoloaders. True by default.
+    :type radios: bool
+    """
+    if deleted:
+        print("DELETING UNCOMPRESSED LOADERS...")
+        barutils.remove_unpacked_loaders(dirs[2], dirs[3], radios)
+
+
+def archivist_removeemptyfolders(localdir):
+    """
+    Delete empty folders.
+
+    :param localdir: Working directory. Local by default.
+    :type localdir: str
+    """
+    print("REMOVING EMPTY FOLDERS...")
+    barutils.remove_empty_folders(localdir)
 
 
 def archivist_main(osversion, radioversion=None, softwareversion=None,
@@ -243,7 +556,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     :param gpg: Whether to use GnuPG verification. False by default.
     :type gpg: bool
 
-    :param integrity: Whether to test downloaded bar files. True by default.
+    :param integrity: Whether to test downloaded files. True by default.
     :type integrity: bool
 
     :param altsw: Radio software release, if not the same as OS.
@@ -265,7 +578,6 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
         hashdict = hashutils.verifier_config_loader()
         hashutils.verifier_config_writer(hashdict)
     scriptutils.standard_preamble("archivist", osversion, softwareversion, radioversion, altsw)
-
     # Generate download URLs
     baseurl, alturl = scriptutils.get_baseurls(softwareversion, altsw)
     osurls, radiourls, cores = utilities.generate_urls(baseurl, osversion, radioversion, True)
@@ -282,92 +594,29 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
         radiourls2 = [x.replace(baseurl, alturl) for x in radiourls]
         radiourls = radiourls2
         del radiourls2
-
-    # Check availability of software releases
-    scriptutils.check_sw(baseurl, softwareversion, swchecked)
-    if altsw:
-        scriptutils.check_radio_sw(alturl, altsw, altchecked)
-
+    archivist_checksw(baseurl, softwareversion, swchecked, alturl, altsw, altchecked)
     # Check availability of OS, radio
     scriptutils.check_os_bulk(osurls)
     radiourls, radioversion = scriptutils.check_radio_bulk(radiourls, radioversion)
-
     # Get 7z executable
     compmethod, szexe = scriptutils.get_sz_executable(compmethod)
-
     # Make dirs: bd_o, bd_r, ld_o, ld_r, zd_o, zd_r
     dirs = barutils.make_dirs(localdir, osversion, radioversion)
-
-    # Download files
-    if download:
-        print("BEGIN DOWNLOADING...")
-        networkutils.download_bootstrap(radiourls + osurls, localdir, 3)
-        print("ALL FILES DOWNLOADED")
-
-    # Test bar files
-    if integrity:
-        urllist = osurls + radiourls
-        scriptutils.test_bar_files(localdir, urllist)
-
-    # Extract bar files
-    if extract:
-        print("EXTRACTING...")
-        barutils.extract_bars(localdir)
-
-    # Test signed files
-    if integrity:
-        scriptutils.test_signed_files(localdir)
-
-    # Move bar files
-    print("MOVING BAR FILES...")
-    barutils.move_bars(localdir, dirs[0], dirs[1])
-
-    # Create loaders
-    print("GENERATING LOADERS...")
-    altradio = altsw is not None
-    loadergen.generate_loaders(osversion, radioversion, radios, localdir, altradio, core)
-
-    # Test loader files
-    if integrity:
-        scriptutils.test_loader_files(localdir)
-
-    # Remove .signed files
-    if signed:
-        print("REMOVING SIGNED FILES...")
-        barutils.remove_signed_files(localdir)
-
-    # If compression = true, compress
-    if compressed:
-        print("COMPRESSING...")
-        archiveutils.compress(localdir, compmethod, szexe, True)
-
-    if integrity and compressed:
-        print("TESTING ARCHIVES...")
-        archiveutils.verify(localdir, compmethod, szexe, True)
-
-    # Move zipped/unzipped loaders
-    print("MOVING LOADERS...")
-    barutils.move_loaders(localdir, dirs[2], dirs[3], dirs[4], dirs[5])
-
-    # Get hashes/signatures (if specified)
-    if hashed:
-        if oldstyle:
-            scriptutils.bulk_hash(dirs, compressed, deleted, radios, hashdict)
-        else:
-            scriptutils.bulk_info(dirs, osversion, compressed, deleted, radios,
-                                  radioversion, softwareversion)
-    if gpg:
-        scriptutils.bulk_verify(dirs, compressed, deleted, radios)
-
-    # Remove uncompressed loaders (if specified)
-    if deleted:
-        print("DELETING UNCOMPRESSED LOADERS...")
-        barutils.remove_unpacked_loaders(dirs[2], dirs[3], radios)
-
-    # Delete empty folders
-    print("REMOVING EMPTY FOLDERS...")
-    barutils.remove_empty_folders(localdir)
-
+    archivist_download(download)
+    archivist_integritybars(integrity, osurls, radiourls)
+    archivist_extractbars(extract, localdir)
+    archivist_integritysigned(extract, localdir)
+    archivist_movebars(dirs, localdir)
+    archivist_generateloaders(osversion, radioversion, radios, localdir, altsw, core)
+    archivist_integrityloaders(integrity, localdir)
+    archivist_removesigned(signed, localdir)
+    archivist_compressor(compressed, integrity, localdir, compmethod, szexe)
+    archivist_moveloaders(dirs, localdir)
+    archivist_gethashes(dirs, hashed, compressed, deleted, radios, osversion, radioversion, softwareversion, oldstyle)
+    archivist_getoldhashes(dirs, hashed, compressed, deleted, radios, hashdict, oldstyle)
+    archivist_gpg(gpg, dirs, compressed, deleted, radios)
+    archivist_deleteuncompressed(dirs, deleted, radios)
+    archivist_removeemptyfolders(localdir)
     print("\nFINISHED!")
 
 
