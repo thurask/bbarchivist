@@ -176,6 +176,9 @@
     <Compile Include="tests\test_barutils.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="tests\test_bbconstants.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="tests\test_compat.py">
       <SubType>Code</SubType>
     </Compile>

@@ -21,18 +21,10 @@ class Datafile(object):
         self.size = size
 
 
-if not getattr(sys, 'frozen', False):  # regular
-    #: App version.
-    VERSION = get_versions()["version"].split("-")[0]
-    #: If we're in a development build.
-    DIRTY = "+devel" if get_versions()["version"] != VERSION else ""
-    #: Git commit hash.
-    COMMITHASH = "g{0}".format(get_versions()["full-revisionid"][0:7])
-    #: App version, tag + commits.
-    LONGVERSION = "-".join((VERSION + DIRTY, COMMITHASH))
-    #: Git commit timestamp.
-    COMMITDATE = get_versions()["date"]
-else:  # cx_freeze support
+def frozen_versions():
+    """
+    Version grabbing when frozen with cx_Freeze.
+    """
     with open("longversion.txt", "r") as longv:
         DATA = longv.read().split("\n")
         VER = DATA[0].split("-")
@@ -46,6 +38,22 @@ else:  # cx_freeze support
     LONGVERSION = "-".join(VER)
     #: Git commit timestamp.
     COMMITDATE = DATA[1]
+    return VERSION, DIRTY, COMMITHASH, LONGVERSION, COMMITDATE
+
+
+if not getattr(sys, 'frozen', False):  # regular
+    #: App version.
+    VERSION = get_versions()["version"].split("-")[0]
+    #: If we're in a development build.
+    DIRTY = "+devel" if get_versions()["version"] != VERSION else ""
+    #: Git commit hash.
+    COMMITHASH = "g{0}".format(get_versions()["full-revisionid"][0:7])
+    #: App version, tag + commits.
+    LONGVERSION = "-".join((VERSION + DIRTY, COMMITHASH))
+    #: Git commit timestamp.
+    COMMITDATE = get_versions()["date"]
+else:  # cx_freeze support
+    VERSION, DIRTY, COMMITHASH, LONGVERSION, COMMITDATE = frozen_versions()
 #: File location.
 LOCATION = os.path.abspath(__file__)
 #: File folder.
