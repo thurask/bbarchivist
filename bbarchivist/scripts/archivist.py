@@ -215,7 +215,7 @@ def archivist_checksw(baseurl, softwareversion, swchecked, alturl, altsw, altche
         scriptutils.check_radio_sw(alturl, altsw, altchecked)
 
 
-def archivist_download(download=True, osurls, radiourls, localdir):
+def archivist_download(download, osurls, radiourls, localdir):
     """
     Download function.
 
