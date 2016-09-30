@@ -3,7 +3,6 @@
 
 import os
 from shutil import rmtree
-from argparse import ArgumentError
 import bbarchivist.dummy as bd
 
 __author__ = "Thurask"

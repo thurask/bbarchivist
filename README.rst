@@ -21,6 +21,10 @@ README
     :target: https://bbarchivist.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
+.. image:: https://api.codacy.com/project/badge/Grade/71913fc9723340d5bf4a3396fead1026
+	:target: https://www.codacy.com/app/thuraski/bbarchivist?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=thurask/bbarchivist&amp;utm_campaign=Badge_Grade
+	:alt: Codacy Badge
+
 A Python 3.2+ package for various BlackBerry 10/Priv-related functions and scripts.
 
 Packaged Executables

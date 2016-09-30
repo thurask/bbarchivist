@@ -3,7 +3,6 @@
 
 import os
 from shutil import rmtree
-import pytest
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

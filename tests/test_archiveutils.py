@@ -2,12 +2,11 @@
 """Test the archiveutils module."""
 
 import os
-from shutil import rmtree, copyfile
+from shutil import rmtree
 try:
     import unittest.mock as mock
 except ImportError:
     import mock
-import pytest
 import bbarchivist.archiveutils as ba
 from bbarchivist.utilities import prep_seven_zip, get_seven_zip, new_enough
 

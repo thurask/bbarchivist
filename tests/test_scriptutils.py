@@ -583,7 +583,7 @@ class TestClassScriptutilsArguments:
         """
         Test if parser has the version set.
         """
-        verarg = [x for x in self.parser._actions if type(x) == argparse._VersionAction][0]
+        verarg = [x for x in self.parser._actions if isinstance(x, argparse._VersionAction)][0]
         assert verarg.version == "name deadbeef committed 1970-01-01"
 
     def test_parser_args(self):
@@ -602,7 +602,7 @@ class TestClassScriptutilsArguments:
         Test version modification.
         """
         newpar = bs.external_version(self.parser, "|SNEKSNEK")
-        verarg = [x for x in newpar._actions if type(x) == argparse._VersionAction][0]
+        verarg = [x for x in newpar._actions if isinstance(x, argparse._VersionAction)][0]
         assert verarg.version == "name deadbeef committed 1970-01-01|SNEKSNEK"
 
 
