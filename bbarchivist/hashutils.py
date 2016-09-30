@@ -4,12 +4,12 @@
 import zlib  # crc32/adler32
 import hashlib  # all other hashes
 import hmac  # escreens is a hmac, news at 11
-import configparser  # config parsing, duh
 import os  # path work
 import concurrent.futures  # parallelization
 import gnupg  # interface b/w Python, GPG
 from bbarchivist import bbconstants  # premade stuff
 from bbarchivist import utilities  # cores
+from bbarchivist import iniconfig  # config parsing
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -579,17 +579,9 @@ def gpg_config_loader(homepath=None):
     :param homepath: Folder containing ini file. Default is user directory.
     :type homepath: str
     """
-    config = configparser.ConfigParser()
-    if homepath is None:
-        homepath = os.path.expanduser("~")
-    conffile = os.path.join(homepath, "bbarchivist.ini")
-    if not os.path.exists(conffile):
-        open(conffile, 'w').close()
-    config.read(conffile)
-    if not config.has_section('gpgrunner'):
-        config['gpgrunner'] = {}
-    gpgkey = config.get('gpgrunner', 'key', fallback=None)
-    gpgpass = config.get('gpgrunner', 'pass', fallback=None)
+    config = iniconfig.generic_loader('gpgrunner', homepath)
+    gpgkey = config.get('key', fallback=None)
+    gpgpass = config.get('pass', fallback=None)
     return gpgkey, gpgpass
 
 
@@ -606,21 +598,12 @@ def gpg_config_writer(key=None, password=None, homepath=None):
     :param homepath: Folder containing ini file. Default is user directory.
     :type homepath: str
     """
-    config = configparser.ConfigParser()
-    if homepath is None:
-        homepath = os.path.expanduser("~")
-    conffile = os.path.join(homepath, "bbarchivist.ini")
-    if not os.path.exists(conffile):
-        open(conffile, 'w').close()
-    config.read(conffile)
-    if not config.has_section('gpgrunner'):
-        config['gpgrunner'] = {}
+    results = {}
     if key is not None:
-        config['gpgrunner']['key'] = key
+        results["key"] = key
     if password is not None:
-        config['gpgrunner']['pass'] = password
-    with open(conffile, "w") as configfile:
-        config.write(configfile)
+        results["pass"] = password
+    iniconfig.generic_writer("gpgrunner", results, homepath)
 
 
 def verifier_config_loader(homepath=None):
@@ -630,17 +613,8 @@ def verifier_config_loader(homepath=None):
     :param homepath: Folder containing ini file. Default is user directory.
     :type homepath: str
     """
+    ini = iniconfig.generic_loader("hashmodes", homepath)
     results = {}
-    config = configparser.ConfigParser()
-    if homepath is None:
-        homepath = os.path.expanduser("~")
-    conffile = os.path.join(homepath, "bbarchivist.ini")
-    if not os.path.exists(conffile):
-        open(conffile, 'w').close()
-    config.read(conffile)
-    if not config.has_section('hashmodes'):
-        config['hashmodes'] = {}
-    ini = config['hashmodes']
     results['crc32'] = bool(ini.getboolean('crc32', fallback=False))
     results['adler32'] = bool(ini.getboolean('adler32', fallback=False))
     results['sha0'] = bool(ini.getboolean('sha0', fallback=False))
@@ -673,16 +647,5 @@ def verifier_config_writer(resultdict=None, homepath=None):
     """
     if resultdict is None:
         resultdict = verifier_config_loader()
-    config = configparser.ConfigParser()
-    if homepath is None:
-        homepath = os.path.expanduser("~")
-    conffile = os.path.join(homepath, "bbarchivist.ini")
-    if not os.path.exists(conffile):
-        open(conffile, 'w').close()
-    config.read(conffile)
-    if not config.has_section('hashmodes'):
-        config['hashmodes'] = {}
-    for method, flag in resultdict.items():
-        config.set('hashmodes', method, str(flag).lower())
-    with open(conffile, "w") as configfile:
-        config.write(configfile)
+    results = {method: str(flag).lower() for method, flag in resultdict.items()}
+    iniconfig.generic_writer("hashmodes", results, homepath)

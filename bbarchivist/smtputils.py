@@ -2,11 +2,11 @@
 """This module is used for dealing with SMTP email sending."""
 
 import smtplib  # smtp connection
-import configparser  # reading config files
 import getpass  # passwords
 import os  # paths
 from email.mime.text import MIMEText  # email formatting
 from bbarchivist import utilities  # file work
+from bbarchivist import iniconfig  # config parsing
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -16,49 +16,17 @@ __copyright__ = "Copyright 2015-2016 Thurask"
 def smtp_config_loader(homepath=None):
     """
     Read a ConfigParser file to get email preferences.
-
     :param homepath: Folder containing ini file. Default is user directory.
     :type homepath: str
     """
     resultdict = {}
-    config = configparser.ConfigParser()
-    homepath = smtp_config_homepath(homepath)
-    conffile = os.path.join(homepath, "bbarchivist.ini")
-    smtp_config_conffile(conffile)
-    config.read(conffile)
-    if not config.has_section('email'):
-        config['email'] = {}
-    smtpini = config['email']
+    smtpini = iniconfig.generic_loader("email", homepath)
     resultdict['server'] = smtpini.get('server', fallback=None)
     resultdict['port'] = int(smtpini.getint('port', fallback=0))
     resultdict['username'] = smtpini.get('username', fallback=None)
     resultdict['password'] = smtpini.get('password', fallback=None)
     resultdict['is_ssl'] = smtpini.get('is_ssl', fallback=None)
     return resultdict
-
-
-def smtp_config_homepath(homepath):
-    """
-    Fix path for ini file.
-
-    :param homepath: Path to ini file.
-    :type homepath: str
-    """
-    if homepath is None:
-        homepath = os.path.expanduser("~")
-    return homepath
-
-
-def smtp_config_conffile(conffile):
-    """
-    Create ini file if it doesn't exist.
-
-    :param conffile: Path to config ini file.
-    :type conffile: str
-    """
-    if not os.path.exists(conffile):
-        open(conffile, 'w').close()
-
 
 def smtp_config_writer_server(kwargs, config):
     """
@@ -71,7 +39,7 @@ def smtp_config_writer_server(kwargs, config):
     :type config: dict
     """
     if kwargs['server'] is not None:
-        config['email']['server'] = kwargs['server']
+        config['server'] = kwargs['server']
     return config
 
 
@@ -86,7 +54,7 @@ def smtp_config_writer_port(kwargs, config):
     :type config: dict
     """
     if kwargs['port'] is not None:
-        config['email']['port'] = str(kwargs['port'])
+        config['port'] = str(kwargs['port'])
     return config
 
 
@@ -101,7 +69,7 @@ def smtp_config_writer_username(kwargs, config):
     :type config: dict
     """
     if kwargs['username'] is not None:
-        config['email']['username'] = kwargs['username']
+        config['username'] = kwargs['username']
     return config
 
 
@@ -116,7 +84,7 @@ def smtp_config_writer_password(kwargs, config):
     :type config: dict
     """
     if kwargs['password'] is not None:
-        config['email']['password'] = kwargs['password']
+        config['password'] = kwargs['password']
     return config
 
 
@@ -131,7 +99,7 @@ def smtp_config_writer_ssl(kwargs, config):
     :type config: dict
     """
     if kwargs['is_ssl'] is not None:
-        config['email']['is_ssl'] = str(kwargs['is_ssl']).lower()
+        config['is_ssl'] = str(kwargs['is_ssl']).lower()
     return config
 
 
@@ -157,20 +125,13 @@ def smtp_config_writer(**kwargs):
     :param homepath: Folder containing ini file. Default is user directory.
     :type homepath: str
     """
-    config = configparser.ConfigParser()
-    kwargs['homepath'] = smtp_config_homepath(kwargs['homepath'])
-    conffile = os.path.join(kwargs['homepath'], "bbarchivist.ini")
-    smtp_config_conffile(conffile)
-    config.read(conffile)
-    if not config.has_section('email'):
-        config['email'] = {}
-    config = smtp_config_writer_server(kwargs, config)
-    config = smtp_config_writer_port(kwargs, config)
-    config = smtp_config_writer_username(kwargs, config)
-    config = smtp_config_writer_password(kwargs, config)
-    config = smtp_config_writer_ssl(kwargs, config)
-    with open(conffile, "w") as configfile:
-        config.write(configfile)
+    results = {}
+    results = smtp_config_writer_server(kwargs, results)
+    results = smtp_config_writer_port(kwargs, results)
+    results = smtp_config_writer_username(kwargs, results)
+    results = smtp_config_writer_password(kwargs, results)
+    results = smtp_config_writer_ssl(kwargs, results)
+    iniconfig.generic_writer("email", results, kwargs['homepath'])
 
 
 def smtp_config_generator_server(results):
@@ -236,7 +197,7 @@ def smtp_config_generator_ssl(results):
 
 def smtp_config_generator(results):
     """
-    Take user input to create the SMTP configparser settings.
+    Take user input to create the SMTP config settings.
 
     :param results: The results to put in bbarchivist.ini.
     :type results: dict

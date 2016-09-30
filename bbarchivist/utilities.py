@@ -5,7 +5,6 @@ import os  # path work
 import argparse  # argument parser for filters
 import platform  # platform info
 import glob  # cap grabbing
-import configparser  # config parsing, duh
 import threading  # get thread for spinner
 import time  # spinner delay
 import sys  # streams, version info
@@ -14,6 +13,7 @@ import subprocess  # loader verification
 from bbarchivist import bbconstants  # cap location, version, filename bits
 from bbarchivist import compat  # backwards compat
 from bbarchivist import dummy  # useless stdout
+from bbarchivist import iniconfig  # config parsing
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -736,15 +736,7 @@ def cappath_config_loader(homepath=None):
     :param homepath: Folder containing ini file. Default is user directory.
     :type homepath: str
     """
-    config = configparser.ConfigParser()
-    homepath = os.path.expanduser("~") if homepath is None else homepath
-    conffile = os.path.join(homepath, "bbarchivist.ini")
-    if not os.path.exists(conffile):
-        open(conffile, 'w').close()
-    config.read(conffile)
-    if not config.has_section('cap'):
-        config['cap'] = {}
-    capini = config['cap']
+    capini = iniconfig.generic_loader('cappath', homepath)
     cappath = capini.get('path', fallback=bbconstants.CAP.location)
     return cappath
 
@@ -759,17 +751,6 @@ def cappath_config_writer(cappath=None, homepath=None):
     :param homepath: Folder containing ini file. Default is user directory.
     :type homepath: str
     """
-    if cappath is None:
-        cappath = grab_cap()
-    config = configparser.ConfigParser()
-    if homepath is None:
-        homepath = os.path.expanduser("~")
-    conffile = os.path.join(homepath, "bbarchivist.ini")
-    if not os.path.exists(conffile):
-        open(conffile, 'w').close()
-    config.read(conffile)
-    if not config.has_section('cap'):
-        config['cap'] = {}
-    config['cap']['path'] = cappath
-    with open(conffile, "w") as configfile:
-        config.write(configfile)
+    cappath = grab_cap() if cappath is None else cappath
+    results = {"path": cappath}
+    iniconfig.generic_writer("cappath", results, homepath)

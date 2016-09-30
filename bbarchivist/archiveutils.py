@@ -5,10 +5,10 @@ import os  # filesystem read
 import subprocess  # invocation of 7z, cap
 import zipfile  # zip compresssion
 import tarfile  # txz/tbz/tgz/tar compression
-import configparser  # config parsing, duh
 from bbarchivist import utilities  # platform determination
 from bbarchivist import bbconstants  # premade stuff
 from bbarchivist import decorators  # timer
+from bbarchivist import iniconfig  # config parsing
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -436,16 +436,7 @@ def compress_config_loader(homepath=None):
     :param homepath: Folder containing ini file. Default is user directory.
     :type homepath: str
     """
-    config = configparser.ConfigParser()
-    if homepath is None:
-        homepath = os.path.expanduser("~")
-    conffile = os.path.join(homepath, "bbarchivist.ini")
-    if not os.path.exists(conffile):
-        open(conffile, 'w').close()
-    config.read(conffile)
-    if not config.has_section('compression'):
-        config['compression'] = {}
-    compini = config['compression']
+    compini = iniconfig.generic_loader('compression', homepath)
     method = compini.get('method', fallback="7z")
     if not utilities.new_enough(3) and method == "txz":
         method = "zip"  # for 3.2 compatibility
@@ -462,17 +453,6 @@ def compress_config_writer(method=None, homepath=None):
     :param homepath: Folder containing ini file. Default is user directory.
     :type homepath: str
     """
-    if method is None:
-        method = compress_config_loader()
-    config = configparser.ConfigParser()
-    if homepath is None:
-        homepath = os.path.expanduser("~")
-    conffile = os.path.join(homepath, "bbarchivist.ini")
-    if not os.path.exists(conffile):
-        open(conffile, 'w').close()
-    config.read(conffile)
-    if not config.has_section('compression'):
-        config['compression'] = {}
-    config['compression']['method'] = method
-    with open(conffile, "w") as configfile:
-        config.write(configfile)
+    method = compress_config_loader() if method is None else method
+    results = {"method": method}
+    iniconfig.generic_writer("compression", results, homepath)
