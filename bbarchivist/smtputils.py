@@ -248,7 +248,7 @@ def send_email(kwargs):
         "username": username,
         "password": password,
         "message": message,
-        "is_ssl": kwargs["is_ssl"]
+        "is_ssl": utilities.s2b(kwargs["is_ssl"])
     }
     send_email_post(payload)
 
