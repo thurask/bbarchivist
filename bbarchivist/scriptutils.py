@@ -112,7 +112,7 @@ def external_version(parser, addition):
     :param addition: What to add.
     :type addition: str
     """
-    verarg = [arg for arg in parser._actions if type(arg) == argparse._VersionAction][0]
+    verarg = [arg for arg in parser._actions if isinstance(arg, argparse._VersionAction)][0]
     verarg.version = "{1}{0}".format(addition, verarg.version)
     return parser
 

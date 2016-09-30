@@ -3,8 +3,6 @@
 
 import os
 from shutil import rmtree, copyfile
-from hashlib import sha512
-import zipfile
 try:
     import unittest.mock as mock
 except ImportError:

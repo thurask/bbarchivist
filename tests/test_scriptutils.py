@@ -3,7 +3,6 @@
 
 import argparse
 import os
-import sys
 from shutil import rmtree, copyfile
 import zipfile
 try:

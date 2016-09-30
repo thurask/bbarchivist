@@ -2,12 +2,7 @@
 """Test the bbcconstants module: specifically, frozen version info."""
 
 import os
-import sys
 from shutil import rmtree
-try:
-    import unittest.mock as mock
-except ImportError:
-    import mock
 import pytest
 
 __author__ = "Thurask"

@@ -2,15 +2,8 @@
 """Test the compat module."""
 
 import os
-import sys
 from shutil import rmtree
 from argparse import ArgumentError
-from platform import system
-try:
-    import unittest.mock as mock
-except ImportError:
-    import mock
-import pytest
 import bbarchivist.dummy as bd
 
 __author__ = "Thurask"
