@@ -69,11 +69,7 @@ def hs1(filepath, blocksize=16 * 1024 * 1024):
     """
     sha1 = hashlib.sha1()
     with open(filepath, 'rb') as file:
-        while True:
-            data = file.read(blocksize)
-            if not data:
-                break
-            sha1.update(data)
+        hashfunc_reader(filepath, sha1, blocksize)
     return sha1.hexdigest()
 
 
@@ -89,11 +85,7 @@ def hs224(filepath, blocksize=16 * 1024 * 1024):
     """
     sha224 = hashlib.sha224()
     with open(filepath, 'rb') as file:
-        while True:
-            data = file.read(blocksize)
-            if not data:
-                break
-            sha224.update(data)
+        hashfunc_reader(filepath, sha224, blocksize)
     return sha224.hexdigest()
 
 
@@ -109,11 +101,7 @@ def hs256(filepath, blocksize=16 * 1024 * 1024):
     """
     sha256 = hashlib.sha256()
     with open(filepath, 'rb') as file:
-        while True:
-            data = file.read(blocksize)
-            if not data:
-                break
-            sha256.update(data)
+        hashfunc_reader(filepath, sha256, blocksize)
     return sha256.hexdigest()
 
 
@@ -129,11 +117,7 @@ def hs384(filepath, blocksize=16 * 1024 * 1024):
     """
     sha384 = hashlib.sha384()
     with open(filepath, 'rb') as file:
-        while True:
-            data = file.read(blocksize)
-            if not data:
-                break
-            sha384.update(data)
+        hashfunc_reader(filepath, sha384, blocksize)
     return sha384.hexdigest()
 
 
@@ -149,11 +133,7 @@ def hs512(filepath, blocksize=16 * 1024 * 1024):
     """
     sha512 = hashlib.sha512()
     with open(filepath, 'rb') as file:
-        while True:
-            data = file.read(blocksize)
-            if not data:
-                break
-            sha512.update(data)
+        hashfunc_reader(filepath, sha512, blocksize)
     return sha512.hexdigest()
 
 
@@ -172,12 +152,7 @@ def hs3224(filepath, blocksize=16 * 1024 * 1024):
     except AttributeError:
         print("REQUIRES PYTHON 3.6+")
     else:
-        with open(filepath, 'rb') as file:
-            while True:
-                data = file.read(blocksize)
-                if not data:
-                    break
-                sha3224.update(data)
+        hashfunc_reader(filepath, sha3224, blocksize)
         return sha3224.hexdigest()
 
 
@@ -196,12 +171,7 @@ def hs3256(filepath, blocksize=16 * 1024 * 1024):
     except AttributeError:
         print("REQUIRES PYTHON 3.6+")
     else:
-        with open(filepath, 'rb') as file:
-            while True:
-                data = file.read(blocksize)
-                if not data:
-                    break
-                sha3256.update(data)
+        hashfunc_reader(filepath, sha3256, blocksize)
         return sha3256.hexdigest()
 
 
@@ -220,12 +190,7 @@ def hs3384(filepath, blocksize=16 * 1024 * 1024):
     except AttributeError:
         print("REQUIRES PYTHON 3.6+")
     else:
-        with open(filepath, 'rb') as file:
-            while True:
-                data = file.read(blocksize)
-                if not data:
-                    break
-                sha3384.update(data)
+        hashfunc_reader(filepath, sha3384, blocksize)
         return sha3384.hexdigest()
 
 
@@ -244,12 +209,7 @@ def hs3512(filepath, blocksize=16 * 1024 * 1024):
     except AttributeError:
         print("REQUIRES PYTHON 3.6+")
     else:
-        with open(filepath, 'rb') as file:
-            while True:
-                data = file.read(blocksize)
-                if not data:
-                    break
-                sha3512.update(data)
+        hashfunc_reader(filepath, sha3512, blocksize)
         return sha3512.hexdigest()
 
 
@@ -273,6 +233,27 @@ def hm5(filepath, blocksize=16 * 1024 * 1024):
     return md5.hexdigest()
 
 
+def hashfunc_reader(filepath, engine, blocksize=16 * 1024 * 1024):
+    """
+    Generate hash from file contents.
+
+    :param filepath: File you wish to verify.
+    :type filepath: str
+
+    :param engine: Hash object to update with file contents.
+    :type engine: _hashlib.HASH
+
+    :param blocksize: How much of file to read at once.
+    :type blocksize: int
+    """
+    with open(filepath, 'rb') as file:
+        while True:
+            data = file.read(blocksize)
+            if not data:
+                break
+            engine.update(data)
+
+
 def ssl_hash(filepath, method, blocksize=16 * 1024 * 1024):
     """
     Return SSL-library dependent hash of a file.
@@ -288,12 +269,7 @@ def ssl_hash(filepath, method, blocksize=16 * 1024 * 1024):
     """
     try:
         engine = hashlib.new(method)
-        with open(filepath, 'rb') as file:
-            while True:
-                data = file.read(blocksize)
-                if not data:
-                    break
-                engine.update(data)
+        hashfunc_reader(filepath, engine, blocksize)
         return engine.hexdigest()
     except ValueError as exc:
         print(str(exc))
