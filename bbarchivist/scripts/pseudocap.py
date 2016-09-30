@@ -21,18 +21,17 @@ def pseudocap_main():
     parser = scriptutils.default_parser("bb-pseudocap", "BlackBerry CAP, in Python.",
                                         ("folder"))
     parser.add_argument("filename", help="Filename")
-    files = parser.add_argument_group()
-    files.add_argument(
+    parser.add_argument(
         "files",
         help="1-6 signed files, space separated",
-        nargs="+",
-        type=utilities.signed_file_args)
+        nargs="+")
     parser.set_defaults()
     args = parser.parse_args(sys.argv[1:])
     if args.folder is None:
         args.folder = os.getcwd()
     if not args.filename.endswith(".exe"):
         args.filename += ".exe"
+    args.files = utilities.signed_file_args(args.files)
     pseudocap.make_autoloader(args.filename, args.files, args.folder)
 
 
