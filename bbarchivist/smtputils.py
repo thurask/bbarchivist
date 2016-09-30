@@ -22,11 +22,9 @@ def smtp_config_loader(homepath=None):
     """
     resultdict = {}
     config = configparser.ConfigParser()
-    if homepath is None:
-        homepath = os.path.expanduser("~")
+    homepath = smtp_config_homepath(homepath)
     conffile = os.path.join(homepath, "bbarchivist.ini")
-    if not os.path.exists(conffile):
-        open(conffile, 'w').close()
+    smtp_config_conffile(conffile)
     config.read(conffile)
     if not config.has_section('email'):
         config['email'] = {}
@@ -37,6 +35,104 @@ def smtp_config_loader(homepath=None):
     resultdict['password'] = smtpini.get('password', fallback=None)
     resultdict['is_ssl'] = smtpini.get('is_ssl', fallback=None)
     return resultdict
+
+
+def smtp_config_homepath(homepath):
+    """
+    Fix path for ini file.
+
+    :param homepath: Path to ini file.
+    :type homepath: str
+    """
+    if homepath is None:
+        homepath = os.path.expanduser("~")
+    return homepath
+
+
+def smtp_config_conffile(conffile):
+    """
+    Create ini file if it doesn't exist.
+
+    :param conffile: Path to config ini file.
+    :type conffile: str
+    """
+    if not os.path.exists(conffile):
+        open(conffile, 'w').close()
+
+
+def smtp_config_writer_server(kwargs, config):
+    """
+    Set server config.
+
+    :param kwargs: Values. Refer to `:func:smtp_config_writer`.
+    :type kwargs: dict
+
+    :param config: Configuration dictionary.
+    :type config: dict
+    """
+    if kwargs['server'] is not None:
+        config['email']['server'] = kwargs['server']
+    return config
+
+
+def smtp_config_writer_port(kwargs, config):
+    """
+    Set port config.
+
+    :param kwargs: Values. Refer to `:func:smtp_config_writer`.
+    :type kwargs: dict
+
+    :param config: Configuration dictionary.
+    :type config: dict
+    """
+    if kwargs['port'] is not None:
+        config['email']['port'] = str(kwargs['port'])
+    return config
+
+
+def smtp_config_writer_username(kwargs, config):
+    """
+    Set username config.
+
+    :param kwargs: Values. Refer to `:func:smtp_config_writer`.
+    :type kwargs: dict
+
+    :param config: Configuration dictionary.
+    :type config: dict
+    """
+    if kwargs['username'] is not None:
+        config['email']['username'] = kwargs['username']
+    return config
+
+
+def smtp_config_writer_password(kwargs, config):
+    """
+    Set password config.
+
+    :param kwargs: Values. Refer to `:func:smtp_config_writer`.
+    :type kwargs: dict
+
+    :param config: Configuration dictionary.
+    :type config: dict
+    """
+    if kwargs['password'] is not None:
+        config['email']['password'] = kwargs['password']
+    return config
+
+
+def smtp_config_writer_ssl(kwargs, config):
+    """
+    Set SSL/TLS config.
+
+    :param kwargs: Values. Refer to `:func:smtp_config_writer`.
+    :type kwargs: dict
+
+    :param config: Configuration dictionary.
+    :type config: dict
+    """
+    if kwargs['is_ssl'] is not None:
+        config['email']['is_ssl'] = str(kwargs['is_ssl']).lower()
+    return config
 
 
 def smtp_config_writer(**kwargs):
@@ -62,26 +158,80 @@ def smtp_config_writer(**kwargs):
     :type homepath: str
     """
     config = configparser.ConfigParser()
-    if kwargs['homepath'] is None:
-        kwargs['homepath'] = os.path.expanduser("~")
+    kwargs['homepath'] = smtp_config_homepath(kwargs['homepath'])
     conffile = os.path.join(kwargs['homepath'], "bbarchivist.ini")
-    if not os.path.exists(conffile):
-        open(conffile, 'w').close()
+    smtp_config_conffile(conffile)
     config.read(conffile)
     if not config.has_section('email'):
         config['email'] = {}
-    if kwargs['server'] is not None:
-        config['email']['server'] = kwargs['server']
-    if kwargs['port'] is not None:
-        config['email']['port'] = str(kwargs['port'])
-    if kwargs['username'] is not None:
-        config['email']['username'] = kwargs['username']
-    if kwargs['password'] is not None:
-        config['email']['password'] = kwargs['password']
-    if kwargs['is_ssl'] is not None:
-        config['email']['is_ssl'] = str(kwargs['is_ssl']).lower()
+    config = smtp_config_writer_server(kwargs, config)
+    config = smtp_config_writer_port(kwargs, config)
+    config = smtp_config_writer_username(kwargs, config)
+    config = smtp_config_writer_password(kwargs, config)
+    config = smtp_config_writer_ssl(kwargs, config)
     with open(conffile, "w") as configfile:
         config.write(configfile)
+
+
+def smtp_config_generator_server(results):
+    """
+    Generate server config.
+
+    :param results: Values. Refer to `:func:smtp_config_writer`.
+    :type results: dict
+    """
+    if results['server'] is None:
+        results['server'] = input("SMTP SERVER ADDRESS: ")
+    return results
+
+
+def smtp_config_generator_port(results):
+    """
+    Generate port config.
+
+    :param results: Values. Refer to `:func:smtp_config_writer`.
+    :type results: dict
+    """
+    if results['port'] == 0:
+        results['port'] = input("SMTP SERVER PORT: ")
+    return results
+
+
+def smtp_config_generator_username(results):
+    """
+    Generate username config.
+
+    :param results: Values. Refer to `:func:smtp_config_writer`.
+    :type results: dict
+    """
+    if results['username'] is None:
+        results['username'] = input("EMAIL ADDRESS: ")
+    return results
+
+
+def smtp_config_generator_password(results):
+    """
+    Generate password config.
+
+    :param results: Values. Refer to `:func:smtp_config_writer`.
+    :type results: dict
+    """
+    if results['password'] is None:
+        results['password'] = getpass.getpass(prompt="PASSWORD: ")
+    return results
+
+
+def smtp_config_generator_ssl(results):
+    """
+    Generate SSL/TLS config.
+
+    :param results: Values. Refer to `:func:smtp_config_writer`.
+    :type results: dict
+    """
+    if results['is_ssl'] is None:
+        use_ssl = utilities.s2b(input("Y: SSL, N: TLS (Y/N): "))
+        results['is_ssl'] = "true" if use_ssl else "false"
+    return results
 
 
 def smtp_config_generator(results):
@@ -91,20 +241,11 @@ def smtp_config_generator(results):
     :param results: The results to put in bbarchivist.ini.
     :type results: dict
     """
-    if results['server'] is None:
-        results['server'] = input("SMTP SERVER ADDRESS: ")
-    if results['port'] == 0:
-        results['port'] = input("SMTP SERVER PORT: ")
-    if results['username'] is None:
-        results['username'] = input("EMAIL ADDRESS: ")
-    if results['password'] is None:
-        results['password'] = getpass.getpass(prompt="PASSWORD: ")
-    if results['is_ssl'] is None:
-        use_ssl = utilities.s2b(input("Y: SSL, N: TLS (Y/N): "))
-        if use_ssl:
-            results['is_ssl'] = "true"
-        else:
-            results['is_ssl'] = "false"
+    results = smtp_config_generator_server(results)
+    results = smtp_config_generator_port(results)
+    results = smtp_config_generator_username(results)
+    results = smtp_config_generator_password(results)
+    results = smtp_config_generator_ssl(results)
     return results
 
 
@@ -165,10 +306,8 @@ def prep_smtp_instance(kwargs):
     :param port: Port to use.
     :type port: int
     """
-    if kwargs['is_ssl']:
-        smt = smtplib.SMTP_SSL(kwargs['server'], kwargs['port'])
-    else:
-        smt = smtplib.SMTP(kwargs['server'], kwargs['port'])
+    args = kwargs['server'], kwargs['port']
+    smt = smtplib.SMTP_SSL(*args) if kwargs['is_ssl'] else smtplib.SMTP(*args)
     return smt
 
 
