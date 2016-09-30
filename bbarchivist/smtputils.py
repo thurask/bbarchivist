@@ -3,7 +3,6 @@
 
 import smtplib  # smtp connection
 import getpass  # passwords
-import os  # paths
 from email.mime.text import MIMEText  # email formatting
 from bbarchivist import utilities  # file work
 from bbarchivist import iniconfig  # config parsing
