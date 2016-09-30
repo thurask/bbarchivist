@@ -68,8 +68,7 @@ def hs1(filepath, blocksize=16 * 1024 * 1024):
     :type blocksize: int
     """
     sha1 = hashlib.sha1()
-    with open(filepath, 'rb') as file:
-        hashfunc_reader(filepath, sha1, blocksize)
+    hashfunc_reader(filepath, sha1, blocksize)
     return sha1.hexdigest()
 
 
@@ -84,8 +83,7 @@ def hs224(filepath, blocksize=16 * 1024 * 1024):
     :type blocksize: int
     """
     sha224 = hashlib.sha224()
-    with open(filepath, 'rb') as file:
-        hashfunc_reader(filepath, sha224, blocksize)
+    hashfunc_reader(filepath, sha224, blocksize)
     return sha224.hexdigest()
 
 
@@ -100,8 +98,7 @@ def hs256(filepath, blocksize=16 * 1024 * 1024):
     :type blocksize: int
     """
     sha256 = hashlib.sha256()
-    with open(filepath, 'rb') as file:
-        hashfunc_reader(filepath, sha256, blocksize)
+    hashfunc_reader(filepath, sha256, blocksize)
     return sha256.hexdigest()
 
 
@@ -116,8 +113,7 @@ def hs384(filepath, blocksize=16 * 1024 * 1024):
     :type blocksize: int
     """
     sha384 = hashlib.sha384()
-    with open(filepath, 'rb') as file:
-        hashfunc_reader(filepath, sha384, blocksize)
+    hashfunc_reader(filepath, sha384, blocksize)
     return sha384.hexdigest()
 
 
@@ -132,8 +128,7 @@ def hs512(filepath, blocksize=16 * 1024 * 1024):
     :type blocksize: int
     """
     sha512 = hashlib.sha512()
-    with open(filepath, 'rb') as file:
-        hashfunc_reader(filepath, sha512, blocksize)
+    hashfunc_reader(filepath, sha512, blocksize)
     return sha512.hexdigest()
 
 
@@ -224,12 +219,7 @@ def hm5(filepath, blocksize=16 * 1024 * 1024):
     :type blocksize: int
     """
     md5 = hashlib.md5()
-    with open(filepath, 'rb') as file:
-        while True:
-            data = file.read(blocksize)
-            if not data:
-                break
-            md5.update(data)
+    hashfunc_reader(filepath, md5, blocksize)
     return md5.hexdigest()
 
 
