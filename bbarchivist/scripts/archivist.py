@@ -143,7 +143,7 @@ def grab_args():
         else:
             compmethod = args.method
         archivist_main(args.os, args.radio, args.swrelease,
-                       args.folder, args.radloaders,
+                       os.path.abspath(args.folder), args.radloaders,
                        args.compress, args.delete, args.verify,
                        hashdict, args.download,
                        args.extract, args.signed, compmethod, args.gpg,
@@ -188,7 +188,7 @@ def questionnaire():
                    altsw=None, core=False, oldstyle=False)
 
 
-def archivist_checksw(baseurl, softwareversion, swchecked, alturl, altsw, altchecked):
+def archivist_checksw(baseurl, softwareversion, swchecked):
     """
     Check availability of software releases.
 
@@ -200,19 +200,8 @@ def archivist_checksw(baseurl, softwareversion, swchecked, alturl, altsw, altche
 
     :param swchecked: If we checked the sw release already.
     :type swchecked: bool
-
-    :param alturl: Alternate radio base URL.
-    :type alturl: str
-
-    :param altsw: Radio software release, if not the same as OS.
-    :type altsw: str
-
-    :param altchecked: If we checked the radio sw release already.
-    :type altchecked: bool
     """
     scriptutils.check_sw(baseurl, softwareversion, swchecked)
-    if altsw:
-        scriptutils.check_radio_sw(alturl, altsw, altchecked)
 
 
 def archivist_download(download, osurls, radiourls, localdir):
@@ -237,7 +226,7 @@ def archivist_download(download, osurls, radiourls, localdir):
         print("ALL FILES DOWNLOADED")
 
 
-def archivist_integritybars(integrity, osurls, radiourls):
+def archivist_integritybars(integrity, osurls, radiourls, localdir):
     """
     Check integrity of bar files, redownload if necessary.
 
@@ -602,7 +591,9 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
         radiourls2 = [x.replace(baseurl, alturl) for x in radiourls]
         radiourls = radiourls2
         del radiourls2
-    archivist_checksw(baseurl, softwareversion, swchecked, alturl, altsw, altchecked)
+    archivist_checksw(baseurl, softwareversion, swchecked)
+    if altsw:
+        scriptutils.check_radio_sw(alturl, altsw, altchecked)
     # Check availability of OS, radio
     scriptutils.check_os_bulk(osurls)
     radiourls, radioversion = scriptutils.check_radio_bulk(radiourls, radioversion)
@@ -610,8 +601,10 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     compmethod, szexe = scriptutils.get_sz_executable(compmethod)
     # Make dirs: bd_o, bd_r, ld_o, ld_r, zd_o, zd_r
     dirs = barutils.make_dirs(localdir, osversion, radioversion)
+    osurls = scriptutils.bulk_avail(osurls)
+    radiourls = scriptutils.bulk_avail(radiourls)
     archivist_download(download, osurls, radiourls, localdir)
-    archivist_integritybars(integrity, osurls, radiourls)
+    archivist_integritybars(integrity, osurls, radiourls, localdir)
     archivist_extractbars(extract, localdir)
     archivist_integritysigned(extract, localdir)
     archivist_movebars(dirs, localdir)

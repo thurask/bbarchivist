@@ -99,7 +99,7 @@ def tar_compress(filepath, filename):
     :type filename: str
     """
     with tarfile.open("{0}.tar".format(filepath), 'w:') as tfile:
-        tfile.add(filename, filter=None)
+        tfile.add(filename, filter=None, arcname=os.path.basename(filename))
 
 
 def tar_verify(filepath):
@@ -132,7 +132,7 @@ def tgz_compress(filepath, filename, strength=5):
     :type strength: int
     """
     with tarfile.open("{0}.tar.gz".format(filepath), 'w:gz', compresslevel=strength) as gzfile:
-        gzfile.add(filename, filter=None)
+        gzfile.add(filename, filter=None, arcname=os.path.basename(filename))
 
 
 def tgz_verify(filepath):
@@ -165,7 +165,7 @@ def tbz_compress(filepath, filename, strength=5):
     :type strength: int
     """
     with tarfile.open("{0}.tar.bz2".format(filepath), 'w:bz2', compresslevel=strength) as bzfile:
-        bzfile.add(filename, filter=None)
+        bzfile.add(filename, filter=None, arcname=os.path.basename(filename))
 
 
 def tbz_verify(filepath):
@@ -198,7 +198,7 @@ def txz_compress(filepath, filename):
         pass
     else:
         with tarfile.open("{0}.tar.xz".format(filepath), 'w:xz') as xzfile:
-            xzfile.add(filename, filter=None)
+            xzfile.add(filename, filter=None, arcname=os.path.basename(filename))
 
 
 def txz_verify(filepath):
@@ -231,7 +231,7 @@ def zip_compress(filepath, filename):
     :type filename: str
     """
     with zipfile.ZipFile("{0}.zip".format(filepath), 'w', zipfile.ZIP_DEFLATED, allowZip64=True) as zfile:
-        zfile.write(filename)
+        zfile.write(filename, arcname=os.path.basename(filename))
 
 
 def zip_verify(filepath):
@@ -310,17 +310,21 @@ def compressfilter(filepath, selective=False):
     :type filepath: str
 
     :param selective: Only compress autoloaders. Default is false.
-    :type selective: bool
+    :type selective: bool/str
     """
     arx = bbconstants.ARCS
     pfx = bbconstants.PREFIXES
     files = [file for file in os.listdir(filepath) if not os.path.isdir(file)]
-    if selective:
+    if selective is None:
+        filt2 = os.listdir(filepath)
+    elif selective == "arcsonly":
+        filt2 = filtercomp(files, utilities.prepends, ("", arx))
+    elif selective:
         filt0 = filtercomp(files, utilities.prepends, (pfx, ""))
-        filt1 = filtercomp(filt0, utilities.prepends, ("", arx), False)
-        filt2 = filtercomp(filt1, utilities.prepends, ("", ".exe"))
+        filt1 = filtercomp(filt0, utilities.prepends, ("", arx), False)  # pop archives
+        filt2 = filtercomp(filt1, utilities.prepends, ("", ".exe"))  # include exes
     else:
-        filt2 = filtercomp(files, utilities.prepends, ("", arx), False)
+        filt2 = filtercomp(files, utilities.prepends, ("", arx), False)  # pop archives
     filt3 = [os.path.join(filepath, file) for file in filt2]
     return filt3
 
@@ -347,9 +351,10 @@ def compress(filepath, method="7z", szexe=None, selective=False, errors=False):
     method = filter_method(method, szexe)
     files = compressfilter(filepath, selective)
     for file in files:
-        filename = os.path.splitext(os.path.basename(file))[0]
+        fname = os.path.basename(file)
+        filename = os.path.splitext(fname)[0]
         fileloc = os.path.join(filepath, filename)
-        print("COMPRESSING: {0}.exe".format(filename))
+        print("COMPRESSING: {0}".format(fname))
         if method == "7z":
             sz_compress(fileloc, file, szexe, calculate_strength(), errors)
         elif method == "tgz":
@@ -374,11 +379,10 @@ def tarzip_verifier(file):
     """
     maps = {".tar.gz": tgz_verify, ".tar.xz": txz_verify,
             ".tar.bz2": tbz_verify, ".tar": tar_verify,
-            ".zip": zip_verify}
+            ".zip": zip_verify, ".bar": zip_verify}
     for key, value in maps.items():
         if file.endswith(key):
-            verif = value(file)
-    return verif
+            return value(file)
 
 
 def decide_verifier(file, szexe=None):
@@ -397,16 +401,18 @@ def decide_verifier(file, szexe=None):
     else:
         verif = tarzip_verifier(file)
     if not verif:
-        print("{0} IS BROKEN!".format((file)))
+        print("{0} IS BROKEN!".format(os.path.basename(file)))
+    else:
+        print("{0} OK".format(os.path.basename(file)))
     return verif
 
 
-def verify(thepath, method="7z", szexe=None, selective=False):
+def verify(filepath, method="7z", szexe=None, selective=False):
     """
     Verify specific archive files in a given folder.
 
-    :param thepath: Working directory. Required.
-    :type thepath: str
+    :param filepath: Working directory. Required.
+    :type filepath: str
 
     :param method: Compression type. Default is "7z". Defined in source.
     :type method: str
@@ -418,34 +424,9 @@ def verify(thepath, method="7z", szexe=None, selective=False):
     :type selective: bool
     """
     method = filter_method(method, szexe)
-    pathlist = [os.path.join(thepath, file) for file in os.listdir(thepath)]
-    files = [file for file in pathlist if not os.path.isdir(file)]
+    files = compressfilter(filepath, selective)
     for file in files:
-        filt = file.endswith(bbconstants.ARCS)
-        if selective:
-            filt = filt and file.startswith(bbconstants.PREFIXES)
-        if filt:
-            return decide_verifier(file, szexe)
-
-
-def compress_suite(filepath, method="7z", szexe=None, selective=False):
-    """
-    Wrap compression and verification into one.
-
-    :param filepath: Working directory. Required.
-    :type filepath: str
-
-    :param method: Compression type. Default is "7z". Defined in source.
-    :type method: str
-
-    :param szexe: Path to 7z executable, if needed.
-    :type szexe: str
-
-    :param selective: Only compress autoloaders. Default is false.
-    :type selective: bool
-    """
-    compress(filepath, method, szexe, selective)
-    verify(filepath, method, szexe, selective)
+        decide_verifier(file, szexe)
 
 
 def compress_config_loader(homepath=None):

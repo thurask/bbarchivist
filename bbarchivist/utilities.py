@@ -657,23 +657,24 @@ def verify_loader_integrity(loaderfile):
         return excode == 0  # 0 if OK, non-zero if something broke
 
 
-def verify_bulk_loaders(a_dir):
+def verify_bulk_loaders(ldir):
     """
     Run :func:`verify_loader_integrity` for all files in a dir.
 
-    :param a_dir: Directory to use.
-    :type a_dir: str
+    :param ldir: Directory to use.
+    :type ldir: str
     """
     if not is_windows():
         pass
     else:
-        files = [file for file in os.listdir(a_dir) if not os.path.isdir(file)]
+        files = [os.path.join(ldir, file) for file in os.listdir(ldir) if not os.path.isdir(file)]
         brokens = []
         for file in files:
-            if file.endswith(".exe") and file.startswith(bbconstants.PREFIXES):
-                print("TESTING: {0}".format((file)))
+            fname = os.path.basename(file)
+            if fname.endswith(".exe") and fname.startswith(bbconstants.PREFIXES):
+                print("TESTING: {0}".format(fname))
                 if not verify_loader_integrity(file):
-                    brokens.append(file)
+                    brokens.append(fname)
         return brokens
 
 

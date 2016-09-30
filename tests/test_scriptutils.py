@@ -734,6 +734,13 @@ class TestClassScriptutilsIntegrity:
         with mock.patch('platform.system', mock.MagicMock(return_value="Wandows")):
             assert bs.test_loader_files(os.getcwd()) is None
 
+    def test_bulk_avail(self):
+        """
+        Test bulk loader URL availability.
+        """
+        with mock.patch('bbarchivist.networkutils.availability', mock.MagicMock(return_value=False)):
+            assert bs.bulk_avail(["fake.url", "fakeurl.2"]) == []
+
 
 class TestClassScriptutilsHash:
     """

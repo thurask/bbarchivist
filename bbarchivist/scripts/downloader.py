@@ -133,10 +133,13 @@ def downloader_main(osversion, radioversion=None, softwareversion=None,
     # Check availability of OS, radio
     if debricks:
         scriptutils.check_os_bulk(osurls)
+        osurls = scriptutils.bulk_avail(osurls)
     if cores:
         scriptutils.check_os_bulk(corurls)
+        corurls = scriptutils.bulk_avail(corurls)
     if radios:
         radurls, radioversion = scriptutils.check_radio_bulk(radurls, radioversion)
+        radurls = scriptutils.bulk_avail(radurls)
 
     # Download files
     print("BEGIN DOWNLOADING...")

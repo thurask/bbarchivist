@@ -178,9 +178,9 @@ class TestClassArchiveutilsCompression:
             with mock.patch("tarfile.TarFile.getmembers", mock.MagicMock(return_value=False)):
                 assert not ba.txz_verify("Z10_BIGLOADER.tar.xz")
 
-    def test_compress_suite(self):
+    def test_verify(self):
         """
-        Test the bulk compression/verification suite.
+        Test bulk verification.
         """
         os.mkdir("suite")
         suitedir = os.path.abspath(os.path.join(os.getcwd(), "suite"))
@@ -188,8 +188,43 @@ class TestClassArchiveutilsCompression:
             afile.write("Haters gonna hate")
         with open(os.path.join(suitedir, "Z30.exe"), "w") as afile:
             afile.write("I'm just gonna shake")
-        ba.compress_suite(suitedir, "zip", None, True)
+        ba.compress(suitedir, "zip", None, True)
+        ba.verify(suitedir, "zip", None, True)
         rmtree(suitedir, ignore_errors=True)
+
+    def test_compressfilter_none(self):
+        """
+        Test "filtering", i.e. not actually filtering anything.
+        """
+        fileshere = [os.path.abspath(x) for x in os.listdir(os.getcwd())]
+        cfit = ba.compressfilter(os.getcwd(), None)
+        assert sorted(cfit) == sorted(fileshere)
+
+    def test_compressfilter_arcsonly(self):
+        """
+        Test filtering for archives only.
+        """
+        with open("compfilter.zip", "w") as targetfile:
+            targetfile.write("Jackdaws love my big sphinx of quartz")
+        fileshere = [os.path.abspath("compfilter.zip")]
+        if "Z10_BIGLOADER.zip" in os.listdir(os.getcwd()):
+            fileshere.append(os.path.abspath("Z10_BIGLOADER.zip"))
+        if "testfile.7z" in os.listdir(os.getcwd()):
+            fileshere.append(os.path.abspath("testfile.7z"))
+        if "testfile.tar" in os.listdir(os.getcwd()):
+            fileshere.append(os.path.abspath("testfile.tar"))
+        if "testfile.tar.bz2" in os.listdir(os.getcwd()):
+            fileshere.append(os.path.abspath("testfile.tar.bz2"))
+        if "testfile.tar.gz" in os.listdir(os.getcwd()):
+            fileshere.append(os.path.abspath("testfile.tar.gz"))
+        if "testfile.tar.xz" in os.listdir(os.getcwd()):
+            fileshere.append(os.path.abspath("testfile.tar.xz"))
+        if "testfile.zip" in os.listdir(os.getcwd()):
+            fileshere.append(os.path.abspath("testfile.zip"))
+        cfit = ba.compressfilter(os.getcwd(), "arcsonly")
+        assert sorted(cfit) == sorted(fileshere)
+        if os.path.exists("compfilter.zip"):
+                os.remove("compfilter.zip")
 
 
 class TestClassArchiveutilsMethods:

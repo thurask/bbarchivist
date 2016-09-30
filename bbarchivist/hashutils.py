@@ -427,7 +427,7 @@ def hash_get(filename, hashfunc, workingdir, blocksize=16777216):
     :type blocksize: int
     """
     result = hashfunc(os.path.join(workingdir, filename), blocksize)
-    return "{0} {1}\n".format(result.upper(), filename)
+    return "{0} {1}\n".format(result.upper(), os.path.basename(filename))
 
 
 def base_hash(hashtype, source, workingdir, block, hashfunc, target, kwargs=None):
@@ -510,28 +510,28 @@ def filefilter(file, workingdir, extras=()):
     return not (os.path.isdir(os.path.join(workingdir, file)) or file.endswith(bbconstants.SUPPS + extras))
 
 
-def verifier(workingdir, kwargs=None, selective=False):
+def verifier(ldir, kwargs=None, selective=False):
     """
     For all files in a directory, perform various hash/checksum functions.
     Take dict to define hashes, write output to a/individual .cksum file(s).
 
-    :param workingdir: Path containing files you wish to verify.
-    :type workingdir: str
+    :param ldir: Path containing files you wish to verify.
+    :type ldir: str
 
     :param kwargs: Values. Refer to `:func:verifier_config_loader`.
     :type kwargs: dict
     """
     if kwargs is None:
         kwargs = verifier_config_loader()
-    extras = (".txt",) if selective else ()
-    files = [file for file in os.listdir(workingdir) if filefilter(file, workingdir, extras)]
+    exts = (".txt",) if selective else ()
+    files = [os.path.join(ldir, file) for file in os.listdir(ldir) if filefilter(file, ldir, exts)]
     with concurrent.futures.ThreadPoolExecutor(max_workers=utilities.workers(files)) as xec:
         for file in files:
-            print("HASHING:", str(file))
+            print("HASHING:", os.path.basename(file))
             basename = file + ".cksum"
-            targetname = os.path.join(workingdir, basename)
+            targetname = os.path.join(ldir, basename)
             try:
-                xec.submit(hash_writer, file, targetname, workingdir, kwargs)
+                xec.submit(hash_writer, file, targetname, ldir, kwargs)
             except Exception as exc:
                 print("SOMETHING WENT WRONG")
                 print(str(exc))
@@ -560,9 +560,9 @@ def gpgrunner(workingdir, keyid=None, pword=None, selective=False):
         print("COULD NOT FIND GnuPG!")
         raise SystemExit
     else:
-        keyid = "0x" + keyid.upper() if not keyid.startswith("0x") else keyid.upper()
+        keyid = "0x" + keyid.upper() if not keyid.startswith("0x") else keyid.upper().replace("X", "x")
         dirlist = os.listdir(workingdir)
-        files = [file for file in dirlist if not os.path.isdir(file)]
+        files = [file for file in dirlist if filefilter(file, workingdir)]
         with concurrent.futures.ThreadPoolExecutor(max_workers=utilities.workers(files)) as xec:
             for file in files:
                 gpgwriter(gpg, xec, file, workingdir, selective, keyid, pword)
@@ -596,7 +596,7 @@ def gpgwriter(gpg, xec, file, workingdir, selective=False, keyid=None, pword=Non
         aps = bbconstants.ARCSPLUS
         pfx = bbconstants.PREFIXES
         if (utilities.prepends(file, pfx, aps)) if selective else True:
-            print("VERIFYING:", str(file))
+            print("VERIFYING:", os.path.basename(file))
             thepath = os.path.join(workingdir, file)
             try:
                 xec.submit(gpgfile, thepath, gpg, keyid, pword)

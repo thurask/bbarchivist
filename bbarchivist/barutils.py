@@ -26,7 +26,7 @@ def extract_bars(filepath):
         for file in os.listdir(filepath):
             if file.endswith(".bar"):
                 print("EXTRACTING: {0}".format(file))
-                zfile = zipfile.ZipFile(file, 'r')
+                zfile = zipfile.ZipFile(os.path.join(filepath, file), 'r')
                 names = zfile.namelist()
                 for name in names:
                     if str(name).endswith(".signed"):
@@ -186,14 +186,14 @@ def create_blitz(a_folder, swver):
                 zfile.write(abs_filename, abs_arcname)
 
 
-def move_loaders(a_dir,
+def move_loaders(ldir,
                  exedir_os, exedir_rad,
                  zipdir_os, zipdir_rad):
     """
     Move autoloaders to zipped and loaders directories in localdir.
 
-    :param a_dir: Local directory, containing files you wish to move.
-    :type a_dir: str
+    :param ldir: Local directory, containing files you wish to move.
+    :type ldir: str
 
     :param exedir_os: Large autoloader .exe destination.
     :type exedir_os: str
@@ -209,17 +209,17 @@ def move_loaders(a_dir,
     """
     arx = bbconstants.ARCS
     pfx = bbconstants.PREFIXES
-    loaders = [file for file in os.listdir(a_dir) if utilities.prepends(file, pfx, ".exe")]
+    loaders = [os.path.join(ldir, file) for file in os.listdir(ldir) if utilities.prepends(file, pfx, ".exe")]
     for file in loaders:
-        print("MOVING: {0}".format(file))
-        exedest_os = os.path.join(exedir_os, file)
-        exedest_rad = os.path.join(exedir_rad, file)
+        print("MOVING: {0}".format(os.path.basename(file)))
+        exedest_os = os.path.join(exedir_os, os.path.basename(file))
+        exedest_rad = os.path.join(exedir_rad, os.path.basename(file))
         loader_sorter(file, exedest_os, exedest_rad)
-    zippeds = [file for file in os.listdir(a_dir) if utilities.prepends(file, pfx, arx)]
+    zippeds = [os.path.join(ldir, file) for file in os.listdir(ldir) if utilities.prepends(file, pfx, arx)]
     for file in zippeds:
-        print("MOVING: {0}".format(file))
-        zipdest_os = os.path.join(zipdir_os, file)
-        zipdest_rad = os.path.join(zipdir_rad, file)
+        print("MOVING: {0}".format(os.path.basename(file)))
+        zipdest_os = os.path.join(zipdir_os, os.path.basename(file))
+        zipdest_rad = os.path.join(zipdir_rad, os.path.basename(file))
         loader_sorter(file, zipdest_os, zipdest_rad)
 
 

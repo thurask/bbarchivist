@@ -343,6 +343,17 @@ def check_radio_bulk(radiourls, radioversion):
     return radiourls, radioversion
 
 
+def bulk_avail(urllist):
+    """
+    Filter 404 links out of URL list.
+
+    :param urllist: URLs to check.
+    :type urllist: list(str)
+    """
+    url2 = [x for x in urllist if networkutils.availability(x)]
+    return url2
+
+
 def get_baseurls(softwareversion, altsw=None):
     """
     Generate base URLs for bar links.
@@ -427,8 +438,8 @@ def test_signed_files(localdir):
     for file in os.listdir(localdir):
         if file.endswith(".bar"):
             print("TESTING: {0}".format(file))
-            signname, signhash = barutils.retrieve_sha512(file)
-            sha512ver = barutils.verify_sha512(signname, signhash)
+            signname, signhash = barutils.retrieve_sha512(os.path.join(localdir, file))
+            sha512ver = barutils.verify_sha512(os.path.join(localdir, signname.decode("utf-8")), signhash)
             if not sha512ver:
                 print("{0} IS BROKEN".format((file)))
                 break

@@ -28,12 +28,20 @@ def kompressor_main():
         dest="method",
         type=utilities.valid_method)
     parser.add_argument(
+        "-nv",
+        "--no-verify",
+        help="Don't verify archives",
+        action="store_false",
+        default=True,
+        dest="verify")
+    parser.add_argument(
         "folder",
         help="Working directory, default is local",
         nargs="?",
         default=None)
     parser.set_defaults()
     args = parser.parse_args(sys.argv[1:])
+    print(args.verify)
     if args.folder is None:
         args.folder = os.getcwd()
     if args.method is None:
@@ -47,7 +55,9 @@ def kompressor_main():
     workfolder = args.folder
     archiveutils.compress_config_writer()
     print(" ")
-    archiveutils.compress_suite(workfolder, method, szexe, False)
+    archiveutils.compress(workfolder, method, szexe, None)
+    if args.verify:
+        archiveutils.verify(workfolder, method, szexe, "arcsonly")
 
 
 if __name__ == "__main__":
