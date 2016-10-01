@@ -366,6 +366,17 @@ class TestClassScriptutilsIO:
             data = afile.read()
         assert data == "SNEK\n"
 
+    def test_autolookup_logger(self):
+        """
+        Test writing autolookup output to file, unthreaded.
+        """
+        if os.path.exists("snek.txt"):
+            os.remove("snek.txt")
+        bs.autolookup_logger("snek.txt", "SNEK")
+        with open("snek.txt", "r") as afile:
+            data = afile.read()
+        assert data == "SNEK\n"
+
     def test_autolookup_out(self):
         """
         Test autolookup output.

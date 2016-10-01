@@ -622,6 +622,28 @@ def autolookup_printer(out, avail, log=False, quiet=False, record=None):
         print(out)
 
 
+def autolookup_output_sql(osversion, swrelease, avail, sql=False):
+    """
+    Add OS to SQL database.
+
+    :param osversion: OS version.
+    :type osversion: str
+
+    :param swrelease: Software release.
+    :type swrelease: str
+
+    :param avail: "Unavailable" or "Available".
+    :type avail: str
+
+    :param sql: If we're adding this to our SQL database.
+    :type sql: bool
+    """
+    if sql:
+        sqlutils.prepare_sw_db()
+        if not sqlutils.check_exists(osversion, swrelease):
+            sqlutils.insert(osversion, swrelease, avail.lower())
+
+
 def autolookup_output(osversion, swrelease, avail, avpack, sql=False):
     """
     Prepare autolookup block, and add to SQL database.
@@ -641,10 +663,7 @@ def autolookup_output(osversion, swrelease, avail, avpack, sql=False):
     :param sql: If we're adding this to our SQL database.
     :type sql: bool
     """
-    if sql:
-        sqlutils.prepare_sw_db()
-        if not sqlutils.check_exists(osversion, swrelease):
-            sqlutils.insert(osversion, swrelease, avail.lower())
+    _thread.start_new_thread(autolookup_output_sql, (osversion, swrelease, avail, sql))
     avblok = "[{0}|{1}|{2}|{3}|{4}]".format(*avpack)
     out = "OS {0} - SR {1} - {2} - {3}".format(osversion, swrelease, avblok, avail)
     return out
