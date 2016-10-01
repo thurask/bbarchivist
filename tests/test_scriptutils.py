@@ -3,6 +3,7 @@
 
 import argparse
 import os
+import time
 from shutil import rmtree, copyfile
 import zipfile
 try:
@@ -182,19 +183,29 @@ class TestClassScriptutils:
         """
         Test link generation.
         """
+        if os.path.exists("TEMPFILE.txt"):
+            os.remove("TEMPFILE.txt")
         bs.linkgen("10.9.8.7654", "10.2.3.4567", "10.1.0.9283", "10.9.2.8374", True, False)
+        time.sleep(2)  # wait for file creation
         with open("TEMPFILE.txt", "r") as afile:
             data = afile.read()
         assert len(data) == 3010
+        if os.path.exists("TEMPFILE.txt"):
+            os.remove("TEMPFILE.txt")
 
     def test_linkgen_sdk(self):
         """
         Test link generation, with SDK OSes.
         """
+        if os.path.exists("TEMPFILE.txt"):
+            os.remove("TEMPFILE.txt")
         bs.linkgen("10.9.8.7654", "10.2.3.4567", "10.1.0.9283", "10.9.2.8374", True, True)
+        time.sleep(2)  # wait for file creation
         with open("TEMPFILE.txt", "r") as afile:
             data = afile.read()
         assert len(data) == 2930
+        if os.path.exists("TEMPFILE.txt"):
+            os.remove("TEMPFILE.txt")
 
 
 
@@ -350,6 +361,7 @@ class TestClassScriptutilsIO:
         Test writing autolookup output to file.
         """
         bs.autolookup_printer("SNEK", "Available", True, True, "snek.txt")
+        time.sleep(2)  # wait for file creation
         with open("snek.txt", "r") as afile:
             data = afile.read()
         assert data == "SNEK\n"

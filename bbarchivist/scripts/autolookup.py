@@ -43,7 +43,7 @@ def grab_args():
         parser.add_argument(
             "-q", "--quiet",
             dest="quiet",
-            help="Only print if available",
+            help="Only print if available (implies -q)",
             action="store_true",
             default=False)
         parser.add_argument(
@@ -85,6 +85,8 @@ def grab_args():
         if getattr(sys, 'frozen', False):
             args.sql = False
             args.email = False
+        if args.quiet:
+            args.production = True  # impossible otherwise
         autolookup_main(
             args.os,
             args.recurse,

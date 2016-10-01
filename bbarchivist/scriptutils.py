@@ -7,6 +7,7 @@ import argparse  # generic parser
 import sys  # getattr
 import shutil  # folder removal
 import glob  # file lookup
+import _thread  # run stuff in background
 from bbarchivist import utilities  # little things
 from bbarchivist import barutils  # file system work
 from bbarchivist import archiveutils  # archive support
@@ -560,8 +561,8 @@ def linkgen(osversion, radioversion=None, softwareversion=None, altsw=None, temp
         cores2 = {key: val.replace("factory_sfi", "sdk") for key, val in cores.items()}
         oses = {key: val.replace("verizon_sfi", "sdk") for key, val in oses2.items()}
         cores = {key: val.replace("verizon_sfi", "sdk") for key, val in cores2.items()}
-    textgenerator.write_links(softwareversion, osversion, radioversion, oses, cores, radios,
-                              avlty, False, None, temp, altsw)
+    prargs = (softwareversion, osversion, radioversion, oses, cores, radios, avlty, False, None, temp, altsw)
+    _thread.start_new_thread(textgenerator.write_links, prargs)
 
 
 def clean_swrel(swrelset):
@@ -578,6 +579,20 @@ def clean_swrel(swrelset):
     else:
         swrelease = ""
     return swrelease
+
+
+def autolookup_logger(record, out):
+    """
+    Write autolookup results to file.
+
+    :param record: The file to log to.
+    :type record: str
+
+    :param out: Output block.
+    :type out: str
+    """
+    with open(record, "a") as rec:
+        rec.write("{0}\n".format(out))
 
 
 def autolookup_printer(out, avail, log=False, quiet=False, record=None):
@@ -601,10 +616,9 @@ def autolookup_printer(out, avail, log=False, quiet=False, record=None):
     """
     if not quiet:
         avail = "Available"  # force things
-    if avail == "Available":
+    if avail.lower() == "available":
         if log:
-            with open(record, "a") as rec:
-                rec.write("{0}\n".format(out))
+            _thread.start_new_thread(autolookup_logger, (record, out))
         print(out)
 
 
