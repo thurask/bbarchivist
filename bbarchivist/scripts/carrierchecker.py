@@ -260,7 +260,7 @@ def carrierchecker_jsonprepare(mcc, mnc, device):
     data = jsonutils.load_json("devices")
     model, family, hwid = jsonutils.certchecker_prep(data, device)
     country, carrier = networkutils.carrier_checker(mcc, mnc)
-    return data, model, family, hwid, country, carrier
+    return model, family, hwid, country, carrier
 
 
 def carrierchecker_bundles(mcc, mnc, hwid):
@@ -423,7 +423,7 @@ def carrierchecker_main(mcc, mnc, device,
     :type selective: bool
     """
     device, directory = carrierchecker_argfilter(mcc, mnc, device, directory)
-    data, model, family, hwid, country, carrier = carrierchecker_jsonprepare(mcc. mnc, device)
+    model, family, hwid, country, carrier = carrierchecker_jsonprepare(mcc, mnc, device)
     scriptutils.slim_preamble("CARRIERCHECKER")
     print("COUNTRY: {0}".format(country.upper()))
     print("CARRIER: {0}".format(carrier.upper()))
