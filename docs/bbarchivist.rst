@@ -1,8 +1,23 @@
 bbarchivist package
 ===================
 
+Subpackages
+-----------
+
+.. toctree::
+
+    bbarchivist.scripts
+
 Submodules
 ----------
+
+bbarchivist.archiveutils module
+-------------------------------
+
+.. automodule:: bbarchivist.archiveutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 bbarchivist.barutils module
 ---------------------------
@@ -20,10 +35,50 @@ bbarchivist.bbconstants module
     :undoc-members:
     :show-inheritance:
 
+bbarchivist.compat module
+-------------------------
+
+.. automodule:: bbarchivist.compat
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+bbarchivist.decorators module
+-----------------------------
+
+.. automodule:: bbarchivist.decorators
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+bbarchivist.dummy module
+------------------------
+
+.. automodule:: bbarchivist.dummy
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 bbarchivist.hashutils module
---------------------------------
+----------------------------
 
 .. automodule:: bbarchivist.hashutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+bbarchivist.iniconfig module
+----------------------------
+
+.. automodule:: bbarchivist.iniconfig
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+bbarchivist.jsonutils module
+----------------------------
+
+.. automodule:: bbarchivist.jsonutils
     :members:
     :undoc-members:
     :show-inheritance:

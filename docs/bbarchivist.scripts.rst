@@ -28,14 +28,6 @@ bbarchivist.scripts.cap module
     :undoc-members:
     :show-inheritance:
 
-bbarchivist.scripts.cfp module
-------------------------------
-
-.. automodule:: bbarchivist.scripts.cfp
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 bbarchivist.scripts.carrierchecker module
 -----------------------------------------
 
@@ -52,10 +44,34 @@ bbarchivist.scripts.certchecker module
     :undoc-members:
     :show-inheritance:
 
+bbarchivist.scripts.cfp module
+------------------------------
+
+.. automodule:: bbarchivist.scripts.cfp
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+bbarchivist.scripts.devloader module
+------------------------------------
+
+.. automodule:: bbarchivist.scripts.devloader
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 bbarchivist.scripts.downloader module
 -------------------------------------
 
 .. automodule:: bbarchivist.scripts.downloader
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+bbarchivist.scripts.droidlookup module
+--------------------------------------
+
+.. automodule:: bbarchivist.scripts.droidlookup
     :members:
     :undoc-members:
     :show-inheritance:
@@ -80,6 +96,14 @@ bbarchivist.scripts.gpgrunner module
 ------------------------------------
 
 .. automodule:: bbarchivist.scripts.gpgrunner
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+bbarchivist.scripts.infogenerator module
+----------------------------------------
+
+.. automodule:: bbarchivist.scripts.infogenerator
     :members:
     :undoc-members:
     :show-inheritance:
@@ -116,10 +140,34 @@ bbarchivist.scripts.linkgen module
     :undoc-members:
     :show-inheritance:
 
+bbarchivist.scripts.metachecker module
+--------------------------------------
+
+.. automodule:: bbarchivist.scripts.metachecker
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+bbarchivist.scripts.pseudocap module
+------------------------------------
+
+.. automodule:: bbarchivist.scripts.pseudocap
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 bbarchivist.scripts.sqlexport module
 ------------------------------------
 
 .. automodule:: bbarchivist.scripts.sqlexport
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+bbarchivist.scripts.swlookup module
+-----------------------------------
+
+.. automodule:: bbarchivist.scripts.swlookup
     :members:
     :undoc-members:
     :show-inheritance:

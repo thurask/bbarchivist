@@ -1,1 +1,1 @@
-sphinx-apidoc . -o docs\
+sphinx-apidoc . -f -o docs\

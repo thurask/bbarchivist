@@ -4,6 +4,14 @@ tests package
 Submodules
 ----------
 
+tests.test_archiveutils module
+------------------------------
+
+.. automodule:: tests.test_archiveutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 tests.test_barutils module
 --------------------------
 
@@ -12,10 +20,42 @@ tests.test_barutils module
     :undoc-members:
     :show-inheritance:
 
+tests.test_bbconstants module
+-----------------------------
+
+.. automodule:: tests.test_bbconstants
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+tests.test_compat module
+------------------------
+
+.. automodule:: tests.test_compat
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+tests.test_dummy module
+-----------------------
+
+.. automodule:: tests.test_dummy
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 tests.test_hashutils module
--------------------------------
+---------------------------
 
 .. automodule:: tests.test_hashutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+tests.test_jsonutils module
+---------------------------
+
+.. automodule:: tests.test_jsonutils
     :members:
     :undoc-members:
     :show-inheritance:

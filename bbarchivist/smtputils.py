@@ -15,6 +15,7 @@ __copyright__ = "Copyright 2015-2016 Thurask"
 def smtp_config_loader(homepath=None):
     """
     Read a ConfigParser file to get email preferences.
+
     :param homepath: Folder containing ini file. Default is user directory.
     :type homepath: str
     """
