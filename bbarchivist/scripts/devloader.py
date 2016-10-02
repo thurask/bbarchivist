@@ -38,6 +38,13 @@ def grab_args():
             action="store_true",
             default=False)
         parser.add_argument(
+            "-i", "--increment",
+            dest="increment",
+            help="Loop increment, default = 3",
+            default=3,
+            type=utilities.positive_integer,
+            metavar="INT")
+        parser.add_argument(
             "-c", "--ceiling",
             dest="ceiling",
             help="When to stop script, default = 9996",
@@ -47,7 +54,7 @@ def grab_args():
             metavar="INT")
         parser.set_defaults()
         args = parser.parse_args(sys.argv[1:])
-        devloader_main(args.os, args.export, args.recurse, args.ceiling)
+        devloader_main(args.os, args.export, args.recurse, args.ceiling, args.increment)
     else:
         osversion = input("OS VERSION: ")
         export = utilities.s2b(input("EXPORT TO FILE (Y/N)?: "))
@@ -56,8 +63,28 @@ def grab_args():
         decorators.enter_to_exit(True)
 
 
+def devloader_exporter(osversion, export, urls):
+    """
+    Handle exporting links to text/stdout.
+
+    :param osversion: OS version.
+    :type osversion: str
+
+    :param export: If we write URLs to file. Default is false.
+    :type export: bool
+
+    :param urls: List of Dev Alpha URLs.
+    :type urls: list(str)
+    """
+    if export:
+        print("EXPORTING...")
+        textgenerator.export_devloader(osversion, urls)
+    else:
+        utilities.lprint(urls.keys())
+
+
 @decorators.wrap_keyboard_except
-def devloader_main(osversion, export=False, loop=False, ceiling=9999):
+def devloader_main(osversion, export=False, loop=False, ceiling=9999, inc=3):
     """
     Wrap around :mod:`bbarchivist.networkutils` Dev Alpha autoloader searching.
 
@@ -72,6 +99,9 @@ def devloader_main(osversion, export=False, loop=False, ceiling=9999):
 
     :param ceiling: When to stop loop. Default is 9999 (i.e. 10.x.y.9999).
     :type ceiling: int
+
+    :param inc: Lookup increment. Default is 3.
+    :type inc: int
     """
     skels = jsonutils.load_json('devskeletons')
     scriptutils.slim_preamble("DEVLOADER")
@@ -83,11 +113,7 @@ def devloader_main(osversion, export=False, loop=False, ceiling=9999):
         if urls:
             urls = networkutils.dev_dupe_cleaner(urls)
             print("{0} AVAILABLE!    \n".format(osversion), end="\r")  # spaces to clear line
-            if export:
-                print("EXPORTING...")
-                textgenerator.export_devloader(osversion, urls)
-            else:
-                utilities.lprint(urls.keys())
+            devloader_exporter(osversion, export, urls)
             if not loop:
                 break
         else:
@@ -95,7 +121,7 @@ def devloader_main(osversion, export=False, loop=False, ceiling=9999):
                 print("NOT FOUND!                ", end="\r")
                 break
         if loop:
-            osversion = utilities.increment(osversion)
+            osversion = utilities.increment(osversion, inc)
             continue
 
 if __name__ == "__main__":

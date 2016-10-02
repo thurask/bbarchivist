@@ -214,6 +214,170 @@ def questionnaire():
         False)
 
 
+def carrierchecker_argfilter(mcc, mnc, device, directory):
+    """
+    Filter arguments.
+
+    :param mcc: Country code.
+    :type mcc: int
+
+    :param mnc: Network code.
+    :type mnc: int
+
+    :param device: Device ID (SXX100-#)
+    :type device: str
+
+    :param directory: Where to store files. Default is local directory.
+    :type directory: str
+    """
+    if mcc is None:
+        print("INVALID MCC!")
+        raise SystemExit
+    elif mnc is None:
+        print("INVALID MNC!")
+        raise SystemExit
+    elif device is None:
+        print("INVALID DEVICE!")
+        raise SystemExit
+    device = device.upper()
+    directory = os.getcwd() if directory is None else directory
+    return device, directory
+
+
+def carrierchecker_jsonprepare(mcc, mnc, device):
+    """
+    Prepare JSON data.
+
+    :param mcc: Country code.
+    :type mcc: int
+
+    :param mnc: Network code.
+    :type mnc: int
+
+    :param device: Device ID (SXX100-#).
+    :type device: str
+    """
+    data = jsonutils.load_json("devices")
+    model, family, hwid = jsonutils.certchecker_prep(data, device)
+    country, carrier = networkutils.carrier_checker(mcc, mnc)
+    return data, model, family, hwid, country, carrier
+
+
+def carrierchecker_bundles(mcc, mnc, hwid):
+    """
+    :param mcc: Country code.
+    :type mcc: int
+
+    :param mnc: Network code.
+    :type mnc: int
+
+    :param hwid: Device hardware ID.
+    :type hwid: str
+    """
+    releases = networkutils.available_bundle_lookup(mcc, mnc, hwid)
+    print("\nAVAILABLE BUNDLES:")
+    utilities.lprint(releases)
+
+
+def carrierchecker_selective(files, selective=False):
+    """
+    Filter useless bar files.
+
+    :param files: List of files.
+    :type files: list(str)
+
+    :param selective: Whether or not to exclude Nuance/other dross. Default is false.
+    :type selective: bool
+    """
+    if selective:
+        craplist = jsonutils.load_json("apps_to_remove")
+        files = scriptutils.purge_dross(files, craplist)
+    return files
+
+
+def carrierchecker_export(mcc, mnc, files, hwid, osv, radv, swv, export=False, upgrade=False, forced=None):
+    """
+    Export files to file.
+
+    :param mcc: Country code.
+    :type mcc: int
+
+    :param mnc: Network code.
+    :type mnc: int
+
+    :param files: List of files.
+    :type files: list(str)
+
+    :param hwid: Device hardware ID.
+    :type hwid: str
+
+    :param osv: OS version, 10.x.y.zzzz.
+    :type osv: str
+
+    :param radv: Radio version, 10.x.y.zzzz.
+    :type radv: str
+
+    :param swv: Software release, 10.x.y.zzzz.
+    :type swv: str
+
+    :param export: Whether or not to write URLs to a file. Default is false.
+    :type export: bool
+
+    :param upgrade: Whether or not to use upgrade files. Default is false.
+    :type upgrade: bool
+
+    :param forced: Force a software release. None to go for latest.
+    :type forced: str
+    """
+    if export:
+        print("\nEXPORTING...")
+        npc = networkutils.return_npc(mcc, mnc)
+        scriptutils.export_cchecker(files, npc, hwid, osv, radv, swv, upgrade, forced)
+
+
+def carrierchecker_download(files, directory, osv, radv, swv, family, download=False, blitz=False):
+    """
+    Download files, create blitz if specified.
+
+    :param files: List of files.
+    :type files: list(str)
+
+    :param directory: Where to store files. Default is local directory.
+    :type directory: str
+
+    :param osv: OS version, 10.x.y.zzzz.
+    :type osv: str
+
+    :param radv: Radio version, 10.x.y.zzzz.
+    :type radv: str
+
+    :param swv: Software release, 10.x.y.zzzz.
+    :type swv: str
+
+    :param family: Device family.
+    :type family: str
+
+    :param download: Whether or not to download. Default is false.
+    :type download: bool
+
+    :param blitz: Whether or not to create a blitz package. Default is false.
+    :type blitz: bool
+    """
+    if download:
+        suffix = "-BLITZ" if blitz else "-{0}".format(family)
+        bardir = os.path.join(directory, "{0}{1}".format(swv, suffix))
+        if not os.path.exists(bardir):
+            os.makedirs(bardir)
+        if blitz:
+            files = scriptutils.generate_blitz_links(files, osv, radv, swv)
+        print("\nDOWNLOADING...")
+        networkutils.download_bootstrap(files, outdir=bardir)
+        scriptutils.test_bar_files(bardir, files)
+        if blitz:
+            scriptutils.package_blitz(bardir, swv)
+        print("\nFINISHED!!!")
+
+
 def carrierchecker_main(mcc, mnc, device,
                         download=False, upgrade=True,
                         directory=None,
@@ -231,7 +395,7 @@ def carrierchecker_main(mcc, mnc, device,
     :param mnc: Network code.
     :type mnc: int
 
-    :param device: Device ID (SXX100-#)
+    :param device: Device ID (SXX100-#).
     :type device: str
 
     :param download: Whether or not to download. Default is false.
@@ -258,22 +422,9 @@ def carrierchecker_main(mcc, mnc, device,
     :param selective: Whether or not to exclude Nuance/other dross. Default is false.
     :type selective: bool
     """
-    if mcc is None:
-        print("INVALID MCC!")
-        raise SystemExit
-    elif mnc is None:
-        print("INVALID MNC!")
-        raise SystemExit
-    elif device is None:
-        print("INVALID DEVICE!")
-        raise SystemExit
-    device = device.upper()
-    if directory is None:
-        directory = os.getcwd()
-    data = jsonutils.load_json("devices")
-    model, family, hwid = jsonutils.certchecker_prep(data, device)
+    device, directory = carrierchecker_argfilter(mcc, mnc, device, directory)
+    data, model, family, hwid, country, carrier = carrierchecker_jsonprepare(mcc. mnc, device)
     scriptutils.slim_preamble("CARRIERCHECKER")
-    country, carrier = networkutils.carrier_checker(mcc, mnc)
     print("COUNTRY: {0}".format(country.upper()))
     print("CARRIER: {0}".format(carrier.upper()))
     print("DEVICE: {0}".format(model.upper()))
@@ -281,35 +432,16 @@ def carrierchecker_main(mcc, mnc, device,
     print("HARDWARE ID: {0}".format(hwid.upper()))
     print("\nCHECKING CARRIER...")
     if bundles:
-        releases = networkutils.available_bundle_lookup(mcc, mnc, hwid)
-        print("\nAVAILABLE BUNDLES:")
-        utilities.lprint(releases)
+        carrierchecker_bundles(mcc, mnc, hwid)
     else:
         npc = networkutils.return_npc(mcc, mnc)
         swv, osv, radv, files = networkutils.carrier_query(npc, hwid, upgrade, blitz, forced)
         print("SOFTWARE RELEASE: {0}".format(swv))
         print("OS VERSION: {0}".format(osv))
         print("RADIO VERSION: {0}".format(radv))
-        if selective:
-            craplist = jsonutils.load_json("apps_to_remove")
-            files = scriptutils.purge_dross(files, craplist)
-        if export:
-            print("\nEXPORTING...")
-            npc = networkutils.return_npc(mcc, mnc)
-            scriptutils.export_cchecker(files, npc, hwid, osv, radv, swv, upgrade, forced)
-        if download:
-            suffix = "-BLITZ" if blitz else "-{0}".format(family)
-            bardir = os.path.join(directory, "{0}{1}".format(swv, suffix))
-            if not os.path.exists(bardir):
-                os.makedirs(bardir)
-            if blitz:
-                files = scriptutils.generate_blitz_links(files, osv, radv, swv)
-            print("\nDOWNLOADING...")
-            networkutils.download_bootstrap(files, outdir=bardir)
-            scriptutils.test_bar_files(bardir, files)
-            if blitz:
-                scriptutils.package_blitz(bardir, swv)
-            print("\nFINISHED!!!")
+        files = carrierchecker_selective(files, selective)
+        carrierchecker_export(mcc, mnc, files, hwid, osv, radv, swv, export, upgrade, forced)
+        carrierchecker_download(files, directory, osv, radv, swv, family, download, blitz)
 
 
 if __name__ == "__main__":

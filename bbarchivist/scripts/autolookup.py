@@ -136,7 +136,7 @@ def autolookup_main(osversion, loop=False, log=False, autogen=False, inc=3, sql=
     :param autogen: Whether to create text links. Default is false.
     :type autogen: bool
 
-    :param inc: Lookup inc. Default is 3.
+    :param inc: Lookup increment. Default is 3.
     :type inc: int
 
     :param sql: Whether to add valid lookups to a database. Default is false.
