@@ -487,21 +487,39 @@ def verifier(ldir, kwargs=None, selective=False):
     :param kwargs: Values. Refer to `:func:verifier_config_loader`.
     :type kwargs: dict
     """
-    if kwargs is None:
-        kwargs = verifier_config_loader()
+    kwargs = verifier_config_loader() if kwargs is None else kwargs
     exts = (".txt",) if selective else ()
     files = [os.path.join(ldir, file) for file in os.listdir(ldir) if filefilter(file, ldir, exts)]
     with concurrent.futures.ThreadPoolExecutor(max_workers=utilities.workers(files)) as xec:
         for file in files:
-            print("HASHING:", os.path.basename(file))
-            basename = file + ".cksum"
-            targetname = os.path.join(ldir, basename)
-            try:
-                xec.submit(hash_writer, file, targetname, ldir, kwargs)
-            except Exception as exc:
-                print("SOMETHING WENT WRONG")
-                print(str(exc))
-                raise SystemExit
+            verifier_individual(xec, ldir, file, kwargs)
+
+
+def verifier_individual(xec, ldir, file, kwargs):
+    """
+    Individually verify files through a ThreadPoolExecutor.
+
+    :param xec: ThreadPoolExecutor instance.
+    :type xec: concurrent.futures.ThreadPoolExecutor
+
+    :param ldir: Path containing files you wish to verify.
+    :type ldir: str
+
+    :param file: Filename.
+    :type file: str
+
+    :param kwargs: Values. Refer to `:func:verifier_config_loader`.
+    :type kwargs: dict
+    """
+    print("HASHING:", os.path.basename(file))
+    basename = file + ".cksum"
+    targetname = os.path.join(ldir, basename)
+    try:
+        xec.submit(hash_writer, file, targetname, ldir, kwargs)
+    except Exception as exc:
+        print("SOMETHING WENT WRONG")
+        print(str(exc))
+        raise SystemExit
 
 
 def gpgrunner(workingdir, keyid=None, pword=None, selective=False):
@@ -526,16 +544,40 @@ def gpgrunner(workingdir, keyid=None, pword=None, selective=False):
         print("COULD NOT FIND GnuPG!")
         raise SystemExit
     else:
-        keyid = "0x" + keyid.upper() if not keyid.startswith("0x") else keyid.upper().replace("X", "x")
-        dirlist = os.listdir(workingdir)
-        files = [file for file in dirlist if filefilter(file, workingdir)]
-        with concurrent.futures.ThreadPoolExecutor(max_workers=utilities.workers(files)) as xec:
-            for file in files:
-                gpgwriter(gpg, xec, file, workingdir, selective, keyid, pword)
+        gpgrunner_clean(gpg, workingdir, keyid, pword, selective)
+
+
+def gpgrunner_clean(gpg, workingdir, keyid=None, pword=None, selective=False):
+    """
+    Run GPG signature generation after filtering out errors.
+
+    :param gpg: Instance of Python GnuPG executable.
+    :type gpg: gnupg.GPG()
+
+    :param workingdir: Path containing files you wish to verify.
+    :type workingdir: str
+
+    :param keyid: Key to use. 8-character hexadecimal, with or without 0x.
+    :type keyid: str
+
+    :param pword: Passphrase for given key.
+    :type pword: str
+
+    :param selective: Filtering filenames/extensions. Default is false.
+    :type selective: bool
+    """
+    keyid = "0x" + keyid.upper() if not keyid.startswith("0x") else keyid.upper().replace("X", "x")
+    dirlist = os.listdir(workingdir)
+    files = [file for file in dirlist if filefilter(file, workingdir)]
+    with concurrent.futures.ThreadPoolExecutor(max_workers=utilities.workers(files)) as xec:
+        for file in files:
+            gpgwriter(gpg, xec, file, workingdir, selective, keyid, pword)
 
 
 def gpgwriter(gpg, xec, file, workingdir, selective=False, keyid=None, pword=None):
     """
+    Write individual GPG signatures.
+
     :param gpg: Instance of Python GnuPG executable.
     :type gpg: gnupg.GPG()
 
@@ -562,14 +604,39 @@ def gpgwriter(gpg, xec, file, workingdir, selective=False, keyid=None, pword=Non
         aps = bbconstants.ARCSPLUS
         pfx = bbconstants.PREFIXES
         if (utilities.prepends(file, pfx, aps)) if selective else True:
-            print("VERIFYING:", os.path.basename(file))
-            thepath = os.path.join(workingdir, file)
-            try:
-                xec.submit(gpgfile, thepath, gpg, keyid, pword)
-            except Exception as exc:
-                print("SOMETHING WENT WRONG")
-                print(str(exc))
-                raise SystemExit
+            gpgwriter_clean(gpg, xec, file, workingdir, keyid, pword)
+
+
+def gpgwriter_clean(gpg, xec, file, workingdir, keyid=None, pword=None):
+    """
+    Write individual GPG signatures after filtering file list.
+
+    :param gpg: Instance of Python GnuPG executable.
+    :type gpg: gnupg.GPG()
+
+    :param xec: ThreadPoolExecutor instance.
+    :type xec: concurrent.futures.ThreadPoolExecutor
+
+    :param file: File inside workingdir that is being verified.
+    :type file: str
+
+    :param workingdir: Path containing files you wish to verify.
+    :type workingdir: str
+
+    :param keyid: Key to use. 8-character hexadecimal, with or without 0x.
+    :type keyid: str
+
+    :param pword: Passphrase for given key.
+    :type pword: str
+    """
+    print("VERIFYING:", os.path.basename(file))
+    thepath = os.path.join(workingdir, file)
+    try:
+        xec.submit(gpgfile, thepath, gpg, keyid, pword)
+    except Exception as exc:
+        print("SOMETHING WENT WRONG")
+        print(str(exc))
+        raise SystemExit
 
 
 def gpg_config_loader(homepath=None):

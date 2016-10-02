@@ -329,6 +329,29 @@ def compressfilter(filepath, selective=False):
     return filt3
 
 
+def prep_compress_function(method="7z", szexe=None, errors=False):
+    """
+    Prepare compression function and partial arguments.
+
+    :param method: Compression type. Default is "7z".
+    :type method: str
+
+    :param szexe: Path to 7z executable, if needed.
+    :type szexe: str
+
+    :param errors: Print completion status message. Default is false.
+    :type errors: bool
+    """
+    methods = {"7z": sz_compress, "tgz": tgz_compress, "txz": txz_compress, "tbz": tbz_compress,
+               "tar": tar_compress, "zip": zip_compress}
+    args = [szexe] if method == "7z" else []
+    if method in ("7z", "tbz", "tgz"):
+        args.append(calculate_strength())
+    if method == "7z":
+        args.append(errors)
+    return methods[method], args
+
+
 def compress(filepath, method="7z", szexe=None, selective=False, errors=False):
     """
     Compress all autoloader files in a given folder, with a given method.
@@ -355,18 +378,8 @@ def compress(filepath, method="7z", szexe=None, selective=False, errors=False):
         filename = os.path.splitext(fname)[0]
         fileloc = os.path.join(filepath, filename)
         print("COMPRESSING: {0}".format(fname))
-        if method == "7z":
-            sz_compress(fileloc, file, szexe, calculate_strength(), errors)
-        elif method == "tgz":
-            tgz_compress(fileloc, file, calculate_strength())
-        elif method == "txz":
-            txz_compress(fileloc, file)
-        elif method == "tbz":
-            tbz_compress(fileloc, file, calculate_strength())
-        elif method == "tar":
-            tar_compress(fileloc, file)
-        elif method == "zip":
-            zip_compress(fileloc, file)
+        compfunc, extargs = prep_compress_function(method, szexe, errors)
+        compfunc(fileloc, file, *extargs)
     return True
 
 
@@ -400,11 +413,24 @@ def decide_verifier(file, szexe=None):
         verif = sz_verify(os.path.abspath(file), szexe)
     else:
         verif = tarzip_verifier(file)
+    decide_verifier_printer(file, verif)
+    return verif
+
+
+def decide_verifier_printer(file, verif):
+    """
+    Print status of verifier function.
+
+    :param file: Filename.
+    :type file: str
+
+    :param verif: If the file is OK or not.
+    :type verif: bool
+    """
     if not verif:
         print("{0} IS BROKEN!".format(os.path.basename(file)))
     else:
         print("{0} OK".format(os.path.basename(file)))
-    return verif
 
 
 def verify(filepath, method="7z", szexe=None, selective=False):
