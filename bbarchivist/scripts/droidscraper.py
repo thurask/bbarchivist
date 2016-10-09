@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Scrape Android autoloader webpage."""
 
-import sys  # load arguments
 from bbarchivist import decorators  # enter to exit
 from bbarchivist import networkutils  # lookup
 from bbarchivist import scriptutils  # default parser
@@ -16,7 +15,6 @@ def droidscraper_main():
     Wrap around :mod:`bbarchivist.networkutils` web scraping.
     """
     parser = scriptutils.default_parser("bb-droidscraper", "Autoloader scraper.")
-    args = parser.parse_args(sys.argv[1:])
     parser.set_defaults()
     scriptutils.slim_preamble("DROIDSCRAPER")
     print(" ")

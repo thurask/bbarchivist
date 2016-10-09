@@ -45,6 +45,18 @@ def pem_wrapper(method):
     return wrapper
 
 
+def generic_soup_parser(url):
+    """
+    Get a BeautifulSoup HTML parser for some URL.
+
+    :param url: The URL to check.
+    :type url: str
+    """
+    req = requests.get(url)
+    soup = BeautifulSoup(req.content, "html.parser")
+    return soup
+
+
 @pem_wrapper
 def get_length(url):
     """
@@ -476,8 +488,7 @@ def ptcrb_scraper(ptcrbid):
     """
     baseurl = "https://ptcrb.com/vendor/complete/view_complete_request_guest.cfm?modelid={0}".format(
         ptcrbid)
-    req = requests.get(baseurl)
-    soup = BeautifulSoup(req.content, 'html.parser')
+    soup = generic_soup_parser(baseurl)
     text = soup.get_text()
     text = text.replace("\r\n", " ")
     prelimlist = re.findall("OS .+[^\\n]", text, re.IGNORECASE)
@@ -547,8 +558,7 @@ def kernel_scraper(utils=False):
     kernlist = []
     for page in range(1, 10):
         url = "https://github.com/blackberry/{0}/branches/all?page={1}".format(repo, page)
-        req = requests.get(url)
-        soup = BeautifulSoup(req.content, 'html.parser')
+        soup = generic_soup_parser(url)
         if soup.find("div", {"class": "no-results-message"}):
             break
         else:
@@ -706,13 +716,13 @@ def table_headers(pees):
     return bolds
 
 
+@pem_wrapper
 def loader_page_scraper():
     """
     Return scraped autoloader page.
     """
     url = "http://ca.blackberry.com/content/blackberry-com/en_ca/support/smartphones/Android-OS-Reload.html"
-    req = requests.get(url)
-    soup = BeautifulSoup(req.content, "html.parser")
+    soup = generic_soup_parser(url)
     tables = soup.find_all("table")
     headers = table_headers(soup.find_all("p"))
     for idx, table in enumerate(tables):
@@ -726,6 +736,7 @@ def loader_page_scraper():
         print(" ")
 
 
+@pem_wrapper
 def base_metadata(url):
     """
     Get BBNDK metadata, base function.
@@ -773,6 +784,7 @@ def series_generator(osversion):
     return "BB{0}_{1}_{2}".format(*splits[0:3])
 
 
+@pem_wrapper
 def devalpha_urls(osversion, skel):
     """
     Check individual Dev Alpha autoloader URLs.
