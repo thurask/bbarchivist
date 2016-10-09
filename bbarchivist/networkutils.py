@@ -670,6 +670,62 @@ def droid_scanner(build, device, method=None):
     return results if results else None
 
 
+def chunker(iterable, inc):
+    """
+    Convert an iterable into a list of inc sized lists.
+
+    :param chunker: Iterable to chunk.
+    :type chunker: list
+
+    :param inc: Increment; how big each chunk is.
+    :type inc: int
+    """
+    chunks = [iterable[x:x+inc] for x in range(0, len(iterable), inc)]
+    return chunks
+
+
+def unicode_filter(intext):
+    """
+    Remove Unicode crap.
+
+    :param intext: Text to filter.
+    :type intext: str
+    """
+    return intext.replace("\u2013", "").strip()
+
+
+def table_headers(pees):
+    """
+    Generate table headers from list of p tags.
+
+    :param pees: List of p tags.
+    :type pees: list(bs4.element.Tag)
+    """
+    bolds = [x for x in pees if x.find("b") and "BlackBerry" in x.text and not "experts" in x.text]
+    bolds = [x.text for x in bolds]
+    return bolds
+
+
+def loader_page_scraper():
+    """
+    Return scraped autoloader page.
+    """
+    url = "http://ca.blackberry.com/content/blackberry-com/en_ca/support/smartphones/Android-OS-Reload.html"
+    req = requests.get(url)
+    soup = BeautifulSoup(req.content, "html.parser")
+    tables = soup.find_all("table")
+    headers = table_headers(soup.find_all("p"))
+    for idx, table in enumerate(tables):
+        print("~~~{0}~~~".format(headers[idx]))
+        chunks = chunker(table.find_all("td"), 4)
+        for chunk in chunks:
+            key = unicode_filter(chunk[0].text)
+            ver = unicode_filter(chunk[1].text)
+            link = unicode_filter(chunk[2].find("a")["href"])
+            print("{0}\n    {1}: {2}".format(key, ver, link))
+        print(" ")
+
+
 def base_metadata(url):
     """
     Get BBNDK metadata, base function.

@@ -98,6 +98,9 @@
     <Compile Include="bbarchivist\jsonutils.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="bbarchivist\scripts\droidscraper.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="bbarchivist\scripts\infogenerator.py">
       <SubType>Code</SubType>
     </Compile>

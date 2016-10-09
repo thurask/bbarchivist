@@ -148,6 +148,14 @@ def gh_mock(url, request):
     return {'status_code': 200, 'content': thebody}
 
 
+def ls_mock(url, request):
+    """
+    Mock for loader scraping.
+    """
+    thebody = '<p><b>BlackBerry DTEK50</b></p><table><tbody><tr><td style="padding-right: 20px;">BlackBerry common SW for STH100-1 &amp; STH100-2 devices</td><td>AAG326</td><td><a href="https://bbapps.download.blackberry.com/Priv/bbry_qc8952_64_sfi_autoloader_user-common-AAG326.zip" target="_blank">Click Here</a></td></tr></tbody></table>'
+    return {'status_code': 200, 'content': thebody}
+
+
 def pa_good_mock(url, request):
     """
     Mock for Android autoloader lookup, best case.
@@ -612,3 +620,11 @@ class TestClassNetworkutilsParsing:
             assert "1172" in res1[1]
             res2 = bn.runtime_metadata()
             assert "1155" in res2[0]
+
+    def test_loader_scraper(self, capsys):
+        """
+        Test loader checking.
+        """
+        with httmock.HTTMock(ls_mock):
+            bn.loader_page_scraper()
+            assert "BlackBerry common SW for STH100-1 & STH100-2 devices\n    AAG326: https://bbapps.download.blackberry.com/Priv/bbry_qc8952_64_sfi_autoloader_user-common-AAG326.zip" in capsys.readouterr()[0]
