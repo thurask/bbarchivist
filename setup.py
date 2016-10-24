@@ -43,7 +43,8 @@ scriptlist = [
     'bb-devloader=bbarchivist.scripts.devloader:grab_args',
     'bb-swlookup=bbarchivist.scripts.swlookup:grab_args',
     'bb-infogen=bbarchivist.scripts.infogenerator:infogenerator_main',
-    'bb-droidscraper=bbarchivist.scripts.droidscraper:droidscraper_main'
+    'bb-droidscraper=bbarchivist.scripts.droidscraper:droidscraper_main',
+    'bb-barlinker=bbarchivist.scripts.barlinker:barlinker_main'
 ]
 
 if __name__ == "__main__":
