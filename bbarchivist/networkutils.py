@@ -688,6 +688,17 @@ def unicode_filter(intext):
     return intext.replace("\u2013", "").strip()
 
 
+def table_header_filter(ptag):
+    """
+    Validate p tag, to see if it's relevant.
+
+    :param ptag: P tag.
+    :type ptag: bs4.element.Tag
+    """
+    valid = ptag.find("b") and "BlackBerry" in ptag.text and not "experts" in ptag.text
+    return valid
+
+
 def table_headers(pees):
     """
     Generate table headers from list of p tags.
@@ -695,8 +706,7 @@ def table_headers(pees):
     :param pees: List of p tags.
     :type pees: list(bs4.element.Tag)
     """
-    bolds = [x for x in pees if x.find("b") and "BlackBerry" in x.text and not "experts" in x.text]
-    bolds = [x.text for x in bolds]
+    bolds = [x.text for x in pees if table_header_filter(x)]
     return bolds
 
 

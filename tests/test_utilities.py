@@ -411,7 +411,7 @@ class TestClassUtilitiesUrls:
         """
         osu, coru, radu = bu.bulk_urls("10.3.2.8900", "10.3.2.4567", "10.9.8.7654", True, "10.3.2.9000")
         del osu, coru
-        assert "10.3.2.9000/m5730-10.9.8.7654-nto+armle-v7+signed.bar" in radu
+        assert "http://cdn.fs.sl.blackberry.com/fs/qnx/production/7d1bb9fefe23b1c3123f748ff9e0f80cc78f006c/m5730-10.9.8.7654-nto+armle-v7+signed.bar" in radu
 
     def test_stl1(self):
         """

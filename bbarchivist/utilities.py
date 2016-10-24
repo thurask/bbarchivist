@@ -523,7 +523,7 @@ def generate_lazy_urls(softwareversion, osversion, radioversion, device):
     return osurl, radiourl
 
 
-def bulk_urls(softwareversion, osversion, radioversion, core=False, alturl=None):
+def bulk_urls(softwareversion, osversion, radioversion, core=False, altsw=None):
     """
     Generate all URLs, plus extra Verizon URLs.
 
@@ -542,8 +542,8 @@ def bulk_urls(softwareversion, osversion, radioversion, core=False, alturl=None)
     :param core: Whether or not to return core URLs as well.
     :type core: bool
 
-    :param alturl: The base URL for any alternate radios.
-    :type alturl: str
+    :param altsw: Radio software release, if not the same as OS.
+    :type altsw: str
     """
     baseurl = create_base_url(softwareversion)
     osurls, radurls, coreurls = generate_urls(softwareversion, osversion, radioversion, core)
@@ -557,11 +557,11 @@ def bulk_urls(softwareversion, osversion, radioversion, core=False, alturl=None)
     radurls = list(set(radurls))
     if core:
         coreurls = list(set(coreurls))
-    if alturl is not None:
-        altbase = create_base_url(alturl)
+    if altsw is not None:
+        altbase = create_base_url(altsw)
         radiourls2 = []
         for rad in radurls:
-            radiourls2.append(rad.replace(baseurl, alturl))
+            radiourls2.append(rad.replace(baseurl, altbase))
         radurls = radiourls2
         del radiourls2
     return osurls, coreurls, radurls
