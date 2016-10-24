@@ -88,7 +88,7 @@ class TestClassTextGenerator:
         with open("10.3.3000.txt", 'rb') as file:
             data = file.read()
             data = data.replace(b"\r", b"")
-            assert len(data) == 2848
+            assert len(data) == 2850
 
     def test_write_links_unavailable(self):
         """
@@ -109,7 +109,7 @@ class TestClassTextGenerator:
         with open("10.3.3000.txt", 'rb') as file:
             data = file.read()
             data = data.replace(b"\r", b"")
-            assert len(data) == 2878
+            assert len(data) == 2880
 
     def test_write_links_withapps(self):
         """
@@ -132,7 +132,7 @@ class TestClassTextGenerator:
         with open("TEMPFILE.txt", 'rb') as file:
             data = file.read()
             data = data.replace(b"\r", b"")
-            assert len(data) == 3060
+            assert len(data) == 3062
 
     def test_export_devloader(self):
         """

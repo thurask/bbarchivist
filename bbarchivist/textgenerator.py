@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """This module is used for generation of URLs and related text files."""
 
-from bbarchivist.networkutils import create_base_url, get_length  # network
-from bbarchivist.utilities import fsizer, generate_urls, stripper  # utils
+from bbarchivist.networkutils import get_length  # network
+from bbarchivist.utilities import create_bar_url, fsizer, generate_urls, stripper  # utils
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -152,7 +152,6 @@ def url_gen(osversion, radioversion, softwareversion):
     :param radioversion: Radio version.
     :type radioversion: str
     """
-    baseurl = create_base_url(softwareversion)
     radlist = [
         "STL100-1",
         "STL100-X/P9982",
@@ -169,9 +168,9 @@ def url_gen(osversion, radioversion, softwareversion):
         "Z3",
         "PASSPORT"
     ]
-    oses, radios, cores = generate_urls(baseurl, osversion, radioversion, True)
-    vzw = "/{0}-{1}-{2}".format("qc8960.verizon_sfi.desktop", osversion, "nto+armle-v7+signed.bar")
-    oses.insert(2, baseurl + vzw)
+    oses, radios, cores = generate_urls(softwareversion, osversion, radioversion, True)
+    vzw = create_bar_url(softwareversion, "qc89060.verizon_sfi.desktop", osversion)
+    oses.insert(2, vzw)
     cores.insert(2, oses[2].replace(".desktop", ""))
     ospairs = {}
     for title, url in zip(oslist, oses):

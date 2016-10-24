@@ -5,6 +5,7 @@ import os  # path work
 import argparse  # argument parser for filters
 import platform  # platform info
 import glob  # cap grabbing
+import hashlib  # base url creation
 import threading  # get thread for spinner
 import time  # spinner delay
 import sys  # streams, version info
@@ -400,12 +401,44 @@ def stripper(name):
     return name.replace("-nto+armle-v7+signed.bar", "")
 
 
-def generate_urls(baseurl, osversion, radioversion, core=False):
+def create_base_url(softwareversion):
+    """
+    Make the root URL for production server files.
+
+    :param softwareversion: Software version to hash.
+    :type softwareversion: str
+    """
+    # Hash software version
+    swhash = hashlib.sha1(softwareversion.encode('utf-8'))
+    hashedsoftwareversion = swhash.hexdigest()
+    # Root of all urls
+    baseurl = "http://cdn.fs.sl.blackberry.com/fs/qnx/production/{0}".format(hashedsoftwareversion)
+    return baseurl
+
+
+def create_bar_url(softwareversion, appname, appversion):
+    """
+    Make the URL for any production server file.
+
+    :param softwareversion: Software version to hash.
+    :type softwareversion: str
+
+    :param appname: Application name, like on server (ex. sys.pim.calendar -> "calendar")
+    :type appname: str
+
+    :param appversion: Application version.
+    :type appversion: str
+    """
+    baseurl = create_base_url(softwareversion)
+    return "{0}/{1}-{2}-nto+armle-v7+signed.bar".format(baseurl, appname, appversion)
+
+
+def generate_urls(softwareversion, osversion, radioversion, core=False):
     """
     Generate a list of OS URLs and a list of radio URLs based on input.
 
-    :param baseurl: The URL, from http to the hashed software release.
-    :type baseurl: str
+    :param softwareversion: Software version to hash.
+    :type softwareversion: str
 
     :param osversion: OS version.
     :type osversion: str
@@ -416,21 +449,20 @@ def generate_urls(baseurl, osversion, radioversion, core=False):
     :param core: Whether or not to return core URLs as well.
     :type core: bool
     """
-    suffix = "nto+armle-v7+signed.bar"
     osurls = [
-        "{0}/winchester.factory_sfi.desktop-{1}-{2}".format(baseurl, osversion, suffix),
-        "{0}/qc8960.factory_sfi.desktop-{1}-{2}".format(baseurl, osversion, suffix),
-        "{0}/qc8960.factory_sfi.desktop-{1}-{2}".format(baseurl, osversion, suffix),
-        "{0}/qc8974.factory_sfi.desktop-{1}-{2}".format(baseurl, osversion, suffix)
+        create_bar_url(softwareversion, "winchester.factory_sfi.desktop", osversion),
+        create_bar_url(softwareversion, "qc8960.factory_sfi.desktop", osversion),
+        create_bar_url(softwareversion, "qc8960.factory_sfi.desktop", osversion),
+        create_bar_url(softwareversion, "qc8974.factory_sfi.desktop", osversion)
     ]
     radiourls = [
-        "{0}/m5730-{1}-{2}".format(baseurl, radioversion, suffix),
-        "{0}/qc8960-{1}-{2}".format(baseurl, radioversion, suffix),
-        "{0}/qc8960.omadm-{1}-{2}".format(baseurl, radioversion, suffix),
-        "{0}/qc8960.wtr-{1}-{2}".format(baseurl, radioversion, suffix),
-        "{0}/qc8960.wtr5-{1}-{2}".format(baseurl, radioversion, suffix),
-        "{0}/qc8930.wtr5-{1}-{2}".format(baseurl, radioversion, suffix),
-        "{0}/qc8974.wtr2-{1}-{2}".format(baseurl, radioversion, suffix)
+        create_bar_url(softwareversion, "m5730", radioversion),
+        create_bar_url(softwareversion, "qc8960", radioversion),
+        create_bar_url(softwareversion, "qc8960.omadm", radioversion),
+        create_bar_url(softwareversion, "qc8960.wtr", radioversion),
+        create_bar_url(softwareversion, "qc8960.wtr5", radioversion),
+        create_bar_url(softwareversion, "qc8930.wtr5", radioversion),
+        create_bar_url(softwareversion, "qc8974.wtr2", radioversion)
     ]
     coreurls = []
     splitos = [int(i) for i in osversion.split(".")]
@@ -463,12 +495,12 @@ def filter_1031(osurl, splitos, device):
     return osurl
 
 
-def generate_lazy_urls(baseurl, osversion, radioversion, device):
+def generate_lazy_urls(softwareversion, osversion, radioversion, device):
     """
     Generate a pair of OS/radio URLs based on input.
 
-    :param baseurl: The URL, from http to the hashed software release.
-    :type baseurl: str
+    :param softwareversion: Software version to hash.
+    :type softwareversion: str
 
     :param osversion: OS version.
     :type osversion: str
@@ -479,25 +511,24 @@ def generate_lazy_urls(baseurl, osversion, radioversion, device):
     :param device: Device to use.
     :type device: int
     """
-    suffix = "nto+armle-v7+signed.bar"
     splitos = [int(i) for i in osversion.split(".")]
     rads = ["m5730", "qc8960", "qc8960.omadm", "qc8960.wtr",
             "qc8960.wtr5", "qc8930.wtr4", "qc8974.wtr2"]
     oses = ["winchester.factory", "qc8960.factory", "qc8960.verizon",
             "qc8974.factory"]
     maps = {0:0, 1:1, 2:2, 3:1, 4:1, 5:1, 6:3}
-    osurl = "{0}/{1}_sfi.desktop-{2}-{3}".format(baseurl, oses[maps[device]], osversion, suffix)
-    radiourl = "{0}/{1}-{2}-{3}".format(baseurl, rads[device], radioversion, suffix)
+    osurl = create_bar_url(softwareversion, "{0}_sfi.desktop".format(oses[maps[device]]), osversion)
+    radiourl = create_bar_url(softwareversion, rads[device], radioversion)
     osurl = filter_1031(osurl, splitos, device)
     return osurl, radiourl
 
 
-def bulk_urls(baseurl, osversion, radioversion, core=False, alturl=None):
+def bulk_urls(softwareversion, osversion, radioversion, core=False, alturl=None):
     """
     Generate all URLs, plus extra Verizon URLs.
 
-    :param baseurl: The URL, from http to the hashed software release.
-    :type baseurl: str
+    :param softwareversion: Software version to hash.
+    :type softwareversion: str
 
     :param osversion: OS version.
     :type osversion: str
@@ -514,8 +545,9 @@ def bulk_urls(baseurl, osversion, radioversion, core=False, alturl=None):
     :param alturl: The base URL for any alternate radios.
     :type alturl: str
     """
-    osurls, radurls, coreurls = generate_urls(baseurl, osversion, radioversion, core)
-    vzwos, vzwrad = generate_lazy_urls(baseurl, osversion, radioversion, 2)
+    baseurl = create_base_url(softwareversion)
+    osurls, radurls, coreurls = generate_urls(softwareversion, osversion, radioversion, core)
+    vzwos, vzwrad = generate_lazy_urls(softwareversion, osversion, radioversion, 2)
     osurls.append(vzwos)
     radurls.append(vzwrad)
     vzwcore = vzwos.replace("sfi.desktop", "sfi")
@@ -526,6 +558,7 @@ def bulk_urls(baseurl, osversion, radioversion, core=False, alturl=None):
     if core:
         coreurls = list(set(coreurls))
     if alturl is not None:
+        altbase = create_base_url(alturl)
         radiourls2 = []
         for rad in radurls:
             radiourls2.append(rad.replace(baseurl, alturl))

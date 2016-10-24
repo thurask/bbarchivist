@@ -88,7 +88,7 @@ def swlookup_main(swversion, loop=False, ceiling=9999):
     while True:
         terminator(swversion, ceiling, loop)
         print("NOW SCANNING: {0}".format(swversion), end="\r")
-        baseurl = networkutils.create_base_url(swversion)
+        baseurl = utilities.create_base_url(swversion)
         avail = networkutils.availability(baseurl)
         if avail:
             print("SW {0} AVAILABLE!".format(swversion))

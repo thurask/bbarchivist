@@ -232,10 +232,10 @@ def lazyloader_main(device, osversion, radioversion=None,
 
     # Create download URLs
     if download:
-        baseurl = networkutils.create_base_url(softwareversion)
+        baseurl = utilities.create_base_url(softwareversion)
         if altsw:
-            alturl = networkutils.create_base_url(altsw)
-        osurl, radiourl = utilities.generate_lazy_urls(baseurl, osversion, radioversion, device)
+            alturl = utilities.create_base_url(altsw)
+        osurl, radiourl = utilities.generate_lazy_urls(softwareversion, osversion, radioversion, device)
         if altsw:
             radiourl = radiourl.replace(baseurl, alturl)
         if core:

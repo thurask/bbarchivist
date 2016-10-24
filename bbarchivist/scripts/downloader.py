@@ -123,7 +123,7 @@ def downloader_main(osversion, radioversion=None, softwareversion=None,
     scriptutils.standard_preamble("downloader", osversion, softwareversion, radioversion, altsw)
 
     baseurl, alturl = scriptutils.get_baseurls(softwareversion, altsw)
-    osurls, corurls, radurls = utilities.bulk_urls(baseurl, osversion, radioversion, cores, alturl)
+    osurls, corurls, radurls = utilities.bulk_urls(softwareversion, osversion, radioversion, cores, alturl)
 
     # Check availability of software releases
     scriptutils.check_sw(baseurl, softwareversion, swchecked)

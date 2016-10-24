@@ -4,7 +4,6 @@
 import os  # filesystem read
 import xml.etree.ElementTree  # XML parsing
 import re  # regexes
-import hashlib  # base url creation
 import concurrent.futures  # multiprocessing/threading
 import glob  # pem file lookup
 import requests  # downloading
@@ -130,21 +129,6 @@ def download_bootstrap(urls, outdir=None, workers=5):
     spinman.stop()
     utilities.spinner_clear()
     utilities.line_begin()
-
-
-def create_base_url(softwareversion):
-    """
-    Make the root URL for production server files.
-
-    :param softwareversion: Software version to hash.
-    :type softwareversion: str
-    """
-    # Hash software version
-    swhash = hashlib.sha1(softwareversion.encode('utf-8'))
-    hashedsoftwareversion = swhash.hexdigest()
-    # Root of all urls
-    baseurl = "http://cdn.fs.sl.blackberry.com/fs/qnx/production/" + hashedsoftwareversion
-    return baseurl
 
 
 @pem_wrapper

@@ -377,6 +377,12 @@ class TestClassUtilities:
         bu.lprint(("this", "is", "snek"))
         assert "this\nis\nsnek" in capsys.readouterr()[0]
 
+    def test_create_base_url(self):
+        """
+        Test base URL creation.
+        """
+        assert bu.create_base_url("10.3.2.9000") == "http://cdn.fs.sl.blackberry.com/fs/qnx/production/7d1bb9fefe23b1c3123f748ff9e0f80cc78f006c"
+
 
 class TestClassUtilitiesUrls:
     """
@@ -387,17 +393,15 @@ class TestClassUtilitiesUrls:
         """
         Test generating all URLs.
         """
-        osu, radu, coru = bu.generate_urls(
-            "http://www.qrrbrbirlbel.yu/", "10.3.2.4567", "10.9.8.7654", True)
+        osu, radu, coru = bu.generate_urls("10.3.2.9000", "10.3.2.4567", "10.9.8.7654", True)
         del radu, coru
-        assert "http://www.qrrbrbirlbel.yu//qc8960.factory_sfi_hybrid_qc8974.desktop-10.3.2.4567-nto+armle-v7+signed.bar" in osu
+        assert "http://cdn.fs.sl.blackberry.com/fs/qnx/production/7d1bb9fefe23b1c3123f748ff9e0f80cc78f006c/qc8960.factory_sfi_hybrid_qc8974.desktop-10.3.2.4567-nto+armle-v7+signed.bar" in osu
 
     def test_bulk_nocore(self):
         """
         Test generating only debrick and radio URLs.
         """
-        osu, radu, coru = bu.generate_urls(
-            "http://www.qrrbrbirlbel.yu/", "10.2.3.4567", "10.9.8.7654", False)
+        osu, radu, coru = bu.generate_urls("10.3.2.9000", "10.2.3.4567", "10.9.8.7654", False)
         del osu, radu
         assert not coru
 
@@ -405,17 +409,15 @@ class TestClassUtilitiesUrls:
         """
         Test generating debrick, core and radio URLs, with alternate radio software release.
         """
-        osu, coru, radu = bu.bulk_urls("http://www.qrrbrbirlbel.yu/",
-                                       "10.3.2.4567", "10.9.8.7654", True, "http://qrrbrbirlbel.su")
+        osu, coru, radu = bu.bulk_urls("10.3.2.8900", "10.3.2.4567", "10.9.8.7654", True, "10.3.2.9000")
         del osu, coru
-        assert "http://qrrbrbirlbel.su/m5730-10.9.8.7654-nto+armle-v7+signed.bar" in radu
+        assert "10.3.2.9000/m5730-10.9.8.7654-nto+armle-v7+signed.bar" in radu
 
     def test_stl1(self):
         """
         Test STL100-1 URLs.
         """
-        ourl, rurl = bu.generate_lazy_urls(
-            "http://www.qrrbrbirlbel.yu/", "10.2.3.4567", "10.9.8.7654", 0)
+        ourl, rurl = bu.generate_lazy_urls("10.3.2.9000", "10.2.3.4567", "10.9.8.7654", 0)
         assert "winchester" in ourl
         assert "m5730" in rurl
 
@@ -423,8 +425,7 @@ class TestClassUtilitiesUrls:
         """
         Test STL100-X URLs.
         """
-        ourl, rurl = bu.generate_lazy_urls(
-            "http://www.qrrbrbirlbel.yu/", "10.2.3.4567", "10.9.8.7654", 1)
+        ourl, rurl = bu.generate_lazy_urls("10.3.2.9000", "10.2.3.4567", "10.9.8.7654", 1)
         assert "qc8960.factory_sfi" in ourl
         assert "qc8960-" in rurl
 
@@ -432,8 +433,7 @@ class TestClassUtilitiesUrls:
         """
         Test STL100-4 URLs.
         """
-        ourl, rurl = bu.generate_lazy_urls(
-            "http://www.qrrbrbirlbel.yu/", "10.2.3.4567", "10.9.8.7654", 2)
+        ourl, rurl = bu.generate_lazy_urls("10.3.2.9000", "10.2.3.4567", "10.9.8.7654", 2)
         assert "verizon" in ourl
         assert "qc8960.omadm" in rurl
 
@@ -441,8 +441,7 @@ class TestClassUtilitiesUrls:
         """
         Test Q10 URLs.
         """
-        ourl, rurl = bu.generate_lazy_urls(
-            "http://www.qrrbrbirlbel.yu/", "10.2.3.4567", "10.9.8.7654", 3)
+        ourl, rurl = bu.generate_lazy_urls("10.3.2.9000", "10.2.3.4567", "10.9.8.7654", 3)
         assert "qc8960.factory_sfi" in ourl
         assert "qc8960.wtr" in rurl
 
@@ -450,8 +449,7 @@ class TestClassUtilitiesUrls:
         """
         Test Z30 URLs.
         """
-        ourl, rurl = bu.generate_lazy_urls(
-            "http://www.qrrbrbirlbel.yu/", "10.2.3.4567", "10.9.8.7654", 4)
+        ourl, rurl = bu.generate_lazy_urls("10.3.2.9000", "10.2.3.4567", "10.9.8.7654", 4)
         assert "qc8960.factory_sfi" in ourl
         assert "qc8960.wtr5" in rurl
 
@@ -459,8 +457,7 @@ class TestClassUtilitiesUrls:
         """
         Test Z3 URLs.
         """
-        ourl, rurl = bu.generate_lazy_urls(
-            "http://www.qrrbrbirlbel.yu/", "10.2.3.4567", "10.9.8.7654", 5)
+        ourl, rurl = bu.generate_lazy_urls("10.3.2.9000", "10.2.3.4567", "10.9.8.7654", 5)
         assert "qc8960.factory_sfi" in ourl
         assert "qc8930" in rurl
 
@@ -468,8 +465,7 @@ class TestClassUtilitiesUrls:
         """
         Test Z3 URLs, having been updated due to OS version.
         """
-        ourl, rurl = bu.generate_lazy_urls(
-            "http://www.qrrbrbirlbel.yu/", "10.9.8.7654", "10.2.3.4567", 5)
+        ourl, rurl = bu.generate_lazy_urls("10.3.2.9000", "10.9.8.7654", "10.2.3.4567", 5)
         assert "qc8960.factory_sfi_hybrid_qc8x30" in ourl
         assert "qc8930" in rurl
 
@@ -477,8 +473,7 @@ class TestClassUtilitiesUrls:
         """
         Test 8974 URLs.
         """
-        ourl, rurl = bu.generate_lazy_urls(
-            "http://www.qrrbrbirlbel.yu/", "10.2.3.4567", "10.9.8.7654", 6)
+        ourl, rurl = bu.generate_lazy_urls("10.3.2.9000", "10.2.3.4567", "10.9.8.7654", 6)
         assert "qc8974" in ourl
         assert "8974.wtr2" in rurl
 
@@ -486,8 +481,7 @@ class TestClassUtilitiesUrls:
         """
         Test 8974 URLs, having been updated due to OS version.
         """
-        ourl, rurl = bu.generate_lazy_urls(
-            "http://www.qrrbrbirlbel.yu/", "10.9.8.7654", "10.2.3.4567", 6)
+        ourl, rurl = bu.generate_lazy_urls("10.3.2.9000", "10.9.8.7654", "10.2.3.4567", 6)
         assert "qc8960.factory_sfi_hybrid_qc8974" in ourl
         assert "qc8974.wtr2" in rurl
 

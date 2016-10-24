@@ -365,8 +365,8 @@ def get_baseurls(softwareversion, altsw=None):
     :param altsw: Radio software version, if necessary.
     :type altsw: str
     """
-    baseurl = networkutils.create_base_url(softwareversion)
-    alturl = networkutils.create_base_url(altsw) if altsw else None
+    baseurl = utilities.create_base_url(softwareversion)
+    alturl = utilities.create_base_url(altsw) if altsw else None
     return baseurl, alturl
 
 
@@ -505,7 +505,7 @@ def prod_avail(results, mailer=False, osversion=None, password=None):
     prel = results['p']
     if prel != "SR not in system" and prel is not None:
         pav = "PD"
-        baseurl = networkutils.create_base_url(prel)
+        baseurl = utilities.create_base_url(prel)
         avail = networkutils.availability(baseurl)
         is_avail = "Available" if avail else "Unavailable"
         if avail and mailer:
@@ -548,7 +548,7 @@ def linkgen(osversion, radioversion=None, softwareversion=None, altsw=None, temp
     if altsw is not None:
         altsw, aswc = return_radio_sw_checked(altsw, radioversion)
         del aswc
-    baseurl = networkutils.create_base_url(softwareversion)
+    baseurl = utilities.create_base_url(softwareversion)
     oses, cores, radios = textgenerator.url_gen(osversion, radioversion, softwareversion)
     if altsw is not None:
         del radios
@@ -727,21 +727,19 @@ def generate_blitz_links(files, osv, radv, swv):
     :param swv: Software release.
     :type swv: str
     """
-    baseurl = networkutils.create_base_url(swv)
-    suffix = "nto+armle-v7+signed.bar"
     coreurls = [
-        "{0}/winchester.factory_sfi-{1}-{2}".format(baseurl, osv, suffix),
-        "{0}/qc8960.factory_sfi-{1}-{2}".format(baseurl, osv, suffix),
-        "{0}/qc8960.factory_sfi_hybrid_qc8x30-{1}-{2}".format(baseurl, osv, suffix),
-        "{0}/qc8974.factory_sfi_hybrid_qc8974-{1}-{2}".format(baseurl, osv, suffix)
+        utilities.create_bar_url(swv, "winchester.factory_sfi", osv),
+        utilities.create_bar_url(swv, "qc8960.factory_sfi", osv),
+        utilities.create_bar_url(swv, "qc8960.factory_sfi", osv),
+        utilities.create_bar_url(swv, "qc8980.factory_sfi_hybrid_qc8974", osv)
     ]
     radiourls = [
-        "{0}/m5730-{1}-{2}".format(baseurl, radv, suffix),
-        "{0}/qc8960-{1}-{2}".format(baseurl, radv, suffix),
-        "{0}/qc8960.wtr-{1}-{2}".format(baseurl, radv, suffix),
-        "{0}/qc8960.wtr5-{1}-{2}".format(baseurl, radv, suffix),
-        "{0}/qc8930.wtr5-{1}-{2}".format(baseurl, radv, suffix),
-        "{0}/qc8974.wtr2-{1}-{2}".format(baseurl, radv, suffix)
+        utilities.create_bar_url(swv, "m5730", radv),
+        utilities.create_bar_url(swv, "qc8960", radv),
+        utilities.create_bar_url(swv, "qc8960.wtr", radv),
+        utilities.create_bar_url(swv, "qc8960.wtr5", radv),
+        utilities.create_bar_url(swv, "qc8930.wtr5", radv),
+        utilities.create_bar_url(swv, "qc8974.wtr2", radv)
     ]
     return files + coreurls + radiourls
 

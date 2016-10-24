@@ -83,6 +83,9 @@
     <Compile Include="bbarchivist\archiveutils.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="bbarchivist\scripts\barlinker.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="bbarchivist\scripts\cap.py">
       <SubType>Code</SubType>
     </Compile>

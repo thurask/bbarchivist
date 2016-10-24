@@ -85,7 +85,7 @@ class TestClassScriptutils:
         """
         Test creating blitz links.
         """
-        with mock.patch('bbarchivist.networkutils.create_base_url', mock.MagicMock(return_value="abacab")):
+        with mock.patch('bbarchivist.utilities.create_base_url', mock.MagicMock(return_value="abacab")):
             links = bs.generate_blitz_links([], "10.2.2.2222", "10.3.3.3333", "10.4.4.4444")
             assert len(links) == 10
 
@@ -111,7 +111,7 @@ class TestClassScriptutils:
                 True,
                 None)
             with open("10.3.3.3333plusapps.txt", "r") as afile:
-                assert len(afile.read()) == 2926
+                assert len(afile.read()) == 2928
 
     def test_cchecker_export_debrick(self):
         """
@@ -129,7 +129,7 @@ class TestClassScriptutils:
                 False,
                 None)
             with open("10.3.3.3334plusapps.txt", "r") as afile:
-                assert len(afile.read()) == 2933
+                assert len(afile.read()) == 2935
 
     def test_slim_preamble(self, capsys):
         """
@@ -189,7 +189,7 @@ class TestClassScriptutils:
         time.sleep(2)  # wait for file creation
         with open("TEMPFILE.txt", "r") as afile:
             data = afile.read()
-        assert len(data) == 3010
+        assert len(data) == 3012
         if os.path.exists("TEMPFILE.txt"):
             os.remove("TEMPFILE.txt")
 
@@ -203,7 +203,7 @@ class TestClassScriptutils:
         time.sleep(2)  # wait for file creation
         with open("TEMPFILE.txt", "r") as afile:
             data = afile.read()
-        assert len(data) == 2930
+        assert len(data) == 2932
         if os.path.exists("TEMPFILE.txt"):
             os.remove("TEMPFILE.txt")
 

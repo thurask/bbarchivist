@@ -359,13 +359,6 @@ class TestClassNetworkutils:
                     else:
                         break
 
-    def test_create_base_url(self):
-        """
-        Test base URL creation.
-        """
-        assert bn.create_base_url(
-            "10.3.2.9000") == "http://cdn.fs.sl.blackberry.com/fs/qnx/production/7d1bb9fefe23b1c3123f748ff9e0f80cc78f006c"
-
     def test_return_npc(self):
         """
         Test NPC generation.
