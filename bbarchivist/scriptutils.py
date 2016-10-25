@@ -6,6 +6,7 @@ import getpass  # invisible password
 import argparse  # generic parser
 import sys  # getattr
 import shutil  # folder removal
+import subprocess  # running cfp/cap
 import glob  # file lookup
 import _thread  # run stuff in background
 from bbarchivist import utilities  # little things
@@ -101,6 +102,32 @@ def default_parser(name=None, desc=None, flags=None, vers=None):
                 nargs="?",
                 default=None)
     return parser
+
+
+def generic_windows_shim(scriptname, scriptdesc, target, version):
+    """
+    Generic CFP/CAP runner; Windows only.
+
+    :param scriptname: Script name, 'bb-something'.
+    :type scriptname: str
+
+    :param scriptdesc: Script description, i.e. scriptname -h.
+    :type scriptdesc: str
+
+    :param target: Path to file to execute.
+    :type target: str
+
+    :param version: Version of target.
+    :type version: str
+    """
+    parser = default_parser(scriptname, scriptdesc)
+    capver = "|{0}".format(version)
+    parser = external_version(parser, capver)
+    parser.parse_known_args(sys.argv[1:])
+    if utilities.is_windows():
+        subprocess.call([target] + sys.argv[1:])
+    else:
+        print("Sorry, Windows only.")
 
 
 def external_version(parser, addition):

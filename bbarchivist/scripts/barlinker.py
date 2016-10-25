@@ -21,7 +21,7 @@ def barlinker_main():
     parser.add_argument("software", help="Software version of OS")
     parser.set_defaults()
     args = parser.parse_args(sys.argv[1:])
-    print(utilities.create_bar_url(args.software, appname, args.appver, True))
+    print(utilities.create_bar_url(args.software, args.appname, args.appver, True))
     decorators.enter_to_exit(True)
 
 

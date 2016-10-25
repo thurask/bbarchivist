@@ -4,6 +4,7 @@
 import argparse
 import os
 import time
+import sys
 from shutil import rmtree, copyfile
 import zipfile
 try:
@@ -627,6 +628,41 @@ class TestClassScriptutilsArguments:
         newpar = bs.external_version(self.parser, "|SNEKSNEK")
         verarg = [x for x in newpar._actions if isinstance(x, argparse._VersionAction)][0]
         assert verarg.version == "name deadbeef committed 1970-01-01|SNEKSNEK"
+
+
+class TestClassScriptutilsShim:
+    """
+    Test CFP/CAP shim.
+    """
+    def setup_method(self, method):
+        """
+        Mock sys.argv.
+        """
+        self.oldsysargv = sys.argv
+        sys.argv = ["cap.exe", "help"]
+
+    def teardown_method(self, method):
+        """
+        Unmock sys.argv.
+        """
+        sys.argv = self.oldsysargv
+
+    def test_windows_shim_posix(self, capsys):
+        """
+        Test CFP/CAP shim on non-Windows.
+        """
+        with mock.patch('platform.system', mock.MagicMock(return_value="Wandows")):
+            bs.generic_windows_shim("cap", "CAP!", "cap.exe", "3.10")
+            assert "Sorry, Windows only." in capsys.readouterr()[0]
+
+    def test_windows_shim_windows(self, capsys):
+        """
+        Test CFP/CAP shim on Windows.
+        """
+        with mock.patch('platform.system', mock.MagicMock(return_value="Windows")):
+            with mock.patch('subprocess.call', mock.MagicMock(side_effect=print("Snek!"))):
+                bs.generic_windows_shim("cap", "CAP!", "cap.exe", "3.10")
+                assert "Snek!" in capsys.readouterr()[0]
 
 
 class TestClassScriptutilsIntegrity:
