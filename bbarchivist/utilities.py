@@ -416,20 +416,36 @@ def create_base_url(softwareversion):
     return baseurl
 
 
-def create_bar_url(softwareversion, appname, appversion):
+def format_app_name(appname):
+    """
+    Convert long reverse DNS name to short name.
+
+    :param appname: Application name (ex. sys.pim.calendar -> "calendar")
+    :type appname: str
+    """
+    final = appname.split(".")[-1]
+    return final
+
+
+def create_bar_url(softwareversion, appname, appversion, clean=False):
     """
     Make the URL for any production server file.
 
     :param softwareversion: Software version to hash.
     :type softwareversion: str
 
-    :param appname: Application name, like on server (ex. sys.pim.calendar -> "calendar")
+    :param appname: Application name, preferably like on server.
     :type appname: str
 
     :param appversion: Application version.
     :type appversion: str
+
+    :param clean: Whether or not to clean up app name. Default is False.
+    :type clean: bool
     """
     baseurl = create_base_url(softwareversion)
+    if clean:
+        appname = format_app_name(appname)
     return "{0}/{1}-{2}-nto+armle-v7+signed.bar".format(baseurl, appname, appversion)
 
 

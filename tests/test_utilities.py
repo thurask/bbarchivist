@@ -389,6 +389,12 @@ class TestClassUtilitiesUrls:
     Test generation of URLs.
     """
 
+    def test_clean_url(self):
+        """
+        Test preparing a cleaned URL.
+        """
+        assert bu.create_bar_url("10.3.2.9000", "sys.snek", "10.2.3.4", True) == "http://cdn.fs.sl.blackberry.com/fs/qnx/production/7d1bb9fefe23b1c3123f748ff9e0f80cc78f006c/snek-10.2.3.4-nto+armle-v7+signed.bar"
+
     def test_bulk(self):
         """
         Test generating all URLs.
