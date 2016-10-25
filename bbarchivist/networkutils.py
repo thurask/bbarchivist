@@ -568,8 +568,10 @@ def root_generator(folder, build, variant="common"):
     privx = "bbfoundation/hashfiles_priv/{0}".format(folder[variant])
     #DTEK50 specific
     dtek50x = "bbSupport/DTEK50" if build[:3] == "AAF" else "bbfoundation/hashfiles_priv/dtek50"
+    #DTEK60 specific
+    dtek60x = "bbfoundation/hashfiles_priv/dtek60"
     #Pack it up
-    roots = {"Priv": privx, "DTEK50": dtek50x}
+    roots = {"Priv": privx, "DTEK50": dtek50x, "DTEK60": dtek60x}
     return roots
 
 
@@ -590,7 +592,7 @@ def make_droid_skeleton(method, build, device, variant="common"):
     :type variant: str
     """
     folder = {"vzw-vzw": "verizon", "na-att": "att", "na-tmo": "tmo", "common": "default"}
-    devices = {"Priv": "qc8992", "DTEK50": "qc8952_64_sfi"}
+    devices = {"Priv": "qc8992", "DTEK50": "qc8952_64_sfi", "DTEK60": "qc8996"}  # TODO: verify DTEK60
     roots = root_generator(folder, build, variant)
     base = "bbry_{2}_autoloader_user-{0}-{1}".format(variant, build.upper(), devices[device])
     if method is None:
