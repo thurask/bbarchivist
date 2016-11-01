@@ -576,7 +576,7 @@
             "device": "DTEK50",
             "family": "DTEK50",
             "name": "STH100-1",
-            "hwid": "",
+            "hwid": "F21FF206",
             "fccid": "RJE181LW",
             "ptcrbid": "32889"
         },
@@ -592,7 +592,7 @@
             "device": "DTEK60",
             "family": "DTEK60",
             "name": "BBA100-1",
-            "hwid": "",
+            "hwid": "F0629106",
             "fccid": "BBA1001",
             "ptcrbid": ""
         },
