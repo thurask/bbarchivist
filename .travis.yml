@@ -20,7 +20,9 @@ install:
     - if [[ $TRAVIS_PYTHON_VERSION == 3.2 ]]; then pip install coverage==3.7.1; else pip install coverage; fi
     - if [[ $TRAVIS_PYTHON_VERSION == 3.2 ]]; then pip install coveralls=="1.0a2"; else pip install coveralls; fi
     - if [[ $TRAVIS_PYTHON_VERSION == 3.2 ]]; then pip install pytest=="2.9.2"; else pip install pytest; fi
+    - pip install codeclimate-test-reporter
 script:
     - py.test -v --cov=bbarchivist
 after_success:
     - COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN coveralls
+    - CODECLIMATE_REPO_TOKEN=$CODECLIMATE_REPO_TOKEN codeclimate-test-reporter
