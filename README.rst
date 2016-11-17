@@ -17,13 +17,17 @@ README
     :target: https://scrutinizer-ci.com/g/thurask/bbarchivist/?branch=master
     :alt: Scrutinizer Code Quality
 
+.. image:: https://codeclimate.com/github/thurask/bbarchivist/badges/gpa.svg
+   :target: https://codeclimate.com/github/thurask/bbarchivist
+   :alt: Code Climate
+
 .. image:: https://readthedocs.org/projects/bbarchivist/badge/?version=latest
     :target: https://bbarchivist.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
 .. image:: https://api.codacy.com/project/badge/Grade/71913fc9723340d5bf4a3396fead1026
-	:target: https://www.codacy.com/app/thuraski/bbarchivist?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=thurask/bbarchivist&amp;utm_campaign=Badge_Grade
-	:alt: Codacy Badge
+    :target: https://www.codacy.com/app/thuraski/bbarchivist?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=thurask/bbarchivist&amp;utm_campaign=Badge_Grade
+    :alt: Codacy Badge
 
 A Python 3.2+ package for various BlackBerry 10/Priv-related functions and scripts.
 
