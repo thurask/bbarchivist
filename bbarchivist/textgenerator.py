@@ -169,7 +169,7 @@ def url_gen(osversion, radioversion, softwareversion):
         "PASSPORT"
     ]
     oses, radios, cores = generate_urls(softwareversion, osversion, radioversion, True)
-    vzw = create_bar_url(softwareversion, "qc89060.verizon_sfi.desktop", osversion)
+    vzw = create_bar_url(softwareversion, "qc8960.verizon_sfi.desktop", osversion)
     oses.insert(2, vzw)
     cores.insert(2, oses[2].replace(".desktop", ""))
     ospairs = {}

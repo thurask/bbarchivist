@@ -112,7 +112,7 @@ class TestClassScriptutils:
                 True,
                 None)
             with open("10.3.3.3333plusapps.txt", "r") as afile:
-                assert len(afile.read()) == 2928
+                assert len(afile.read()) == 2926
 
     def test_cchecker_export_debrick(self):
         """
@@ -130,7 +130,7 @@ class TestClassScriptutils:
                 False,
                 None)
             with open("10.3.3.3334plusapps.txt", "r") as afile:
-                assert len(afile.read()) == 2935
+                assert len(afile.read()) == 2933
 
     def test_slim_preamble(self, capsys):
         """
@@ -190,7 +190,7 @@ class TestClassScriptutils:
         time.sleep(2)  # wait for file creation
         with open("TEMPFILE.txt", "r") as afile:
             data = afile.read()
-        assert len(data) == 3012
+        assert len(data) == 3010
         if os.path.exists("TEMPFILE.txt"):
             os.remove("TEMPFILE.txt")
 
@@ -204,7 +204,7 @@ class TestClassScriptutils:
         time.sleep(2)  # wait for file creation
         with open("TEMPFILE.txt", "r") as afile:
             data = afile.read()
-        assert len(data) == 2932
+        assert len(data) == 2930
         if os.path.exists("TEMPFILE.txt"):
             os.remove("TEMPFILE.txt")
 
