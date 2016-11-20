@@ -2,6 +2,7 @@
 """Test the archiveutils module."""
 
 import os
+import tempfile
 from shutil import rmtree
 try:
     import unittest.mock as mock
@@ -179,15 +180,14 @@ class TestClassArchiveutilsCompression:
         """
         Test bulk verification.
         """
-        os.mkdir("suite")
-        suitedir = os.path.abspath(os.path.join(os.getcwd(), "suite"))
-        with open(os.path.join(suitedir, "Z10.exe"), "w") as afile:
-            afile.write("Haters gonna hate")
-        with open(os.path.join(suitedir, "Z30.exe"), "w") as afile:
-            afile.write("I'm just gonna shake")
-        ba.compress(suitedir, "zip", None, True)
-        ba.verify(suitedir, "zip", None, True)
-        rmtree(suitedir, ignore_errors=True)
+        with tempfile.TemporaryDirectory() as tempdir:
+            suitedir = os.path.abspath(tempdir)
+            with open(os.path.join(suitedir, "Z10.exe"), "w") as afile:
+                afile.write("Haters gonna hate")
+            with open(os.path.join(suitedir, "Z30.exe"), "w") as afile:
+                afile.write("I'm just gonna shake")
+            ba.compress(suitedir, "zip", None, True)
+            ba.verify(suitedir, "zip", None, True)
 
     def test_compressfilter_none(self):
         """

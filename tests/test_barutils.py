@@ -2,6 +2,7 @@
 """Test the barutils module."""
 
 import os
+import tempfile
 from shutil import rmtree, copyfile
 from hashlib import sha512
 import zipfile
@@ -130,15 +131,14 @@ class TestClassBarutilsRemovers:
         """
         Test removal of signed files.
         """
-        os.mkdir("signeds")
-        signeddir = os.path.abspath("signeds")
-        with open(os.path.join(signeddir, "something.signed"), "w") as afile:
-            afile.write("Haters gonna hate")
-        with open(os.path.join(signeddir, "something.else"), "w") as afile:
-            afile.write("I'm just gonna shake")
-        bb.remove_signed_files(signeddir)
-        assert len(os.listdir(signeddir)) == 1
-        rmtree(signeddir, ignore_errors=True)
+        with tempfile.TemporaryDirectory() as tempdir:
+            signeddir = os.path.abspath(tempdir)
+            with open(os.path.join(signeddir, "something.signed"), "w") as afile:
+                afile.write("Haters gonna hate")
+            with open(os.path.join(signeddir, "something.else"), "w") as afile:
+                afile.write("I'm just gonna shake")
+            bb.remove_signed_files(signeddir)
+            assert len(os.listdir(signeddir)) == 1
 
     def test_remove_uncomps(self):
         """
