@@ -1,5 +1,5 @@
-.
-=
+bbarchivist
+===========
 
 .. toctree::
    :maxdepth: 4

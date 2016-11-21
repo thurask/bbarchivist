@@ -4,6 +4,7 @@ A higher level interface for :mod:`bbarchivist.pseudocap`."""
 
 import os  # path work
 import glob  # filename matching
+from bbarchivist import exceptions  # exception handling
 from bbarchivist import pseudocap  # implement cap
 from bbarchivist import jsonutils  # json
 
@@ -236,8 +237,8 @@ def wrap_pseudocap(filename, folder, first, second=None):
     try:
         pseudocap.make_autoloader(filename, [first, second], folder=folder)
     except (OSError, IndexError, SystemError) as exc:
-        print(str(exc))
-        print("Could not create {0}".format(filename))
+        msg = "Could not create {0}".format(filename)
+        exceptions.handle_exception(exc, msg, exceptions.DummyException)
 
 
 def generate_skeletons():

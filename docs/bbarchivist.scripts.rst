@@ -20,6 +20,14 @@ bbarchivist.scripts.autolookup module
     :undoc-members:
     :show-inheritance:
 
+bbarchivist.scripts.barlinker module
+------------------------------------
+
+.. automodule:: bbarchivist.scripts.barlinker
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 bbarchivist.scripts.cap module
 ------------------------------
 
@@ -72,6 +80,14 @@ bbarchivist.scripts.droidlookup module
 --------------------------------------
 
 .. automodule:: bbarchivist.scripts.droidlookup
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+bbarchivist.scripts.droidscraper module
+---------------------------------------
+
+.. automodule:: bbarchivist.scripts.droidscraper
     :members:
     :undoc-members:
     :show-inheritance:

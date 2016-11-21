@@ -59,6 +59,14 @@ bbarchivist.dummy module
     :undoc-members:
     :show-inheritance:
 
+bbarchivist.exceptions module
+-----------------------------
+
+.. automodule:: bbarchivist.exceptions
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 bbarchivist.hashutils module
 ----------------------------
 

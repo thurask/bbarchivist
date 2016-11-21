@@ -14,6 +14,7 @@ import subprocess  # loader verification
 from bbarchivist import bbconstants  # cap location, version, filename bits
 from bbarchivist import compat  # backwards compat
 from bbarchivist import dummy  # useless stdout
+from bbarchivist import exceptions  # exceptions
 from bbarchivist import iniconfig  # config parsing
 
 __author__ = "Thurask"
@@ -268,8 +269,7 @@ def win_seven_zip(talkative=False):
         path = winreg.QueryValueEx(hk7z, "Path")
     except OSError as exc:
         if talkative:
-            print("SOMETHING WENT WRONG")
-            print(str(exc))
+            exceptions.handle_exception(exc, exceptions.DummyException)
             print("TRYING LOCAL FILES...")
         return win_seven_zip_local(talkative)
     else:

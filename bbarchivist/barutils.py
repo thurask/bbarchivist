@@ -7,6 +7,7 @@ import shutil  # folder operations
 import base64  # encoding for hashes
 import hashlib   # get hashes
 from bbarchivist import utilities  # platform determination
+from bbarchivist import exceptions  # exception handling
 from bbarchivist import bbconstants  # premade stuff
 
 __author__ = "Thurask"
@@ -32,9 +33,7 @@ def extract_bars(filepath):
                     if str(name).endswith(".signed"):
                         zfile.extract(name, filepath)
     except (RuntimeError, OSError) as exc:
-        print("EXTRACTION FAILURE")
-        print(str(exc))
-        print("DID IT DOWNLOAD PROPERLY?")
+        exceptions.handle_exception(exc, "EXTRACTION FAILURE", exceptions.DummyException)
 
 
 def retrieve_sha512(filename):
@@ -64,9 +63,7 @@ def retrieve_sha512(filename):
         assethash = alist[1].split(b": ")[1]
         return assetname, assethash  # (b"blabla.signed", b"somehash")
     except (RuntimeError, OSError, zipfile.BadZipFile) as exc:
-        print("EXTRACTION FAILURE")
-        print(str(exc))
-        print("DID IT DOWNLOAD PROPERLY?")
+        exceptions.handle_exception(exc, "EXTRACTION FAILURE", exceptions.DummyException)
 
 
 def verify_sha512(filename, inithash):

@@ -30,10 +30,3 @@ class UselessStdout(object):
         Convince module we're in a terminal.
         """
         return True
-
-
-class DummyException(Exception):
-    """
-    Exception that is not raised at all.
-    """
-    pass

@@ -8,6 +8,7 @@ import os  # path work
 import concurrent.futures  # parallelization
 import gnupg  # interface b/w Python, GPG
 from bbarchivist import bbconstants  # premade stuff
+from bbarchivist import exceptions  # exceptions
 from bbarchivist import utilities  # cores
 from bbarchivist import iniconfig  # config parsing
 
@@ -262,8 +263,9 @@ def ssl_hash(filepath, method, blocksize=16 * 1024 * 1024):
         hashfunc_reader(filepath, engine, blocksize)
         return engine.hexdigest()
     except ValueError as exc:
-        print(str(exc))
-        print("{0} HASH FAILED".format(method.upper()))
+        msg = "{0} HASH FAILED".format(method.upper())
+        exceptions.handle_exception(exc, msg, exceptions.DummyException)
+        
 
 
 def hm4(filepath, blocksize=16 * 1024 * 1024):
@@ -517,9 +519,7 @@ def verifier_individual(xec, ldir, file, kwargs):
     try:
         xec.submit(hash_writer, file, targetname, ldir, kwargs)
     except Exception as exc:
-        print("SOMETHING WENT WRONG")
-        print(str(exc))
-        raise SystemExit
+        exceptions.handle_exception(exc)
 
 
 def gpgrunner(workingdir, keyid=None, pword=None, selective=False):
@@ -634,9 +634,7 @@ def gpgwriter_clean(gpg, xec, file, workingdir, keyid=None, pword=None):
     try:
         xec.submit(gpgfile, thepath, gpg, keyid, pword)
     except Exception as exc:
-        print("SOMETHING WENT WRONG")
-        print(str(exc))
-        raise SystemExit
+        exceptions.handle_exception(exc)
 
 
 def gpg_config_loader(homepath=None):

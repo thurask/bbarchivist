@@ -6,7 +6,8 @@ import math  # rounding
 import os  # path check
 import sys  # frozen
 import sqlite3  # the sql library
-from bbarchivist import dummy  # useless stdout, dummy exception
+from bbarchivist import dummy  # useless stdout
+from bbarchivist import exceptions  # exceptions
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -73,7 +74,7 @@ def sql_excepthandler(integrity):
             try:
                 result = method(*args, **kwargs)
                 return result
-            except sqlite3.IntegrityError if bool(integrity) else dummy.DummyException:
+            except sqlite3.IntegrityError if bool(integrity) else exceptions.DummyException:
                 dummy.UselessStdout.write("ASDASDASD")  # DummyException never going to happen
             except sqlite3.Error as sqerror:
                 print(sqerror)
