@@ -21,8 +21,10 @@ install:
     - if [[ $TRAVIS_PYTHON_VERSION == 3.2 ]]; then pip install coveralls=="1.0a2"; else pip install coveralls; fi
     - if [[ $TRAVIS_PYTHON_VERSION == 3.2 ]]; then pip install pytest=="2.9.2"; else pip install pytest; fi
     - if [[ $TRAVIS_PYTHON_VERSION != 3.2 ]]; then pip install codeclimate-test-reporter; fi
+    - pip install scrutinizer-ocular
 script:
     - py.test -v --cov=bbarchivist
 after_success:
     - COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN coveralls
     - if [[ $TRAVIS_PYTHON_VERSION != 3.2 ]]; then CODECLIMATE_REPO_TOKEN=$CODECLIMATE_REPO_TOKEN codeclimate-test-reporter; fi
+    - ocular --data-file ".coverage" --config-file ".coveragerc"
