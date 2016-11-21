@@ -265,7 +265,6 @@ def ssl_hash(filepath, method, blocksize=16 * 1024 * 1024):
     except ValueError as exc:
         msg = "{0} HASH FAILED".format(method.upper())
         exceptions.handle_exception(exc, msg, exceptions.DummyException)
-        
 
 
 def hm4(filepath, blocksize=16 * 1024 * 1024):
