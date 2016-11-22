@@ -71,6 +71,9 @@
     <Compile Include="bbarchivist\dummy.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="bbarchivist\exceptions.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="bbarchivist\hashutils.py">
       <SubType>Code</SubType>
     </Compile>
