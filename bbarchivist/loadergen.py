@@ -238,7 +238,7 @@ def wrap_pseudocap(filename, folder, first, second=None):
         pseudocap.make_autoloader(filename, [first, second], folder=folder)
     except (OSError, IndexError, SystemError) as exc:
         msg = "Could not create {0}".format(filename)
-        exceptions.handle_exception(exc, msg, exceptions.DummyException)
+        exceptions.handle_exception(exc, msg, None)
 
 
 def generate_skeletons():

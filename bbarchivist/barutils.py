@@ -33,7 +33,7 @@ def extract_bars(filepath):
                     if str(name).endswith(".signed"):
                         zfile.extract(name, filepath)
     except (RuntimeError, OSError) as exc:
-        exceptions.handle_exception(exc, "EXTRACTION FAILURE", exceptions.DummyException)
+        exceptions.handle_exception(exc, "EXTRACTION FAILURE", None)
 
 
 def retrieve_sha512(filename):
@@ -63,7 +63,7 @@ def retrieve_sha512(filename):
         assethash = alist[1].split(b": ")[1]
         return assetname, assethash  # (b"blabla.signed", b"somehash")
     except (RuntimeError, OSError, zipfile.BadZipFile) as exc:
-        exceptions.handle_exception(exc, "EXTRACTION FAILURE", exceptions.DummyException)
+        exceptions.handle_exception(exc, "EXTRACTION FAILURE", None)
 
 
 def verify_sha512(filename, inithash):

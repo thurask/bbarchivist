@@ -269,7 +269,7 @@ def win_seven_zip(talkative=False):
         path = winreg.QueryValueEx(hk7z, "Path")
     except OSError as exc:
         if talkative:
-            exceptions.handle_exception(exc, exceptions.DummyException)
+            exceptions.handle_exception(exc, xit=None)
             print("TRYING LOCAL FILES...")
         return win_seven_zip_local(talkative)
     else:

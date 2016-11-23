@@ -8,7 +8,7 @@ import sys  # getattr
 import shutil  # folder removal
 import subprocess  # running cfp/cap
 import glob  # file lookup
-import _thread  # run stuff in background
+import threading  # run stuff in background
 from bbarchivist import utilities  # little things
 from bbarchivist import barutils  # file system work
 from bbarchivist import archiveutils  # archive support
@@ -589,7 +589,8 @@ def linkgen(osversion, radioversion=None, softwareversion=None, altsw=None, temp
         oses = {key: val.replace("verizon_sfi", "sdk") for key, val in oses2.items()}
         cores = {key: val.replace("verizon_sfi", "sdk") for key, val in cores2.items()}
     prargs = (softwareversion, osversion, radioversion, oses, cores, radios, avlty, False, None, temp, altsw)
-    _thread.start_new_thread(textgenerator.write_links, prargs)
+    lthr = threading.Thread(target=textgenerator.write_links, args=prargs)
+    lthr.start()
 
 
 def clean_swrel(swrelset):
@@ -645,7 +646,8 @@ def autolookup_printer(out, avail, log=False, quiet=False, record=None):
         avail = "Available"  # force things
     if avail.lower() == "available":
         if log:
-            _thread.start_new_thread(autolookup_logger, (record, out))
+            lthr = threading.Thread(target=autolookup_logger, args=(record, out))
+            lthr.start()
         print(out)
 
 
@@ -690,7 +692,8 @@ def autolookup_output(osversion, swrelease, avail, avpack, sql=False):
     :param sql: If we're adding this to our SQL database.
     :type sql: bool
     """
-    _thread.start_new_thread(autolookup_output_sql, (osversion, swrelease, avail, sql))
+    othr = threading.Thread(target=autolookup_output_sql, args=(osversion, swrelease, avail, sql))
+    othr.start()
     avblok = "[{0}|{1}|{2}|{3}|{4}]".format(*avpack)
     out = "OS {0} - SR {1} - {2} - {3}".format(osversion, swrelease, avblok, avail)
     return out

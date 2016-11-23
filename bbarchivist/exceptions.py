@@ -20,8 +20,8 @@ def handle_exception(exc, msg="SOMETHING WENT WRONG", xit=SystemExit):
     :type xit: Exception
     """
     print(msg)
-    print(str(exc))
-    if xit != DummyException:
+    print(exc)
+    if xit is not None:
         raise xit
 
 
