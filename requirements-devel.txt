@@ -8,8 +8,5 @@ pytest-cov>0.0
 httmock>0.0
 sphinx>0.0
 sphinx_rtd_theme>0.0
-#For py3.2/3.3/3.4:
-#cx_freeze>0.0
-#For py3.5, with some Mercurial client installed:
-#pip install hg+https://bitbucket.org/anthony_tuininga/cx_freeze
+cx_freeze>0.0
 #Versioneer requires pywin32!

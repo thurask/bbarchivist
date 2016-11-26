@@ -3,6 +3,7 @@
 """Manually download dat files, if Git-LFS isn't working or something."""
 
 import os
+import subprocess
 import requests
 from bbarchivist.bbconstants import CAP, CFP
 
@@ -55,6 +56,17 @@ def prep_file(datafile, filelist):
     return filelist
 
 
+def git_ignore(datafile):
+    """
+    Update git index to deal with pesky issues w/r/t datafiles.
+
+    :param datafile: Datafile instance.
+    :type datafile: bbarchivist.bbconstants.Datafile
+    """
+    cmd = "git update-index --assume-unchanged {0}".format(datafile)
+    subprocess.call(cmd, shell=True)
+
+
 def main():
     """
     Download cap and cfp files, in lieu of Git-LFS.
@@ -66,6 +78,8 @@ def main():
     if files:
         for file in files:
             download(file, outdir)
+            git_ignore(os.path.join(outdir, os.path.basename(file)))
+        print("GIT INDEX UPDATED, RE-TRACK IF UPDATE NEEDED")
     else:
         print("NOTHING TO DOWNLOAD!")
 
