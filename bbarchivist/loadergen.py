@@ -326,14 +326,15 @@ def generate_lazy_loader(
     print("CREATING LOADER...")
     suffix = format_suffix(bool(altradio), altradio, core)
     osfile = radiofile = None
+    absoglob = "{0}{1}".format(localdir, os.sep)
     try:
-        osfile = str(glob.glob("*_sfi*.signed")[0])
+        osfile = str(glob.glob("{0}*_sfi*.signed".format(absoglob))[0])
     except IndexError:
         print("No OS found")
     else:
         try:
-            sset = set(glob.glob("*.signed"))
-            rset = sset - set(glob.glob("*desktop*.signed"))
+            sset = set(glob.glob("{0}*.signed".format(absoglob)))
+            rset = sset - set(glob.glob("{0}*os*.signed".format(absoglob)))
             radiofile = str(list(rset)[0])
         except IndexError:
             print("No radio found")

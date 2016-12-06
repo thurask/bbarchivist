@@ -274,12 +274,13 @@ def lazyloader_main(device, osversion, radioversion=None,
 
     # Generate loader
     altradio = radioversion if altsw else None
-    loadergen.generate_lazy_loader(osversion, device, localdir, altradio, core)
+    loadergen.generate_lazy_loader(osversion, device, os.path.abspath(localdir), altradio, core)
 
     # Test loader
     suffix = loadergen.format_suffix(bool(altradio), altradio, core)
     loadername = loadergen.generate_filename(device, osversion, suffix)
-    scriptutils.test_single_loader(loadername)
+    loaderpath = os.path.join(localdir, loadername)
+    scriptutils.test_single_loader(loaderpath)
 
     # Remove signed files
     print("REMOVING SIGNED FILES...")
