@@ -107,6 +107,8 @@ def grab_args():
         args = parser.parse_args(sys.argv[1:])
         if args.folder is None:
             args.folder = os.getcwd()
+        elif args.folder is not None and not os.path.exists(args.folder):
+            os.makedirs(args.folder)
         if not utilities.is_windows():
             args.autoloader = False
         else:

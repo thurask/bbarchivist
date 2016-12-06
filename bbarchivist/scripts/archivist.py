@@ -571,6 +571,8 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
         altsw, altchecked = scriptutils.return_radio_sw_checked(altsw, radioversion)
     if localdir is None:
         localdir = os.getcwd()
+    elif localdir is not None and not os.path.exists(localdir):
+        os.makedirs(localdir)
     if hashed and hashdict is None:
         hashdict = hashutils.verifier_config_loader()
         hashutils.verifier_config_writer(hashdict)
