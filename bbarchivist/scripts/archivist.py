@@ -132,7 +132,7 @@ def grab_args():
         if args.folder is None:
             args.folder = os.getcwd()
         elif args.folder is not None and not os.path.exists(args.folder):
-            os.makedirs(localdir)
+            os.makedirs(args.folder)
         if getattr(sys, 'frozen', False):
             args.gpg = False
             hashdict = hashutils.verifier_config_loader(os.getcwd())

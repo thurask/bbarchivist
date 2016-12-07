@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from os import remove, listdir, devnull
-from os.path import join, abspath, dirname, basename
+from os.path import join, dirname, basename
 from shutil import copy, rmtree
 from subprocess import call, STDOUT
 from requests import certs, get
@@ -59,7 +59,7 @@ if __name__ == "__main__":
     copy("version.txt", outdir)
     copy("longversion.txt", outdir)
     copy(CAP.location, outdir)
-    copy(join("bbarchivist", "bbconstants.json"), outdir)
+    copy(JSONFILE, outdir)
     copy(certs.where(), join(outdir, "cacerts.pem"))
     try:
         get_sevenzip()
