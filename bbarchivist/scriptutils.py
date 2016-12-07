@@ -761,7 +761,7 @@ def generate_blitz_links(files, osv, radv, swv):
         utilities.create_bar_url(swv, "winchester.factory_sfi", osv),
         utilities.create_bar_url(swv, "qc8960.factory_sfi", osv),
         utilities.create_bar_url(swv, "qc8960.factory_sfi", osv),
-        utilities.create_bar_url(swv, "qc8970.factory_sfi_hybrid_qc8974", osv)
+        utilities.create_bar_url(swv, "qc8960.factory_sfi_hybrid_qc8974", osv)
     ]
     radiourls = [
         utilities.create_bar_url(swv, "m5730", radv),
