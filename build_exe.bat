@@ -1,1 +1,0 @@
-python cxsetup.py build_exe

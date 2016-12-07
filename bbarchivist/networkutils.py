@@ -18,7 +18,7 @@ __copyright__ = "Copyright 2015-2016 Thurask"
 
 def grab_pem():
     """
-    Work with either local cacerts or system cacerts. Since cx_freeze is dumb.
+    Work with either local cacerts or system cacerts.
     """
     try:
         pemfile = glob.glob(os.path.join(os.getcwd(), "cacert.pem"))[0]

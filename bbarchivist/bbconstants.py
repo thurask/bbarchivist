@@ -52,7 +52,7 @@ if not getattr(sys, 'frozen', False):  # regular
     LONGVERSION = "-".join((VERSION + DIRTY, COMMITHASH))
     #: Git commit timestamp.
     COMMITDATE = get_versions()["date"]
-else:  # cx_freeze support
+else:  # pyinstaller support
     VERSION, DIRTY, COMMITHASH, LONGVERSION, COMMITDATE = frozen_versions()
 #: File location.
 LOCATION = os.path.abspath(__file__)

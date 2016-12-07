@@ -23,16 +23,25 @@
     <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include=".checkignore" />
+    <Content Include=".codeclimate.yml" />
     <Content Include=".coveragerc" />
     <Content Include=".coveralls.yml" />
     <Content Include=".gitattributes" />
     <Content Include=".gitignore" />
+    <Content Include=".scrutinizer.yml" />
     <Content Include=".travis.yml" />
     <Content Include="appveyor.yml" />
+    <Content Include="archivist.spec" />
+    <Content Include="autolookup.spec" />
+    <Content Include="barlinker.spec" />
     <Content Include="bbarchivist\bbconstants.json" />
     <Content Include="bbarchivist\cap-3.11.0.27.dat" />
     <Content Include="bbarchivist\cfp-3.10.0.57.dat" />
     <Content Include="build_exe.bat" />
+    <Content Include="carrierchecker.spec" />
+    <Content Include="certchecker.spec" />
+    <Content Include="devloader.spec" />
     <Content Include="docs\bbarchivist.rst" />
     <Content Include="docs\bbarchivist.scripts.rst" />
     <Content Include="docs\cxsetup.rst" />
@@ -45,14 +54,24 @@
     <Content Include="docs\readme.rst" />
     <Content Include="docs\setup.rst" />
     <Content Include="docs\tests.rst" />
+    <Content Include="docs\versioneer.rst" />
+    <Content Include="downloader.spec" />
+    <Content Include="droidlookup.spec" />
+    <Content Include="droidscraper.spec" />
+    <Content Include="escreens.spec" />
     <Content Include="gen_docs.bat" />
+    <Content Include="kernchecker.spec" />
+    <Content Include="lazyloader.spec" />
     <Content Include="LICENSE" />
+    <Content Include="linkgen.spec" />
     <Content Include="MANIFEST.in" />
+    <Content Include="metachecker.spec" />
     <Content Include="pypi_upload.bat" />
     <Content Include="pytest.ini" />
     <Content Include="README.rst" />
     <Content Include="requirements-devel.txt" />
     <Content Include="setup.cfg" />
+    <Content Include="swlookup.spec" />
     <Content Include="test_coverage.bat" />
   </ItemGroup>
   <ItemGroup>
@@ -182,6 +201,9 @@
     <Compile Include="download_dats.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="pyinstaller_exe.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="tests\test_archiveutils.py">
       <SubType>Code</SubType>
     </Compile>
@@ -234,9 +256,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="bbarchivist\__init__.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="cxsetup.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="docs\conf.py">

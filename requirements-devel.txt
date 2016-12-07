@@ -8,5 +8,5 @@ pytest-cov>0.0
 httmock>0.0
 sphinx>0.0
 sphinx_rtd_theme>0.0
-cx_freeze>0.0
-#Versioneer requires pywin32!
+pyinstaller>0.0
+#versioneer + pyinstaller require pywin32!

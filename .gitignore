@@ -28,7 +28,6 @@ var/
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
-*.spec
 
 # Installer logs
 pip-log.txt
@@ -116,3 +115,6 @@ htmlcov/
 /test_**
 flake8.txt
 /temp_**
+pyinst-dist/
+pyinst-build/
+7z/
