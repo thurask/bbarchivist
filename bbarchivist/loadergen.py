@@ -334,7 +334,7 @@ def generate_lazy_loader(
     else:
         try:
             sset = set(glob.glob("{0}*.signed".format(absoglob)))
-            rset = sset - set(glob.glob("{0}*os*.signed".format(absoglob)))
+            rset = sset - set(glob.glob("{0}*_sfi*.signed".format(absoglob)))
             radiofile = str(list(rset)[0])
         except IndexError:
             print("No radio found")
