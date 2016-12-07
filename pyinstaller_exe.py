@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from os import remove, listdir, devnull
-from os.path import join, dirname, basename
+from os.path import join, basename
 from shutil import copy, rmtree
 from subprocess import call, STDOUT
 from requests import certs, get
