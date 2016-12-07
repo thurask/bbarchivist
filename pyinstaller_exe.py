@@ -52,8 +52,8 @@ def get_sevenzip():
 if __name__ == "__main__":
     write_versions()
     specs = [x for x in listdir() if x.endswith(".spec")]
-    for spec in specs:
-        cmd = "pyinstaller --onefile --workpath pyinst-build --distpath pyinst-dist {0}".format(spec)
+    for spec in specs:  # UPX 3.91 BSODs my computer, disable for now
+        cmd = "pyinstaller --onefile --noupx --workpath pyinst-build --distpath pyinst-dist {0}".format(spec)
         call(cmd, shell=True)
     outdir = "pyinst-dist"
     copy("version.txt", outdir)
