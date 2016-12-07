@@ -43,7 +43,7 @@ def grab_args():
         parser.add_argument(
             "-q", "--quiet",
             dest="quiet",
-            help="Only print if available (implies -q)",
+            help="Only print if available (implies -p)",
             action="store_true",
             default=False)
         parser.add_argument(
