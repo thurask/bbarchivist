@@ -103,15 +103,16 @@ def grab_args():
             nargs="?",
             const="checkme",
             default=None)
-        parser.add_argument(
-            "-m",
-            "--method",
-            dest="method",
-            metavar="METHOD",
-            help="Compression method",
-            nargs="?",
-            type=utilities.valid_method,
-            default=None)
+        if not getattr(sys, 'frozen', False):
+            parser.add_argument(
+                "-m",
+                "--method",
+                dest="method",
+                metavar="METHOD",
+                help="Compression method",
+                nargs="?",
+                type=utilities.valid_method,
+                default=None)
         parser.add_argument(
             "-c",
             "--core",
@@ -130,6 +131,8 @@ def grab_args():
         args = parser.parse_args(sys.argv[1:])
         if args.folder is None:
             args.folder = os.getcwd()
+        elif args.folder is not None and not os.path.exists(args.folder):
+            os.makedirs(localdir)
         if getattr(sys, 'frozen', False):
             args.gpg = False
             hashdict = hashutils.verifier_config_loader(os.getcwd())
@@ -571,8 +574,6 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
         altsw, altchecked = scriptutils.return_radio_sw_checked(altsw, radioversion)
     if localdir is None:
         localdir = os.getcwd()
-    elif localdir is not None and not os.path.exists(localdir):
-        os.makedirs(localdir)
     if hashed and hashdict is None:
         hashdict = hashutils.verifier_config_loader()
         hashutils.verifier_config_writer(hashdict)
