@@ -118,3 +118,5 @@ flake8.txt
 pyinst-dist/
 pyinst-build/
 7z/
+longversion.txt
+version.txt
