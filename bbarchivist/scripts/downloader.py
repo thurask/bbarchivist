@@ -121,7 +121,10 @@ def downloader_main(osversion, radioversion=None, softwareversion=None,
     if localdir is None:
         localdir = os.getcwd()
     scriptutils.standard_preamble("downloader", osversion, softwareversion, radioversion, altsw)
-
+    if not any((debricks, radios, cores)):
+        print("NO FILES SPECIFIED, DEFAULTING TO DEBRICKS + RADIOS")
+        debricks = True
+        radios = True
     baseurl, alturl = scriptutils.get_baseurls(softwareversion, altsw)
     osurls, corurls, radurls = utilities.bulk_urls(softwareversion, osversion, radioversion, cores, altsw)
 
