@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from os import remove, listdir, devnull
+from os import remove, listdir, devnull, getcwd
 from os.path import join, basename
 from shutil import copy, rmtree
 from subprocess import call, STDOUT
@@ -27,6 +27,27 @@ def clean_versions():
     remove("longversion.txt")
 
 
+def generate_specs():
+    """
+    Generate pyinstaller spec files.
+    """
+    scripts = ["archivist", "autolookup", "barlinker", "carrierchecker", "certchecker", "devloader", "downloader", "droidlookup", "droidscraper", "escreens", "kernchecker", "lazyloader", "linkgen", "metachecker", "swlookup"]
+    here = getcwd().replace("\\", "\\\\")
+    for script in scripts:
+        template = "# -*- mode: python -*-\n\nblock_cipher = None\n\n\na = Analysis(['bbarchivist\\\\scripts\\\\{0}.py'],\n             pathex=['{1}'],\n             binaries=None,\n             datas=None,\n             hiddenimports=[],\n             hookspath=[],\n             runtime_hooks=[],\n             excludes=[],\n             win_no_prefer_redirects=False,\n             win_private_assemblies=False,\n             cipher=block_cipher)\npyz = PYZ(a.pure, a.zipped_data,\n             cipher=block_cipher)\nexe = EXE(pyz,\n          a.scripts,\n          a.binaries,\n          a.zipfiles,\n          a.datas,\n          name='{0}',\n          debug=False,\n          strip=False,\n          upx=False,\n          console=True )\n".format(script, here)
+        with open("{0}.spec".format(script), "w") as afile:
+            afile.write(template)
+
+
+def clean_specs():
+    """
+    Remove pyinstaller spec files.
+    """
+    specs = [x for x in listdir() if x.endswith(".spec")]
+    for spec in specs:
+        remove(spec)
+
+
 def get_sevenzip():
     """
     Get 7-Zip.
@@ -51,6 +72,7 @@ def get_sevenzip():
 
 if __name__ == "__main__":
     write_versions()
+    generate_specs()
     specs = [x for x in listdir() if x.endswith(".spec")]
     for spec in specs:  # UPX 3.91 BSODs my computer, disable for now
         cmd = "pyinstaller --onefile --noupx --workpath pyinst-build --distpath pyinst-dist {0}".format(spec)
@@ -70,3 +92,4 @@ if __name__ == "__main__":
         copy(join("7z", "x64", "7za.exe"), join(outdir, "7za64.exe"))
         rmtree("7z", ignore_errors=True)
     clean_versions()
+    clean_specs()
