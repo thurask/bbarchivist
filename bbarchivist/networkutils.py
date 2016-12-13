@@ -44,30 +44,38 @@ def pem_wrapper(method):
     return wrapper
 
 
-def generic_soup_parser(url):
+def generic_soup_parser(url, session=None):
     """
     Get a BeautifulSoup HTML parser for some URL.
 
     :param url: The URL to check.
     :type url: str
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
     """
-    req = requests.get(url)
+    session = requests.Session() if session is None else session
+    req = session.get(url)
     soup = BeautifulSoup(req.content, "html.parser")
     return soup
 
 
 @pem_wrapper
-def get_length(url):
+def get_length(url, session=None):
     """
     Get content-length header from some URL.
 
     :param url: The URL to check.
     :type url: str
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
     """
+    session = requests.Session() if session is None else session
     if url is None:
         return 0
     try:
-        heads = requests.head(url)
+        heads = session.head(url)
         fsize = heads.headers['content-length']
         return int(fsize)
     except requests.ConnectionError:
@@ -75,7 +83,7 @@ def get_length(url):
 
 
 @pem_wrapper
-def download(url, output_directory=None):
+def download(url, output_directory=None, session=None):
     """
     Download file from given URL.
 
@@ -84,14 +92,17 @@ def download(url, output_directory=None):
 
     :param output_directory: Download folder. Default is local.
     :type output_directory: str
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
     """
-    if output_directory is None:
-        output_directory = os.getcwd()
+    session = requests.Session() if session is None else session
+    output_directory = os.getcwd() if output_directory is None else output_directory
     lfname = url.split('/')[-1]
     sname = utilities.stripper(lfname)
     fname = os.path.join(output_directory, lfname)
     with open(fname, "wb") as file:
-        req = requests.get(url, stream=True)
+        req = session.get(url, stream=True)
         clength = req.headers['content-length']
         fsize = utilities.fsizer(clength)
         if req.status_code == 200:  # 200 OK
@@ -103,7 +114,8 @@ def download(url, output_directory=None):
     if os.stat(fname).st_size == 0:
         os.remove(fname)
 
-def download_bootstrap(urls, outdir=None, workers=5):
+
+def download_bootstrap(urls, outdir=None, workers=5, session=None):
     """
     Run downloaders for each file in given URL iterable.
 
@@ -115,6 +127,9 @@ def download_bootstrap(urls, outdir=None, workers=5):
 
     :param workers: Number of worker processes. Default is 5.
     :type workers: int
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
     """
     workers = len(urls) if len(urls) < workers else workers
     spinman = utilities.SpinManager()
@@ -122,7 +137,7 @@ def download_bootstrap(urls, outdir=None, workers=5):
         try:
             spinman.start()
             for url in urls:
-                xec.submit(download, url, outdir)
+                xec.submit(download, url, outdir, session)
         except (KeyboardInterrupt, SystemExit):
             xec.shutdown()
             spinman.stop()
@@ -132,16 +147,20 @@ def download_bootstrap(urls, outdir=None, workers=5):
 
 
 @pem_wrapper
-def availability(url):
+def availability(url, session=None):
     """
     Check HTTP status code of given URL.
     200 or 301-308 is OK, else is not.
 
     :param url: URL to check.
     :type url: str
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
     """
+    session = requests.Session() if session is None else session
     try:
-        avlty = requests.head(url)
+        avlty = session.head(url)
         status = int(avlty.status_code)
         return status == 200 or 300 < status <= 308
     except requests.ConnectionError:
@@ -165,7 +184,7 @@ def clean_availability(results, server):
 
 
 @pem_wrapper
-def carrier_checker(mcc, mnc):
+def carrier_checker(mcc, mnc, session=None):
     """
     Query BlackBerry World to map a MCC and a MNC to a country and carrier.
 
@@ -174,11 +193,15 @@ def carrier_checker(mcc, mnc):
 
     :param mnc: Network code.
     :type mnc: int
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
     """
+    session = requests.Session() if session is None else session
     url = "http://appworld.blackberry.com/ClientAPI/checkcarrier?homemcc={0}&homemnc={1}&devicevendorid=-1&pin=0".format(
         mcc, mnc)
     user_agent = {'User-agent': 'AppWorld/5.1.0.60'}
-    req = requests.get(url, headers=user_agent)
+    req = session.get(url, headers=user_agent)
     root = xml.etree.ElementTree.fromstring(req.text)
     for child in root:
         if child.tag == "country":
@@ -202,7 +225,7 @@ def return_npc(mcc, mnc):
 
 
 @pem_wrapper
-def carrier_query(npc, device, upgrade=False, blitz=False, forced=None):
+def carrier_query(npc, device, upgrade=False, blitz=False, forced=None, session=None):
     """
     Query BlackBerry servers, check which update is out for a carrier.
 
@@ -220,7 +243,11 @@ def carrier_query(npc, device, upgrade=False, blitz=False, forced=None):
 
     :param forced: Force a software release.
     :type forced: str
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
     """
+    session = requests.Session() if session is None else session
     upg = "upgrade" if upgrade else "repair"
     forced = "latest" if forced is None else forced
     url = "https://cs.sl.blackberry.com/cse/updateDetails/2.2/"
@@ -257,7 +284,7 @@ def carrier_query(npc, device, upgrade=False, blitz=False, forced=None):
     query += "</resultPackageSetCriteria>"
     query += "</updateDetailRequest>"
     header = {"Content-Type": "text/xml;charset=UTF-8"}
-    req = requests.post(url, headers=header, data=query)
+    req = session.post(url, headers=header, data=query)
     return parse_carrier_xml(req.text, blitz)
 
 
@@ -350,7 +377,7 @@ def parse_carrier_xml(data, blitz=False):
 
 
 @pem_wrapper
-def sr_lookup(osver, server):
+def sr_lookup(osver, server, session=None):
     """
     Software release lookup, with choice of server.
     :data:`bbarchivist.bbconstants.SERVERLIST` for server list.
@@ -360,7 +387,11 @@ def sr_lookup(osver, server):
 
     :param server: Server to use.
     :type server: str
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
     """
+    session = requests.Session() if session is None else session
     reg = re.compile(r"(\d{1,4}\.)(\d{1,4}\.)(\d{1,4}\.)(\d{1,4})")
     query = '<?xml version="1.0" encoding="UTF-8"?>'
     query += '<srVersionLookupRequest version="2.0.0"'
@@ -382,7 +413,7 @@ def sr_lookup(osver, server):
     query += '</srVersionLookupRequest>'
     header = {"Content-Type": "text/xml;charset=UTF-8"}
     try:
-        req = requests.post(server, headers=header, data=query, timeout=1)
+        req = session.post(server, headers=header, data=query, timeout=1)
     except (requests.exceptions.Timeout, requests.exceptions.ConnectionError):
         return "SR not in system"
     try:
@@ -400,12 +431,18 @@ def sr_lookup(osver, server):
                     return "SR not in system"
 
 
-def sr_lookup_bootstrap(osv):
+def sr_lookup_bootstrap(osv, session=None, noalpha2=False):
     """
     Run lookups for each server for given OS.
 
     :param osv: OS to check.
     :type osv: str
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
+
+    :param noalpha2: Whether to skip Alpha2 server. Default is false.
+    :type noalpha2: bool
     """
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as xec:
         try:
@@ -416,15 +453,17 @@ def sr_lookup_bootstrap(osv):
                 "b1": None,
                 "b2": None
             }
+            if noalpha2:
+                del results["a2"]
             for key in results:
-                results[key] = xec.submit(sr_lookup, osv, SERVERS[key]).result()
+                results[key] = xec.submit(sr_lookup, osv, SERVERS[key], session).result()
             return results
         except KeyboardInterrupt:
             xec.shutdown(wait=False)
 
 
 @pem_wrapper
-def available_bundle_lookup(mcc, mnc, device):
+def available_bundle_lookup(mcc, mnc, device, session=None):
     """
     Check which software releases were ever released for a carrier.
 
@@ -436,7 +475,11 @@ def available_bundle_lookup(mcc, mnc, device):
 
     :param device: Hexadecimal hardware ID.
     :type device: str
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
     """
+    session = requests.Session() if session is None else session
     server = "https://cs.sl.blackberry.com/cse/availableBundles/1.0.0/"
     npc = return_npc(mcc, mnc)
     query = '<?xml version="1.0" encoding="UTF-8"?>'
@@ -455,7 +498,7 @@ def available_bundle_lookup(mcc, mnc, device):
     query += '</bundleVersionFilter></updateDirectives>'
     query += '</availableBundlesRequest>'
     header = {"Content-Type": "text/xml;charset=UTF-8"}
-    req = requests.post(server, headers=header, data=query)
+    req = session.post(server, headers=header, data=query)
     root = xml.etree.ElementTree.fromstring(req.text)
     package = root.find('./data/content')
     bundlelist = [child.attrib["version"] for child in package]
@@ -540,9 +583,10 @@ def kernel_scraper(utils=False):
     """
     repo = "android-utils" if utils else "android-linux-kernel"
     kernlist = []
+    sess = requests.Session()
     for page in range(1, 10):
         url = "https://github.com/blackberry/{0}/branches/all?page={1}".format(repo, page)
-        soup = generic_soup_parser(url)
+        soup = generic_soup_parser(url, sess)
         if soup.find("div", {"class": "no-results-message"}):
             break
         else:
@@ -641,7 +685,7 @@ def prepare_droid_list(device):
     return devs
 
 
-def droid_scanner(build, device, method=None):
+def droid_scanner(build, device, method=None, session=None):
     """
     Check for Android autoloaders on BlackBerry's site.
 
@@ -653,13 +697,16 @@ def droid_scanner(build, device, method=None):
 
     :param method: None for regular OS links, "sha256/512" for SHA256 or 512 hash.
     :type method: str
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
     """
     devs = prepare_droid_list(device)
     skels = bulk_droid_skeletons(devs, build, method)
     with concurrent.futures.ThreadPoolExecutor(max_workers=len(skels)) as xec:
         results = []
         for skel in skels:
-            avail = xec.submit(availability, skel)
+            avail = xec.submit(availability, skel, session)
             if avail.result():
                 results.append(skel)
     return results if results else None
@@ -717,7 +764,8 @@ def loader_page_scraper():
     Return scraped autoloader page.
     """
     url = "http://ca.blackberry.com/content/blackberry-com/en_ca/support/smartphones/Android-OS-Reload.html"
-    soup = generic_soup_parser(url)
+    sess = requests.Session()
+    soup = generic_soup_parser(url, sess)
     tables = soup.find_all("table")
     headers = table_headers(soup.find_all("p"))
     for idx, table in enumerate(tables):
@@ -732,39 +780,55 @@ def loader_page_scraper():
 
 
 @pem_wrapper
-def base_metadata(url):
+def base_metadata(url, session=None):
     """
     Get BBNDK metadata, base function.
+
+    :param url: URL to check.
+    :type url: str
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
     """
-    req = requests.get(url)
+    session = requests.Session() if session is None else session
+    req = session.get(url)
     data = req.content
     entries = data.split(b"\n")
     metadata = [entry.split(b",")[1].decode("utf-8") for entry in entries if entry]
     return metadata
 
 
-def ndk_metadata():
+def ndk_metadata(session=None):
     """
     Get BBNDK target metadata.
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
     """
-    data = base_metadata("http://downloads.blackberry.com/upr/developers/update/bbndk/metadata")
+    data = base_metadata("http://downloads.blackberry.com/upr/developers/update/bbndk/metadata", session)
     metadata = [entry for entry in data if entry.startswith(("10.0", "10.1", "10.2"))]
     return metadata
 
 
-def sim_metadata():
+def sim_metadata(session=None):
     """
     Get BBNDK simulator metadata.
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
     """
-    metadata = base_metadata("http://downloads.blackberry.com/upr/developers/update/bbndk/simulator/simulator_metadata")
+    metadata = base_metadata("http://downloads.blackberry.com/upr/developers/update/bbndk/simulator/simulator_metadata", session)
     return metadata
 
 
-def runtime_metadata():
+def runtime_metadata(session=None):
     """
     Get BBNDK runtime metadata.
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
     """
-    metadata = base_metadata("http://downloads.blackberry.com/upr/developers/update/bbndk/runtime/runtime_metadata")
+    metadata = base_metadata("http://downloads.blackberry.com/upr/developers/update/bbndk/runtime/runtime_metadata", session)
     return metadata
 
 
@@ -780,7 +844,7 @@ def series_generator(osversion):
 
 
 @pem_wrapper
-def devalpha_urls(osversion, skel):
+def devalpha_urls(osversion, skel, session=None):
     """
     Check individual Dev Alpha autoloader URLs.
 
@@ -789,9 +853,13 @@ def devalpha_urls(osversion, skel):
 
     :param skel: Individual skeleton format to try.
     :type skel: str
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
     """
+    session = requests.Session() if session is None else session
     url = "http://downloads.blackberry.com/upr/developers/downloads/{0}{1}.exe".format(skel, osversion)
-    req = requests.head(url)
+    req = session.head(url)
     if req.status_code == 200:
         finals = (url, req.headers["content-length"])
     else:
@@ -799,7 +867,7 @@ def devalpha_urls(osversion, skel):
     return finals
 
 
-def devalpha_urls_bootstrap(osversion, skeletons):
+def devalpha_urls_bootstrap(osversion, skeletons, session=None):
     """
     Get list of valid Dev Alpha autoloader URLs.
 
@@ -808,6 +876,9 @@ def devalpha_urls_bootstrap(osversion, skeletons):
 
     :param skeletons: List of skeleton formats to try.
     :type skeletons: list
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
     """
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as xec:
         try:
@@ -817,7 +888,7 @@ def devalpha_urls_bootstrap(osversion, skeletons):
                 if "<SERIES>" in skel:
                     skels[idx] = skel.replace("<SERIES>", series_generator(osversion))
             for skel in skels:
-                final = xec.submit(devalpha_urls, osversion, skel).result()
+                final = xec.submit(devalpha_urls, osversion, skel, session).result()
                 if final:
                     finals[final[0]] = final[1]
             return finals

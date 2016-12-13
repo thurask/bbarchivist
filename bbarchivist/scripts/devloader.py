@@ -2,6 +2,7 @@
 """Generate Dev Alpha autoloader URLs."""
 
 import sys  # load arguments
+import requests  # session
 from bbarchivist import decorators  # wrap Ctrl+C
 from bbarchivist import networkutils  # check function
 from bbarchivist import jsonutils  # json
@@ -105,11 +106,12 @@ def devloader_main(osversion, export=False, loop=False, ceiling=9999, inc=3):
     """
     skels = jsonutils.load_json('devskeletons')
     scriptutils.slim_preamble("DEVLOADER")
+    sess = requests.Session()
     while True:
         if loop and int(osversion.split(".")[3]) > ceiling:
             break
         print("OS VERSION: {0}".format(osversion), end="\r")
-        urls = networkutils.devalpha_urls_bootstrap(osversion, skels)
+        urls = networkutils.devalpha_urls_bootstrap(osversion, skels, sess)
         if urls:
             urls = networkutils.dev_dupe_cleaner(urls)
             print("{0} AVAILABLE!    \n".format(osversion), end="\r")  # spaces to clear line

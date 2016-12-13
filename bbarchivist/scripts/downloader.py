@@ -3,6 +3,7 @@
 
 import os  # filesystem read
 import sys  # load arguments
+import requests  # session
 from bbarchivist import decorators  # enter to exit
 from bbarchivist import scriptutils  # script stuff
 from bbarchivist import utilities  # input validation
@@ -154,7 +155,8 @@ def downloader_main(osversion, radioversion=None, softwareversion=None,
     if cores:
         urllist += corurls
     if urllist:
-        networkutils.download_bootstrap(urllist, localdir, workers=5)
+        sess = requests.Session()
+        networkutils.download_bootstrap(urllist, localdir, workers=5, session=sess)
         print("ALL FILES DOWNLOADED")
     else:
         print("NO FILES TO DOWNLOAD!")

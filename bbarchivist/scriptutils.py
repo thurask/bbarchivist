@@ -9,6 +9,7 @@ import shutil  # folder removal
 import subprocess  # running cfp/cap
 import glob  # file lookup
 import threading  # run stuff in background
+import requests  # session
 from bbarchivist import utilities  # little things
 from bbarchivist import barutils  # file system work
 from bbarchivist import archiveutils  # archive support
@@ -304,8 +305,9 @@ def check_os_bulk(osurls):
     :param osurls: OS URLs to check.
     :type osurls: list(str)
     """
+    sess = requests.Session()
     for url in osurls:
-        osav = networkutils.availability(url)
+        osav = networkutils.availability(url, sess)
         if osav:
             break
     else:
@@ -352,8 +354,9 @@ def check_radio_bulk(radiourls, radioversion):
     :param radioversion: Radio version.
     :type radioversion: str
     """
+    sess = requests.Session()
     for url in radiourls:
-        radav = networkutils.availability(url)
+        radav = networkutils.availability(url, sess)
         if radav:
             break
     else:
@@ -378,7 +381,8 @@ def bulk_avail(urllist):
     :param urllist: URLs to check.
     :type urllist: list(str)
     """
-    url2 = [x for x in urllist if networkutils.availability(x)]
+    sess = requests.Session()
+    url2 = [x for x in urllist if networkutils.availability(x, sess)]
     return url2
 
 

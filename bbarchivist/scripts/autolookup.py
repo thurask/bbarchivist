@@ -2,6 +2,7 @@
 """Get software release for one/many OS versions."""
 
 import sys  # load arguments
+import requests  # session
 from bbarchivist import networkutils  # lookup
 from bbarchivist import utilities  # incrementer
 from bbarchivist import smtputils  # email
@@ -80,6 +81,12 @@ def grab_args():
             help="Only check production server",
             action="store_true",
             default=False)
+        parser.add_argument(
+            "-na2", "--no-alpha2",
+            dest="noa2",
+            help="Skip checking Alpha 2 server",
+            action="store_true",
+            default=False)
         args = parser.parse_args(sys.argv[1:])
         parser.set_defaults()
         if getattr(sys, 'frozen', False):
@@ -97,7 +104,8 @@ def grab_args():
             args.quiet,
             args.ceiling,
             args.email,
-            args.production)
+            args.production,
+            args.noa2)
     else:
         osversion = input("OS VERSION: ")
         recurse = utilities.s2b(input("LOOP (Y/N)?: "))
@@ -120,7 +128,7 @@ def grab_args():
 
 @decorators.wrap_keyboard_except
 def autolookup_main(osversion, loop=False, log=False, autogen=False, inc=3, sql=False,
-                    quiet=False, ceiling=9996, mailer=False, prod=False):
+                    quiet=False, ceiling=9996, mailer=False, prod=False, noalpha2=False):
     """
     Lookup a software release from an OS. Can iterate.
 
@@ -153,6 +161,9 @@ def autolookup_main(osversion, loop=False, log=False, autogen=False, inc=3, sql=
 
     :param prod: Whether to check only the production server. Default is false.
     :type prod: bool
+
+    :param noalpha2: Whether to skip Alpha2 server. Default is false.
+    :type noalpha2: bool
     """
     if mailer:
         sql = True
@@ -165,19 +176,24 @@ def autolookup_main(osversion, loop=False, log=False, autogen=False, inc=3, sql=
         pword = None
     scriptutils.slim_preamble("AUTOLOOKUP")
     record = utilities.prep_logfile() if log else None
+    sess = requests.Session()
     while True:
         if loop and int(osversion.split(".")[3]) > ceiling:
             raise KeyboardInterrupt
         print("NOW SCANNING: {0}".format(osversion), end="\r")
         if not prod:
-            results = networkutils.sr_lookup_bootstrap(osversion)
+            results = networkutils.sr_lookup_bootstrap(osversion, sess, noalpha2)
         else:
-            res = networkutils.sr_lookup(osversion, networkutils.SERVERS["p"])
+            res = networkutils.sr_lookup(osversion, networkutils.SERVERS["p"], sess)
             results = {"p": res, "a1": None, "a2": None, "b1": None, "b2": None}
         if results is None:
             raise KeyboardInterrupt
         a1rel, a1av = networkutils.clean_availability(results, 'a1')
-        a2rel, a2av = networkutils.clean_availability(results, 'a2')
+        if not noalpha2:
+            a2rel, a2av = networkutils.clean_availability(results, 'a2')
+        else:
+            a2rel = "SR not in system"
+            a2av = "  "
         b1rel, b1av = networkutils.clean_availability(results, 'b1')
         b2rel, b2av = networkutils.clean_availability(results, 'b2')
         prel, pav, avail = scriptutils.prod_avail(results, mailer, osversion, pword)

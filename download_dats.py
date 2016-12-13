@@ -26,8 +26,9 @@ def download(url, output_directory=None):
         output_directory = os.getcwd()
     lfname = url.split('/')[-1]
     fname = os.path.join(output_directory, lfname)
+    sess = requests.Session()
     with open(fname, "wb") as file:
-        req = requests.get(url, stream=True)
+        req = sess.get(url, stream=True)
         if req.status_code == 200:  # 200 OK
             print("DOWNLOADING {0}".format(lfname))
             for chunk in req.iter_content(chunk_size=1024):

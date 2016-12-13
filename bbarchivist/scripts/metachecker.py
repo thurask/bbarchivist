@@ -2,6 +2,7 @@
 """Checks BlackBerry's developer website for metadata."""
 
 import sys  # load arguments
+import requests  # session
 from bbarchivist import decorators  # enter to exit
 from bbarchivist import networkutils  # check function
 from bbarchivist import scriptutils  # default parser
@@ -19,8 +20,9 @@ def metachecker_main():
     parser = scriptutils.default_parser("bb-metachecker", "NDK metadata scraper.")
     parser.parse_args(sys.argv[1:])
     scriptutils.slim_preamble("METACHECKER")
-    runt = networkutils.ndk_metadata() + networkutils.runtime_metadata()
-    simu = networkutils.sim_metadata()
+    sess = requests.Session()
+    runt = networkutils.ndk_metadata(sess) + networkutils.runtime_metadata(sess)
+    simu = networkutils.sim_metadata(sess)
     print("RUNTIME METADATA")
     utilities.lprint(sorted(runt))
     print("\nSIMULATOR METADATA")

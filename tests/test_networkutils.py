@@ -505,6 +505,15 @@ class TestClassNetworkutilsParsing:
             for key in findings:
                 assert findings[key] == "10.3.2.516"
 
+    def test_sr_lookup_bootstrap_filtered(self):
+        """
+        Test multiple software lookups, with filter.
+        """
+        with httmock.HTTMock(sr_good_mock):
+            findings = bn.sr_lookup_bootstrap("10.3.2.798", noalpha2=True)
+            for key in findings:
+                assert findings[key] == "10.3.2.516"
+
     def test_bundle_lookup_big(self):
         """
         Test bundle lookup, large input.

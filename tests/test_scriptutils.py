@@ -119,7 +119,7 @@ class TestClassScriptutils:
         Test exporting links, having to find upgrade files.
         """
         snek = Dummy()
-        with mock.patch('requests.head', mock.MagicMock(return_value=snek)):
+        with mock.patch('requests.Session.head', mock.MagicMock(return_value=snek)):
             bs.export_cchecker(
                 ["http://sn.ek"],
                 "123456",

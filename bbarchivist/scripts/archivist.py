@@ -3,6 +3,7 @@
 
 import os  # filesystem read
 import sys  # load arguments
+import requests  # session
 from bbarchivist import scriptutils  # script stuff
 from bbarchivist import utilities  # input validation
 from bbarchivist import decorators  # timer
@@ -207,7 +208,7 @@ def archivist_checksw(baseurl, softwareversion, swchecked):
     scriptutils.check_sw(baseurl, softwareversion, swchecked)
 
 
-def archivist_download(download, osurls, radiourls, localdir):
+def archivist_download(download, osurls, radiourls, localdir, session):
     """
     Download function.
 
@@ -222,10 +223,13 @@ def archivist_download(download, osurls, radiourls, localdir):
 
     :param localdir: Working directory. Local by default.
     :type localdir: str
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
     """
     if download:
         print("BEGIN DOWNLOADING...")
-        networkutils.download_bootstrap(radiourls + osurls, localdir, 3)
+        networkutils.download_bootstrap(radiourls + osurls, localdir, 3, session)
         print("ALL FILES DOWNLOADED")
 
 
@@ -606,7 +610,8 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     dirs = barutils.make_dirs(localdir, osversion, radioversion)
     osurls = scriptutils.bulk_avail(osurls)
     radiourls = scriptutils.bulk_avail(radiourls)
-    archivist_download(download, osurls, radiourls, localdir)
+    sess = requests.Session()
+    archivist_download(download, osurls, radiourls, localdir, sess)
     archivist_integritybars(integrity, osurls, radiourls, localdir)
     archivist_extractbars(extract, localdir)
     archivist_integritysigned(extract, localdir)

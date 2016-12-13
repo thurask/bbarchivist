@@ -2,6 +2,7 @@
 """Check Android autoloader files."""
 
 import sys  # load arguments
+import requests  # session
 from bbarchivist import networkutils  # lookup
 from bbarchivist import decorators  # Ctrl+C wrapping
 from bbarchivist import jsonutils  # json
@@ -164,10 +165,11 @@ def droidlookup_main(device, branch, floor=0, ceil=999, method=None):
         print("DEVICE: ALL")
     else:
         print("DEVICE: {0}".format(device.upper()))
+    sess = requests.Session()
     for ver in range(floor, ceil + 1):
         build = "{0}{1}".format(branch.upper(), str(ver).zfill(3))
         print("NOW SCANNING: {0}".format(build), end="\r")
-        results = networkutils.droid_scanner(build, device, method)
+        results = networkutils.droid_scanner(build, device, method, sess)
         if results is not None:
             for result in results:
                 print("{0} AVAILABLE! {1}\n".format(build, result), end="\r")

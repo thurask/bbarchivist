@@ -4,6 +4,7 @@
 import sys  # load arguments
 import os  # file/path operations
 import webbrowser  # code list
+import requests  # session
 from bbarchivist import decorators  # enter to exit
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import networkutils  # check function
@@ -335,7 +336,7 @@ def carrierchecker_export(mcc, mnc, files, hwid, osv, radv, swv, export=False, u
         scriptutils.export_cchecker(files, npc, hwid, osv, radv, swv, upgrade, forced)
 
 
-def carrierchecker_download(files, directory, osv, radv, swv, family, download=False, blitz=False):
+def carrierchecker_download(files, directory, osv, radv, swv, family, download=False, blitz=False, session=None):
     """
     Download files, create blitz if specified.
 
@@ -362,6 +363,9 @@ def carrierchecker_download(files, directory, osv, radv, swv, family, download=F
 
     :param blitz: Whether or not to create a blitz package. Default is false.
     :type blitz: bool
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
     """
     if download:
         suffix = "-BLITZ" if blitz else "-{0}".format(family)
@@ -371,7 +375,7 @@ def carrierchecker_download(files, directory, osv, radv, swv, family, download=F
         if blitz:
             files = scriptutils.generate_blitz_links(files, osv, radv, swv)
         print("\nDOWNLOADING...")
-        networkutils.download_bootstrap(files, outdir=bardir)
+        networkutils.download_bootstrap(files, outdir=bardir, session=session)
         scriptutils.test_bar_files(bardir, files)
         if blitz:
             scriptutils.package_blitz(bardir, swv)
@@ -441,7 +445,8 @@ def carrierchecker_main(mcc, mnc, device,
         print("RADIO VERSION: {0}".format(radv))
         files = carrierchecker_selective(files, selective)
         carrierchecker_export(mcc, mnc, files, hwid, osv, radv, swv, export, upgrade, forced)
-        carrierchecker_download(files, directory, osv, radv, swv, family, download, blitz)
+        sess = requests.Session()
+        carrierchecker_download(files, directory, osv, radv, swv, family, download, blitz, sess)
 
 
 if __name__ == "__main__":

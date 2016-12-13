@@ -5,6 +5,7 @@ import argparse  # parse arguments
 import sys  # load arguments
 import os  # path work
 import subprocess  # autoloader running
+import requests  # session
 from bbarchivist import scriptutils  # script stuff
 from bbarchivist import decorators  # timer
 from bbarchivist import utilities  # input validation
@@ -256,7 +257,8 @@ def lazyloader_main(device, osversion, radioversion=None,
     # Download files
     if download:
         print("DOWNLOADING...")
-        networkutils.download_bootstrap(dllist, outdir=localdir, workers=2)
+        sess = requests.Session()
+        networkutils.download_bootstrap(dllist, outdir=localdir, workers=2, session=sess)
 
     # Test bar files
     scriptutils.test_bar_files(localdir, dllist)
