@@ -83,20 +83,16 @@ def questionnaire_single():
     """
     while True:
         scanos = input("OS (ex. AAD250): ")
-        if len(scanos) != 6:
-            print("OS MUST BE 3 LETTERS AND 3 NUMBERS, TRY AGAIN")
-            continue
         branch = scanos[:3]
-        if not branch.isalpha():
-            print("OS MUST BE 3 LETTERS AND 3 NUMBERS, TRY AGAIN")
-            continue
         floor = scanos[3:6]
-        if not floor.isdigit():
+        quants = [len(scanos) == 6, branch.isalpha(), floor.isdigit()]
+        if not all(quants):
             print("OS MUST BE 3 LETTERS AND 3 NUMBERS, TRY AGAIN")
             continue
-        floor = int(floor)
-        ceil = floor
-        break
+        else:
+            floor = int(floor)
+            ceil = floor
+            break
     return branch, floor, ceil
 
 
@@ -124,15 +120,42 @@ def questionnaire_initial():
         except ValueError:
             continue
         else:
-            if floor < 0:
-                print("INITIAL < 0, TRY AGAIN")
-                continue
-            elif floor > 998:
-                print("INITIAL > 998, TRY AGAIN")
-                continue
-            else:
+            mintext = "INITIAL < 0, TRY AGAIN"
+            maxtext = "INITIAL > 998, TRY AGAIN"
+            if parse_extreme(floor, 0, 998, mintext, maxtext):
                 break
+            else:
+                continue
     return floor
+
+
+def parse_extreme(starter, minim, maxim, mintext, maxtext):
+    """
+    Check if floor/ceiling value is OK.
+
+    :param starter: Minimum/maximum OS version.
+    :type starter: int
+
+    :param minim: Minimum value for starter.
+    :type minim: int
+
+    :param maxim: Maximum value for starter.
+    :type maxim: int
+
+    :param mintext: What to print if starter < minim.
+    :type mintext: str
+
+    :param maxtext: What to print if starter > maxim.
+    :type maxtext: str
+    """
+    okay = False
+    if starter < minim:
+        print(mintext)
+    elif starter > maxim:
+        print(maxtext)
+    else:
+        okay = True
+    return okay
 
 
 def questionnaire_final(floor):
@@ -148,11 +171,9 @@ def questionnaire_final(floor):
         except ValueError:
             ceil = 999
         else:
-            if ceil < floor:
-                print("FINAL < INITIAL, TRY AGAIN")
-                continue
-            elif ceil > 999:
-                print("FINAL > 999, TRY AGAIN")
+            mintext = "FINAL < INITIAL, TRY AGAIN"
+            maxtext = "FINAL > 999, TRY AGAIN"
+            if parse_extreme(ceil, floor, 999, mintext, maxtext):
                 continue
             else:
                 break
