@@ -110,6 +110,29 @@ def questionnaire_branch():
     return branch
 
 
+def parse_floor(floor):
+    """
+    Check if floor value is OK.
+
+    :param floor: Starting OS version.
+    :type floor: int
+    """
+    return parse_extreme(floor, 0, 998, "INITIAL < 0, TRY AGAIN", "INITIAL > 998, TRY AGAIN")
+
+
+def parse_ceiling(ceil, floor):
+    """
+    Check if ceiling value is OK.
+
+    :param ceil: Ending OS version.
+    :type ceil: int
+
+    :param floor: Starting OS version.
+    :type floor: int
+    """
+    return parse_extreme(ceil, floor, 999, "FINAL < INITIAL, TRY AGAIN", "FINAL > 999, TRY AGAIN")
+
+
 def questionnaire_initial():
     """
     Ask about lookup start.
@@ -120,9 +143,7 @@ def questionnaire_initial():
         except ValueError:
             continue
         else:
-            mintext = "INITIAL < 0, TRY AGAIN"
-            maxtext = "INITIAL > 998, TRY AGAIN"
-            if parse_extreme(floor, 0, 998, mintext, maxtext):
+            if parse_floor(floor):
                 break
             else:
                 continue
@@ -171,12 +192,10 @@ def questionnaire_final(floor):
         except ValueError:
             ceil = 999
         else:
-            mintext = "FINAL < INITIAL, TRY AGAIN"
-            maxtext = "FINAL > 999, TRY AGAIN"
-            if parse_extreme(ceil, floor, 999, mintext, maxtext):
-                continue
-            else:
+            if parse_ceiling(ceil, floor):
                 break
+            else:
+                continue
     return ceil
 
 
