@@ -77,64 +77,99 @@ def grab_args():
         questionnaire()
 
 
+def questionnaire_single():
+    """
+    What to ask if only one lookup is needed.
+    """
+    while True:
+        scanos = input("OS (ex. AAD250): ")
+        if len(scanos) != 6:
+            print("OS MUST BE 3 LETTERS AND 3 NUMBERS, TRY AGAIN")
+            continue
+        branch = scanos[:3]
+        if not branch.isalpha():
+            print("OS MUST BE 3 LETTERS AND 3 NUMBERS, TRY AGAIN")
+            continue
+        floor = scanos[3:6]
+        if not floor.isdigit():
+            print("OS MUST BE 3 LETTERS AND 3 NUMBERS, TRY AGAIN")
+            continue
+        floor = int(floor)
+        ceil = floor
+        break
+    return branch, floor, ceil
+
+
+def questionnaire_branch():
+    """
+    Ask about lookup branch.
+    """
+    while True:
+        branch = input("BRANCH (ex. AAD): ")
+        if len(branch) != 3 or not branch.isalpha():
+            print("BRANCH MUST BE 3 LETTERS, TRY AGAIN")
+            continue
+        else:
+            break
+    return branch
+
+
+def questionnaire_initial():
+    """
+    Ask about lookup start.
+    """
+    while True:
+        try:
+            floor = int(input("INITIAL OS (0-998): "))
+        except ValueError:
+            continue
+        else:
+            if floor < 0:
+                print("INITIAL < 0, TRY AGAIN")
+                continue
+            elif floor > 998:
+                print("INITIAL > 998, TRY AGAIN")
+                continue
+            else:
+                break
+    return floor
+
+
+def questionnaire_final(floor):
+    """
+    Ask about lookup end.
+
+    :param floor: Starting OS version.
+    :type floor: int
+    """
+    while True:
+        try:
+            ceil = int(input("FINAL OS (1-999): "))
+        except ValueError:
+            ceil = 999
+        else:
+            if ceil < floor:
+                print("FINAL < INITIAL, TRY AGAIN")
+                continue
+            elif ceil > 999:
+                print("FINAL > 999, TRY AGAIN")
+                continue
+            else:
+                break
+    return ceil
+
+
 def questionnaire():
     """
     Questions to ask if no arguments given.
     """
     single = utilities.s2b(input("SINGLE OS (Y/N)?: "))
     if single:
-        while True:
-            scanos = input("OS (ex. AAD250): ")
-            if len(scanos) != 6:
-                print("OS MUST BE 3 LETTERS AND 3 NUMBERS, TRY AGAIN")
-                continue
-            branch = scanos[:3]
-            if not branch.isalpha():
-                print("OS MUST BE 3 LETTERS AND 3 NUMBERS, TRY AGAIN")
-                continue
-            floor = scanos[3:6]
-            if not floor.isdigit():
-                print("OS MUST BE 3 LETTERS AND 3 NUMBERS, TRY AGAIN")
-                continue
-            floor = int(floor)
-            ceil = floor
-            break
+        branch, floor, ceil = questionnaire_single()
     else:
-        while True:
-            branch = input("BRANCH (ex. AAD): ")
-            if len(branch) != 3 or not branch.isalpha():
-                print("BRANCH MUST BE 3 LETTERS, TRY AGAIN")
-                continue
-            else:
-                break
-        while True:
-            try:
-                floor = int(input("INITIAL OS (0-998): "))
-            except ValueError:
-                continue
-            else:
-                if floor < 0:
-                    print("INITIAL < 0, TRY AGAIN")
-                    continue
-                elif floor > 998:
-                    print("INITIAL > 998, TRY AGAIN")
-                    continue
-                else:
-                    break
-        while True:
-            try:
-                ceil = int(input("FINAL OS (1-999): "))
-            except ValueError:
-                ceil = 999
-            else:
-                if ceil < floor:
-                    print("FINAL < INITIAL, TRY AGAIN")
-                    continue
-                elif ceil > 999:
-                    print("FINAL > 999, TRY AGAIN")
-                    continue
-                else:
-                    break
+        branch = questionnaire_branch()
+        floor = questionnaire_initial()
+        ceil = questionnaire_final(floor)
     famlist = jsonutils.load_json("droidfamilies")  # same here
     droidlookup_main(famlist[:2], branch, floor, ceil)
     decorators.enter_to_exit(True)
@@ -161,10 +196,8 @@ def droidlookup_main(device, branch, floor=0, ceil=999, method=None):
     :type method: str
     """
     scriptutils.slim_preamble("DROIDLOOKUP")
-    if isinstance(device, list):
-        print("DEVICE: ALL")
-    else:
-        print("DEVICE: {0}".format(device.upper()))
+    text = "DEVICE: ALL" if isinstance(device, list) else "DEVICE: {0}".format(device.upper())
+    print(text)
     sess = requests.Session()
     for ver in range(floor, ceil + 1):
         build = "{0}{1}".format(branch.upper(), str(ver).zfill(3))
