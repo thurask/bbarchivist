@@ -282,6 +282,37 @@ def move_bars(localdir, osdir, radiodir):
                     os.remove(bardest_radio)
 
 
+def replace_bar_pair(localdir, osfile, radfile):
+    """
+    Move pair of OS and radio bars to a given folder.
+
+    :param localdir: Final bar directory.
+    :type localdir: str
+
+    :param osfile: Path to OS file.
+    :type osfile: str
+
+    :param radfile: Path to radio file.
+    :type radfile: str
+    """
+    shutil.move(osfile, localdir)
+    shutil.move(radfile, localdir)
+
+
+def replace_bars_bulk(localdir, barfiles):
+    """
+    Move set of OS and radio bars to a given folder.
+
+    :param localdir: Final bar directory.
+    :type localdir: str
+
+    :param barfiles: List of OS/radio file paths.
+    :type barfiles: list(str)
+    """
+    for barfile in barfiles:
+        shutil.move(barfile, os.path.abspath(localdir))
+
+
 def make_folder(localdir, root):
     """
     Make a folder if it doesn't exist.

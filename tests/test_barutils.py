@@ -312,6 +312,10 @@ class TestClassBarutilsBarMover:
             targetfile.write("0" * 95000000)
         with open("SMALLBAR.bar", "w") as targetfile:
             targetfile.write("0" * 95000)
+        copyfile("BIGBAR.bar", "BIGBAR2.bar")
+        copyfile("BIGBAR.bar", "BIGBAR3.bar")
+        copyfile("SMALLBAR.bar", "SMALLBAR2.bar")
+        copyfile("SMALLBAR.bar", "SMALLBAR3.bar")
         bardir = os.path.join(os.getcwd(), "bars")
         bardir_os = os.path.join(bardir, "osversion")
         bardir_radio = os.path.join(bardir, "radioversion")
@@ -330,3 +334,23 @@ class TestClassBarutilsBarMover:
         """
         bars = os.path.join(os.getcwd(), "bars")
         assert "BIGBAR.bar" in os.listdir(os.path.join(bars, "osversion"))
+
+    def test_replace_bar_pair(self):
+        """
+        Test replacing single bar pair.
+        """
+        osfile = os.path.join(os.getcwd(), "bars", "osversion", "BIGBAR3.bar")
+        radfile = os.path.join(os.getcwd(), "bars", "radioversion", "SMALLBAR3.bar")
+        bb.replace_bar_pair(os.getcwd(), osfile, radfile)
+        assert all(x in os.listdir() for x in ["BIGBAR3.bar", "SMALLBAR3.bar"])
+
+    def test_replace_bars_bulk(self):
+        """
+        Test replacing multiple bar pairs.
+        """
+        os1 = os.path.join(os.getcwd(), "bars", "osversion", "BIGBAR.bar")
+        os2 = os.path.join(os.getcwd(), "bars", "osversion", "BIGBAR2.bar")
+        rad1 = os.path.join(os.getcwd(), "bars", "radioversion", "SMALLBAR.bar")
+        rad2 = os.path.join(os.getcwd(), "bars", "radioversion", "SMALLBAR2.bar")
+        bb.replace_bars_bulk(os.getcwd(), [os1, os2, rad1, rad2])
+        assert all(x in os.listdir() for x in ["BIGBAR2.bar", "SMALLBAR2.bar", "BIGBAR.bar", "SMALLBAR.bar"])

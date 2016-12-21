@@ -208,7 +208,7 @@ def archivist_checksw(baseurl, softwareversion, swchecked):
     scriptutils.check_sw(baseurl, softwareversion, swchecked)
 
 
-def archivist_download(download, osurls, radiourls, localdir, session):
+def archivist_download(download, osurls, radiourls, localdir, session, dirs):
     """
     Download function.
 
@@ -226,11 +226,19 @@ def archivist_download(download, osurls, radiourls, localdir, session):
 
     :param session: Requests session object, default is created on the fly.
     :type session: requests.Session()
+
+    :param dirs: List of generated bar/loader/zip directories.
+    :type dirs: list(str)
     """
+    osfiles = [os.path.join(localdir, dirs[0], os.path.basename(x)) for x in osurls]
+    radiofiles = [os.path.join(localdir, dirs[1], os.path.basename(x)) for x in radiourls]
     if download:
         print("BEGIN DOWNLOADING...")
         networkutils.download_bootstrap(radiourls + osurls, localdir, 3, session)
         print("ALL FILES DOWNLOADED")
+    elif all(os.path.exists(x) for x in osfiles+radiofiles):
+        print("USING CACHED OS/RADIO FILES...")
+        barutils.replace_bars_bulk(os.path.abspath(localdir), osfiles+radiofiles)
 
 
 def archivist_integritybars(integrity, osurls, radiourls, localdir):
@@ -611,7 +619,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     osurls = scriptutils.bulk_avail(osurls)
     radiourls = scriptutils.bulk_avail(radiourls)
     sess = requests.Session()
-    archivist_download(download, osurls, radiourls, localdir, sess)
+    archivist_download(download, osurls, radiourls, localdir, sess, dirs)
     archivist_integritybars(integrity, osurls, radiourls, localdir)
     archivist_extractbars(extract, localdir)
     archivist_integritysigned(extract, localdir)

@@ -234,16 +234,16 @@ def lazyloader_main(device, osversion, radioversion=None,
     osurl = radiourl = None
 
     # Create download URLs
-    if download:
-        baseurl = utilities.create_base_url(softwareversion)
-        if altsw:
-            alturl = utilities.create_base_url(altsw)
-        osurl, radiourl = utilities.generate_lazy_urls(softwareversion, osversion, radioversion, device)
-        if altsw:
-            radiourl = radiourl.replace(baseurl, alturl)
-        if core:
-            osurl = osurl.replace(".desktop", "")
+    baseurl = utilities.create_base_url(softwareversion)
+    if altsw:
+        alturl = utilities.create_base_url(altsw)
+    osurl, radiourl = utilities.generate_lazy_urls(softwareversion, osversion, radioversion, device)
+    if altsw:
+        radiourl = radiourl.replace(baseurl, alturl)
+    if core:
+        osurl = osurl.replace(".desktop", "")
 
+    if download:
         # Check availability of software releases
         scriptutils.check_sw(baseurl, softwareversion, swc)
         if altsw:
@@ -254,11 +254,19 @@ def lazyloader_main(device, osversion, radioversion=None,
         radiourl, radioversion = scriptutils.check_radio_single(radiourl, radioversion)
     dllist = [osurl, radiourl]
 
-    # Download files
+    # Check cached
+    osfile = os.path.join(localdir, bd_o, os.path.basename(osurl))
+    radfile = os.path.join(localdir, bd_r, os.path.basename(radiourl))
+
     if download:
+        # Download files
         print("DOWNLOADING...")
         sess = requests.Session()
         networkutils.download_bootstrap(dllist, outdir=localdir, workers=2, session=sess)
+    elif all(os.path.exists(x) for x in [osfile, radfile]):
+        # Already downloaded in previous session
+        print("USING CACHED OS/RADIO...")
+        barutils.replace_bar_pair(localdir, osfile, radfile)
 
     # Test bar files
     scriptutils.test_bar_files(localdir, dllist)
