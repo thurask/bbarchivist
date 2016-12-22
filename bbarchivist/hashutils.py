@@ -17,6 +17,28 @@ __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015-2016 Thurask"
 
 
+def zlibhash(filepath, method, blocksize=16 * 1024 * 1024):
+    """
+    Return zlib-based (i.e. CRC32/Adler32) checksum of a file.
+
+    :param filepath: File you wish to verify.
+    :type filepath: str
+
+    :param method: "crc32" or "adler32".
+    :type method: str
+
+    :param blocksize: How much of file to read at once. Default is 16MB.
+    :type blocksize: int
+    """
+    hashfunc = zlib.crc32 if method == "crc32" else zlib.adler32
+    seed = 0 if method == "crc32" else 1
+    with open(filepath, 'rb') as file:
+        for chunk in iter(lambda: file.read(blocksize), b''):
+            seed = hashfunc(chunk, seed)
+    final = format(seed & 0xFFFFFFFF, "08x")
+    return final
+
+
 def hc32(filepath, blocksize=16 * 1024 * 1024):
     """
     Return CRC32 checksum of a file.
@@ -24,15 +46,10 @@ def hc32(filepath, blocksize=16 * 1024 * 1024):
     :param filepath: File you wish to verify.
     :type filepath: str
 
-    :param blocksize: How much of file to read at once.
+    :param blocksize: How much of file to read at once. Default is 16MB.
     :type blocksize: int
     """
-    seed = 0
-    with open(filepath, 'rb') as file:
-        for chunk in iter(lambda: file.read(blocksize), b''):
-            seed = zlib.crc32(chunk, seed)
-    final = format(seed & 0xFFFFFFFF, "08x")
-    return final
+    return zlibhash(filepath, "crc32", blocksize)
 
 
 def ha32(filepath, blocksize=16 * 1024 * 1024):
@@ -42,20 +59,10 @@ def ha32(filepath, blocksize=16 * 1024 * 1024):
     :param filepath: File you wish to verify.
     :type filepath: str
 
-    :param blocksize: How much of file to read at once.
+    :param blocksize: How much of file to read at once. Default is 16MB.
     :type blocksize: int
     """
-    asum = 1
-    with open(filepath, 'rb') as file:
-        while True:
-            data = file.read(blocksize)
-            if not data:
-                break
-            asum = zlib.adler32(data, asum)
-            if asum < 0:
-                asum += 2 ** 32
-    final = format(asum & 0xFFFFFFFF, "08x")
-    return final
+    return zlibhash(filepath, "adler32", blocksize)
 
 
 def hs1(filepath, blocksize=16 * 1024 * 1024):
@@ -65,7 +72,7 @@ def hs1(filepath, blocksize=16 * 1024 * 1024):
     :param filepath: File you wish to verify.
     :type filepath: str
 
-    :param blocksize: How much of file to read at once.
+    :param blocksize: How much of file to read at once. Default is 16MB.
     :type blocksize: int
     """
     sha1 = hashlib.sha1()
@@ -80,7 +87,7 @@ def hs224(filepath, blocksize=16 * 1024 * 1024):
     :param filepath: File you wish to verify.
     :type filepath: str
 
-    :param blocksize: How much of file to read at once.
+    :param blocksize: How much of file to read at once. Default is 16MB.
     :type blocksize: int
     """
     sha224 = hashlib.sha224()
@@ -95,7 +102,7 @@ def hs256(filepath, blocksize=16 * 1024 * 1024):
     :param filepath: File you wish to verify.
     :type filepath: str
 
-    :param blocksize: How much of file to read at once.
+    :param blocksize: How much of file to read at once. Default is 16MB.
     :type blocksize: int
     """
     sha256 = hashlib.sha256()
@@ -110,7 +117,7 @@ def hs384(filepath, blocksize=16 * 1024 * 1024):
     :param filepath: File you wish to verify.
     :type filepath: str
 
-    :param blocksize: How much of file to read at once.
+    :param blocksize: How much of file to read at once. Default is 16MB.
     :type blocksize: int
     """
     sha384 = hashlib.sha384()
@@ -125,7 +132,7 @@ def hs512(filepath, blocksize=16 * 1024 * 1024):
     :param filepath: File you wish to verify.
     :type filepath: str
 
-    :param blocksize: How much of file to read at once.
+    :param blocksize: How much of file to read at once. Default is 16MB.
     :type blocksize: int
     """
     sha512 = hashlib.sha512()
@@ -140,7 +147,7 @@ def hs3224(filepath, blocksize=16 * 1024 * 1024):
     :param filepath: File you wish to verify.
     :type filepath: str
 
-    :param blocksize: How much of file to read at once.
+    :param blocksize: How much of file to read at once. Default is 16MB.
     :type blocksize: int
     """
     try:
@@ -159,7 +166,7 @@ def hs3256(filepath, blocksize=16 * 1024 * 1024):
     :param filepath: File you wish to verify.
     :type filepath: str
 
-    :param blocksize: How much of file to read at once.
+    :param blocksize: How much of file to read at once. Default is 16MB.
     :type blocksize: int
     """
     try:
@@ -178,7 +185,7 @@ def hs3384(filepath, blocksize=16 * 1024 * 1024):
     :param filepath: File you wish to verify.
     :type filepath: str
 
-    :param blocksize: How much of file to read at once.
+    :param blocksize: How much of file to read at once. Default is 16MB.
     :type blocksize: int
     """
     try:
@@ -197,7 +204,7 @@ def hs3512(filepath, blocksize=16 * 1024 * 1024):
     :param filepath: File you wish to verify.
     :type filepath: str
 
-    :param blocksize: How much of file to read at once.
+    :param blocksize: How much of file to read at once. Default is 16MB.
     :type blocksize: int
     """
     try:
@@ -216,7 +223,7 @@ def hm5(filepath, blocksize=16 * 1024 * 1024):
     :param filepath: File you wish to verify.
     :type filepath: str
 
-    :param blocksize: How much of file to read at once.
+    :param blocksize: How much of file to read at once. Default is 16MB.
     :type blocksize: int
     """
     md5 = hashlib.md5()
@@ -234,7 +241,7 @@ def hashfunc_reader(filepath, engine, blocksize=16 * 1024 * 1024):
     :param engine: Hash object to update with file contents.
     :type engine: _hashlib.HASH
 
-    :param blocksize: How much of file to read at once.
+    :param blocksize: How much of file to read at once. Default is 16MB.
     :type blocksize: int
     """
     with open(filepath, 'rb') as file:
@@ -255,7 +262,7 @@ def ssl_hash(filepath, method, blocksize=16 * 1024 * 1024):
     :param method: Method to use: algorithms in hashlib that are not guaranteed.
     :type method: str
 
-    :param blocksize: How much of file to read at once.
+    :param blocksize: How much of file to read at once. Default is 16MB.
     :type blocksize: int
     """
     try:
@@ -274,7 +281,7 @@ def hm4(filepath, blocksize=16 * 1024 * 1024):
     :param filepath: File you wish to verify.
     :type filepath: str
 
-    :param blocksize: How much of file to read at once.
+    :param blocksize: How much of file to read at once. Default is 16MB.
     :type blocksize: int
     """
     return ssl_hash(filepath, "md4", blocksize)
@@ -287,7 +294,7 @@ def hr160(filepath, blocksize=16 * 1024 * 1024):
     :param filepath: File you wish to verify.
     :type filepath: str
 
-    :param blocksize: How much of file to read at once.
+    :param blocksize: How much of file to read at once. Default is 16MB.
     :type blocksize: int
     """
     return ssl_hash(filepath, "ripemd160", blocksize)
@@ -300,7 +307,7 @@ def hwp(filepath, blocksize=16 * 1024 * 1024):
     :param filepath: File you wish to verify.
     :type filepath: str
 
-    :param blocksize: How much of file to read at once.
+    :param blocksize: How much of file to read at once. Default is 16MB.
     :type blocksize: int
     """
     return ssl_hash(filepath, "whirlpool", blocksize)
@@ -313,7 +320,7 @@ def hs0(filepath, blocksize=16 * 1024 * 1024):
     :param filepath: File you wish to verify.
     :type filepath: str
 
-    :param blocksize: How much of file to read at once.
+    :param blocksize: How much of file to read at once. Default is 16MB.
     :type blocksize: int
     """
     return ssl_hash(filepath, "sha", blocksize)
