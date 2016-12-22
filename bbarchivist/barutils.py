@@ -216,17 +216,29 @@ def move_loaders(ldir,
     arx = bbconstants.ARCS
     pfx = bbconstants.PREFIXES
     loaders = [os.path.join(ldir, file) for file in os.listdir(ldir) if utilities.prepends(file, pfx, ".exe")]
-    for file in loaders:
-        print("MOVING: {0}".format(os.path.basename(file)))
-        exedest_os = os.path.join(exedir_os, os.path.basename(file))
-        exedest_rad = os.path.join(exedir_rad, os.path.basename(file))
-        loader_sorter(file, exedest_os, exedest_rad)
+    move_loader_pairs(loaders, exedir_os, exedir_rad)
     zippeds = [os.path.join(ldir, file) for file in os.listdir(ldir) if utilities.prepends(file, pfx, arx)]
-    for file in zippeds:
+    move_loader_pairs(zippeds, zipdir_os, zipdir_rad)
+
+
+def move_loader_pairs(files, dir_os, dir_rad):
+    """
+    Move autoloaders to zipped/loaders directories.
+
+    :param files: List of autoloader files.
+    :type files: list(str)
+
+    :param dir_os: Large autoloader destination.
+    :type dir_os: str
+
+    :param dir_rad: Small autoloader destination.
+    :type dir_rad: str
+    """
+    for file in files:
         print("MOVING: {0}".format(os.path.basename(file)))
-        zipdest_os = os.path.join(zipdir_os, os.path.basename(file))
-        zipdest_rad = os.path.join(zipdir_rad, os.path.basename(file))
-        loader_sorter(file, zipdest_os, zipdest_rad)
+        dest_os = os.path.join(dir_os, os.path.basename(file))
+        dest_rad = os.path.join(dir_rad, os.path.basename(file))
+        loader_sorter(file, dest_os, dest_rad)
 
 
 def loader_sorter(file, osdir, raddir):
@@ -243,21 +255,9 @@ def loader_sorter(file, osdir, raddir):
     :type raddir: str
     """
     if os.path.getsize(file) > 90000000:
-        while True:
-            try:
-                shutil.move(file, osdir)
-            except shutil.Error:
-                os.remove(file)
-                continue
-            break
+        persistent_move(file, osdir)
     else:
-        while True:
-            try:
-                shutil.move(file, raddir)
-            except shutil.Error:
-                os.remove(file)
-                continue
-            break
+        persistent_move(file, raddir)
 
 
 def move_bars(localdir, osdir, radiodir):
@@ -276,19 +276,46 @@ def move_bars(localdir, osdir, radiodir):
     for files in os.listdir(localdir):
         if files.endswith(".bar"):
             print("MOVING: {0}".format(files))
-            bardest_os = os.path.join(osdir, files)
-            bardest_radio = os.path.join(radiodir, files)
-            # even the fattest radio is less than 90MB
-            if os.path.getsize(os.path.join(localdir, files)) > 90000000:
-                try:
-                    shutil.move(os.path.join(localdir, files), osdir)
-                except shutil.Error:
-                    os.remove(bardest_os)
+            herefile = os.path.join(localdir, files)
+            if os.path.getsize(herefile) > 90000000:  # 90MB, radios only up to 60
+                atomic_move(herefile, osdir)
             else:
-                try:
-                    shutil.move(os.path.join(localdir, files), radiodir)
-                except shutil.Error:
-                    os.remove(bardest_radio)
+                atomic_move(herefile, radiodir)
+
+
+def persistent_move(infile, outdir):
+    """
+    Move file to given folder, removing file if it exists in folder.
+
+    :param infile: Path to file to move.
+    :type infile: str
+
+    :param outdir: Directory to move to.
+    :type outdir: str
+    """
+    while True:
+        try:
+            shutil.move(infile, outdir)
+        except shutil.Error:
+            os.remove(infile)
+            continue
+        break
+
+
+def atomic_move(infile, outdir):
+    """
+    Move file to given folder, removing if things break.
+
+    :param infile: Path to file to move.
+    :type infile: str
+
+    :param outdir: Directory to move to.
+    :type outdir: str
+    """
+    try:
+        shutil.move(infile, outdir)
+    except shutil.Error:
+        os.remove(os.path.join(outdir, infile))
 
 
 def replace_bar_pair(localdir, osfile, radfile):
