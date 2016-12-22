@@ -477,6 +477,21 @@ def filefilter(file, workingdir, extras=()):
     return not (os.path.isdir(os.path.join(workingdir, file)) or file.endswith(bbconstants.SUPPS + extras))
 
 
+def prep_verifier(ldir, selective=False):
+    """
+    Prepare files for verifier function.
+
+    :param ldir: Path containing files you wish to verify.
+    :type ldir: str
+
+    :param selective: Filtering filenames/extensions. Default is false.
+    :type selective: bool
+    """
+    exts = (".txt",) if selective else ()
+    fxs = [os.path.join(ldir, afx) for afx in os.listdir(ldir) if filefilter(afx, ldir, exts)]
+    return fxs
+
+
 def verifier(ldir, kwargs=None, selective=False):
     """
     For all files in a directory, perform various hash/checksum functions.
@@ -487,12 +502,14 @@ def verifier(ldir, kwargs=None, selective=False):
 
     :param kwargs: Values. Refer to `:func:verifier_config_loader`.
     :type kwargs: dict
+
+    :param selective: Filtering filenames/extensions. Default is false.
+    :type selective: bool
     """
     kwargs = verifier_config_loader() if kwargs is None else kwargs
-    exts = (".txt",) if selective else ()
-    files = [os.path.join(ldir, file) for file in os.listdir(ldir) if filefilter(file, ldir, exts)]
-    with concurrent.futures.ThreadPoolExecutor(max_workers=utilities.workers(files)) as xec:
-        for file in files:
+    fxs = prep_verifier(ldir, selective)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=utilities.workers(fxs)) as xec:
+        for file in fxs:
             verifier_individual(xec, ldir, file, kwargs)
 
 
@@ -546,6 +563,32 @@ def gpgrunner(workingdir, keyid=None, pword=None, selective=False):
         gpgrunner_clean(gpg, workingdir, keyid, pword, selective)
 
 
+def prep_gpgkeyid(keyid=None):
+    """
+    Prepare GPG key ID.
+
+    :param keyid: Key to use. 8-character hexadecimal, with or without 0x.
+    :type keyid: str
+    """
+    return "0x" + keyid.upper() if not keyid.startswith("0x") else keyid.upper().replace("X", "x")
+
+
+def prep_gpgrunner(workingdir, keyid=None):
+    """
+    Prepare key and files for gpgrunner function.
+
+    :param workingdir: Path containing files you wish to verify.
+    :type workingdir: str
+
+    :param keyid: Key to use. 8-character hexadecimal, with or without 0x.
+    :type keyid: str
+    """
+    keyid = prep_gpgkeyid(keyid)
+    dirlist = os.listdir(workingdir)
+    files = [file for file in dirlist if filefilter(file, workingdir)]
+    return keyid, files
+
+
 def gpgrunner_clean(gpg, workingdir, keyid=None, pword=None, selective=False):
     """
     Run GPG signature generation after filtering out errors.
@@ -565,9 +608,7 @@ def gpgrunner_clean(gpg, workingdir, keyid=None, pword=None, selective=False):
     :param selective: Filtering filenames/extensions. Default is false.
     :type selective: bool
     """
-    keyid = "0x" + keyid.upper() if not keyid.startswith("0x") else keyid.upper().replace("X", "x")
-    dirlist = os.listdir(workingdir)
-    files = [file for file in dirlist if filefilter(file, workingdir)]
+    keyid, files = prep_gpgrunner(workingdir, keyid)    
     with concurrent.futures.ThreadPoolExecutor(max_workers=utilities.workers(files)) as xec:
         for file in files:
             gpgwriter(gpg, xec, file, workingdir, selective, keyid, pword)
