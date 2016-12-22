@@ -21,8 +21,7 @@ def ghetto_convert(intsize):
     :param intsize: Integer you wish to convert.
     :type intsize: int
     """
-    if not isinstance(intsize, int):
-        intsize = int(intsize)
+    intsize = int(intsize) if not isinstance(intsize, int) else intsize
     hexsize = format(intsize, '08x')  # '00AABBCC'
     newlist = [hexsize[i:i + 2] for i in range(0, len(hexsize), 2)]  # ['00', 'AA','BB','CC']
     newlist.reverse()
@@ -39,25 +38,10 @@ def make_sizes(filelist):
     :param filelist: List of 1-6 signed files.
     :type filelist: list(str)
     """
-    first = str(glob.glob(filelist[0])[0])
-    size1 = os.path.getsize(first)  # required
-    size2 = size3 = size4 = size5 = 0
-    if len(filelist) >= 2:
-        second = str(glob.glob(filelist[1])[0])
-        size2 = os.path.getsize(second)
-    if len(filelist) >= 3:
-        third = str(glob.glob(filelist[2])[0])
-        size3 = os.path.getsize(third)
-    if len(filelist) >= 4:
-        fourth = str(glob.glob(filelist[3])[0])
-        size4 = os.path.getsize(fourth)
-    if len(filelist) >= 5:
-        fifth = str(glob.glob(filelist[4])[0])
-        size5 = os.path.getsize(fifth)
-    return [size1, size2, size3, size4, size5]
+    return [os.path.getsize(x) if x else 0 for x in filelist]
 
 
-def make_starts(beginlength, capsize, pad, sizes, filecount):
+def make_starts(beginlength, capsize, pad, sizes):
     """
     Get list of starting positions for each signed file.
 
@@ -72,29 +56,13 @@ def make_starts(beginlength, capsize, pad, sizes, filecount):
 
     :param sizes: List of signed file sizes.
     :type sizes: list(int)
-
-    :param filecount: Number of signed files.
-    :type filecount: int
     """
-    firstoffset = beginlength + capsize
-    start1 = ghetto_convert(firstoffset)
-    start2 = start3 = start4 = start5 = start6 = pad * 8
-    if filecount >= 2:
-        secondoffset = firstoffset + sizes[0]  # start of second file
-        start2 = ghetto_convert(secondoffset)
-    if filecount >= 3:
-        thirdoffset = secondoffset + sizes[1]  # start of third file
-        start3 = ghetto_convert(thirdoffset)
-    if filecount >= 4:
-        fourthoffset = thirdoffset + sizes[2]  # start of fourth file
-        start4 = ghetto_convert(fourthoffset)
-    if filecount >= 5:
-        fifthoffset = fourthoffset + sizes[3]  # start of fifth file
-        start5 = ghetto_convert(fifthoffset)
-    if filecount == 6:
-        sixthoffset = fifthoffset + sizes[4]  # start of sixth file
-        start6 = ghetto_convert(sixthoffset)
-    return [start1, start2, start3, start4, start5, start6]
+    starts = [pad*8, pad*8, pad*8, pad*8, pad*8, pad*8]
+    offsets = [0, 0, 0, 0, 0, 0]
+    for idx, itm in enumerate(sizes):
+        offsets[idx] = beginlength+capsize if idx==0 else offsets[idx-1] + sizes[idx-1]
+        starts[idx] = ghetto_convert(offsets[idx])
+    return starts
 
 
 def make_offset(files, folder=None):
@@ -112,22 +80,21 @@ def make_offset(files, folder=None):
     folder = os.getcwd() if folder is None else folder
     capfile = utilities.grab_cap()
     filelist = [file for file in files if file]
-    filecount = len(filelist)
-    fcount = b'0' + bytes(str(filecount), 'ascii')
+    fcount = b'0' + bytes(str(len(filelist)), 'ascii')
     # immutable things
     scaff = b'at9dFE5LTEdOT0hHR0lTCxcKDR4MFFMtPiU6LT0zPjs6Ui88U05GTVFOSUdRTlFOT3BwcJzVxZec1cWXnNXFlw=='
     separator = base64.b64decode(scaff)
     password = binascii.unhexlify(b'0' * 160)
     pad = b'\x00'  # 1x, 2x or 8x
     filepad = binascii.unhexlify(fcount)  # 01-06
-    trailers = binascii.unhexlify(b'00' * (7 - filecount))  # 00, 1-6x
+    trailers = binascii.unhexlify(b'00' * (7 - len(filelist)))  # 00, 1-6x
     capsize = os.path.getsize(capfile)
-    if not filecount:  # we need at least one file
+    if not len(filelist):  # we need at least one file
         raise SystemExit
     sizes = make_sizes(filelist)
     # start of first file; length of cap + length of offset
     beginlength = len(separator) + len(password) + 64
-    starts = make_starts(beginlength, capsize, pad, sizes, filecount)
+    starts = make_starts(beginlength, capsize, pad, sizes)
     makeuplen = 64 - 6 * len(pad * 8) - 2 * len(pad * 2) - 2 * \
         len(pad) - len(trailers) - len(filepad)
     makeup = b'\x00' * makeuplen  # pad to match offset begin
