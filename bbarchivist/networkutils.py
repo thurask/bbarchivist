@@ -2,7 +2,10 @@
 """This module is used for network connections; APIs, downloading, etc."""
 
 import os  # filesystem read
-import xml.etree.ElementTree  # XML parsing
+try:
+    from defusedxml import ElementTree  # safer XML parsing
+except ImportError:
+    from xml.etree import ElementTree  # XML parsing
 import re  # regexes
 import concurrent.futures  # multiprocessing/threading
 import glob  # pem file lookup
@@ -202,7 +205,7 @@ def carrier_checker(mcc, mnc, session=None):
         mcc, mnc)
     user_agent = {'User-agent': 'AppWorld/5.1.0.60'}
     req = session.get(url, headers=user_agent)
-    root = xml.etree.ElementTree.fromstring(req.text)
+    root = ElementTree.fromstring(req.text)
     for child in root:
         if child.tag == "country":
             country = child.get("name")
@@ -362,7 +365,7 @@ def parse_carrier_xml(data, blitz=False):
     :param blitz: Whether or not to create a blitz package. False by default.
     :type blitz: bool
     """
-    root = xml.etree.ElementTree.fromstring(data)
+    root = ElementTree.fromstring(data)
     sw_exists = root.find('./data/content/softwareReleaseMetadata')
     swver = "N/A" if sw_exists is None else ""
     if sw_exists is not None:
@@ -417,8 +420,8 @@ def sr_lookup(osver, server, session=None):
     except (requests.exceptions.Timeout, requests.exceptions.ConnectionError):
         return "SR not in system"
     try:
-        root = xml.etree.ElementTree.fromstring(req.text)
-    except xml.etree.ElementTree.ParseError:
+        root = ElementTree.fromstring(req.text)
+    except ElementTree.ParseError:
         return "SR not in system"
     else:
         packages = root.findall('./data/content/')
@@ -499,7 +502,7 @@ def available_bundle_lookup(mcc, mnc, device, session=None):
     query += '</availableBundlesRequest>'
     header = {"Content-Type": "text/xml;charset=UTF-8"}
     req = session.post(server, headers=header, data=query)
-    root = xml.etree.ElementTree.fromstring(req.text)
+    root = ElementTree.fromstring(req.text)
     package = root.find('./data/content')
     bundlelist = [child.attrib["version"] for child in package]
     return bundlelist

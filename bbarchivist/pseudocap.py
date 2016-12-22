@@ -94,8 +94,7 @@ def make_offset(files, folder=None):
     # start of first file; length of cap + length of offset
     beginlength = len(separator) + len(password) + 64
     starts = make_starts(beginlength, capsize, pad, sizes)
-    makeuplen = 64 - 6 * len(pad * 8) - 2 * len(pad * 2) - 2 * \
-        len(pad) - len(trailers) - len(filepad)
+    makeuplen = 64 - 6 * len(pad * 8) - 2 * len(pad * 2) - 2 * len(pad) - len(trailers) - len(filepad)
     makeup = b'\x00' * makeuplen  # pad to match offset begin
     magicoffset = [separator, password, filepad, pad, pad, pad, starts[0], starts[1], starts[2], starts[3], starts[4], starts[5], pad, pad, pad, trailers, makeup]
     return b"".join(magicoffset)

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Generate .exe files with PyInstaller."""
 
 from os import remove, listdir, devnull, getcwd
 from os.path import join, basename
@@ -70,7 +71,10 @@ def get_sevenzip():
         raise SystemError
 
 
-if __name__ == "__main__":
+def main():
+    """
+    Create .exes with dynamic spec files.
+    """
     write_versions()
     generate_specs()
     specs = [x for x in listdir() if x.endswith(".spec")]
@@ -93,3 +97,7 @@ if __name__ == "__main__":
         rmtree("7z", ignore_errors=True)
     clean_versions()
     clean_specs()
+
+
+if __name__ == "__main__":
+    main()

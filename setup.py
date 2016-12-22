@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+"""Setuptools setup file."""
+
 from sys import version_info
 from setuptools import setup, find_packages
 import versioneer
@@ -9,45 +11,45 @@ def readme():
     Read ReST readme file, use as long description.
     """
     with open('README.rst') as file:
-        x = file.read()
-        x = x.replace("`LICENSE <LICENSE>`__", "LICENSE")
-        return x
+        data = file.read()
+        data = data.replace("`LICENSE <LICENSE>`__", "LICENSE")
+        return data
 
-cond_requires = [
-    'python-gnupg',
-    'beautifulsoup4'
-]
-if version_info[1] < 3:  # 3.2 and under
-    cond_requires.extend(['shutilwhich', 'requests==2.10'])
-else:  # 3.3+
-    cond_requires.extend(['simplejson', 'requests'])
-scriptlist = [
-    'bb-archivist=bbarchivist.scripts.archivist:grab_args',
-    'bb-lazyloader=bbarchivist.scripts.lazyloader:grab_args',
-    'bb-cchecker=bbarchivist.scripts.carrierchecker:grab_args',
-    'bb-certchecker=bbarchivist.scripts.certchecker:grab_args',
-    'bb-filehasher=bbarchivist.scripts.filehasher:filehasher_main',
-    'bb-escreens=bbarchivist.scripts.escreens:escreens_main',
-    'bb-linkgen=bbarchivist.scripts.linkgen:grab_args',
-    'bb-gpgrunner=bbarchivist.scripts.gpgrunner:gpgrunner_main',
-    'bb-autolookup=bbarchivist.scripts.autolookup:grab_args',
-    'bb-pseudocap=bbarchivist.scripts.pseudocap:pseudocap_main',
-    'bb-sqlexport=bbarchivist.scripts.sqlexport:grab_args',
-    'bb-kompressor=bbarchivist.scripts.kompressor:kompressor_main',
-    'bb-downloader=bbarchivist.scripts.downloader:grab_args',
-    'bb-kernchecker=bbarchivist.scripts.kernchecker:kernchecker_main',
-    'bb-cfp=bbarchivist.scripts.cfp:cfp_main',
-    'bb-cap=bbarchivist.scripts.cap:cap_main',
-    'bb-droidlookup=bbarchivist.scripts.droidlookup:grab_args',
-    'bb-metachecker=bbarchivist.scripts.metachecker:metachecker_main',
-    'bb-devloader=bbarchivist.scripts.devloader:grab_args',
-    'bb-swlookup=bbarchivist.scripts.swlookup:grab_args',
-    'bb-infogen=bbarchivist.scripts.infogenerator:infogenerator_main',
-    'bb-droidscraper=bbarchivist.scripts.droidscraper:droidscraper_main',
-    'bb-barlinker=bbarchivist.scripts.barlinker:barlinker_main'
-]
-
-if __name__ == "__main__":
+def main():
+    cond_requires = [
+        'python-gnupg',
+        'beautifulsoup4',
+        'defusedxml'
+    ]
+    if version_info[1] < 3:  # 3.2 and under
+        cond_requires.extend(['shutilwhich', 'requests==2.10'])
+    else:  # 3.3+
+        cond_requires.extend(['simplejson', 'requests'])
+    scriptlist = [
+        'bb-archivist=bbarchivist.scripts.archivist:grab_args',
+        'bb-lazyloader=bbarchivist.scripts.lazyloader:grab_args',
+        'bb-cchecker=bbarchivist.scripts.carrierchecker:grab_args',
+        'bb-certchecker=bbarchivist.scripts.certchecker:grab_args',
+        'bb-filehasher=bbarchivist.scripts.filehasher:filehasher_main',
+        'bb-escreens=bbarchivist.scripts.escreens:escreens_main',
+        'bb-linkgen=bbarchivist.scripts.linkgen:grab_args',
+        'bb-gpgrunner=bbarchivist.scripts.gpgrunner:gpgrunner_main',
+        'bb-autolookup=bbarchivist.scripts.autolookup:grab_args',
+        'bb-pseudocap=bbarchivist.scripts.pseudocap:pseudocap_main',
+        'bb-sqlexport=bbarchivist.scripts.sqlexport:grab_args',
+        'bb-kompressor=bbarchivist.scripts.kompressor:kompressor_main',
+        'bb-downloader=bbarchivist.scripts.downloader:grab_args',
+        'bb-kernchecker=bbarchivist.scripts.kernchecker:kernchecker_main',
+        'bb-cfp=bbarchivist.scripts.cfp:cfp_main',
+        'bb-cap=bbarchivist.scripts.cap:cap_main',
+        'bb-droidlookup=bbarchivist.scripts.droidlookup:grab_args',
+        'bb-metachecker=bbarchivist.scripts.metachecker:metachecker_main',
+        'bb-devloader=bbarchivist.scripts.devloader:grab_args',
+        'bb-swlookup=bbarchivist.scripts.swlookup:grab_args',
+        'bb-infogen=bbarchivist.scripts.infogenerator:infogenerator_main',
+        'bb-droidscraper=bbarchivist.scripts.droidscraper:droidscraper_main',
+        'bb-barlinker=bbarchivist.scripts.barlinker:barlinker_main'
+    ]
     setup(name='bbarchivist',
           version=versioneer.get_version().split("-")[0],
           cmdclass=versioneer.get_cmdclass(),
@@ -90,3 +92,6 @@ if __name__ == "__main__":
           include_package_data=True,
           install_requires=cond_requires,
           entry_points={'console_scripts': scriptlist})
+
+if __name__ == "__main__":
+    main()
