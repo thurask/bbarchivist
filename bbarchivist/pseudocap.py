@@ -3,7 +3,6 @@
 
 import os  # path work
 import binascii  # to hex and back again
-import glob  # filename matching
 import base64  # storage
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import utilities  # finding cap
@@ -59,8 +58,8 @@ def make_starts(beginlength, capsize, pad, sizes):
     """
     starts = [pad*8, pad*8, pad*8, pad*8, pad*8, pad*8]
     offsets = [0, 0, 0, 0, 0, 0]
-    for idx, itm in enumerate(sizes):
-        offsets[idx] = beginlength+capsize if idx==0 else offsets[idx-1] + sizes[idx-1]
+    for idx in range(len(sizes)):
+        offsets[idx] = beginlength+capsize if idx == 0 else offsets[idx-1] + sizes[idx-1]
         starts[idx] = ghetto_convert(offsets[idx])
     return starts
 
@@ -155,6 +154,25 @@ def make_autoloader(filename, files, folder=None):
     offset = make_offset(files, folder)
     filelist = [os.path.abspath(file) for file in files if file]
     print("CREATING: {0}".format(filename))
+    write_autoloader_guard(filename, folder, offset, filelist)
+
+
+def write_autoloader_guard(filename, folder, offset, filelist):
+    """
+    Try/except guard for writing autoloader.
+
+    :param filename: Name of autoloader.
+    :type filename: str
+
+    :param folder: Working folder.
+    :type folder: str
+
+    :param offset: Offset bytestring.
+    :type offset: bytes
+
+    :param filelist: List of absolute filepaths to write into autoloader.
+    :type filelist: list(str)
+    """
     try:
         write_autoloader(filename, folder, offset, filelist)
     except IOError as exc:
