@@ -123,6 +123,22 @@ def remove_empty_folders(a_folder):
             break
 
 
+def persistent_remove(afile):
+    """
+    Remove a file, and if it doesn't want to remove, keep at it.
+
+    :param afile: Path to file you want terminated with extreme prejudice.
+    :type afile: str
+    """
+    while True:
+        try:
+            os.remove(afile)
+        except PermissionError:
+            continue
+        else:
+            break
+
+
 def remove_signed_files(a_folder):
     """
     Remove signed files from a given folder.
@@ -130,18 +146,11 @@ def remove_signed_files(a_folder):
     :param a_folder: Target folder.
     :type a_folder: str
     """
-    files = [os.path.join(a_folder, file) for file in os.listdir(a_folder)]
-    files = [os.path.abspath(file) for file in files]
-    for file in files:
-        if file.endswith(".signed") and os.path.exists(file):
-            print("REMOVING: {0}".format(os.path.basename(file)))
-            while True:
-                try:
-                    os.remove(os.path.abspath(file))
-                except PermissionError:
-                    continue
-                else:
-                    break
+    files = [os.path.abspath(os.path.join(a_folder, file)) for file in os.listdir(a_folder)]
+    for afile in files:
+        if afile.endswith(".signed") and os.path.exists(afile):
+            print("REMOVING: {0}".format(os.path.basename(afile)))
+            persistent_remove(afile)
 
 
 def remove_unpacked_loaders(osdir, raddir, radios):

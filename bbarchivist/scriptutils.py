@@ -539,16 +539,38 @@ def prod_avail(results, mailer=False, osversion=None, password=None):
         baseurl = utilities.create_base_url(prel)
         avail = networkutils.availability(baseurl)
         is_avail = "Available" if avail else "Unavailable"
-        if avail and mailer:
-            sqlutils.prepare_sw_db()
-            if not sqlutils.check_exists(osversion, prel):
-                rad = utilities.increment(osversion, 1)
-                linkgen(osversion, rad, prel, temp=True)
-                smtputils.prep_email(osversion, prel, password)
+        prod_avail_mailprep(prel, avail, osversion, mailer, password)
     else:
         pav = "  "
         is_avail = "Unavailable"
     return prel, pav, is_avail
+
+
+def prod_avail_mailprep(prel, avail, osversion=None, mailer=False, password=None):
+    """
+    Do SQL/SMTP prep work after a good production lookup hit.
+
+    :param prel: Software lookup result.
+    :type prel: str
+
+    :param avail: If software lookup result is available for download.
+    :type avail: bool
+
+    :param osversion: OS version.
+    :type osversion: str
+
+    :param mailer: If we're mailing links. Default is false.
+    :type mailer: bool
+
+    :param password: Email password.
+    :type password: str
+    """
+    if avail and mailer:
+        sqlutils.prepare_sw_db()
+        if not sqlutils.check_exists(osversion, prel):
+            rad = utilities.increment(osversion, 1)
+            linkgen(osversion, rad, prel, temp=True)
+            smtputils.prep_email(osversion, prel, password)
 
 
 def linkgen(osversion, radioversion=None, softwareversion=None, altsw=None, temp=False, sdk=False):

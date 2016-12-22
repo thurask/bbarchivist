@@ -344,6 +344,30 @@ class TestClassScriptutilsSoftware:
             with mock.patch('builtins.input', mock.MagicMock(return_value="y")):
                 assert bs.check_radio_sw("http://qrrbrbirlbel.yu/", "10.3.2.2474", False) is None
 
+    def test_prod_avail_invalid(self):
+        """
+        Test production lookup, no software release.
+        """
+        assert bs.prod_avail({"p": "SR not in system"}) == ("SR not in system", "  ", "Unavailable")
+
+    def test_prod_avail_unavail(self):
+        """
+        Test production lookup, no software release.
+        """
+        with mock.patch('bbarchivist.networkutils.availability', mock.MagicMock(return_value=False)):
+            assert bs.prod_avail({"p": "10.3.3.1465"}) == ("10.3.3.1465", "PD", "Unavailable")
+
+    def test_prod_avail_avail(self):
+        """
+        Test production lookup, no software release.
+        """
+        with mock.patch('bbarchivist.networkutils.availability', mock.MagicMock(return_value=True)):
+            with mock.patch('bbarchivist.sqlutils.prepare_sw_db', mock.MagicMock(side_effect=None)):
+                with mock.patch('bbarchivist.sqlutils.check_exists', mock.MagicMock(return_value=False)):
+                    with mock.patch('bbarchivist.scriptutils.linkgen', mock.MagicMock(side_effect=None)):
+                        with mock.patch('bbarchivist.smtputils.prep_email', mock.MagicMock(side_effect=None)):
+                            assert bs.prod_avail({"p": "10.3.3.1465"}, mailer=True, osversion="10.3.3.2163") == ("10.3.3.1465", "PD", "Available")
+
 
 class TestClassScriptutilsIO:
     """
@@ -386,6 +410,14 @@ class TestClassScriptutilsIO:
         block = bs.autolookup_output("10.3.2.2639", "10.3.2.2474", "Available", avpack)
         assert "OS 10.3.2.2639 -" in block
 
+    def test_autolookup_output_sql(self):
+        """
+        Test autolookup output SQL handling.
+        """
+        with mock.patch('bbarchivist.sqlutils.prepare_sw_db', mock.MagicMock(side_effect=None)):
+            with mock.patch('bbarchivist.sqlutils.check_exists', mock.MagicMock(return_value=False)):
+                with mock.patch('bbarchivist.sqlutils.insert', mock.MagicMock(side_effect=None)):
+                    bs.autolookup_output_sql("10.3.2.2639", "10.3.2.2474", "Available", True)
 
 class TestClassScriptutilsURLCheck:
     """
@@ -798,6 +830,27 @@ class TestClassScriptutilsIntegrity:
         """
         with mock.patch('bbarchivist.networkutils.availability', mock.MagicMock(return_value=False)):
             assert bs.bulk_avail(["fake.url", "fakeurl.2"]) == []
+
+    def test_package_blitz_good(self):
+        """
+        Test packaging blitz, best case.
+        """
+        os.mkdir("blitzdir")
+        with mock.patch('bbarchivist.barutils.create_blitz', mock.MagicMock(side_effect=None)):
+            with mock.patch('bbarchivist.archiveutils.zip_verify', mock.MagicMock(return_value=True)):
+                bs.package_blitz("blitzdir", "BlitzSW")
+                assert "blitzdir" not in os.listdir()
+
+    def test_package_blitz_bad(self, capsys):
+        """
+        Test packaging Blitz, worst case.
+        """
+        os.mkdir("blitzdir")
+        with mock.patch('bbarchivist.barutils.create_blitz', mock.MagicMock(side_effect=None)):
+            with mock.patch('bbarchivist.archiveutils.zip_verify', mock.MagicMock(return_value=False)):
+                with pytest.raises(SystemExit):
+                    bs.package_blitz("blitzdir", "BlitzSW")
+                    assert "BLITZ FILE IS BROKEN" in capsys.readouterr()[0]
 
 
 class TestClassScriptutilsHash:

@@ -119,7 +119,6 @@ def enter_to_exit(checkfreeze=True):
     """
     greenlight = bool(getattr(sys, 'frozen', False)) if checkfreeze else True
     if greenlight:
-        print("")
         smeg = input("Press Enter to exit")
         if smeg or not smeg:
             raise SystemExit

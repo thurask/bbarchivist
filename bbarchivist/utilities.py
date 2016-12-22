@@ -240,6 +240,20 @@ def is_windows():
     return platform.system() == "Windows"
 
 
+def talkaprint(msg, talkative=False):
+    """
+    Print only if asked to.
+
+    :param msg: Message to print.
+    :type msg: str
+
+    :param talkative: Whether to output to screen. False by default.
+    :type talkative: bool
+    """
+    if talkative:
+        print(msg)
+
+
 def get_seven_zip(talkative=False):
     """
     Return name of 7-Zip executable.
@@ -261,8 +275,7 @@ def win_seven_zip(talkative=False):
     :param talkative: Whether to output to screen. False by default.
     :type talkative: bool
     """
-    if talkative:
-        print("CHECKING INSTALLED FILES...")
+    talkaprint("CHECKING INSTALLED FILES...", talkative)
     try:
         import winreg  # windows registry
         hk7z = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\\7-Zip")
@@ -270,11 +283,10 @@ def win_seven_zip(talkative=False):
     except OSError as exc:
         if talkative:
             exceptions.handle_exception(exc, xit=None)
-            print("TRYING LOCAL FILES...")
+        talkaprint("TRYING LOCAL FILES...", talkative)
         return win_seven_zip_local(talkative)
     else:
-        if talkative:
-            print("7ZIP USING INSTALLED FILES")
+        talkaprint("7ZIP USING INSTALLED FILES", talkative)
         return '"{0}"'.format(os.path.join(path[0], "7z.exe"))
 
 
@@ -286,22 +298,14 @@ def win_seven_zip_local(talkative=False):
     :param talkative: Whether to output to screen. False by default.
     :type talkative: bool
     """
-    listdir = os.listdir(os.getcwd())
-    filecount = 0
-    for i in listdir:
-        if i in ["7za.exe", "7za64.exe"]:
-            filecount += 1
+    filecount = len([x for x in os.listdir(os.getcwd()) if x in ["7za.exe", "7z.exe"]])
     if filecount == 2:
-        if talkative:
-            print("7ZIP USING LOCAL FILES")
-        if is_amd64():
-            return "7za64.exe"
-        else:
-            return "7za.exe"
+        talkaprint("7ZIP USING LOCAL FILES", talkative)
+        szexe = "7za.64.exe" if is_amd64() else "7za.exe"
     else:
-        if talkative:
-            print("NO LOCAL FILES")
-        return "error"
+        talkaprint("NO LOCAL FILES", talkative)
+        szexe = "error"
+    return szexe
 
 
 def get_core_count():
@@ -329,13 +333,10 @@ def prep_seven_zip_path(path, talkative=False):
     :type talkative: bool
     """
     if path is None:
-        if talkative:
-            print("NO 7ZIP")
-            print("PLEASE INSTALL p7zip")
+        talkaprint("NO 7ZIP\nPLEASE INSTALL p7zip", talkative)
         return False
     else:
-        if talkative:
-            print("7ZIP FOUND AT {0}".format(path))
+        talkaprint("7ZIP FOUND AT {0}".format(path), talkative)
         return True
 
 
@@ -349,8 +350,7 @@ def prep_seven_zip_posix(talkative=False):
     try:
         path = compat.where_which("7za")
     except ImportError:
-        if talkative:
-            print("PLEASE INSTALL SHUTILWHICH WITH PIP")
+        talkaprint("PLEASE INSTALL SHUTILWHICH WITH PIP", talkative)
         return False
     else:
         return prep_seven_zip_path(path, talkative)
@@ -484,8 +484,7 @@ def generate_urls(softwareversion, osversion, radioversion, core=False):
     osurls[2] = filter_1031(osurls[2], splitos, 5)
     osurls[3] = filter_1031(osurls[3], splitos, 6)
     if core:
-        for url in osurls:
-            coreurls.append(url.replace(".desktop", ""))
+        coreurls = [x.replace(".desktop", "") for x in osurls]
     return osurls, radiourls, coreurls
 
 
