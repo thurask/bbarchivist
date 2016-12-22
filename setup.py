@@ -16,6 +16,9 @@ def readme():
         return data
 
 def main():
+    """
+    Perform setuptools setup.
+    """
     cond_requires = [
         'python-gnupg',
         'beautifulsoup4',

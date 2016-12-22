@@ -64,10 +64,21 @@ def sz_compress(filepath, filename, szexe=None, strength=5, errors=False):
     fold = os.path.join(rawname, filename)
     cmd = '{0} a -mx{1} -m0=lzma2 -mmt{2} "{3}.7z" "{4}"'.format(szexe, strength,
                                                                  thr, filepath, fold)
-    with open(os.devnull, 'wb') as dnull:
-        excode = subprocess.call(cmd, stdout=dnull, stderr=subprocess.STDOUT, shell=True)
+    excode = sz_subprocess(cmd)
     if errors:
         print(szcodes[excode])
+
+
+def sz_subprocess(cmd):
+    """
+    Subprocess wrapper for 7-Zip commands.
+
+    :param cmd: Command to pass to subprocess.
+    :type cmd: str
+    """
+    with open(os.devnull, 'wb') as dnull:
+        output = subprocess.call(cmd, stdout=dnull, stderr=subprocess.STDOUT, shell=True)
+    return output
 
 
 def sz_verify(filepath, szexe=None):
@@ -82,9 +93,83 @@ def sz_verify(filepath, szexe=None):
     """
     filepath = os.path.abspath(filepath)
     cmd = '{0} t "{1}"'.format(szexe, filepath)
-    with open(os.devnull, 'wb') as dnull:
-        excode = subprocess.call(cmd, stdout=dnull, stderr=subprocess.STDOUT, shell=True)
+    excode = sz_subprocess(cmd)
     return excode == 0
+
+
+def generic_tarfile_verify(filepath, method):
+    """
+    Verify that a tar/tgz/tbz/txz file is valid and working.
+
+    :param filepath: Filename.
+    :type filepath: str
+
+    :param method: Tarfile read method.
+    :type method: str
+    """
+    if smart_is_tarfile(filepath):
+        with tarfile.open(filepath, method) as thefile:
+            mems = thefile.getmembers()
+        return False if not mems else True
+    else:
+        return False
+
+
+def generic_tarfile_compress(archivename, filename, method, strength=5):
+    """
+    Pack a file into an uncompressed/gzip/bzip2/LZMA tarfile.
+
+    :param archivename: Archive name.
+    :type archivename: str
+
+    :param filename: Name of file to pack into archive.
+    :type filename: str
+
+    :param method: Tarfile compress method.
+    :type method: str
+
+    :param strength: Compression strength. 5 is normal, 9 is ultra.
+    :type strength: int
+    """
+    nocomp = ["w:", "w:xz"]  # methods w/o compression: tar, tar.xz
+    generic_compresslevel(archivename, filename, method, strength) if method not in nocomp else generic_nocompresslevel(archivename, filename, method)
+
+
+def generic_compresslevel(archivename, filename, method, strength=5):
+    """
+    Pack a file into a gzip/bzip2 tarfile.
+
+    :param archivename: Archive name.
+    :type archivename: str
+
+    :param filename: Name of file to pack into archive.
+    :type filename: str
+
+    :param method: Tarfile compress method.
+    :type method: str
+
+    :param strength: Compression strength. 5 is normal, 9 is ultra.
+    :type strength: int
+    """
+    with tarfile.open(archivename, method, compresslevel=strength) as afile:
+        afile.add(filename, filter=None, arcname=os.path.basename(filename))
+
+
+def generic_nocompresslevel(archivename, filename, method):
+    """
+    Pack a file into an uncompressed/LZMA tarfile.
+
+    :param archivename: Archive name.
+    :type archivename: str
+
+    :param filename: Name of file to pack into archive.
+    :type filename: str
+
+    :param method: Tarfile compress method.
+    :type method: str
+    """
+    with tarfile.open(archivename, method) as afile:
+        afile.add(filename, filter=None, arcname=os.path.basename(filename))
 
 
 @decorators.timer
@@ -98,8 +183,7 @@ def tar_compress(filepath, filename):
     :param filename: Name of file to pack.
     :type filename: str
     """
-    with tarfile.open("{0}.tar".format(filepath), 'w:') as tfile:
-        tfile.add(filename, filter=None, arcname=os.path.basename(filename))
+    generic_tarfile_compress("{0}.tar".format(filepath), filename, "w:")
 
 
 def tar_verify(filepath):
@@ -109,12 +193,7 @@ def tar_verify(filepath):
     :param filepath: Filename.
     :type filepath: str
     """
-    if smart_is_tarfile(filepath):
-        with tarfile.open(filepath, "r:") as thefile:
-            mems = thefile.getmembers()
-        return False if not mems else True
-    else:
-        return False
+    return generic_tarfile_verify(filepath, "r:")
 
 
 @decorators.timer
@@ -131,8 +210,7 @@ def tgz_compress(filepath, filename, strength=5):
     :param strength: Compression strength. 5 is normal, 9 is ultra.
     :type strength: int
     """
-    with tarfile.open("{0}.tar.gz".format(filepath), 'w:gz', compresslevel=strength) as gzfile:
-        gzfile.add(filename, filter=None, arcname=os.path.basename(filename))
+    generic_tarfile_compress("{0}.tar.gz".format(filepath), filename, "w:gz", strength)
 
 
 def tgz_verify(filepath):
@@ -142,12 +220,7 @@ def tgz_verify(filepath):
     :param filepath: Filename.
     :type filepath: str
     """
-    if smart_is_tarfile(filepath):
-        with tarfile.open(filepath, "r:gz") as thefile:
-            mems = thefile.getmembers()
-        return False if not mems else True
-    else:
-        return False
+    return generic_tarfile_verify(filepath, "r:gz")
 
 
 @decorators.timer
@@ -164,8 +237,7 @@ def tbz_compress(filepath, filename, strength=5):
     :param strength: Compression strength. 5 is normal, 9 is ultra.
     :type strength: int
     """
-    with tarfile.open("{0}.tar.bz2".format(filepath), 'w:bz2', compresslevel=strength) as bzfile:
-        bzfile.add(filename, filter=None, arcname=os.path.basename(filename))
+    generic_tarfile_compress("{0}.tar.bz2".format(filepath), filename, "w:bz2", strength)
 
 
 def tbz_verify(filepath):
@@ -175,12 +247,7 @@ def tbz_verify(filepath):
     :param filepath: Filename.
     :type filepath: str
     """
-    if smart_is_tarfile(filepath):
-        with tarfile.open(filepath, "r:bz2") as thefile:
-            mems = thefile.getmembers()
-        return False if not mems else True
-    else:
-        return False
+    return generic_tarfile_verify(filepath, "r:bz2")
 
 
 @decorators.timer
@@ -197,8 +264,7 @@ def txz_compress(filepath, filename):
     if not utilities.new_enough(3):
         pass
     else:
-        with tarfile.open("{0}.tar.xz".format(filepath), 'w:xz') as xzfile:
-            xzfile.add(filename, filter=None, arcname=os.path.basename(filename))
+        generic_tarfile_compress("{0}.tar.xz".format(filepath), filename, "w:xz")
 
 
 def txz_verify(filepath):
@@ -211,12 +277,7 @@ def txz_verify(filepath):
     if not utilities.new_enough(3):
         return None
     else:
-        if smart_is_tarfile(filepath):
-            with tarfile.open(filepath, "r:xz") as thefile:
-                mems = thefile.getmembers()
-            return False if not mems else True
-        else:
-            return False
+        return generic_tarfile_verify(filepath, "r:xz")
 
 
 @decorators.timer

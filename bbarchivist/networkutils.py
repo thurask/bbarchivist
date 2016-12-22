@@ -4,7 +4,7 @@
 import os  # filesystem read
 try:
     from defusedxml import ElementTree  # safer XML parsing
-except ImportError:
+except (ImportError, AttributeError):
     from xml.etree import ElementTree  # XML parsing
 import re  # regexes
 import concurrent.futures  # multiprocessing/threading
