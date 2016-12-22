@@ -27,8 +27,6 @@ def setup_module(module):
         targetfile.write("Jackdaws love my big sphinx of quartz")
     with open("cap-3.11.0.27.dat", "w") as targetfile:
         targetfile.write("0" * 9500000)
-    bp.make_offset(["firstfile.signed"])
-    copyfile("offset.hex", "offset.tmp")
     fpath = os.path.abspath("firstfile.signed")
     bp.make_autoloader("loader1.exe", [fpath])
     bp.make_autoloader("loader2.exe", [fpath, fpath])
@@ -36,9 +34,6 @@ def setup_module(module):
     bp.make_autoloader("loader4.exe", [fpath, fpath, fpath, fpath])
     bp.make_autoloader("loader5.exe", [fpath, fpath, fpath, fpath, fpath])
     bp.make_autoloader("loader6.exe", [fpath, fpath, fpath, fpath, fpath, fpath])
-    copyfile("offset.tmp", "offset.hex")
-    if os.path.exists("offset.tmp"):
-        os.remove("offset.tmp")
 
 
 def teardown_module(module):
@@ -70,8 +65,7 @@ class TestClassPseudocap:
         """
         Test offset length.
         """
-        with open("offset.hex", "rb") as targetfile:
-            data = targetfile.read()
+        data = bp.make_offset(["firstfile.signed"])
         assert len(data) == 208
 
     def test_make_offset_hash(self):
@@ -79,9 +73,8 @@ class TestClassPseudocap:
         Test offset integrity.
         """
         shahash = sha512()
-        with open("offset.hex", "rb") as targetfile:
-            data = targetfile.read()
-            shahash.update(data)
+        data = bp.make_offset(["firstfile.signed"])
+        shahash.update(data)
         thehash = shahash.hexdigest()
         assert thehash == '8001a4814bff60f755d8e86a250fee517e983e54cdfc64964b2120f8ce0444ea786c441f0707f1a8a3ccda612281f6ee226264059833abcf8c910883564e8d32'
 

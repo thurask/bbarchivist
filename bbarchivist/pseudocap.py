@@ -99,7 +99,7 @@ def make_starts(beginlength, capsize, pad, sizes, filecount):
 
 def make_offset(files, folder=None):
     """
-    Create magic offset file for use in autoloader creation.
+    Create magic offset for use in autoloader creation.
     Cap.exe MUST match separator version.
     Version defined in :data:`bbarchivist.bbconstants.CAP.version`.
 
@@ -131,27 +131,27 @@ def make_offset(files, folder=None):
     makeuplen = 64 - 6 * len(pad * 8) - 2 * len(pad * 2) - 2 * \
         len(pad) - len(trailers) - len(filepad)
     makeup = b'\x00' * makeuplen  # pad to match offset begin
-    with open(os.path.join(folder, "offset.hex"), "wb") as file:
-        file.write(separator)
-        file.write(password)
-        file.write(filepad)
-        file.write(pad * 2)
-        file.write(pad)
-        file.write(starts[0])
-        file.write(starts[1])
-        file.write(starts[2])
-        file.write(starts[3])
-        file.write(starts[4])
-        file.write(starts[5])
-        file.write(pad)
-        file.write(pad * 2)
-        file.write(trailers)
-        file.write(makeup)
+    magicoffset = [separator, password, filepad, pad, pad, pad, starts[0], starts[1], starts[2], starts[3], starts[4], starts[5], pad, pad, pad, trailers, makeup]
+    return b"".join(magicoffset)
+
+
+def write_offset(inbytes, outfile):
+    """
+    Write to a file from the offset bytestring.
+
+    :param inbytes: Bytestring.
+    :type inbytes: bytes
+
+    :param outfile: Open (!!!) file handle. Output file.
+    :type outfile: str
+    """
+    print("WRITING MAGIC OFFSET")
+    outfile.write(inbytes)
 
 
 def write_4k(infile, outfile, text="FILE"):
     """
-    Write a file from another file, 4k bytes at a time.
+    Write to a file from another file, 4k bytes at a time.
 
     :param infile: Filename. Input file.
     :type infile: str
@@ -173,31 +173,48 @@ def write_4k(infile, outfile, text="FILE"):
 
 def make_autoloader(filename, files, folder=None):
     """
-    Write cap.exe, magic offset, signed files to a .exe file.
-    :func:`make_offset` is used to create the offset.
+    Prepare for creation of autoloader.
 
     :param filename: Name of autoloader.
     :type filename: str
 
-    :param files: List of 1-6 signed files.
+    :param files: List of 1-6 signed files to add into autoloader.
     :type files: list(str)
 
-    :param folder: Working folder. Optional. Default is local.
+    :param folder: Working folder. Optional, default is local.
     :type folder: str
     """
     folder = os.getcwd() if folder is None else folder
-    make_offset(files, folder)
+    offset = make_offset(files, folder)
     filelist = [os.path.abspath(file) for file in files if file]
     print("CREATING: {0}".format(filename))
     try:
-        with open(os.path.join(os.path.abspath(folder), filename), "wb") as autoloader:
-            capskel = "CAP VERSION {0}".format(bbconstants.CAP.version)
-            write_4k(os.path.normpath(utilities.grab_cap()), autoloader, capskel)
-            write_4k(os.path.join(folder, "offset.hex"), autoloader, "MAGIC OFFSET")
-            for file in filelist:
-                write_4k(file, autoloader)
+        write_autoloader(filename, folder, offset, filelist)
     except IOError as exc:
         print("Operation failed: {0}".format(exc.strerror))
     else:
         print("{0} FINISHED!".format(filename))
-    os.remove(os.path.join(folder, "offset.hex"))
+
+
+def write_autoloader(filename, folder, offset, filelist):
+    """
+    Write cap.exe, magic offset, and signed files to a .exe file.
+
+    :param filename: Name of autoloader.
+    :type filename: str
+
+    :param folder: Working folder.
+    :type folder: str
+
+    :param offset: Offset bytestring.
+    :type offset: bytes
+
+    :param filelist: List of absolute filepaths to write into autoloader.
+    :type filelist: list(str)
+    """
+    with open(os.path.join(os.path.abspath(folder), filename), "wb") as autoloader:
+        capskel = "CAP VERSION {0}".format(bbconstants.CAP.version)
+        write_4k(os.path.normpath(utilities.grab_cap()), autoloader, capskel)
+        write_offset(offset, autoloader)
+        for file in filelist:
+            write_4k(file, autoloader)
