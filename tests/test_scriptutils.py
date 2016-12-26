@@ -862,25 +862,25 @@ class TestClassScriptutilsHash:
         """
         Test no modifications to GPG credentials.
         """
-        with mock.patch('bbarchivist.hashutils.gpg_config_loader', mock.MagicMock(return_value=("12345678", "hunter2"))):
+        with mock.patch('bbarchivist.gpgutils.gpg_config_loader', mock.MagicMock(return_value=("12345678", "hunter2"))):
             assert bs.verify_gpg_credentials() == ("12345678", "hunter2")
 
     def test_gpgver_key(self):
         """
         Test lack of GPG key.
         """
-        with mock.patch('bbarchivist.hashutils.gpg_config_loader', mock.MagicMock(return_value=(None, "hunter2"))):
+        with mock.patch('bbarchivist.gpgutils.gpg_config_loader', mock.MagicMock(return_value=(None, "hunter2"))):
             with mock.patch('builtins.input', mock.MagicMock(return_value="y")):
-                with mock.patch('bbarchivist.hashutils.gpg_config_writer', mock.MagicMock(return_value=None)):
+                with mock.patch('bbarchivist.gpgutils.gpg_config_writer', mock.MagicMock(return_value=None)):
                     assert bs.verify_gpg_credentials() == ("0xy", "hunter2")
 
     def test_gpgver_pass(self):
         """
         Test lack of GPG pass.
         """
-        with mock.patch('bbarchivist.hashutils.gpg_config_loader', mock.MagicMock(return_value=("12345678", None))):
+        with mock.patch('bbarchivist.gpgutils.gpg_config_loader', mock.MagicMock(return_value=("12345678", None))):
             with mock.patch('builtins.input', mock.MagicMock(return_value="y")):
-                with mock.patch('bbarchivist.hashutils.gpg_config_writer', mock.MagicMock(return_value=None)):
+                with mock.patch('bbarchivist.gpgutils.gpg_config_writer', mock.MagicMock(return_value=None)):
                     with mock.patch('getpass.getpass', mock.MagicMock(return_value="hunter2")):
                         assert bs.verify_gpg_credentials() == ("12345678", "hunter2")
 
@@ -888,7 +888,7 @@ class TestClassScriptutilsHash:
         """
         Test lack of both, and not replacing them.
         """
-        with mock.patch('bbarchivist.hashutils.gpg_config_loader', mock.MagicMock(return_value=(None, None))):
+        with mock.patch('bbarchivist.gpgutils.gpg_config_loader', mock.MagicMock(return_value=(None, None))):
             with mock.patch('builtins.input', mock.MagicMock(return_value="n")):
                 assert bs.verify_gpg_credentials() == (None, None)
 
@@ -897,8 +897,8 @@ class TestClassScriptutilsHash:
         Test flag-based per-folder GPG verification.
         """
         dirs = (os.getcwd(), os.getcwd(), os.getcwd(), os.getcwd(), os.getcwd(), os.getcwd())
-        with mock.patch('bbarchivist.hashutils.gpg_config_loader', mock.MagicMock(return_value=("12345678", "hunter2"))):
-            with mock.patch('bbarchivist.hashutils.gpgrunner', mock.MagicMock(side_effect=None)):
+        with mock.patch('bbarchivist.gpgutils.gpg_config_loader', mock.MagicMock(return_value=("12345678", "hunter2"))):
+            with mock.patch('bbarchivist.gpgutils.gpgrunner', mock.MagicMock(side_effect=None)):
                 bs.bulk_verify(dirs, True, False, True)
                 assert True
 

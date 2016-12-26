@@ -76,6 +76,9 @@
     <Compile Include="bbarchivist\exceptions.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="bbarchivist\gpgutils.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="bbarchivist\hashutils.py">
       <SubType>Code</SubType>
     </Compile>
@@ -200,6 +203,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="tests\test_dummy.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="tests\test_gpgutils.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="tests\test_hashutils.py">

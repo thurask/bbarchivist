@@ -10,12 +10,6 @@ try:
 except ImportError:
     import mock
 import pytest
-try:
-    import gnupg
-except ImportError:
-    NOGNUPG = True
-else:
-    NOGNUPG = False
 from bbarchivist import hashutils as bh
 
 __author__ = "Thurask"
@@ -43,9 +37,9 @@ def teardown_module(module):
     rmtree("temp_hashutils", ignore_errors=True)
 
 
-class TestClasshashutils:
+class TestClassHashutils:
     """
-    Test hash/GnuPG utilities.
+    Test hash utilities.
     """
 
     def test_crc32(self):
@@ -368,118 +362,7 @@ class TestClasshashutils:
                 assert "SOMETHING WENT WRONG" in capsys.readouterr()[0]
 
 
-class GPGFileMock(object):
-    """Mock a gnupg.GPG instance."""
-
-    def sign_file(self, file, detach, keyid, passphrase, output):
-        """
-        "Sign a file".
-        """
-        print("MOCKED!")
-
-
-class TestClasshashutilsGPG:
-    """
-    Test GPG-related tools.
-    """
-
-    def test_gpgfile(self, capsys):
-        """
-        Test GnuPG signing.
-        """
-        envs = (os.getenv("TRAVIS", "false"), os.getenv("APPVEYOR", "false"))
-        if any(env for env in envs if env == "true"):
-            gpginst = GPGFileMock()
-            bh.gpgfile("tempfile.txt", gpginst, "asdasdad", "hunter2")
-            assert "MOCKED!" in capsys.readouterr()[0]
-        elif NOGNUPG:
-            pass
-        else:
-            gpgkey, gpgpass = bh.gpg_config_loader()
-            if gpgkey is None or gpgpass is None:
-                pass
-            else:
-                gpginst = gnupg.GPG()
-                # Note: if you get a "Unknown status message 'NEWSIG'" error, then look here:
-                # https://bitbucket.org/vinay.sajip/python-gnupg/issues/35/status-newsig-missing-in-verify
-                bh.gpgfile("tempfile.txt", gpginst, gpgkey, gpgpass)
-                with open("tempfile.txt.asc", "rb") as sig:
-                    try:
-                        verified = gpginst.verify_file(sig, 'tempfile.txt')
-                    except ValueError as exc:
-                        rep = str(exc)
-                        if "NEWSIG" not in rep:
-                            print(rep)
-                        else:
-                            pass
-                    else:
-                        assert verified
-
-    def test_gpgrunner(self):
-        """
-        Test batch GnuPG signing.
-        """
-        envs = (os.getenv("TRAVIS", "false"), os.getenv("APPVEYOR", "false"))
-        if any(env for env in envs if env == "true"):
-            pass
-        elif NOGNUPG:
-            pass
-        else:
-            gpgkey, gpgpass = bh.gpg_config_loader()
-            if gpgkey is None or gpgpass is None:
-                pass
-            else:
-                gpginst = gnupg.GPG()
-                bh.gpgrunner(os.getcwd(), gpgkey, gpgpass, False)
-                with open("tempfile.txt.asc", "rb") as sig:
-                    try:
-                        verified = gpginst.verify_file(sig, 'tempfile.txt')
-                    except ValueError as exc:
-                        rep = str(exc)
-                        if "NEWSIG" not in rep:
-                            print(rep)
-                        else:
-                            pass
-                    else:
-                        assert verified
-
-    def test_gpgrunner_ci(self):
-        """
-        Test batch GnuPG signing, just with Travis/Appveyor.
-        """
-        with mock.patch("concurrent.futures.ThreadPoolExecutor.submit", mock.MagicMock(side_effect=None)):
-            bh.gpgrunner(os.getcwd(), "12345678", "hunter2", False)
-            assert True
-
-    def test_gpgrunner_single(self):
-        """
-        Test GPGRunner, but with just one file (ThreadPoolExecutor worker count).
-        """
-        for file in os.listdir():
-            if any(char.isdigit() for char in file):
-                os.remove(file)
-        self.test_gpgrunner()
-
-    def test_gpgrunner_unavail(self, capsys):
-        """
-        Test GPGRunner raising ValueError, i.e. GnuPG not found.
-        """
-        with mock.patch("gnupg.GPG", mock.MagicMock(side_effect=ValueError)):
-            with pytest.raises(SystemExit):
-                bh.gpgrunner(os.getcwd(), "12345678", "hunter2", False)
-                assert "COULD NOT FIND GnuPG" in capsys.readouterr()[0]
-
-    def test_gpgrunner_failure(self, capsys):
-        """
-        Test GPGRunner going wrong during the process.
-        """
-        with mock.patch("concurrent.futures.ThreadPoolExecutor.submit", mock.MagicMock(side_effect=Exception)):
-            with pytest.raises(SystemExit):
-                bh.gpgrunner(os.getcwd(), "12345678", "hunter2", False)
-                assert "SOMETHING WENT WRONG" in capsys.readouterr()[0]
-
-
-class TestClasshashutilsConfig:
+class TestClassHashutilsConfig:
     """
     Test reading/writing configs with ConfigParser.
     """
@@ -533,40 +416,3 @@ class TestClasshashutilsConfig:
                             mock.MagicMock(return_value=hash2)):
                 bh.verifier_config_writer()
             assert bh.verifier_config_loader() == hash2
-
-    def test_gpg_loader_empty(self):
-        """
-        Test reading GPG settings on empty.
-        """
-        try:
-            os.remove("bbarchivist.ini")
-        except (OSError, IOError):
-            pass
-        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
-            assert bh.gpg_config_loader() == (None, None)
-
-    def test_gpg_loader_loaded(self):
-        """
-        Test reading GPG settings when completed.
-        """
-        config = ConfigParser()
-        open("bbarchivist.ini", 'w').close()
-        config.read("bbarchivist.ini")
-        config['gpgrunner'] = {}
-        config['gpgrunner']['key'] = "0xDEADBEEF"
-        config['gpgrunner']['pass'] = "hunter2"
-        with open("bbarchivist.ini", "w") as configfile:
-            config.write(configfile)
-        assert bh.gpg_config_loader(os.getcwd()) == ("0xDEADBEEF", "hunter2")
-
-    def test_gpg_writer(self):
-        """
-        Test writing GPG settings.
-        """
-        try:
-            os.remove("bbarchivist.ini")
-        except (OSError, IOError):
-            pass
-        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
-            bh.gpg_config_writer("0xDEADF00D", "swordfish")
-            assert bh.gpg_config_loader() == ("0xDEADF00D", "swordfish")

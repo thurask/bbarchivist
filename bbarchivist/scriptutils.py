@@ -14,7 +14,8 @@ from bbarchivist import utilities  # little things
 from bbarchivist import barutils  # file system work
 from bbarchivist import archiveutils  # archive support
 from bbarchivist import bbconstants  # constants
-from bbarchivist import hashutils  # gpg
+from bbarchivist import gpgutils  # gpg
+from bbarchivist import hashutils  # file hashes
 from bbarchivist import networkutils  # network tools
 from bbarchivist import textgenerator  # writing text to file
 from bbarchivist import smtputils  # email
@@ -876,7 +877,7 @@ def verify_gpg_credentials():
     """
     Read GPG key/pass from file, verify if incomplete.
     """
-    gpgkey, gpgpass = hashutils.gpg_config_loader()
+    gpgkey, gpgpass = gpgutils.gpg_config_loader()
     if gpgkey is None or gpgpass is None:
         print("NO PGP KEY/PASS FOUND")
         cont = utilities.s2b(input("CONTINUE (Y/N)?: "))
@@ -891,7 +892,7 @@ def verify_gpg_credentials():
             else:
                 writebool = False
             gpgpass2 = gpgpass if writebool else None
-            hashutils.gpg_config_writer(gpgkey, gpgpass2)
+            gpgutils.gpg_config_writer(gpgkey, gpgpass2)
         else:
             gpgkey = None
     return gpgkey, gpgpass
@@ -948,13 +949,13 @@ def bulk_verify(dirs, compressed=True, deleted=True, radios=True):
         print("VERIFYING LOADERS...")
         print("KEY: {0}".format(gpgkey))
         if compressed:
-            hashutils.gpgrunner(dirs[4], gpgkey, gpgpass, True)
+            gpgutils.gpgrunner(dirs[4], gpgkey, gpgpass, True)
             if radios:
-                hashutils.gpgrunner(dirs[5], gpgkey, gpgpass, True)
+                gpgutils.gpgrunner(dirs[5], gpgkey, gpgpass, True)
         if not deleted:
-            hashutils.gpgrunner(dirs[2], gpgkey, gpgpass, True)
+            gpgutils.gpgrunner(dirs[2], gpgkey, gpgpass, True)
             if radios:
-                hashutils.gpgrunner(dirs[3], gpgkey, gpgpass, True)
+                gpgutils.gpgrunner(dirs[3], gpgkey, gpgpass, True)
 
 
 def enn_ayy(quant):
