@@ -194,9 +194,7 @@ def format_suffix(altradio=None, radioversion=None, core=False):
     return suffix
 
 
-def generate_loaders(
-        osversion, radioversion, radios=True,
-        localdir=None, altradio=False, core=False):
+def generate_loaders(osversion, radioversion, radios=True, localdir=None, altradio=False, core=False):
     """
     Create and label autoloaders for :mod:`bbarchivist.scripts.archivist`.
 
@@ -227,6 +225,34 @@ def generate_loaders(
     # Generate loaders
     print("CREATING LOADERS...")
     filtrad = [rad for rad in filedict.keys() if rad]  # pop None
+    generate_individual_loaders(filtrad, osversion, radioversion, suffix, filedict, radios, localdir)
+
+
+def generate_individual_loaders(filtrad, osversion, radioversion, suffix, filedict, radios, localdir):
+    """
+    Generate individual loaders when generating several at once.
+
+    :param filtrad: List of radio files, if they exist.
+    :type filtrad: list(str)
+
+    :param osversion: OS version, 10.x.y.zzzz.
+    :type osversion: str
+
+    :param radioversion: Radio version, 10.x.y.zzzz.
+    :type radioversion: str
+
+    :param suffix: Alternate radio, or blank.
+    :type suffix: str
+
+    :param filedict: Dictionary of radio:OS pairs.
+    :type filedict: dict(str: str)
+
+    :param radios: Whether to make radios or not. True by default.
+    :type radios: bool
+
+    :param localdir: Working path. Default is local dir.
+    :type localdir: str
+    """
     for radval in filtrad:
         device = generate_device(radval)
         osname = generate_filename(device, osversion, suffix)
@@ -236,6 +262,7 @@ def generate_loaders(
         if radios:
             radname = generate_filename(device, radioversion, "")
             wrap_pseudocap(radname, localdir, radval)
+
 
 
 def wrap_pseudocap(filename, folder, first, second=None):
@@ -286,14 +313,9 @@ def generate_device(radio):
     """
     data = jsonutils.load_json('integermap')
     for key in data:
-        if not key['special'] and key['radtype'] in radio:
+        if key['radtype'] in radio:
             idx = int(key['id'])
             break
-        else:
-            targs = (key['special'], key['radtype'])
-            if all(idx in radio for idx in targs):
-                idx = int(key['id'])
-                break
     return idx
 
 

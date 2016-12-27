@@ -5,6 +5,7 @@ import os  # filesystem read
 import subprocess  # invocation of 7z, cap
 import zipfile  # zip compresssion
 import tarfile  # txz/tbz/tgz/tar compression
+from bbarchivist import barutils  # zip tester
 from bbarchivist import utilities  # platform determination
 from bbarchivist import bbconstants  # premade stuff
 from bbarchivist import decorators  # timer
@@ -306,11 +307,7 @@ def zip_verify(filepath):
     :type filepath: str
     """
     if zipfile.is_zipfile(filepath):
-        try:
-            with zipfile.ZipFile(filepath, "r") as zfile:
-                brokens = zfile.testzip()
-        except zipfile.BadZipFile:
-            brokens = filepath
+        brokens = barutils.bar_tester(filepath)
         return brokens != filepath
     else:
         return False

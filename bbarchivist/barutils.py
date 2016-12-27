@@ -25,15 +25,79 @@ def extract_bars(filepath):
     """
     try:
         for file in os.listdir(filepath):
-            if file.endswith(".bar"):
-                print("EXTRACTING: {0}".format(file))
-                zfile = zipfile.ZipFile(os.path.join(filepath, file), 'r')
-                names = zfile.namelist()
-                for name in names:
-                    if str(name).endswith(".signed"):
-                        zfile.extract(name, filepath)
+            extract_individual_bar(file, filepath)
     except (RuntimeError, OSError) as exc:
         exceptions.handle_exception(exc, "EXTRACTION FAILURE", None)
+
+
+def extract_individual_bar(file, filepath):
+    """
+    Generate bar file contents and extract signed files.
+
+    :param file: Bar file to extract.
+    :type file: str
+
+    :param filepath: Path to bar file directory.
+    :type filepath: str
+    """
+    if file.endswith(".bar"):
+        print("EXTRACTING: {0}".format(file))
+        zfile = zipfile.ZipFile(os.path.join(filepath, file), 'r')
+        names = zfile.namelist()
+        extract_signed_file(zfile, names, filepath)
+
+
+def extract_signed_file(zfile, names, filepath):
+    """
+    Extract signed file from a provided bar.
+
+    :param zfile: Open (!!!) ZipFile instance.
+    :type zfile: zipfile.ZipFile
+
+    :param names: List of bar file contents.
+    :type names: list(str)
+
+    :param filepath: Path to bar file directory.
+    :type filepath: str
+    """
+    for name in names:
+        if str(name).endswith(".signed"):
+            zfile.extract(name, filepath)
+
+
+def get_sha512_manifest(zfile):
+    """
+    Get MANIFEST.MF from a bar file.
+
+    :param zfile: Open (!!!) ZipFile instance.
+    :type zfile: zipfile.ZipFile
+    """
+    names = zfile.namelist()
+    manifest = None
+    for name in names:
+        if name.endswith("MANIFEST.MF"):
+            manifest = name
+            break
+    if manifest is None:
+        raise SystemExit
+    return manifest
+
+
+def get_sha512_from_manifest(manf):
+    """
+    Retrieve asset name and hash from MANIFEST.MF file.
+
+    :param manf: Content of MANIFEST.MF file, in bytes.
+    :type manf: list(bytes)
+    """
+    alist = []
+    for idx, line in enumerate(manf):
+        if line.endswith(b"signed"):
+            alist.append(manf[idx])
+            alist.append(manf[idx + 1])
+    assetname = alist[0].split(b": ")[1]
+    assethash = alist[1].split(b": ")[1]
+    return assetname, assethash
 
 
 def retrieve_sha512(filename):
@@ -45,22 +109,9 @@ def retrieve_sha512(filename):
     """
     try:
         zfile = zipfile.ZipFile(filename, 'r')
-        names = zfile.namelist()
-        manifest = None
-        for name in names:
-            if name.endswith("MANIFEST.MF"):
-                manifest = name
-                break
-        if manifest is None:
-            raise SystemExit
+        manifest = get_sha512_manifest(zfile)
         manf = zfile.read(manifest).splitlines()
-        alist = []
-        for idx, line in enumerate(manf):
-            if line.endswith(b"signed"):
-                alist.append(manf[idx])
-                alist.append(manf[idx + 1])
-        assetname = alist[0].split(b": ")[1]
-        assethash = alist[1].split(b": ")[1]
+        assetname, assethash = get_sha512_from_manifest(manf)
         return assetname, assethash  # (b"blabla.signed", b"somehash")
     except (RuntimeError, OSError, zipfile.BadZipFile) as exc:
         exceptions.handle_exception(exc, "EXTRACTION FAILURE", None)
@@ -239,6 +290,25 @@ def move_loader_pairs(files, dir_os, dir_rad):
         loader_sorter(file, dest_os, dest_rad)
 
 
+def dirsizer(file, osdir, raddir, maxsize=90 * 1000 * 1000):
+    """
+    Return output directory based in input filesize.
+
+    :param file: The file to sort. Absolute paths, please.
+    :type file: str
+
+    :param osdir: Large file destination.
+    :type osdir: str
+
+    :param raddir: Small file destination.
+    :type raddir: str
+
+    :param maxsize: Return osdir if filesize > maxsize else raddir. Default is 90MB.
+    :type maxsize: int
+    """
+    return osdir if os.path.getsize(file) > maxsize else raddir
+
+
 def loader_sorter(file, osdir, raddir):
     """
     Sort loaders based on size.
@@ -252,10 +322,8 @@ def loader_sorter(file, osdir, raddir):
     :param raddir: Small file destination.
     :type raddir: str
     """
-    if os.path.getsize(file) > 90000000:
-        persistent_move(file, osdir)
-    else:
-        persistent_move(file, raddir)
+    outdir = dirsizer(file, osdir, raddir)
+    persistent_move(file, outdir)
 
 
 def move_bars(localdir, osdir, radiodir):
@@ -275,10 +343,8 @@ def move_bars(localdir, osdir, radiodir):
         if files.endswith(".bar"):
             print("MOVING: {0}".format(files))
             herefile = os.path.join(localdir, files)
-            if os.path.getsize(herefile) > 90000000:  # 90MB, radios only up to 60
-                atomic_move(herefile, osdir)
-            else:
-                atomic_move(herefile, radiodir)
+            outdir = dirsizer(files, osdir, radiodir)
+            atomic_move(files, outdir)
 
 
 def persistent_move(infile, outdir):
