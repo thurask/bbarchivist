@@ -74,13 +74,13 @@ class TestClassScriptutils:
         """
         assert bs.return_radio_version("10.3.2.2639") == "10.3.2.2640"
 
-    def test_purge_dross(self):
+    def test_clean_barlist(self):
         """
         Test excluding useless garbage from a list of apps.
         """
         craplist = ["retaildemo", "nuance", "pajeetmyson"]
         apps = ["os.bar", "radio.bar", "retaildemo.bar", "nuance_common.bar"]
-        assert bs.purge_dross(apps, craplist) == apps[:2]
+        assert bs.clean_barlist(apps, craplist) == apps[:2]
 
     def test_blitz_links(self):
         """

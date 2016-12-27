@@ -292,7 +292,7 @@ def carrierchecker_selective(files, selective=False):
     """
     if selective:
         craplist = jsonutils.load_json("apps_to_remove")
-        files = scriptutils.purge_dross(files, craplist)
+        files = scriptutils.clean_barlist(files, craplist)
     return files
 
 

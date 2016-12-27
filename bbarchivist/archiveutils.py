@@ -132,7 +132,10 @@ def generic_tarfile_compress(archivename, filename, method, strength=5):
     :type strength: int
     """
     nocomp = ["w:", "w:xz"]  # methods w/o compression: tar, tar.xz
-    generic_compresslevel(archivename, filename, method, strength) if method not in nocomp else generic_nocompresslevel(archivename, filename, method)
+    if method in nocomp:
+        generic_nocompresslevel(archivename, filename, method)
+    else:
+        generic_compresslevel(archivename, filename, method, strength)
 
 
 def generic_compresslevel(archivename, filename, method, strength=5):

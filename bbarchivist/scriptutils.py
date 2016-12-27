@@ -726,6 +726,59 @@ def autolookup_output(osversion, swrelease, avail, avpack, sql=False):
     return out
 
 
+def clean_barlist(cleanfiles, stoppers):
+    """
+    Remove certain bars from barlist based on keywords.
+
+    :param cleanfiles: List of files to clean.
+    :type cleanfiles: list(str)
+
+    :param stoppers: List of keywords (i.e. bar names) to exclude.
+    :type stoppers: list(str)
+    """
+    finals = [link for link in cleanfiles if all(word not in link for word in stoppers)]
+    return finals
+
+
+def prep_export_cchecker(files, npc, hwid, osv, radv, swv, upgrade=False, forced=None):
+    """
+    Prepare carrierchecker lookup links to write to file.
+
+    :param files: List of file URLs.
+    :type files: list(str)
+
+    :param npc: MCC + MNC (ex. 302220).
+    :type npc: int
+
+    :param hwid: Device hardware ID.
+    :type hwid: str
+
+    :param osv: OS version.
+    :type osv: str
+
+    :param radv: Radio version.
+    :type radv: str
+
+    :param swv: Software release.
+    :type swv: str
+
+    :param upgrade: Whether or not to use upgrade files. Default is false.
+    :type upgrade: bool
+
+    :param forced: Force a software release. None to go for latest.
+    :type forced: str
+    """
+    if not upgrade:
+        newfiles = networkutils.carrier_query(npc, hwid, True, False, forced)
+        cleanfiles = newfiles[3]
+    else:
+        cleanfiles = files
+    osurls, coreurls, radiourls = textgenerator.url_gen(osv, radv, swv)
+    stoppers = ["8960", "8930", "8974", "m5730", "winchester"]
+    finals = clean_barlist(cleanfiles, stoppers)
+    return osurls, coreurls, radiourls, finals
+
+
 def export_cchecker(files, npc, hwid, osv, radv, swv, upgrade=False, forced=None):
     """
     Write carrierchecker lookup links to file.
@@ -755,14 +808,7 @@ def export_cchecker(files, npc, hwid, osv, radv, swv, upgrade=False, forced=None
     :type forced: str
     """
     if files:
-        if not upgrade:
-            newfiles = networkutils.carrier_query(npc, hwid, True, False, forced)
-            cleanfiles = newfiles[3]
-        else:
-            cleanfiles = files
-        osurls, coreurls, radiourls = textgenerator.url_gen(osv, radv, swv)
-        stoppers = ["8960", "8930", "8974", "m5730", "winchester"]
-        finals = [link for link in cleanfiles if all(word not in link for word in stoppers)]
+        osurls, coreurls, radiourls, finals = prep_export_cchecker(files, npc, hwid, osv, radv, swv, upgrade, forced)
         textgenerator.write_links(swv, osv, radv, osurls, coreurls, radiourls, True, True, finals)
         print("\nFINISHED!!!")
     else:
@@ -822,20 +868,6 @@ def package_blitz(bardir, swv):
         shutil.rmtree(bardir)
 
 
-def purge_dross(files, craplist):
-    """
-    Get rid of Nuance/retaildemo apps in a list of apps.
-
-    :param files: List of URLs to clean.
-    :type files: list(str)
-
-    :param craplist: List of fragments to check for and remove.
-    :type craplist: list(str)
-    """
-    files2 = [file for file in files if all(word not in file for word in craplist)]
-    return files2
-
-
 def slim_preamble(appname):
     """
     Standard app name header.
@@ -882,20 +914,42 @@ def verify_gpg_credentials():
         print("NO PGP KEY/PASS FOUND")
         cont = utilities.s2b(input("CONTINUE (Y/N)?: "))
         if cont:
-            if gpgkey is None:
-                gpgkey = input("PGP KEY (0x12345678): ")
-                if not gpgkey.startswith("0x"):
-                    gpgkey = "0x{0}".format(gpgkey)   # add preceding 0x
-            if gpgpass is None:
-                gpgpass = getpass.getpass(prompt="PGP PASSPHRASE: ")
-                writebool = utilities.s2b(input("SAVE PASSPHRASE (Y/N)?:"))
-            else:
-                writebool = False
+            gpgkey = verify_gpg_key(gpgkey)
+            gpgpass, writebool = verify_gpg_pass(gpgpass)
             gpgpass2 = gpgpass if writebool else None
             gpgutils.gpg_config_writer(gpgkey, gpgpass2)
         else:
             gpgkey = None
     return gpgkey, gpgpass
+
+
+def verify_gpg_key(gpgkey=None):
+    """
+    Verify GPG key.
+
+    :param gpgkey: Key, use None to take from input.
+    :type gpgkey: str
+    """
+    if gpgkey is None:
+        gpgkey = input("PGP KEY (0x12345678): ")
+        if not gpgkey.startswith("0x"):
+            gpgkey = "0x{0}".format(gpgkey)   # add preceding 0x
+    return gpgkey
+
+
+def verify_gpg_pass(gpgpass=None):
+    """
+    Verify GPG passphrase.
+
+    :param gpgpass: Passphrase, use None to take from input.
+    :type gpgpass: str
+    """
+    if gpgpass is None:
+        gpgpass = getpass.getpass(prompt="PGP PASSPHRASE: ")
+        writebool = utilities.s2b(input("SAVE PASSPHRASE (Y/N)?:"))
+    else:
+        writebool = False
+    return gpgpass, writebool
 
 
 def bulk_hash(dirs, compressed=True, deleted=True, radios=True, hashdict=None):
@@ -918,14 +972,9 @@ def bulk_hash(dirs, compressed=True, deleted=True, radios=True, hashdict=None):
     :type hashdict: dict({str: bool})
     """
     print("HASHING LOADERS...")
-    if compressed:
-        hashutils.verifier(dirs[4], hashdict)
-        if radios:
-            hashutils.verifier(dirs[5], hashdict)
-    if not deleted:
-        hashutils.verifier(dirs[2], hashdict)
-        if radios:
-            hashutils.verifier(dirs[3], hashdict)
+    goargs = [dirs[4], dirs[5], dirs[2], dirs[3]]
+    restargs = [hashdict]
+    utilities.cond_check(hashutils.verifier, goargs, restargs, radios, compressed, deleted)
 
 
 def bulk_verify(dirs, compressed=True, deleted=True, radios=True):
@@ -948,14 +997,9 @@ def bulk_verify(dirs, compressed=True, deleted=True, radios=True):
     if gpgpass is not None and gpgkey is not None:
         print("VERIFYING LOADERS...")
         print("KEY: {0}".format(gpgkey))
-        if compressed:
-            gpgutils.gpgrunner(dirs[4], gpgkey, gpgpass, True)
-            if radios:
-                gpgutils.gpgrunner(dirs[5], gpgkey, gpgpass, True)
-        if not deleted:
-            gpgutils.gpgrunner(dirs[2], gpgkey, gpgpass, True)
-            if radios:
-                gpgutils.gpgrunner(dirs[3], gpgkey, gpgpass, True)
+        goargs = [dirs[4], dirs[5], dirs[2], dirs[3]]
+        restargs = [gpgkey, gpgpass, True]
+        utilities.cond_check(gpgutils.gpgrunner, goargs, restargs, radios, compressed, deleted)
 
 
 def enn_ayy(quant):
@@ -996,6 +1040,26 @@ def info_header(afile, osver, radio=None, software=None, device=None):
     afile.write("{0}\n".format("~"*40))
 
 
+def prep_info(filepath, osver, device=None):
+    """
+    Prepare file list for new-style info file.
+
+    :param filepath: Path to folder to analyze.
+    :type filepath: str
+
+    :param osver: OS version, required for both types.
+    :type osver: str
+
+    :param device: Device type, required for Android.
+    :type device: str
+    """
+    fileext = ".zip" if device else ".7z"
+    files = os.listdir(filepath)
+    absfiles = [os.path.join(filepath, x) for x in files if x.endswith((fileext, ".exe"))]
+    fname = os.path.join(filepath, "!{0}_OSINFO!.txt".format(osver))
+    return fname, absfiles
+
+
 def make_info(filepath, osver, radio=None, software=None, device=None):
     """
     Create a new-style info (names, sizes and hashes) file.
@@ -1015,23 +1079,39 @@ def make_info(filepath, osver, radio=None, software=None, device=None):
     :param device: Device type, required for Android.
     :type device: str
     """
-    fileext = ".zip" if device else ".7z"
-    files = os.listdir(filepath)
-    absfiles = [os.path.join(filepath, x) for x in files if x.endswith((fileext, ".exe"))]
-    fname = os.path.join(filepath, "!{0}_OSINFO!.txt".format(osver))
+    fname, absfiles = prep_info(filepath, osver, device)
     with open(fname, "w") as afile:
         info_header(afile, osver, radio, software, device)
         for indx, file in enumerate(absfiles):
-            fsize = os.stat(file).st_size
-            afile.write("File: {0}\n".format(os.path.basename(file)))
-            afile.write("\tSize: {0} ({1})\n".format(fsize, utilities.fsizer(fsize)))
-            afile.write("\tHashes:\n")
-            afile.write("\t\tMD5: {0}\n".format(hashutils.hm5(file).upper()))
-            afile.write("\t\tSHA1: {0}\n".format(hashutils.hs1(file).upper()))
-            afile.write("\t\tSHA256: {0}\n".format(hashutils.hs256(file).upper()))
-            afile.write("\t\tSHA512: {0}\n".format(hashutils.hs512(file).upper()))
-            if indx != len(absfiles) - 1:
-                afile.write("\n")
+            write_info(file, indx, len(absfiles), afile)
+
+
+def write_info(infile, index, filecount, outfile):
+    """
+    Write a new-style info (names, sizes and hashes) file.
+
+    :param infile: Path to file whose name, size and hash are to be written.
+    :type infile: str
+
+    :param index: Which file index out of the list of files we're writing.
+    :type index: int
+
+    :param filecount: Total number of files we're to write; for excluding terminal newline.
+    :type filecount: int
+
+    :param outfile: Open (!!!) file handle. Output file.
+    :type outfile: str
+    """
+    fsize = os.stat(infile).st_size
+    outfile.write("File: {0}\n".format(os.path.basename(infile)))
+    outfile.write("\tSize: {0} ({1})\n".format(fsize, utilities.fsizer(fsize)))
+    outfile.write("\tHashes:\n")
+    outfile.write("\t\tMD5: {0}\n".format(hashutils.hm5(infile).upper()))
+    outfile.write("\t\tSHA1: {0}\n".format(hashutils.hs1(infile).upper()))
+    outfile.write("\t\tSHA256: {0}\n".format(hashutils.hs256(infile).upper()))
+    outfile.write("\t\tSHA512: {0}\n".format(hashutils.hs512(infile).upper()))
+    if index != filecount - 1:
+        outfile.write("\n")
 
 
 def bulk_info(dirs, osv, compressed=True, deleted=True, radios=True, rad=None, swv=None, dev=None):
@@ -1063,11 +1143,6 @@ def bulk_info(dirs, osv, compressed=True, deleted=True, radios=True, rad=None, s
     :type dev: str
     """
     print("GENERATING INFO FILES...")
-    if compressed:
-        make_info(dirs[4], osv, rad, swv, dev)
-        if radios:
-            make_info(dirs[5], osv, rad, swv, dev)
-    if not deleted:
-        make_info(dirs[2], osv, rad, swv, dev)
-        if radios:
-            make_info(dirs[3], osv, rad, swv, dev)
+    goargs = [dirs[4], dirs[5], dirs[2], dirs[3]]
+    restargs = [osv, rad, swv, dev]
+    utilities.cond_check(make_info, goargs, restargs, radios, compressed, deleted)

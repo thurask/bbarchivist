@@ -801,3 +801,52 @@ def cappath_config_writer(cappath=None, homepath=None):
     cappath = grab_cap() if cappath is None else cappath
     results = {"path": cappath}
     iniconfig.generic_writer("cappath", results, homepath)
+
+
+def cond_do(dofunc, goargs, restargs=[], condition=True):
+    """
+    Do a function, check a condition, then do same function but swap first argument.
+
+    :param dofunc: Function to do.
+    :type dofunc: function
+
+    :param goargs: List of variable arguments.
+    :type goargs: list(str)
+
+    :param restargs: Rest of arguments, which are constant.
+    :type restargs: list(str)
+
+    :param condition: Condition to check in order to use secondarg.
+    :type condition: bool
+    """
+    dofunc(goargs[0], *restargs)
+    if condition:
+        dofunc(goargs[1], *restargs)
+
+
+def cond_check(dofunc, goargs, restargs=[], condition=True, checkif=True, checkifnot=True):
+    """
+    Do :func:`cond_do` based on a condition, then do it again based on a second condition.
+
+    :param dofunc: Function to do.
+    :type dofunc: function
+
+    :param goargs: List of variable arguments.
+    :type goargs: list(str)
+
+    :param restargs: Rest of arguments, which are constant.
+    :type restargs: list(str)
+
+    :param condition: Condition to check in order to use secondarg.
+    :type condition: bool
+
+    :param checkif: Do :func:`cond_do` if this is True.
+    :type checkif: bool
+
+    :param checkifnot: Do :func:`cond_do` if this is False.
+    :type checkifnot: bool
+    """
+    if checkif:
+        cond_do(dofunc, goargs[0:2], restargs, condition)
+    if not checkifnot:
+        cond_do(dofunc, goargs[2:4], restargs, condition)

@@ -166,9 +166,7 @@ def remove_unpacked_loaders(osdir, raddir, radios):
     :param radios: If we made radios this run.
     :type radios: bool
     """
-    shutil.rmtree(osdir)
-    if radios:
-        shutil.rmtree(raddir)
+    utilities.cond_do(shutil.rmtree, [osdir, raddir], condition=radios)
 
 
 def create_blitz(a_folder, swver):
