@@ -325,6 +325,20 @@ def filter_method(method, szexe=None):
     """
     if not utilities.new_enough(3) and method == "txz":
         method = "zip"  # fallback
+    method = filter_method_nosz(method, szexe)
+    return method
+
+
+def filter_method_nosz(method, szexe=None):
+    """
+    Make sure 7-Zip is OK.
+
+    :param method: Compression method to use.
+    :type method: str
+
+    :param szexe: Path to 7z executable, if needed.
+    :type szexe: str
+    """
     if method == "7z" and szexe is None:
         ifexists = utilities.prep_seven_zip()  # see if 7z exists
         if not ifexists:
@@ -342,6 +356,38 @@ def calculate_strength():
     return strength
 
 
+def filter_with_boolfilt(files, criterion, critargs):
+    """
+    Return everything that matches criterion.
+
+    :param files: Files to work on.
+    :type files: list(str)
+
+    :param criterion: Function to use for evaluation.
+    :type criterion: func
+
+    :param critargs: Arguments for function, other than file.
+    :type critargs: list
+    """
+    return [file for file in files if criterion(file, *critargs)]
+
+
+def filter_without_boolfilt(files, criterion, critargs):
+    """
+    Return everything that doesn't match criterion.
+
+    :param files: Files to work on.
+    :type files: list(str)
+
+    :param criterion: Function to use for evaluation.
+    :type criterion: func
+
+    :param critargs: Arguments for function, other than file.
+    :type critargs: list
+    """
+    return [file for file in files if not criterion(file, *critargs)]
+
+
 def filtercomp(files, criterion, critargs, boolfilt=True):
     """
     :param files: Files to work on.
@@ -357,10 +403,36 @@ def filtercomp(files, criterion, critargs, boolfilt=True):
     :type boolfilt: bool
     """
     if boolfilt:
-        fx2 = [file for file in files if criterion(file, *critargs)]
+        fx2 = filter_with_boolfilt(files, criterion, critargs)
     else:
-        fx2 = [file for file in files if not criterion(file, *critargs)]
+        fx2 = filter_without_boolfilt(files, criterion, critargs)
     return fx2
+
+
+def compressfilter_select(filepath, files, selective=False):
+    """
+    :param filepath: Working directory. Required.
+    :type filepath: str
+
+    :param files: List of files in filepath.
+    :type files: list(str)
+
+    :param selective: Only compress autoloaders. Default is false.
+    :type selective: bool/str
+    """
+    arx = bbconstants.ARCS
+    pfx = bbconstants.PREFIXES
+    if selective is None:
+        filt2 = os.listdir(filepath)
+    elif selective == "arcsonly":
+        filt2 = filtercomp(files, utilities.prepends, ("", arx))
+    elif selective:
+        filt0 = filtercomp(files, utilities.prepends, (pfx, ""))
+        filt1 = filtercomp(filt0, utilities.prepends, ("", arx), False)  # pop archives
+        filt2 = filtercomp(filt1, utilities.prepends, ("", ".exe"))  # include exes
+    else:
+        filt2 = filtercomp(files, utilities.prepends, ("", arx), False)  # pop archives
+    return filt2
 
 
 def compressfilter(filepath, selective=False):
@@ -373,19 +445,9 @@ def compressfilter(filepath, selective=False):
     :param selective: Only compress autoloaders. Default is false.
     :type selective: bool/str
     """
-    arx = bbconstants.ARCS
-    pfx = bbconstants.PREFIXES
+    
     files = [file for file in os.listdir(filepath) if not os.path.isdir(file)]
-    if selective is None:
-        filt2 = os.listdir(filepath)
-    elif selective == "arcsonly":
-        filt2 = filtercomp(files, utilities.prepends, ("", arx))
-    elif selective:
-        filt0 = filtercomp(files, utilities.prepends, (pfx, ""))
-        filt1 = filtercomp(filt0, utilities.prepends, ("", arx), False)  # pop archives
-        filt2 = filtercomp(filt1, utilities.prepends, ("", ".exe"))  # include exes
-    else:
-        filt2 = filtercomp(files, utilities.prepends, ("", arx), False)  # pop archives
+    filt2 = compressfilter_select(filepath, files, selective)
     filt3 = [os.path.join(filepath, file) for file in filt2]
     return filt3
 

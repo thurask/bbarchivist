@@ -123,7 +123,7 @@ def write_appbars(target, appendbars, appurls):
     :type appendbars: bool
 
     :param appurls: App bar URLs to add.
-    :type softwareversion: list    
+    :type softwareversion: list
     """
     if appendbars:
         target.write("\nAPP URLS:\n")
