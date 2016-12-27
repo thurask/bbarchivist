@@ -4,6 +4,7 @@
 import os  # path work
 import getpass  # invisible password
 import argparse  # generic parser
+import hashlib  # hashes
 import sys  # getattr
 import shutil  # folder removal
 import subprocess  # running cfp/cap
@@ -1140,10 +1141,10 @@ def write_info(infile, index, filecount, outfile):
     outfile.write("File: {0}\n".format(os.path.basename(infile)))
     outfile.write("\tSize: {0} ({1})\n".format(fsize, utilities.fsizer(fsize)))
     outfile.write("\tHashes:\n")
-    outfile.write("\t\tMD5: {0}\n".format(hashutils.hm5(infile).upper()))
-    outfile.write("\t\tSHA1: {0}\n".format(hashutils.hs1(infile).upper()))
-    outfile.write("\t\tSHA256: {0}\n".format(hashutils.hs256(infile).upper()))
-    outfile.write("\t\tSHA512: {0}\n".format(hashutils.hs512(infile).upper()))
+    outfile.write("\t\tMD5: {0}\n".format(hashutils.hashlib_hash(infile, hashlib.md5()).upper()))
+    outfile.write("\t\tSHA1: {0}\n".format(hashutils.hashlib_hash(infile, hashlib.sha1()).upper()))
+    outfile.write("\t\tSHA256: {0}\n".format(hashutils.hashlib_hash(infile, hashlib.sha256()).upper()))
+    outfile.write("\t\tSHA512: {0}\n".format(hashutils.hashlib_hash(infile, hashlib.sha512()).upper()))
     if index != filecount - 1:
         outfile.write("\n")
 

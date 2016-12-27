@@ -16,7 +16,7 @@ __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015-2016 Thurask"
 
 
-def zlibhash(filepath, method, blocksize=16 * 1024 * 1024):
+def zlib_hash(filepath, method, blocksize=16 * 1024 * 1024):
     """
     Return zlib-based (i.e. CRC32/Adler32) checksum of a file.
 
@@ -38,196 +38,21 @@ def zlibhash(filepath, method, blocksize=16 * 1024 * 1024):
     return final
 
 
-def hc32(filepath, blocksize=16 * 1024 * 1024):
+def hashlib_hash(filepath, engine, blocksize=16 * 1024 * 1024):
     """
-    Return CRC32 checksum of a file.
+    Return MD5/SHA-1/SHA-2/SHA-3 hash of a file.
 
     :param filepath: File you wish to verify.
     :type filepath: str
 
-    :param blocksize: How much of file to read at once. Default is 16MB.
-    :type blocksize: int
-    """
-    return zlibhash(filepath, "crc32", blocksize)
-
-
-def ha32(filepath, blocksize=16 * 1024 * 1024):
-    """
-    Return Adler32 checksum of a file.
-
-    :param filepath: File you wish to verify.
-    :type filepath: str
+    :param engine: Hash object to update with file contents.
+    :type engine: _hashlib.HASH
 
     :param blocksize: How much of file to read at once. Default is 16MB.
     :type blocksize: int
     """
-    return zlibhash(filepath, "adler32", blocksize)
-
-
-def hs1(filepath, blocksize=16 * 1024 * 1024):
-    """
-    Return SHA-1 hash of a file.
-
-    :param filepath: File you wish to verify.
-    :type filepath: str
-
-    :param blocksize: How much of file to read at once. Default is 16MB.
-    :type blocksize: int
-    """
-    sha1 = hashlib.sha1()
-    hashfunc_reader(filepath, sha1, blocksize)
-    return sha1.hexdigest()
-
-
-def hs224(filepath, blocksize=16 * 1024 * 1024):
-    """
-    Return SHA-224 hash of a file.
-
-    :param filepath: File you wish to verify.
-    :type filepath: str
-
-    :param blocksize: How much of file to read at once. Default is 16MB.
-    :type blocksize: int
-    """
-    sha224 = hashlib.sha224()
-    hashfunc_reader(filepath, sha224, blocksize)
-    return sha224.hexdigest()
-
-
-def hs256(filepath, blocksize=16 * 1024 * 1024):
-    """
-    Return SHA-256 hash of a file.
-
-    :param filepath: File you wish to verify.
-    :type filepath: str
-
-    :param blocksize: How much of file to read at once. Default is 16MB.
-    :type blocksize: int
-    """
-    sha256 = hashlib.sha256()
-    hashfunc_reader(filepath, sha256, blocksize)
-    return sha256.hexdigest()
-
-
-def hs384(filepath, blocksize=16 * 1024 * 1024):
-    """
-    Return SHA-384 hash of a file.
-
-    :param filepath: File you wish to verify.
-    :type filepath: str
-
-    :param blocksize: How much of file to read at once. Default is 16MB.
-    :type blocksize: int
-    """
-    sha384 = hashlib.sha384()
-    hashfunc_reader(filepath, sha384, blocksize)
-    return sha384.hexdigest()
-
-
-def hs512(filepath, blocksize=16 * 1024 * 1024):
-    """
-    Return SHA-512 hash of a file.
-
-    :param filepath: File you wish to verify.
-    :type filepath: str
-
-    :param blocksize: How much of file to read at once. Default is 16MB.
-    :type blocksize: int
-    """
-    sha512 = hashlib.sha512()
-    hashfunc_reader(filepath, sha512, blocksize)
-    return sha512.hexdigest()
-
-
-def hs3224(filepath, blocksize=16 * 1024 * 1024):
-    """
-    Return SHA3-224 hash of a file.
-
-    :param filepath: File you wish to verify.
-    :type filepath: str
-
-    :param blocksize: How much of file to read at once. Default is 16MB.
-    :type blocksize: int
-    """
-    try:
-        sha3224 = hashlib.sha3_224()
-    except AttributeError:
-        print("REQUIRES PYTHON 3.6+")
-    else:
-        hashfunc_reader(filepath, sha3224, blocksize)
-        return sha3224.hexdigest()
-
-
-def hs3256(filepath, blocksize=16 * 1024 * 1024):
-    """
-    Return SHA3-256 hash of a file.
-
-    :param filepath: File you wish to verify.
-    :type filepath: str
-
-    :param blocksize: How much of file to read at once. Default is 16MB.
-    :type blocksize: int
-    """
-    try:
-        sha3256 = hashlib.sha3_256()
-    except AttributeError:
-        print("REQUIRES PYTHON 3.6+")
-    else:
-        hashfunc_reader(filepath, sha3256, blocksize)
-        return sha3256.hexdigest()
-
-
-def hs3384(filepath, blocksize=16 * 1024 * 1024):
-    """
-    Return SHA3-384 hash of a file.
-
-    :param filepath: File you wish to verify.
-    :type filepath: str
-
-    :param blocksize: How much of file to read at once. Default is 16MB.
-    :type blocksize: int
-    """
-    try:
-        sha3384 = hashlib.sha3_384()
-    except AttributeError:
-        print("REQUIRES PYTHON 3.6+")
-    else:
-        hashfunc_reader(filepath, sha3384, blocksize)
-        return sha3384.hexdigest()
-
-
-def hs3512(filepath, blocksize=16 * 1024 * 1024):
-    """
-    Return SHA3-512 hash of a file.
-
-    :param filepath: File you wish to verify.
-    :type filepath: str
-
-    :param blocksize: How much of file to read at once. Default is 16MB.
-    :type blocksize: int
-    """
-    try:
-        sha3512 = hashlib.sha3_512()
-    except AttributeError:
-        print("REQUIRES PYTHON 3.6+")
-    else:
-        hashfunc_reader(filepath, sha3512, blocksize)
-        return sha3512.hexdigest()
-
-
-def hm5(filepath, blocksize=16 * 1024 * 1024):
-    """
-    Return MD5 hash of a file.
-
-    :param filepath: File you wish to verify.
-    :type filepath: str
-
-    :param blocksize: How much of file to read at once. Default is 16MB.
-    :type blocksize: int
-    """
-    md5 = hashlib.md5()
-    hashfunc_reader(filepath, md5, blocksize)
-    return md5.hexdigest()
+    hashfunc_reader(filepath, engine, blocksize)
+    return engine.hexdigest()
 
 
 def hashfunc_reader(filepath, engine, blocksize=16 * 1024 * 1024):
@@ -273,58 +98,6 @@ def ssl_hash(filepath, method, blocksize=16 * 1024 * 1024):
         exceptions.handle_exception(exc, msg, None)
 
 
-def hm4(filepath, blocksize=16 * 1024 * 1024):
-    """
-    Return MD4 hash of a file; depends on system SSL library.
-
-    :param filepath: File you wish to verify.
-    :type filepath: str
-
-    :param blocksize: How much of file to read at once. Default is 16MB.
-    :type blocksize: int
-    """
-    return ssl_hash(filepath, "md4", blocksize)
-
-
-def hr160(filepath, blocksize=16 * 1024 * 1024):
-    """
-    Return RIPEMD160 hash of a file; depends on system SSL library.
-
-    :param filepath: File you wish to verify.
-    :type filepath: str
-
-    :param blocksize: How much of file to read at once. Default is 16MB.
-    :type blocksize: int
-    """
-    return ssl_hash(filepath, "ripemd160", blocksize)
-
-
-def hwp(filepath, blocksize=16 * 1024 * 1024):
-    """
-    Return Whirlpool hash of a file; depends on system SSL library.
-
-    :param filepath: File you wish to verify.
-    :type filepath: str
-
-    :param blocksize: How much of file to read at once. Default is 16MB.
-    :type blocksize: int
-    """
-    return ssl_hash(filepath, "whirlpool", blocksize)
-
-
-def hs0(filepath, blocksize=16 * 1024 * 1024):
-    """
-    Return SHA-0 hash of a file; depends on system SSL library.
-
-    :param filepath: File you wish to verify.
-    :type filepath: str
-
-    :param blocksize: How much of file to read at once. Default is 16MB.
-    :type blocksize: int
-    """
-    return ssl_hash(filepath, "sha", blocksize)
-
-
 def calculate_escreens(pin, app, uptime, duration=30):
     """
     Calculate key for the Engineering Screens based on input.
@@ -360,7 +133,54 @@ def calculate_escreens(pin, app, uptime, duration=30):
     return key.upper()
 
 
-def hash_get(filename, hashfunc, workingdir, blocksize=16777216):
+def get_hashfunc(hashtype):
+    """
+    Get genericized hash function from hash type.
+
+    :param hashtype: Hash type.
+    :type hashtype: str
+    """
+    hashfuncs = {"adler32": zlib_hash,
+                 "crc32": zlib_hash,
+                 "md4": ssl_hash,
+                 "sha0": ssl_hash,
+                 "ripemd160": ssl_hash,
+                 "whirlpool": ssl_hash,
+                 "md5": hashlib_hash,
+                 "sha1": hashlib_hash,
+                 "sha224": hashlib_hash,
+                 "sha256": hashlib_hash,
+                 "sha384": hashlib_hash,
+                 "sha512": hashlib_hash,
+                 "sha3224": hashlib_hash,
+                 "sha3256": hashlib_hash,
+                 "sha3384": hashlib_hash,
+                 "sha3512": hashlib_hash}
+    return hashfuncs[hashtype]
+
+
+def get_engine(hashtype):
+    """
+    Get hashlib engine from hash type.
+
+    :param hashtype: Hash type.
+    :type hashtype: str
+    """
+    hashengines =  {"md5": hashlib.md5(),
+                    "sha1": hashlib.sha1(),
+                    "sha224": hashlib.sha224(),
+                    "sha256": hashlib.sha256(),
+                    "sha384": hashlib.sha384(),
+                    "sha512": hashlib.sha512()}
+    if new_enough(6):
+         hashengines.update({"sha3224": hashlib.sha3_224(),
+                             "sha3256": hashlib.sha3_256(),
+                             "sha3384": hashlib.sha3_384(),
+                             "sha3512": hashlib.sha3_512()})
+    return hashengines[hashtype]
+
+
+def hash_get(filename, hashfunc, hashtype, workingdir, blocksize=16777216):
     """
     Generate and pretty format the hash result for a file.
 
@@ -370,17 +190,24 @@ def hash_get(filename, hashfunc, workingdir, blocksize=16777216):
     :param hashfunc: Hash function to use.
     :type hashfunc: function
 
+    :param hashtype: Hash type.
+    :type hashtype: str
+
     :param workingdir: Working directory.
     :type workingdir: str
 
     :param blocksize: Block size. Default is 16MB.
     :type blocksize: int
     """
-    result = hashfunc(os.path.join(workingdir, filename), blocksize)
+    if hashfunc == hashlib_hash:
+        method = get_engine(hashtype)
+    else:
+        method = hashtype
+    result = hashfunc(os.path.join(workingdir, filename), method, blocksize)
     return "{0} {1}\n".format(result.upper(), os.path.basename(filename))
 
 
-def base_hash(hashtype, source, workingdir, block, hashfunc, target, kwargs=None):
+def base_hash(hashtype, source, workingdir, block, target, kwargs=None):
     """
     Generic hash function; get hash, write to file.
 
@@ -404,7 +231,9 @@ def base_hash(hashtype, source, workingdir, block, hashfunc, target, kwargs=None
     """
     if kwargs[hashtype]:
         hash_generic = [hashtype.upper()]
-        hash_generic.append(hash_get(source, hashfunc, workingdir, block))
+        hashfunc = get_hashfunc(hashtype)
+        hashtype2 = "sha" if hashtype == "sha0" else hashtype
+        hash_generic.append(hash_get(source, hashfunc, hashtype2, workingdir, block))
         target.write("\n".join(hash_generic))
 
 
@@ -426,22 +255,23 @@ def hash_writer(source, dest, workingdir, kwargs=None):
     """
     block = int(kwargs['blocksize'])
     with open(dest, 'w') as target:
-        base_hash("adler32", source, workingdir, block, ha32, target, kwargs)
-        base_hash("crc32", source, workingdir, block, hc32, target, kwargs)
-        base_hash("md4", source, workingdir, block, hm4, target, kwargs)
-        base_hash("md5", source, workingdir, block, hm5, target, kwargs)
-        base_hash("sha0", source, workingdir, block, hs0, target, kwargs)
-        base_hash("sha1", source, workingdir, block, hs1, target, kwargs)
-        base_hash("sha224", source, workingdir, block, hs224, target, kwargs)
-        base_hash("sha256", source, workingdir, block, hs256, target, kwargs)
-        base_hash("sha384", source, workingdir, block, hs384, target, kwargs)
-        base_hash("sha512", source, workingdir, block, hs512, target, kwargs)
-        base_hash("ripemd160", source, workingdir, block, hr160, target, kwargs)
-        base_hash("whirlpool", source, workingdir, block, hwp, target, kwargs)
-        base_hash("sha3224", source, workingdir, block, hs3224, target, kwargs)
-        base_hash("sha3256", source, workingdir, block, hs3256, target, kwargs)
-        base_hash("sha3384", source, workingdir, block, hs3384, target, kwargs)
-        base_hash("sha3512", source, workingdir, block, hs3512, target, kwargs)
+        base_hash("adler32", source, workingdir, block, target, kwargs)
+        base_hash("crc32", source, workingdir, block, target, kwargs)
+        base_hash("md4", source, workingdir, block, target, kwargs)
+        base_hash("md5", source, workingdir, block, target, kwargs)
+        base_hash("sha0", source, workingdir, block, target, kwargs)
+        base_hash("sha1", source, workingdir, block, target, kwargs)
+        base_hash("sha224", source, workingdir, block, target, kwargs)
+        base_hash("sha256", source, workingdir, block, target, kwargs)
+        base_hash("sha384", source, workingdir, block, target, kwargs)
+        base_hash("sha512", source, workingdir, block, target, kwargs)
+        base_hash("ripemd160", source, workingdir, block, target, kwargs)
+        base_hash("whirlpool", source, workingdir, block, target, kwargs)
+        if utilities.new_enough(6):
+            base_hash("sha3224", source, workingdir, block, target, kwargs)
+            base_hash("sha3256", source, workingdir, block, target, kwargs)
+            base_hash("sha3384", source, workingdir, block, target, kwargs)
+            base_hash("sha3512", source, workingdir, block, target, kwargs)
 
 
 def filefilter(file, workingdir, extras=()):
