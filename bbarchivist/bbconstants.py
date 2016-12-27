@@ -16,6 +16,7 @@ class Datafile(object):
 
     def __init__(self, version, datatype, size):
         self.version = version
+        self.name = datatype
         self.filename = "{0}-{1}.dat".format(datatype, version)
         self.location = os.path.join(DIRECTORY, self.filename)
         self.size = size

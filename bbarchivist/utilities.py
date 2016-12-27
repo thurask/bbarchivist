@@ -22,35 +22,50 @@ __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015-2016 Thurask"
 
 
+def grab_datafile(datafile):
+    """
+    Figure out where a datafile is.
+
+    :param datafile: Datafile to check.
+    :type datafile: bbconstants.Datafile
+    """
+    try:
+        afile = glob.glob(os.path.join(os.getcwd(), datafile.filename))[0]
+    except IndexError:
+        afile = datafile.location if datafile.name == "cfp" else grab_capini(datafile)
+    return os.path.abspath(afile)
+
+
+def grab_capini(datafile):
+    """
+    Get cap location from .ini file, and write if it's new.
+
+    :param datafile: Datafile to check.
+    :type datafile: bbconstants.Datafile
+    """
+    try:
+        apath = cappath_config_loader()
+        afile = glob.glob(apath)[0]
+    except IndexError:
+        cappath_config_writer(datafile.location)
+        return bbconstants.CAP.location  # no ini cap
+    else:
+        cappath_config_writer(os.path.abspath(afile))
+        return os.path.abspath(afile)  # ini cap:
+
+
 def grab_cap():
     """
     Figure out where cap is, local, specified or system-supplied.
     """
-    try:
-        capfile = glob.glob(os.path.join(os.getcwd(), bbconstants.CAP.filename))[0]
-    except IndexError:
-        try:
-            cappath = cappath_config_loader()
-            capfile = glob.glob(cappath)[0]
-        except IndexError:
-            cappath_config_writer(bbconstants.CAP.location)
-            return bbconstants.CAP.location  # no ini cap
-        else:
-            cappath_config_writer(os.path.abspath(capfile))
-            return os.path.abspath(capfile)  # ini cap
-    else:
-        return os.path.abspath(capfile)  # local cap
+    return grab_datafile(bbconstants.CAP)
 
 
 def grab_cfp():
     """
     Figure out where cfp is, local or system-supplied.
     """
-    try:
-        cfpfile = glob.glob(os.path.join(os.getcwd(), bbconstants.CFP.filename))[0]
-    except IndexError:
-        cfpfile = bbconstants.CFP.location  # system cfp
-    return os.path.abspath(cfpfile)  # local cfp
+    return grab_datafile(bbconstants.CFP)
 
 
 def new_enough(minver):
@@ -502,10 +517,26 @@ def filter_1031(osurl, splitos, device):
     :type device: int
     """
     if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):
-        if device == 5:
-            osurl = osurl.replace("qc8960.factory_sfi", "qc8960.factory_sfi_hybrid_qc8x30")
-        elif device == 6:
-            osurl = osurl.replace("qc8974.factory_sfi", "qc8960.factory_sfi_hybrid_qc8974")
+        filterdict = {5: ("qc8960.factory_sfi", "qc8960.factory_sfi_hybrid_qc8x30"), 6: ("qc8974.factory_sfi", "qc8960.factory_sfi_hybrid_qc8974")}
+        osurl = filter_osversion(osurl, device, filterdict)
+    return osurl
+
+
+def filter_osversion(osurl, device, filterdict):
+    """
+    Modify URLs based on device index and dictionary of changes.
+
+    :param osurl: OS URL to modify.
+    :type osurl: str
+
+    :param device: Device to use.
+    :type device: int
+
+    :param filterdict: Dictionary of changes: {device : (before, after)}
+    :type filterdict: dict(int:(str, str))
+    """
+    if device in filterdict.keys():
+        osurl = osurl.replace(filterdict[device][0], filterdict[device][1])
     return osurl
 
 
