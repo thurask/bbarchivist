@@ -563,6 +563,21 @@ def ptcrb_scraper(ptcrbid):
     return cleanlist
 
 
+def space_pad(instring, minlength):
+    """
+    Pad a string with spaces until it's the minimum length.
+
+    :param instring: String to pad.
+    :type instring: str
+
+    :param minlength: Pad while len(instring) < minlength.
+    :type minlength: int
+    """
+    while len(instring) < minlength:
+        instring += " "
+    return instring
+
+
 def ptcrb_item_cleaner(item):
     """
     Cleanup poorly formatted PTCRB entries written by an intern.
@@ -597,10 +612,8 @@ def ptcrb_item_cleaner(item):
     item = item.replace("Release ", "Release: ")
     spaclist = item.split(" ")
     if len(spaclist) > 1:
-        while len(spaclist[1]) < 11:
-            spaclist[1] += " "
-        while len(spaclist[3]) < 11:
-            spaclist[3] += " "
+        spaclist[1] = space_pad(spaclist[1], 11)
+        spaclist[3] = space_pad(spaclist[3], 11)
     else:
         spaclist.insert(0, "OS:")
     item = " ".join(spaclist)
@@ -931,9 +944,9 @@ def devalpha_urls_bootstrap(osversion, skeletons, session=None):
             xec.shutdown(wait=False)
 
 
-def dev_dupe_cleaner(finals):
+def dev_dupe_dicter(finals):
     """
-    Clean duplicate autoloader entries.
+    Prepare dictionary to clean duplicate autoloaders.
 
     :param finals: Dict of URL:content-length pairs.
     :type finals: dict(str: str)
@@ -941,9 +954,34 @@ def dev_dupe_cleaner(finals):
     revo = {}
     for key, val in finals.items():
         revo.setdefault(val, set()).add(key)
-    dupelist = [val for key, val in revo.items() if len(val) > 1]
+    return revo
+
+
+def dev_dupe_remover(finals, dupelist):
+    """
+    Filter dictionary of autoloader entries.
+
+    :param finals: Dict of URL:content-length pairs.
+    :type finals: dict(str: str)
+
+    :param dupelist: List of duplicate URLs.
+    :type duplist: list(str)
+    """
     for dupe in dupelist:
         for entry in dupe:
             if "DevAlpha" in entry:
                 del finals[entry]
+    return finals
+
+
+def dev_dupe_cleaner(finals):
+    """
+    Clean duplicate autoloader entries.
+
+    :param finals: Dict of URL:content-length pairs.
+    :type finals: dict(str: str)
+    """
+    revo = dev_dupe_dicter(finals)
+    dupelist = [val for key, val in revo.items() if len(val) > 1]
+    finals = dev_dupe_remover(finals, dupelist)
     return finals
