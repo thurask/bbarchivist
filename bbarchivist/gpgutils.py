@@ -32,7 +32,7 @@ def gpgrunner(workingdir, keyid=None, pword=None, selective=False):
     :type selective: bool
     """
     try:
-        gpg = gnupg.GPG()
+        gpg = gnupg.GPG(options=["--no-use-agent"])
     except ValueError:
         print("COULD NOT FIND GnuPG!")
         raise SystemExit
