@@ -972,7 +972,7 @@ def bulk_hash(dirs, compressed=True, deleted=True, radios=True, hashdict=None):
     :type hashdict: dict({str: bool})
     """
     print("HASHING LOADERS...")
-    utilities.cond_check(hashutils.verifier, utilities.goargs(dirs), [hashdict], radios, compressed, deleted)
+    utilities.cond_check(hashutils.verifier, utilities.def_args(dirs), [hashdict], radios, compressed, deleted)
 
 
 def bulk_verify(dirs, compressed=True, deleted=True, radios=True):
@@ -996,7 +996,7 @@ def bulk_verify(dirs, compressed=True, deleted=True, radios=True):
         print("VERIFYING LOADERS...")
         print("KEY: {0}".format(gpgkey))
         restargs = [gpgkey, gpgpass, True]
-        utilities.cond_check(gpgutils.gpgrunner, utilities.goargs(dirs), restargs, radios, compressed, deleted)
+        utilities.cond_check(gpgutils.gpgrunner, utilities.def_args(dirs), restargs, radios, compressed, deleted)
 
 
 def enn_ayy(quant):
@@ -1141,4 +1141,4 @@ def bulk_info(dirs, osv, compressed=True, deleted=True, radios=True, rad=None, s
     """
     print("GENERATING INFO FILES...")
     restargs = [osv, rad, swv, dev]
-    utilities.cond_check(make_info, utilities.goargs(dirs), restargs, radios, compressed, deleted)
+    utilities.cond_check(make_info, utilities.def_args(dirs), restargs, radios, compressed, deleted)

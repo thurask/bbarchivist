@@ -803,7 +803,7 @@ def cappath_config_writer(cappath=None, homepath=None):
     iniconfig.generic_writer("cappath", results, homepath)
 
 
-def goargs(dirs):
+def def_args(dirs):
     """
     Return prepared argument list for most instances of :func:`cond_check:.
 

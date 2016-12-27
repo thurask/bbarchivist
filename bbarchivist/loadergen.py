@@ -125,6 +125,36 @@ def read_radio_files(localdir):
     return [radio_ti, radio_z10, radio_z10_vzw, radio_q10, radio_z30, radio_z3, radio_8974]
 
 
+def zeropad(splitver, idx, padlen):
+    """
+    Zero-pad an element of an OS/radio version to a certain length.
+
+    :param splitver: OS/radio version, but split into quarters.
+    :type splitver: list(str)
+
+    :param idx: Index of splitver which must be checked.
+    :type idx: int
+
+    :param padlen: Length to pad to.
+    :type padlen: int
+    """
+    if len(splitver[idx]) < padlen:
+        splitver[idx] = splitver[idx].rjust(padlen, "0")
+    return splitver
+
+
+def versionpad(splitver):
+    """
+    Properly pad an OS/radio version.
+
+    :param splitver: OS/radio version, but split into quarters.
+    :type splitver: list(str)
+    """
+    splitver = zeropad(splitver, 2, 2)
+    splitver = zeropad(splitver, 3, 4)
+    return splitver
+
+
 def pretty_formatter(osversion, radioversion):
     """
     Format OS/radio versions to cope with systems with poor sorting.
@@ -137,16 +167,10 @@ def pretty_formatter(osversion, radioversion):
     """
     # 10.x.y.zzz becomes 10.x.0y.0zzz
     splitos = osversion.split(".")
-    if len(splitos[2]) == 1:
-        splitos[2] = "0" + splitos[2]
-    if len(splitos[3]) < 4:
-        splitos[3] = splitos[3].rjust(4, '0')
+    splitos = versionpad(splitos)
     the_os = ".".join(splitos)
     splitrad = radioversion.split(".")
-    if len(splitrad[2]) == 1:
-        splitrad[2] = "0" + splitrad[2]
-    if len(splitrad[3]) < 4:
-        splitrad[3] = splitrad[3].rjust(4, '0')
+    splitrad = versionpad(splitrad)
     the_radio = ".".join(splitrad)
     return the_os, the_radio
 
@@ -195,8 +219,7 @@ def generate_loaders(
     :type core: bool
     """
     # default parsing
-    if localdir is None:
-        localdir = os.getcwd()
+    localdir = os.getcwd() if localdir is None else localdir
     print("GETTING FILENAMES...")
     filedict = read_files(localdir, core)
     osversion, radioversion = pretty_formatter(osversion, radioversion)
@@ -245,9 +268,7 @@ def generate_skeletons():
     """
     Read JSON to get a dict of all filename components.
     """
-    namelist = {}
-    for idx in range(0, 7):
-        namelist[idx] = None
+    namelist = {0: None, 1: None, 2: None, 3: None, 4: None, 5: None, 6: None}
     data = jsonutils.load_json('integermap')
     for key in data:
         if key['id'] in namelist:
@@ -321,8 +342,7 @@ def generate_lazy_loader(
     :type core: bool
     """
     # default parsing
-    if localdir is None:
-        localdir = os.getcwd()
+    localdir = os.getcwd() if localdir is None else localdir
     print("CREATING LOADER...")
     suffix = format_suffix(bool(altradio), altradio, core)
     osfile = radiofile = None
@@ -332,15 +352,40 @@ def generate_lazy_loader(
     except IndexError:
         print("No OS found")
     else:
-        try:
-            sset = set(glob.glob("{0}*.signed".format(absoglob)))
-            rset = sset - set(glob.glob("{0}*_sfi*.signed".format(absoglob)))
-            radiofile = str(list(rset)[0])
-        except IndexError:
-            print("No radio found")
-        else:
-            loadername = generate_lazy_filename(osversion, suffix, device)
-            wrap_pseudocap(loadername, localdir, osfile, radiofile)
+        generate_lazy_set(osversion, device, osfile, suffix, absoglob, localdir)
+
+
+def generate_lazy_set(osversion, device, osfile, suffix, absoglob, localdir=None):
+    """
+    Get radio file and then generate autoloader.
+
+    :param osversion: OS version, 10.x.y.zzzz.
+    :type osversion: str
+
+    :param device: Selected device, from
+    :type device: int
+
+    :param osfile: OS signed filename.
+    :type osfile: str
+
+    :param suffix: Loader name suffix.
+    :type suffix: str
+
+    :param absoglob: Local path + path separator.
+    :type absoglob: str
+
+    :param localdir: Working path. Default is local dir.
+    :type localdir: str
+    """
+    try:
+        sset = set(glob.glob("{0}*.signed".format(absoglob)))
+        rset = sset - set(glob.glob("{0}*_sfi*.signed".format(absoglob)))
+        radiofile = str(list(rset)[0])
+    except IndexError:
+        print("No radio found")
+    else:
+        loadername = generate_lazy_filename(osversion, suffix, device)
+        wrap_pseudocap(loadername, localdir, osfile, radiofile)
 
 
 def generate_lazy_filename(osversion, suffix, device):
