@@ -445,7 +445,7 @@ def compressfilter(filepath, selective=False):
     :param selective: Only compress autoloaders. Default is false.
     :type selective: bool/str
     """
-    
+
     files = [file for file in os.listdir(filepath) if not os.path.isdir(file)]
     filt2 = compressfilter_select(filepath, files, selective)
     filt3 = [os.path.join(filepath, file) for file in filt2]
