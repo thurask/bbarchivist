@@ -67,6 +67,14 @@ bbarchivist.exceptions module
     :undoc-members:
     :show-inheritance:
 
+bbarchivist.gpgutils module
+-----------------------------
+
+.. automodule:: bbarchivist.gpgutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 bbarchivist.hashutils module
 ----------------------------
 

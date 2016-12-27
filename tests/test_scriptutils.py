@@ -344,6 +344,26 @@ class TestClassScriptutilsSoftware:
             with mock.patch('builtins.input', mock.MagicMock(return_value="y")):
                 assert bs.check_radio_sw("http://qrrbrbirlbel.yu/", "10.3.2.2474", False) is None
 
+    def test_check_altsw_none(self):
+        """
+        Test checking alternate software release, no need to.
+        """
+        assert bs.check_altsw(False) is None
+
+    def test_check_altsw_manual(self):
+        """
+        Test checking alternate software release, with user input.
+        """
+        with mock.patch('builtins.input', mock.MagicMock(return_value="snek")):
+            assert bs.check_altsw(True) == "snek"
+
+    def test_check_altsw_checkme(self):
+        """
+        Test checking alternate software release, check it later.
+        """
+        with mock.patch('builtins.input', mock.MagicMock(return_value="")):
+            assert bs.check_altsw(True) == "checkme"
+
     def test_prod_avail_invalid(self):
         """
         Test production lookup, no software release.

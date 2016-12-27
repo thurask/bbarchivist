@@ -277,6 +277,22 @@ def check_radio_sw(alturl, altsw, altchecked):
         print("SOFTWARE RELEASE {0} EXISTS".format(altsw))
 
 
+def check_altsw(altcheck=False):
+    """
+    Ask for and return alternate software release, if needed.
+
+    :param altcheck: If we're using an alternate software release.
+    :type altcheck: bool
+    """
+    if altcheck:
+        altsw = input("RADIO SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
+        if not altsw:
+            altsw = "checkme"
+    else:
+        altsw = None
+    return altsw
+
+
 def check_os_single(osurl, osversion, device):
     """
     Check existence of single OS link.

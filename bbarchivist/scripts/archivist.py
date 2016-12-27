@@ -167,12 +167,7 @@ def questionnaire():
     softwareversion = input("OS SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
     softwareversion = None if not softwareversion else softwareversion
     altcheck = utilities.s2b(input("USING ALTERNATE RADIO (Y/N)?: "))
-    if altcheck:
-        altsw = input("RADIO SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
-        if not altsw:
-            altsw = "checkme"
-    else:
-        altsw = None
+    altsw = scriptutils.check_altsw(altcheck)
     radios = utilities.s2b(input("CREATE RADIO LOADERS (Y/N)?: "))
     compressed = utilities.s2b(input("COMPRESS LOADERS (Y/N)?: "))
     deleted = utilities.s2b(input("DELETE UNCOMPRESSED LOADERS (Y/N)?: ")) if compressed else False
@@ -189,7 +184,7 @@ def questionnaire():
                    localdir, radios, compressed, deleted, hashed,
                    hashdict, download=True, extract=True, signed=True,
                    compmethod=compmethod, gpg=False, integrity=True,
-                   altsw=None, core=False, oldstyle=False)
+                   altsw=altsw, core=False, oldstyle=False)
 
 
 def archivist_checksw(baseurl, softwareversion, swchecked):
