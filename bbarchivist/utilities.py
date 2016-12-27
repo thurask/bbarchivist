@@ -803,7 +803,17 @@ def cappath_config_writer(cappath=None, homepath=None):
     iniconfig.generic_writer("cappath", results, homepath)
 
 
-def cond_do(dofunc, goargs, restargs=[], condition=True):
+def goargs(dirs):
+    """
+    Return prepared argument list for most instances of :func:`cond_check:.
+
+    :param dirs: List of directories.
+    :type dirs: list(str)
+    """
+    return [dirs[4], dirs[5], dirs[2], dirs[3]]
+
+
+def cond_do(dofunc, goargs, restargs=None, condition=True):
     """
     Do a function, check a condition, then do same function but swap first argument.
 
@@ -819,12 +829,13 @@ def cond_do(dofunc, goargs, restargs=[], condition=True):
     :param condition: Condition to check in order to use secondarg.
     :type condition: bool
     """
+    restargs = [] if restargs is None else restargs
     dofunc(goargs[0], *restargs)
     if condition:
         dofunc(goargs[1], *restargs)
 
 
-def cond_check(dofunc, goargs, restargs=[], condition=True, checkif=True, checkifnot=True):
+def cond_check(dofunc, goargs, restargs=None, condition=True, checkif=True, checkifnot=True):
     """
     Do :func:`cond_do` based on a condition, then do it again based on a second condition.
 
