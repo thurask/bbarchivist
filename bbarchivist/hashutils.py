@@ -166,17 +166,17 @@ def get_engine(hashtype):
     :param hashtype: Hash type.
     :type hashtype: str
     """
-    hashengines =  {"md5": hashlib.md5(),
-                    "sha1": hashlib.sha1(),
-                    "sha224": hashlib.sha224(),
-                    "sha256": hashlib.sha256(),
-                    "sha384": hashlib.sha384(),
-                    "sha512": hashlib.sha512()}
-    if new_enough(6):
-         hashengines.update({"sha3224": hashlib.sha3_224(),
-                             "sha3256": hashlib.sha3_256(),
-                             "sha3384": hashlib.sha3_384(),
-                             "sha3512": hashlib.sha3_512()})
+    hashengines = {"md5": hashlib.md5(),
+                   "sha1": hashlib.sha1(),
+                   "sha224": hashlib.sha224(),
+                   "sha256": hashlib.sha256(),
+                   "sha384": hashlib.sha384(),
+                   "sha512": hashlib.sha512()}
+    if utilities.new_enough(6):
+        hashengines.update({"sha3224": hashlib.sha3_224(),
+                            "sha3256": hashlib.sha3_256(),
+                            "sha3384": hashlib.sha3_384(),
+                            "sha3512": hashlib.sha3_512()})
     return hashengines[hashtype]
 
 
