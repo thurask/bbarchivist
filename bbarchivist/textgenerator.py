@@ -63,6 +63,114 @@ def dev_link_writer(target, finals):
         target.write("{0} [{1}]\n".format(key, fsizer(int(val))))
 
 
+def prep_thename(softwareversion, appendbars=False, temp=False):
+    """
+    Generate name for output file.
+
+    :param softwareversion: Software release version.
+    :type softwareversion: str
+
+    :param appendbars: Whether to add app bars to file. Default is false.
+    :type appendbars: bool
+
+    :param temp: If file we write to is temporary. Default is false.
+    :type temp: bool
+    """
+    thename = softwareversion
+    if appendbars:
+        thename += "plusapps"
+    if temp:
+        thename = "TEMPFILE"
+    return thename
+
+
+def write_altsw(target, altsw):
+    """
+    Write alternate software release to file.
+
+    :param target: File to write to.
+    :type target: file
+
+    :param altsw: Radio software release version, if different.
+    :type altsw: str
+    """
+    if altsw is not None:
+        target.write("RADIO SOFTWARE RELEASE: {0}\n".format(altsw))
+
+
+def write_disclaimer(target, avlty):
+    """
+    Write availability disclaimer to file.
+
+    :param target: File to write to.
+    :type target: file
+
+    :param avlty: Availability of links to download. Default is false.
+    :type avlty: bool
+    """
+    if not avlty:
+        target.write("\n!!EXISTENCE NOT GUARANTEED!!\n")
+
+
+def write_appbars(target, appendbars, appurls):
+    """
+    Write app bar links to file.
+
+    :param target: File to write to.
+    :type target: file
+
+    :param appendbars: Whether to add app bars to file. Default is false.
+    :type appendbars: bool
+
+    :param appurls: App bar URLs to add.
+    :type softwareversion: list    
+    """
+    if appendbars:
+        target.write("\nAPP URLS:\n")
+        app_link_writer(target, appurls)
+
+
+def write_signedbars(target, urllist, avlty, message):
+    """
+    Write debrick/core/radio URLs to file.
+
+    :param target: File to write to.
+    :type target: file
+
+    :param urllist: List of URLs to write.
+    :type urllist: list(str)
+
+    :param avlty: Availability of links to download. Default is false.
+    :type avlty: bool
+
+    :param message: Header for this section: debrick, core or radio.
+    :type message: str
+    """
+    target.write("\n{0}:\n".format(message))
+    system_link_writer(target, urllist, avlty)
+
+
+def write_header(target, softwareversion, osversion, radioversion):
+    """
+    Write header for file.
+
+    :param target: File to write to.
+    :type target: file
+
+    :param softwareversion: Software release version.
+    :type softwareversion: str
+
+    :param osversion: OS version.
+    :type osversion: str
+
+    :param radioversion: Radio version.
+    :type radioversion: str
+    """
+    target.write("OS VERSION: {0}\n".format(osversion))
+    target.write("RADIO VERSION: {0}\n".format(radioversion))
+    target.write("SOFTWARE RELEASE: {0}\n".format(softwareversion))
+
+
 def write_links(softwareversion, osversion, radioversion, osurls, coreurls, radiourls,
                 avlty=False, appendbars=False, appurls=None, temp=False, altsw=None):
     """
@@ -101,28 +209,15 @@ def write_links(softwareversion, osversion, radioversion, osurls, coreurls, radi
     :param altsw: Radio software release version, if different.
     :type altsw: str
     """
-    thename = softwareversion
-    if appendbars:
-        thename += "plusapps"
-    if temp:
-        thename = "TEMPFILE"
+    thename = prep_thename(softwareversion, appendbars, temp)
     with open("{0}.txt".format(thename), "w") as target:
-        target.write("OS VERSION: {0}\n".format(osversion))
-        target.write("RADIO VERSION: {0}\n".format(radioversion))
-        target.write("SOFTWARE RELEASE: {0}\n".format(softwareversion))
-        if altsw is not None:
-            target.write("RADIO SOFTWARE RELEASE: {0}\n".format(altsw))
-        if not avlty:
-            target.write("\n!!EXISTENCE NOT GUARANTEED!!\n")
-        target.write("\nDEBRICK URLS:\n")
-        system_link_writer(target, osurls, avlty)
-        target.write("\nCORE URLS:\n")
-        system_link_writer(target, coreurls, avlty)
-        target.write("\nRADIO URLS:\n")
-        system_link_writer(target, radiourls, avlty)
-        if appendbars:
-            target.write("\nAPP URLS:\n")
-            app_link_writer(target, appurls)
+        write_header(target, softwareversion, osversion, radioversion)
+        write_altsw(target, altsw)
+        write_disclaimer(target, avlty)
+        write_signedbars(target, osurls, avlty, "DEBRICK URLS")
+        write_signedbars(target, coreurls, avlty, "CORE URLS")
+        write_signedbars(target, radiourls, avlty, "RADIO URLS")
+        write_appbars(target, appendbars, appurls)
 
 
 def export_devloader(osversion, finals):

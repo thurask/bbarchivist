@@ -71,22 +71,20 @@ def get_sevenzip():
         raise SystemError
 
 
-def main():
+def call_specs():
     """
-    Create .exes with dynamic spec files.
+    Call pyinstaller to make specs.
     """
-    write_versions()
-    generate_specs()
     specs = [x for x in listdir() if x.endswith(".spec")]
     for spec in specs:  # UPX 3.91 BSODs my computer, disable for now
         cmd = "pyinstaller --onefile --noupx --workpath pyinst-build --distpath pyinst-dist {0}".format(spec)
         call(cmd, shell=True)
-    outdir = "pyinst-dist"
-    copy("version.txt", outdir)
-    copy("longversion.txt", outdir)
-    copy(CAP.location, outdir)
-    copy(JSONFILE, outdir)
-    copy(certs.where(), join(outdir, "cacerts.pem"))
+
+
+def sz_wrapper(outdir):
+    """
+    Copy 7-Zip to outdir.
+    """
     try:
         get_sevenzip()
     except SystemError:
@@ -95,6 +93,22 @@ def main():
         copy(join("7z", "7za.exe"), outdir)
         copy(join("7z", "x64", "7za.exe"), join(outdir, "7za64.exe"))
         rmtree("7z", ignore_errors=True)
+
+
+def main():
+    """
+    Create .exes with dynamic spec files.
+    """
+    write_versions()
+    generate_specs()
+    call_specs()
+    outdir = "pyinst-dist"
+    copy("version.txt", outdir)
+    copy("longversion.txt", outdir)
+    copy(CAP.location, outdir)
+    copy(JSONFILE, outdir)
+    copy(certs.where(), join(outdir, "cacerts.pem"))
+    sz_wrapper(outdir)
     clean_versions()
     clean_specs()
 

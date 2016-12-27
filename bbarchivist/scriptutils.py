@@ -164,6 +164,27 @@ def return_radio_version(osversion, radioversion=None):
     return radioversion
 
 
+def sw_check_contingency(softwareversion):
+    """
+    Ask in the event software release isn't found.
+
+    :param softwareversion: Software release version.
+    :type softwareversion: str
+    """
+    if softwareversion == "SR not in system":
+        print("SOFTWARE RELEASE NOT FOUND")
+        cont = utilities.s2b(input("INPUT MANUALLY? Y/N: "))
+        if cont:
+            softwareversion = input("SOFTWARE RELEASE: ")
+            swchecked = False
+        else:
+            print("\nEXITING...")
+            raise SystemExit  # bye bye
+    else:
+        swchecked = True
+    return softwareversion, swchecked
+
+
 def return_sw_checked(softwareversion, osversion):
     """
     Check software existence, return boolean.
@@ -177,17 +198,7 @@ def return_sw_checked(softwareversion, osversion):
     if softwareversion is None:
         serv = bbconstants.SERVERS["p"]
         softwareversion = networkutils.sr_lookup(osversion, serv)
-        if softwareversion == "SR not in system":
-            print("SOFTWARE RELEASE NOT FOUND")
-            cont = utilities.s2b(input("INPUT MANUALLY? Y/N: "))
-            if cont:
-                softwareversion = input("SOFTWARE RELEASE: ")
-                swchecked = False
-            else:
-                print("\nEXITING...")
-                raise SystemExit  # bye bye
-        else:
-            swchecked = True
+        softwareversion, swchecked = sw_check_contingency(softwareversion)
     else:
         swchecked = True
     return softwareversion, swchecked
@@ -207,17 +218,7 @@ def return_radio_sw_checked(altsw, radioversion):
         serv = bbconstants.SERVERS["p"]
         testos = utilities.increment(radioversion, -1)
         altsw = networkutils.sr_lookup(testos, serv)
-        if altsw == "SR not in system":
-            print("RADIO SOFTWARE RELEASE NOT FOUND")
-            cont = utilities.s2b(input("INPUT MANUALLY? Y/N: "))
-            if cont:
-                altsw = input("SOFTWARE RELEASE: ")
-                altchecked = False
-            else:
-                print("\nEXITING...")
-                raise SystemExit  # bye bye
-        else:
-            altchecked = True
+        altsw, altchecked = sw_check_contingency(altsw)
     else:
         altchecked = True
     return altsw, altchecked
@@ -453,21 +454,41 @@ def test_bar_files(localdir, urllist):
     brokenlist = []
     print("TESTING BAR FILES...")
     for file in os.listdir(localdir):
-        if file.endswith(".bar"):
-            print("TESTING: {0}".format(file))
-            thepath = os.path.abspath(os.path.join(localdir, file))
-            brokens = barutils.bar_tester(thepath)
-            if brokens is not None:
-                os.remove(brokens)
-                for url in urllist:
-                    if brokens in url:
-                        brokenlist.append(url)
+        brokenlist = test_bar_files_individual(file, localdir, urllist, brokenlist)
     if brokenlist:
         print("SOME FILES ARE BROKEN!")
         utilities.lprint(brokenlist)
         raise SystemExit
     else:
         print("BAR FILES DOWNLOADED OK")
+
+
+def test_bar_files_individual(file, localdir, urllist, brokenlist):
+    """
+    Test bar file after download.
+
+    :param file: Bar file to check.
+    :type file: str
+
+    :param localdir: Directory.
+    :type localdir: str
+
+    :param urllist: List of URLs to check.
+    :type urllist: list(str)
+
+    :param brokenlist: List of URLs to download later.
+    :type brokenlist: list(str)
+    """
+    if file.endswith(".bar"):
+        print("TESTING: {0}".format(file))
+        thepath = os.path.abspath(os.path.join(localdir, file))
+        brokens = barutils.bar_tester(thepath)
+        if brokens is not None:
+            os.remove(brokens)
+            for url in urllist:
+                if brokens in url:
+                    brokenlist.append(url)
+    return brokenlist
 
 
 def test_signed_files(localdir):
@@ -584,6 +605,44 @@ def prod_avail_mailprep(prel, avail, osversion=None, mailer=False, password=None
             smtputils.prep_email(osversion, prel, password)
 
 
+def comp_joiner(rootdir, localdir, filelist):
+    """
+    Join rootdir, localdir to every file in filelist.
+
+    :param rootdir: Root directory.
+    :type rootdir: str
+
+    :param localdir: Subfolder inside rootdir.
+    :type localdir: str
+
+    :param filelist: List of files to return this path for.
+    :type filelist: list(str)
+    """
+    joinedfiles = [os.path.join(rootdir, localdir, os.path.basename(x)) for x in filelist]
+    return joinedfiles
+
+
+def linkgen_sdk(sdk, oses, cores):
+    """
+    Generate SDK debrick/core images.
+
+    :param sdk: If we specifically want SDK images. Default is False.
+    :type sdk: bool
+
+    :param oses: Dictionary of radio and debrick pairs.
+    :type oses: dict(str:str)
+
+    :param cores: Dictionary of radio and core pairs.
+    :type cores: dict(str:str)
+    """
+    if sdk:
+        oses2 = {key: val.replace("factory_sfi", "sdk") for key, val in oses.items()}
+        cores2 = {key: val.replace("factory_sfi", "sdk") for key, val in cores.items()}
+        oses = {key: val.replace("verizon_sfi", "sdk") for key, val in oses2.items()}
+        cores = {key: val.replace("verizon_sfi", "sdk") for key, val in cores2.items()}
+    return oses, cores
+
+
 def linkgen(osversion, radioversion=None, softwareversion=None, altsw=None, temp=False, sdk=False):
     """
     Generate debrick/core/radio links for given OS, radio, software release.
@@ -620,11 +679,7 @@ def linkgen(osversion, radioversion=None, softwareversion=None, altsw=None, temp
         del dbks
         del cors
     avlty = networkutils.availability(baseurl)
-    if sdk:
-        oses2 = {key: val.replace("factory_sfi", "sdk") for key, val in oses.items()}
-        cores2 = {key: val.replace("factory_sfi", "sdk") for key, val in cores.items()}
-        oses = {key: val.replace("verizon_sfi", "sdk") for key, val in oses2.items()}
-        cores = {key: val.replace("verizon_sfi", "sdk") for key, val in cores2.items()}
+    oses, cores = linkgen_sdk(sdk, oses, cores)
     prargs = (softwareversion, osversion, radioversion, oses, cores, radios, avlty, False, None, temp, altsw)
     lthr = threading.Thread(target=textgenerator.write_links, args=prargs)
     lthr.start()

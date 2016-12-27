@@ -13,6 +13,47 @@ __license__ = "WTFPL v2"
 __copyright__ = "Copyright 2015-2016 Thurask"
 
 
+def prep_key(key):
+    """
+    Prepare key.
+
+    :param key: Key to use. 8-character hexadecimal, with or without 0x.
+    :type key: str
+    """
+    if key is None:
+        key = input("PGP KEY (0x12345678): ")
+    return key
+
+
+def prep_pass(key, password):
+    """
+    Prepare password.
+
+    :param key: Key to use. 8-character hexadecimal, with or without 0x.
+    :type key: str
+
+    :param password: Passphrase for given key.
+    :type password: str
+    """
+    if password is None:
+        password = getpass.getpass(prompt="PGP PASSPHRASE: ")
+        write = utilities.s2b(input("SAVE PASSPHRASE (Y/N)?: "))
+    password2 = password if write else None
+    gpgutils.gpg_config_writer(key, password2)
+    return password
+
+
+def prep_key_pass():
+    """
+    Prepare key and password.
+    """
+    key, password = gpgutils.gpg_config_loader()
+    if key is None or password is None:
+        key = prep_key(key)
+        password = prep_pass(key, password)
+    return key, password
+
+
 def gpgrunner_main():
     """
     Parse arguments from argparse/questionnaire.
@@ -37,15 +78,7 @@ def gpgrunner_main():
     if args.folder is None:
         args.folder = os.getcwd()
     workfolder = args.folder
-    key, password = gpgutils.gpg_config_loader()
-    if key is None or password is None:
-        if key is None:
-            key = input("PGP KEY (0x12345678): ")
-        if password is None:
-            password = getpass.getpass(prompt="PGP PASSPHRASE: ")
-            write = utilities.s2b(input("SAVE PASSPHRASE (Y/N)?: "))
-        password2 = password if write else None
-        gpgutils.gpg_config_writer(key, password2)
+    key, password = prep_key_pass()
     print(" ")
     gpgutils.gpgrunner(workfolder, key, password, args.selective)
 

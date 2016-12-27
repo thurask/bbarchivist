@@ -62,6 +62,13 @@ class TestClassScriptutils:
     Test script-related tools.
     """
 
+    def test_compjoiner(self):
+        """
+        Test getting absolute paths.
+        """
+        ofi = bs.comp_joiner(os.getcwd(), "snek", ["Z10_loader1.exe"])
+        assert ofi[0] == os.path.join(os.getcwd(), "snek", "Z10_loader1.exe")
+
     def test_radio_version(self):
         """
         Test radio version non-incrementing.
@@ -430,10 +437,10 @@ class TestClassScriptutilsIO:
         """
         Test writing autolookup output to file, unthreaded.
         """
-        if os.path.exists("snek.txt"):
-            os.remove("snek.txt")
-        bs.autolookup_logger("snek.txt", "SNEK")
-        with open("snek.txt", "r") as afile:
+        if os.path.exists("austinsnexas.txt"):
+            os.remove("austinsnexas.txt")
+        bs.autolookup_logger("austinsnexas.txt", "SNEK")
+        with open("austinsnexas.txt", "r") as afile:
             data = afile.read()
         assert data == "SNEK\n"
 

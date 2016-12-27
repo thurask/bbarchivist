@@ -222,8 +222,8 @@ def archivist_download(download, osurls, radiourls, localdir, session, dirs):
     :param dirs: List of generated bar/loader/zip directories.
     :type dirs: list(str)
     """
-    osfiles = [os.path.join(localdir, dirs[0], os.path.basename(x)) for x in osurls]
-    radiofiles = [os.path.join(localdir, dirs[1], os.path.basename(x)) for x in radiourls]
+    osfiles = scriptutils.comp_joiner(localdir, dirs[0], osurls)
+    radiofiles = scriptutils.comp_joiner(localdir, dirs[1], radiourls)
     if download:
         print("BEGIN DOWNLOADING...")
         networkutils.download_bootstrap(radiourls + osurls, localdir, 3, session)
