@@ -104,6 +104,40 @@ def download(url, output_directory=None, session=None):
     lfname = url.split('/')[-1]
     sname = utilities.stripper(lfname)
     fname = os.path.join(output_directory, lfname)
+    download_writer(url, fname, lfname, sname, session)
+    remove_empty_download(fname)
+
+
+def remove_empty_download(fname):
+    """
+    Remove file if it's empty.
+
+    :param fname: File path.
+    :type fname: str
+    """
+    if os.stat(fname).st_size == 0:
+        os.remove(fname)
+
+
+def download_writer(url, fname, lfname, sname, session=None):
+    """
+    Download file and write to disk.
+
+    :param url: URL to download from.
+    :type url: str
+
+    :param fname: File path.
+    :type fname: str
+
+    :param lfname: Long filename.
+    :type lfname: str
+
+    :param sname: Short name, for printing to screen.
+    :type sname: str
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
+    """
     with open(fname, "wb") as file:
         req = session.get(url, stream=True)
         clength = req.headers['content-length']
@@ -114,8 +148,6 @@ def download(url, output_directory=None, session=None):
                 file.write(chunk)
         else:
             print("ERROR: HTTP {0} IN {1}".format(req.status_code, lfname))
-    if os.stat(fname).st_size == 0:
-        os.remove(fname)
 
 
 def download_bootstrap(urls, outdir=None, workers=5, session=None):
