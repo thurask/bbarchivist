@@ -150,16 +150,6 @@ class TestClassHashutils:
         else:
             assert bh.hashlib_hash("tempfile.txt", hashlib.sha3_224()) == "93cc89107b9bd807dead1ae95ce8c4b0f9b8acb2a3eef704e2fad109"
 
-    def test_sha3224_unavail(self, capsys):
-        """
-        Test SHA3-224 hash, if not available.
-        """
-        if "sha3_224" in hashlib.algorithms_available:
-            pass
-        else:
-            bh.hashlib_hash("tempfile.txt", hashlib.sha3_224())
-            assert "REQUIRES PYTHON 3.6+" in capsys.readouterr()[0]
-
     def test_sha3256(self):
         """
         Test SHA3-256 hash.
@@ -168,16 +158,6 @@ class TestClassHashutils:
             pass
         else:
             assert bh.hashlib_hash("tempfile.txt", hashlib.sha3_256()) == "a9797b62d8b3573c9134406f42e601219e086150e6c2f32c90c5cee0149b6877"
-
-    def test_sha3256_unavail(self, capsys):
-        """
-        Test SHA3-256 hash, if not available.
-        """
-        if "sha3_256" in hashlib.algorithms_available:
-            pass
-        else:
-            bh.hashlib_hash("tempfile.txt", hashlib.sha3_256())
-            assert "REQUIRES PYTHON 3.6+" in capsys.readouterr()[0]
 
     def test_sha3384(self):
         """
@@ -188,16 +168,6 @@ class TestClassHashutils:
         else:
             assert bh.hashlib_hash("tempfile.txt", hashlib.sha3_384()) == "1ae83352968f601e16eff076f5967dd356edce4c4c5629e3939123b7507efbaafd1dabc1e459f8e47f7a05df718e5927"
 
-    def test_sha3384_unavail(self, capsys):
-        """
-        Test SHA3-384 hash, if not available.
-        """
-        if "sha3_384" in hashlib.algorithms_available:
-            pass
-        else:
-            bh.hashlib_hash("tempfile.txt", hashlib.sha3_384())
-            assert "REQUIRES PYTHON 3.6+" in capsys.readouterr()[0]
-
     def test_sha3512(self):
         """
         Test SHA3-512 hash.
@@ -206,16 +176,6 @@ class TestClassHashutils:
             pass
         else:
             assert bh.hashlib_hash("tempfile.txt", hashlib.sha3_512()) == "2ca12b585486d0f775f9fd438a73525b37b1214bc36a8b0ae611d0f1261e8d32b47b923b406c46cc80cc178598d41d42abee3eae5b1c23164b817342e22580e2"
-
-    def test_sha3512_unavail(self, capsys):
-        """
-        Test SHA3-512 hash, if not available.
-        """
-        if "sha3_512" in hashlib.algorithms_available:
-            pass
-        else:
-            bh.hashlib_hash("tempfile.txt", hashlib.sha3_512())
-            assert "REQUIRES PYTHON 3.6+" in capsys.readouterr()[0]
 
     def test_whirlpool(self):
         """
