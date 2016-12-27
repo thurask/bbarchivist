@@ -130,10 +130,7 @@ def grab_args():
             action="store_true")
         parser.set_defaults(compmethod="7z")
         args = parser.parse_args(sys.argv[1:])
-        if args.folder is None:
-            args.folder = os.getcwd()
-        elif args.folder is not None and not os.path.exists(args.folder):
-            os.makedirs(args.folder)
+        args.folder = scriptutils.generate_workfolder(args.folder)
         if getattr(sys, 'frozen', False):
             args.gpg = False
             hashdict = hashutils.verifier_config_loader(os.getcwd())

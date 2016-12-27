@@ -140,54 +140,27 @@ def grab_args():
     decorators.enter_to_exit(True)
 
 
-def questionnaire_mcc():
+def questionnaire_3digit(message):
     """
-    Get MCC from questionnaire.
-    """
-    while True:
-        try:
-            mcc = int(input("MCC: "))
-        except ValueError:
-            continue
-        else:
-            if mcc == utilities.valid_carrier(mcc):
-                return mcc
-
-
-def questionnaire_mnc():
-    """
-    Get MNC from questionnaire.
+    Get MCC/MNC from questionnaire.
     """
     while True:
         try:
-            mnc = int(input("MNC: "))
+            trip = int(input("{0}: ".format(message)))
         except ValueError:
             continue
         else:
-            if mnc == utilities.valid_carrier(mnc):
-                return mnc
-
-
-def questionnaire_devices():
-    """
-    Get device from questionnaire.
-    """
-    device = input("DEVICE (SXX100-#): ")
-    if not device:
-        print("NO DEVICE SPECIFIED!")
-        decorators.enter_to_exit(True)
-        if not getattr(sys, 'frozen', False):
-            raise SystemExit
-    return device
+            if trip == utilities.valid_carrier(trip):
+                return trip
 
 
 def questionnaire():
     """
     Questions to ask if no arguments given.
     """
-    mcc = questionnaire_mcc()
-    mnc = questionnaire_mnc()
-    device = questionnaire_devices()
+    mcc = questionnaire_3digit("MCC")
+    mnc = questionnaire_3digit("MNC")
+    device = scriptutils.questionnaire_device()
     bundles = utilities.s2b(input("CHECK BUNDLES?: "))
     if bundles:
         download = False

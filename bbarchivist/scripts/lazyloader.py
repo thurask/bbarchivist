@@ -106,10 +106,7 @@ def grab_args():
             action="store_true")
         parser.set_defaults(device=None)
         args = parser.parse_args(sys.argv[1:])
-        if args.folder is None:
-            args.folder = os.getcwd()
-        elif args.folder is not None and not os.path.exists(args.folder):
-            os.makedirs(args.folder)
+        args.folder = scriptutils.generate_workfolder(args.folder)
         if not utilities.is_windows():
             args.autoloader = False
         else:

@@ -208,6 +208,21 @@ class TestClassScriptutils:
         if os.path.exists("TEMPFILE.txt"):
             os.remove("TEMPFILE.txt")
 
+    def test_questionnaire_device_good(self):
+        """
+        Test getting device from input, best case.
+        """
+        with mock.patch('builtins.input', mock.MagicMock(return_value="SNEK!")):
+            assert bs.questionnaire_device() == "SNEK!"
+
+    def test_questionnaire_device_bad(self, capsys):
+        """
+        Test getting device from input, worst case.
+        """
+        with mock.patch('builtins.input', mock.MagicMock(return_value="")):
+            with pytest.raises(SystemExit):
+                bs.questionnaire_device()
+                assert "NO DEVICE SPECIFIED!" in capsys.readouterr()[0]
 
 
 class TestClassScriptutilsSoftware:
@@ -391,7 +406,7 @@ class TestClassScriptutilsSoftware:
 
 class TestClassScriptutilsIO:
     """
-    Test print-related utilities.
+    Test print/folder-related utilities.
     """
 
     def test_autolookup_printer(self, capsys):
@@ -438,6 +453,22 @@ class TestClassScriptutilsIO:
             with mock.patch('bbarchivist.sqlutils.check_exists', mock.MagicMock(return_value=False)):
                 with mock.patch('bbarchivist.sqlutils.insert', mock.MagicMock(side_effect=None)):
                     bs.autolookup_output_sql("10.3.2.2639", "10.3.2.2474", "Available", True)
+
+    def test_generate_workfolder_local(self):
+        """
+        Test getting workfolder if we default to local.
+        """
+        assert bs.generate_workfolder(None) == os.getcwd()
+
+    def test_generate_workfolder_create(self):
+        """
+        Test getting workfolder if we have to make it.
+        """
+        if "snektacular" in os.listdir():
+            os.remove("snektacular")
+        bs.generate_workfolder("snektacular")
+        assert "snektacular" in os.listdir()
+
 
 class TestClassScriptutilsURLCheck:
     """

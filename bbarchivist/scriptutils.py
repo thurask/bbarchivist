@@ -11,6 +11,7 @@ import glob  # file lookup
 import threading  # run stuff in background
 import requests  # session
 from bbarchivist import utilities  # little things
+from bbarchivist import decorators  # decorating functions
 from bbarchivist import barutils  # file system work
 from bbarchivist import archiveutils  # archive support
 from bbarchivist import bbconstants  # constants
@@ -221,7 +222,7 @@ def return_radio_sw_checked(altsw, radioversion):
     return altsw, altchecked
 
 
-def check_sw(baseurl, softwareversion, swchecked):
+def check_sw(baseurl, softwareversion, swchecked, altsw=False):
     """
     Check existence of software release.
 
@@ -233,8 +234,12 @@ def check_sw(baseurl, softwareversion, swchecked):
 
     :param swchecked: If we checked the sw release already.
     :type swchecked: bool
+
+    :param altsw: If this is the radio-only release. Default is false.
+    :type altsw: bool
     """
-    print("CHECKING SOFTWARE RELEASE AVAILABILITY...")
+    message = "CHECKING RADIO SOFTWARE RELEASE..." if altsw else "CHECKING SOFTWARE RELEASE..."
+    print(message)
     if not swchecked:
         avlty = networkutils.availability(baseurl)
         if avlty:
@@ -262,19 +267,7 @@ def check_radio_sw(alturl, altsw, altchecked):
     :param altchecked: If we checked the sw release already.
     :type altchecked: bool
     """
-    print("CHECKING RADIO SOFTWARE RELEASE...")
-    if not altchecked:
-        altavlty = networkutils.availability(alturl)
-        if altavlty:
-            print("SOFTWARE RELEASE {0} EXISTS".format(altsw))
-        else:
-            print("SOFTWARE RELEASE {0} NOT FOUND".format(altsw))
-            cont = utilities.s2b(input("CONTINUE? Y/N: "))
-            if not cont:
-                print("\nEXITING...")
-                raise SystemExit
-    else:
-        print("SOFTWARE RELEASE {0} EXISTS".format(altsw))
+    return check_sw(alturl, altsw, altchecked, True)
 
 
 def check_altsw(altcheck=False):
@@ -921,6 +914,20 @@ def standard_preamble(appname, osversion, softwareversion, radioversion, altsw=N
         print("RADIO SOFTWARE VERSION: {0}".format(altsw))
 
 
+def questionnaire_device(message=None):
+    """
+    Get device from questionnaire.
+    """
+    message = "DEVICE (SXX100-#): " if message is None else message
+    device = input(message)
+    if not device:
+        print("NO DEVICE SPECIFIED!")
+        decorators.enter_to_exit(True)
+        if not getattr(sys, 'frozen', False):
+            raise SystemExit
+    return device
+
+
 def verify_gpg_credentials():
     """
     Read GPG key/pass from file, verify if incomplete.
@@ -1023,6 +1030,20 @@ def enn_ayy(quant):
     :type quant: str
     """
     return "N/A" if quant is None else quant
+
+
+def generate_workfolder(folder=None):
+    """
+    Check if a folder exists, make it if it doesn't, set it to home if None.
+
+    :param folder: Folder to check.
+    :type folder: str
+    """
+    if folder is None:
+        folder = os.getcwd()
+    elif folder is not None and not os.path.exists(folder):
+        os.makedirs(folder)
+    return folder
 
 
 def info_header(afile, osver, radio=None, software=None, device=None):
