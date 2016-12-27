@@ -345,7 +345,7 @@ def generate_lazy_loader(
     localdir = os.getcwd() if localdir is None else localdir
     print("CREATING LOADER...")
     suffix = format_suffix(bool(altradio), altradio, core)
-    osfile = radiofile = None
+    osfile = None
     absoglob = "{0}{1}".format(localdir, os.sep)
     try:
         osfile = str(glob.glob("{0}*_sfi*.signed".format(absoglob))[0])
@@ -377,6 +377,7 @@ def generate_lazy_set(osversion, device, osfile, suffix, absoglob, localdir=None
     :param localdir: Working path. Default is local dir.
     :type localdir: str
     """
+    radiofile = None
     try:
         sset = set(glob.glob("{0}*.signed".format(absoglob)))
         rset = sset - set(glob.glob("{0}*_sfi*.signed".format(absoglob)))

@@ -96,6 +96,9 @@ def generic_writer(section, resultdict, homepath=None):
     """
     Write a ConfigParser file.
 
+    :param section: Section of ini file to write.
+    :type section: str
+
     :param resultdict: Dictionary of configs: {key: value}
     :type resultdict: dict({str, bool})
 
@@ -104,7 +107,7 @@ def generic_writer(section, resultdict, homepath=None):
     """
     config = generic_preamble(section, homepath)
     for key, value in resultdict.items():
-        config.set(section, key, value)
+        config.set(section, key, str(value))
     conffile = config_location(homepath)
     with open(conffile, "w") as configfile:
         config.write(configfile)

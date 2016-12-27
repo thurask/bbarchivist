@@ -28,64 +28,23 @@ def smtp_config_loader(homepath=None):
     resultdict['is_ssl'] = smtpini.get('is_ssl', fallback=None)
     return resultdict
 
-def smtp_config_writer_server(kwargs, config):
+
+def smtp_config_writer_kwargs(kwargs, config, key):
     """
-    Set server config.
+    Set server/port/username/password config.
 
     :param kwargs: Values. Refer to `:func:smtp_config_writer`.
     :type kwargs: dict
 
     :param config: Configuration dictionary.
     :type config: dict
+
+    :param key: Key for kwargs and config dict.
+    :type key: str
     """
-    if kwargs['server'] is not None:
-        config['server'] = kwargs['server']
-    return config
-
-
-def smtp_config_writer_port(kwargs, config):
-    """
-    Set port config.
-
-    :param kwargs: Values. Refer to `:func:smtp_config_writer`.
-    :type kwargs: dict
-
-    :param config: Configuration dictionary.
-    :type config: dict
-    """
-    if kwargs['port'] is not None:
-        config['port'] = str(kwargs['port'])
-    return config
-
-
-def smtp_config_writer_username(kwargs, config):
-    """
-    Set username config.
-
-    :param kwargs: Values. Refer to `:func:smtp_config_writer`.
-    :type kwargs: dict
-
-    :param config: Configuration dictionary.
-    :type config: dict
-    """
-    if kwargs['username'] is not None:
-        config['username'] = kwargs['username']
-    return config
-
-
-def smtp_config_writer_password(kwargs, config):
-    """
-    Set password config.
-
-    :param kwargs: Values. Refer to `:func:smtp_config_writer`.
-    :type kwargs: dict
-
-    :param config: Configuration dictionary.
-    :type config: dict
-    """
-    if kwargs['password'] is not None:
-        config['password'] = kwargs['password']
-    return config
+    if kwargs[key] is not None:
+        config[key] = kwargs[key]
+    return kwargs
 
 
 def smtp_config_writer_ssl(kwargs, config):
@@ -126,24 +85,30 @@ def smtp_config_writer(**kwargs):
     :type homepath: str
     """
     results = {}
-    results = smtp_config_writer_server(kwargs, results)
-    results = smtp_config_writer_port(kwargs, results)
-    results = smtp_config_writer_username(kwargs, results)
-    results = smtp_config_writer_password(kwargs, results)
+    results = smtp_config_writer_kwargs(kwargs, results, "server")
+    results = smtp_config_writer_kwargs(kwargs, results, "port")
+    results = smtp_config_writer_kwargs(kwargs, results, "username")
+    results = smtp_config_writer_kwargs(kwargs, results, "password")
     results = smtp_config_writer_ssl(kwargs, results)
     iniconfig.generic_writer("email", results, kwargs['homepath'])
 
 
-def smtp_config_generator_server(results):
+def smtp_config_generator_str(results, key, inp):
     """
-    Generate server config.
+    Set server/username config.
 
-    :param results: Values. Refer to `:func:smtp_config_writer`.
-    :type results: dict
+    :param kwargs: Values. Refer to `:func:smtp_config_writer`.
+    :type kwargs: dict
+
+    :param key: Key for results dict.
+    :type key: str
+
+    :param inp: Input question.
+    :type inp: str
     """
-    if results['server'] is None:
-        results['server'] = input("SMTP SERVER ADDRESS: ")
-    return results
+    if results[key] is None:
+        results[key] = input(inp)
+    return results 
 
 
 def smtp_config_generator_port(results):
@@ -155,18 +120,6 @@ def smtp_config_generator_port(results):
     """
     if results['port'] == 0:
         results['port'] = input("SMTP SERVER PORT: ")
-    return results
-
-
-def smtp_config_generator_username(results):
-    """
-    Generate username config.
-
-    :param results: Values. Refer to `:func:smtp_config_writer`.
-    :type results: dict
-    """
-    if results['username'] is None:
-        results['username'] = input("EMAIL ADDRESS: ")
     return results
 
 
@@ -202,9 +155,9 @@ def smtp_config_generator(results):
     :param results: The results to put in bbarchivist.ini.
     :type results: dict
     """
-    results = smtp_config_generator_server(results)
+    results = smtp_config_generator_str(results, "server", "SMTP SERVER ADDRESS: ")
     results = smtp_config_generator_port(results)
-    results = smtp_config_generator_username(results)
+    results = smtp_config_generator_str(results, "username", "EMAIL ADDRESS: ")
     results = smtp_config_generator_password(results)
     results = smtp_config_generator_ssl(results)
     return results
@@ -238,8 +191,7 @@ def send_email(kwargs):
     :param body: Email message body.
     :type body: str
     """
-    if kwargs['password'] is None:
-        kwargs['password'] = getpass.getpass(prompt="PASSWORD: ")
+    password = smtp_config_generator_password(kwargs)
     server, username, port, password = parse_kwargs(kwargs)
     subject = generate_subject(kwargs['software'], kwargs['os'])
     message = generate_message(kwargs['body'], username, subject)
