@@ -343,8 +343,8 @@ def move_bars(localdir, osdir, radiodir):
         if files.endswith(".bar"):
             print("MOVING: {0}".format(files))
             herefile = os.path.join(localdir, files)
-            outdir = dirsizer(files, osdir, radiodir)
-            atomic_move(files, outdir)
+            outdir = dirsizer(herefile, osdir, radiodir)
+            atomic_move(herefile, outdir)
 
 
 def persistent_move(infile, outdir):
