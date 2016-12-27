@@ -108,7 +108,7 @@ def smtp_config_generator_str(results, key, inp):
     """
     if results[key] is None:
         results[key] = input(inp)
-    return results 
+    return results
 
 
 def smtp_config_generator_port(results):
