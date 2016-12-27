@@ -735,6 +735,29 @@ def verify_loader_integrity(loaderfile):
         return excode == 0  # 0 if OK, non-zero if something broke
 
 
+def bulkfilter_printer(afile):
+    """
+    Print filename and verify a loader file.
+
+    :param afile: Path to file.
+    :type afile: str
+    """
+    print("TESTING: {0}".format(os.path.basename(afile)))
+    if not verify_loader_integrity(afile):
+        return os.path.basename(afile)
+
+
+def bulkfilter(files):
+    """
+    Verify all loader files in a given list.
+
+    :param files: List of files.
+    :type files: list(str)
+    """
+    brokens = [bulkfilter_printer(file) for file in files if prepends(os.path.basename(file), bbconstants.PREFIXES, ".exe")]
+    return brokens
+
+
 def verify_bulk_loaders(ldir):
     """
     Run :func:`verify_loader_integrity` for all files in a dir.
@@ -746,13 +769,7 @@ def verify_bulk_loaders(ldir):
         pass
     else:
         files = [os.path.join(ldir, file) for file in os.listdir(ldir) if not os.path.isdir(file)]
-        brokens = []
-        for file in files:
-            fname = os.path.basename(file)
-            if fname.endswith(".exe") and fname.startswith(bbconstants.PREFIXES):
-                print("TESTING: {0}".format(fname))
-                if not verify_loader_integrity(file):
-                    brokens.append(fname)
+        brokens = [file for file in bulkfilter(files) if file]
         return brokens
 
 
