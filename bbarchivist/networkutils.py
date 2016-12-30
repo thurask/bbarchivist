@@ -807,24 +807,53 @@ def table_headers(pees):
 
 
 @pem_wrapper
-def loader_page_scraper():
+def loader_page_scraper(session=None):
     """
     Return scraped autoloader page.
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
     """
-    url = "http://ca.blackberry.com/content/blackberry-com/en_ca/support/smartphones/Android-OS-Reload.html"
-    sess = requests.Session()
-    soup = generic_soup_parser(url, sess)
+    url = "http://ca.blackberry.com/support/smartphones/Android-OS-Reload.html"
+    session = requests.Session() if session is None else session
+    soup = generic_soup_parser(url, session)
     tables = soup.find_all("table")
     headers = table_headers(soup.find_all("p"))
     for idx, table in enumerate(tables):
-        print("~~~{0}~~~".format(headers[idx]))
-        chunks = chunker(table.find_all("td"), 4)
-        for chunk in chunks:
-            key = unicode_filter(chunk[0].text)
-            ver = unicode_filter(chunk[1].text)
-            link = unicode_filter(chunk[2].find("a")["href"])
-            print("{0}\n    {1}: {2}".format(key, ver, link))
-        print(" ")
+        loader_page_chunker(idx, table, headers)
+
+
+def loader_page_chunker(idx, table, headers):
+    """
+    Given a loader page table, chunk it into lists of table cells.
+
+    :param idx: Index of enumerating tables.
+    :type idx: int
+
+    :param table: HTML table tag.
+    :type table: bs4.element.Tag
+
+    :param headers: List of table headers.
+    :type headers: list(str)
+    """
+    print("~~~{0}~~~".format(headers[idx]))
+    chunks = chunker(table.find_all("td"), 4)
+    for chunk in chunks:
+        loader_page_printer(chunk)
+    print(" ")
+
+
+def loader_page_printer(chunk):
+    """
+    Print individual cell texts given a list of table cells.
+
+    :param chunk: List of td tags.
+    :type chunk: list(bs4.element.Tag)
+    """
+    key = unicode_filter(chunk[0].text)
+    ver = unicode_filter(chunk[1].text)
+    link = unicode_filter(chunk[2].find("a")["href"])
+    print("{0}\n    {1}: {2}".format(key, ver, link))
 
 
 @pem_wrapper
