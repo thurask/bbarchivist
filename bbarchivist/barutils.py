@@ -12,7 +12,7 @@ from bbarchivist import bbconstants  # premade stuff
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "Copyright 2015-2016 Thurask"
+__copyright__ = "2015-2017 Thurask"
 
 
 def extract_bars(filepath):

@@ -8,7 +8,7 @@ from bbarchivist import scriptutils  # default parser
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "Copyright 2016 Thurask"
+__copyright__ = "2016-2017 Thurask"
 
 
 def droidscraper_main():

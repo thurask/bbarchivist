@@ -127,7 +127,7 @@ Docs use Sphinx for automatic generation.
 
 License
 -------
-Copyright 2015-2016 Thurask <thuraski@hotmail.com>
+Copyright 2015-2017 Thurask <thuraski@hotmail.com>
 This work is free. You can redistribute it and/or modify it under the
 terms of the Do What The Fuck You Want To Public License, Version 2,
 as published by Sam Hocevar. See the `LICENSE <LICENSE>`__ file for more details.

@@ -6,7 +6,7 @@ import os  # path work
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "Copyright 2016 Thurask"
+__copyright__ = "2016-2017 Thurask"
 
 
 def config_emptysection(config, section):
