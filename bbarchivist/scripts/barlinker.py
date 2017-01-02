@@ -19,7 +19,7 @@ def questionnaire():
     appname = input("APPLICATION NAME (ex. sys.android): ")
     appver = input("APPLICATION VERSION (ex. 10.3.2.348): ")
     print(utilities.create_bar_url(software, appname, appver, True))
-    
+
 
 def barlinker_main():
     """
