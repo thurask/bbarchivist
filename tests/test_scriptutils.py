@@ -108,7 +108,7 @@ class TestClassScriptutils:
         """
         Test exporting links, with upgrade files.
         """
-        with mock.patch('bbarchivist.networkutils.get_length', mock.MagicMock(return_value=12345)):
+        with mock.patch('bbarchivist.textgenerator.get_fnone', mock.MagicMock(return_value=True)):
             bs.export_cchecker(
                 ["http://sn.ek"],
                 None,
@@ -119,7 +119,7 @@ class TestClassScriptutils:
                 True,
                 None)
             with open("10.3.3.3333plusapps.txt", "r") as afile:
-                assert len(afile.read()) == 2926
+                assert len(afile.read()) == 2899
 
     def test_cchecker_export_debrick(self):
         """

@@ -3,6 +3,10 @@
 
 from shutil import rmtree
 import os
+try:
+    import unittest.mock as mock
+except ImportError:
+    import mock
 import httmock
 import bbarchivist.textgenerator as bt
 
@@ -44,7 +48,7 @@ class TestClassTextGenerator:
         """
         Create necessary links.
         """
-        deb, cor, rad = bt.url_gen("10.1.1000", "10.2.2000", "10.3.3000")
+        deb, cor, rad = bt.url_gen("10.1.1.1000", "10.2.2.2000", "10.3.3.3000")
         cls.deb = deb
         cls.cor = cor
         cls.rad = rad
@@ -73,31 +77,32 @@ class TestClassTextGenerator:
         """
         Test writing URLs to file.
         """
-        bt.write_links(
-            "10.3.3000",
-            "10.1.1000",
-            "10.2.2000",
-            self.deb,
-            self.cor,
-            self.rad,
-            True,
-            False,
-            None,
-            False,
-            None)
-        with open("10.3.3000.txt", 'rb') as file:
+        with mock.patch('bbarchivist.textgenerator.get_fnone', mock.MagicMock(return_value=True)):
+            bt.write_links(
+                "10.3.3.3000",
+                "10.1.1.1000",
+                "10.2.2.2000",
+                self.deb,
+                self.cor,
+                self.rad,
+                True,
+                False,
+                None,
+                False,
+                None)
+        with open("10.3.3.3000.txt", 'rb') as file:
             data = file.read()
             data = data.replace(b"\r", b"")
-            assert len(data) == 2848
+            assert len(data) == 2888
 
     def test_write_links_unavailable(self):
         """
         Test writing URLs, to file, if file existence not guaranteed.
         """
         bt.write_links(
-            "10.3.3000",
-            "10.1.1000",
-            "10.2.2000",
+            "10.3.3.3000",
+            "10.1.1.1000",
+            "10.2.2.2000",
             self.deb,
             self.cor,
             self.rad,
@@ -106,10 +111,10 @@ class TestClassTextGenerator:
             None,
             False,
             None)
-        with open("10.3.3000.txt", 'rb') as file:
+        with open("10.3.3.3000.txt", 'rb') as file:
             data = file.read()
             data = data.replace(b"\r", b"")
-            assert len(data) == 2878
+            assert len(data) == 2918
 
     def test_write_links_withapps(self):
         """
@@ -118,9 +123,9 @@ class TestClassTextGenerator:
         apps = ["http://APP#1.bar", "http://APP#2.bar", "http://APP#3.bar"]
         with httmock.HTTMock(cl_good_mock):
             bt.write_links(
-                "10.3.3000",
-                "10.1.1000",
-                "10.2.2000",
+                "10.3.3.3000",
+                "10.1.1.1000",
+                "10.2.2.2000",
                 self.deb,
                 self.cor,
                 self.rad,
@@ -132,7 +137,7 @@ class TestClassTextGenerator:
         with open("TEMPFILE.txt", 'rb') as file:
             data = file.read()
             data = data.replace(b"\r", b"")
-            assert len(data) == 3060
+            assert len(data) == 3100
 
     def test_export_devloader(self):
         """

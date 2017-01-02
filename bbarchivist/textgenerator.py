@@ -27,7 +27,57 @@ def system_link_writer(target, urls, avlty=False):
             fsize = get_length(val)
         else:
             fsize = None
-        target.write("{0} [{1}] {2}\n".format(key, fsizer(fsize), val))
+        system_individual_writer(key, val, target, fsize)
+
+
+def get_fnone(fsize):
+    """
+    Get sentinel value for filesize when writing OS/radio links.
+
+    :param fsize: Filesize.
+    :type fsize: int
+    """
+    return True if fsize is None else False
+
+
+def system_individual_writer(appname, appurl, target, fsize):
+    """
+    Write individual OS/radio link to file.
+
+    :param appname: App name.
+    :type appname: str
+
+    :param appurl: App URL.
+    :type appurl: str
+
+    :param target: File to write to.
+    :type target: file
+
+    :param fsize: Filesize.
+    :type fsize: int
+    """
+    fnone = get_fnone(fsize)
+    if fnone:
+        target.write("{0} [{1}] {2}\n".format(appname, fsizer(0), appurl))
+    elif fsize > 0:
+        target.write("{0} [{1}] {2}\n".format(appname, fsizer(fsize), appurl))
+
+
+def app_individual_writer(app, target):
+    """
+    Write individual app link to file.
+
+    :param app: App URL.
+    :type app: str
+
+    :param target: File to write to.
+    :type target: file
+    """
+    fsize = get_length(app)
+    base = app.split('/')[-1]
+    base = stripper(base)
+    if fsize > 0:
+        target.write("{0} [{1}] {2}\n".format(base, fsizer(fsize), app))
 
 
 def app_link_writer(target, urls):
@@ -40,13 +90,10 @@ def app_link_writer(target, urls):
     :param urls: Dictionary of URLs; name: URL
     :type urls: dict(str: str)
     """
+    stoppers = ["8960", "8930", "8974", "m5730", "winchester"]
     for app in urls:
-        stoppers = ["8960", "8930", "8974", "m5730", "winchester"]
         if all(word not in app for word in stoppers):
-            fsize = get_length(app)
-            base = app.split('/')[-1]
-            base = stripper(base)
-            target.write("{0} [{1}] {2}\n".format(base, fsizer(fsize), app))
+            app_individual_writer(app, target)
 
 
 def dev_link_writer(target, finals):
