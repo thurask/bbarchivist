@@ -176,6 +176,14 @@ class TestClassArchiveutilsCompression:
             with mock.patch("tarfile.TarFile.getmembers", mock.MagicMock(return_value=False)):
                 assert not ba.txz_verify("Z10_BIGLOADER.tar.xz")
 
+    def test_compress_lzma_mocked(self):
+        """
+        Test xz compression failure, if we insist this is Python 3.2.
+        """
+        with mock.patch('bbarchivist.utilities.new_enough', mock.MagicMock(return_value=False)):
+            ba.txz_compress("Z10_BIGLOADER2", "Z10_BIGLOADER.exe")
+            assert True
+
     def test_verify(self):
         """
         Test bulk verification.
@@ -264,6 +272,13 @@ class TestClassArchiveutilsMethods:
         if new_enough(3):
             pass
         else:
+            assert ba.filter_method("txz", None) == "zip"
+
+    def test_filter_method_mocked(self):
+        """
+        Test method checking, if we insist this is Python 3.2.
+        """
+        with mock.patch('bbarchivist.utilities.new_enough', mock.MagicMock(return_value=False)):
             assert ba.filter_method("txz", None) == "zip"
 
 
@@ -431,6 +446,36 @@ class TestClassArchiveutilsVerifier:
                 filepath = os.path.join(verdir, "Q10.tar.xz")
                 assert not ba.txz_verify(filepath)
 
+    def test_verify_txz_mocked(self):
+        """
+        Test tar.xz verification failure, if we insist this is Python 3.2.
+        """
+        with mock.patch('bbarchivist.utilities.new_enough', mock.MagicMock(return_value=False)):
+            verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
+            filepath = os.path.join(verdir, "Q10.tar.xz")
+            assert ba.txz_verify(filepath) is None
+
+    def test_verify_printer_ok(self, capsys):
+        """
+        Test reporting if file is OK.
+        """
+        ba.decide_verifier_printer("SNEK.snek", True)
+        assert "SNEK.snek OK" in capsys.readouterr()[0]
+
+    def test_verify_assignment(self):
+        """
+        Test assigning verifier functions.
+        """
+        with mock.patch('bbarchivist.archiveutils.zip_verify', mock.MagicMock(return_value=True)):
+            assert ba.tarzip_verifier("snek.zip")
+
+    def test_verify_decide_sz(self):
+        """
+        Test checking 7-Zip verification.
+        """
+        with mock.patch('bbarchivist.archiveutils.sz_verify', mock.MagicMock(return_value=True)):
+            assert ba.decide_verifier("snek.7z","7z.exe")
+
 
 class TestClassArchiveutilsConfig:
     """
@@ -455,6 +500,20 @@ class TestClassArchiveutilsConfig:
         if new_enough(3):
             pass
         else:
+            try:
+                os.remove("bbarchivist.ini")
+            except (OSError, IOError):
+                pass
+            with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
+                ba.compress_config_writer("txz")
+                print(ba.compress_config_loader())
+                assert ba.compress_config_loader(os.getcwd()) == "zip"
+
+    def test_compress_loader_mocked(self):
+        """
+        Test reading compression settings, forced Python 3.2.
+        """
+        with mock.patch('bbarchivist.utilities.new_enough', mock.MagicMock(return_value=False)):
             try:
                 os.remove("bbarchivist.ini")
             except (OSError, IOError):
