@@ -41,7 +41,6 @@ def kompressor_main():
         default=None)
     parser.set_defaults()
     args = parser.parse_args(sys.argv[1:])
-    print(args.verify)
     if args.folder is None:
         args.folder = os.getcwd()
     if args.method is None:
