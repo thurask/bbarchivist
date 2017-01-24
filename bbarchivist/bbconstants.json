@@ -25,8 +25,24 @@
             ]
         },
         {
+            "id": 2,
+            "radtype": "qc8960-omadm",
+            "parts": [
+                "Z10_",
+                "_STL100-4"
+            ]
+        },
+        {
             "id": 3,
             "radtype": "qc8960.wtr.",
+            "parts": [
+                "Q10_",
+                "_SQN100-1-2-3-4-5"
+            ]
+        },
+        {
+            "id": 3,
+            "radtype": "qc8960-wtr.",
             "parts": [
                 "Q10_",
                 "_SQN100-1-2-3-4-5"
@@ -41,6 +57,14 @@
             ]
         },
         {
+            "id": 4,
+            "radtype": "qc8960-wtr5",
+            "parts": [
+                "Z30_",
+                "_STA100-1-2-3-4-5-6"
+            ]
+        },
+        {
             "id": 5,
             "radtype": "qc8930.wtr5",
             "parts": [
@@ -49,8 +73,24 @@
             ]
         },
         {
+            "id": 5,
+            "radtype": "qc8930-wtr5",
+            "parts": [
+                "Z3_",
+                "_STJ100-1-2"
+            ]
+        },
+        {
             "id": 6,
             "radtype": "qc8974.wtr2",
+            "parts": [
+                "Passport_",
+                "_SQW100-1-2-3-4"
+            ]
+        },
+        {
+            "id": 6,
+            "radtype": "qc8974-wtr2",
             "parts": [
                 "Passport_",
                 "_SQW100-1-2-3-4"
