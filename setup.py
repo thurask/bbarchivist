@@ -21,13 +21,14 @@ def main():
     """
     cond_requires = [
         'python-gnupg',
-        'beautifulsoup4',
-        'defusedxml'
+        'beautifulsoup4'
     ]
-    if version_info[1] < 3:  # 3.2 and under
-        cond_requires.extend(['shutilwhich', 'requests==2.10'])
-    else:  # 3.3+
-        cond_requires.extend(['simplejson', 'requests'])
+    if version_info[1] == 2:  # 3.2
+        cond_requires.extend(['shutilwhich', 'requests==2.10', 'defusedxml==0.4.1'])
+    elif version_info[1] == 3:  # 3.3+
+        cond_requires.extend(['simplejson', 'requests', 'defusedxml==0.4.1'])
+    else:
+        cond_requires.extend(['simplejson', 'requests', 'defusedxml'])
     scriptlist = [
         'bb-archivist=bbarchivist.scripts.archivist:grab_args',
         'bb-lazyloader=bbarchivist.scripts.lazyloader:grab_args',
