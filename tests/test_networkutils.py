@@ -557,7 +557,7 @@ class TestClassNetworkutilsParsing:
         Test multiple software lookups, with filter.
         """
         with httmock.HTTMock(sr_good_mock):
-            findings = bn.sr_lookup_bootstrap("10.3.2.798", noalpha2=True)
+            findings = bn.sr_lookup_bootstrap("10.3.2.798", no2=True)
             for key in findings:
                 assert findings[key] == "10.3.2.516"
 

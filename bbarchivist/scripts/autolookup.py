@@ -82,9 +82,9 @@ def grab_args():
             action="store_true",
             default=False)
         parser.add_argument(
-            "-na2", "--no-alpha2",
-            dest="noa2",
-            help="Skip checking Alpha 2 server",
+            "-n2", "--no-2",
+            dest="no2",
+            help="Skip checking Alpha/Beta 2 servers",
             action="store_true",
             default=False)
         args = parser.parse_args(sys.argv[1:])
@@ -105,7 +105,7 @@ def grab_args():
             args.ceiling,
             args.email,
             args.production,
-            args.noa2)
+            args.no2)
     else:
         osversion = input("OS VERSION: ")
         recurse = utilities.s2b(input("LOOP (Y/N)?: "))
@@ -128,7 +128,7 @@ def grab_args():
 
 @decorators.wrap_keyboard_except
 def autolookup_main(osversion, loop=False, log=False, autogen=False, inc=3, sql=False,
-                    quiet=False, ceiling=9996, mailer=False, prod=False, noalpha2=False):
+                    quiet=False, ceiling=9996, mailer=False, prod=False, no2=False):
     """
     Lookup a software release from an OS. Can iterate.
 
@@ -162,8 +162,8 @@ def autolookup_main(osversion, loop=False, log=False, autogen=False, inc=3, sql=
     :param prod: Whether to check only the production server. Default is false.
     :type prod: bool
 
-    :param noalpha2: Whether to skip Alpha2 server. Default is false.
-    :type noalpha2: bool
+    :param no2: Whether to skip Alpha2/Beta2 servers. Default is false.
+    :type no2: bool
     """
     if mailer:
         sql = True
@@ -182,14 +182,14 @@ def autolookup_main(osversion, loop=False, log=False, autogen=False, inc=3, sql=
             raise KeyboardInterrupt
         print("NOW SCANNING: {0}".format(osversion), end="\r")
         if not prod:
-            results = networkutils.sr_lookup_bootstrap(osversion, sess, noalpha2)
+            results = networkutils.sr_lookup_bootstrap(osversion, sess, no2)
         else:
             res = networkutils.sr_lookup(osversion, networkutils.SERVERS["p"], sess)
             results = {"p": res, "a1": None, "a2": None, "b1": None, "b2": None}
         if results is None:
             raise KeyboardInterrupt
         a1rel, a1av = networkutils.clean_availability(results, 'a1')
-        if not noalpha2:
+        if not no2:
             a2rel, a2av = networkutils.clean_availability(results, 'a2')
         else:
             a2rel = "SR not in system"

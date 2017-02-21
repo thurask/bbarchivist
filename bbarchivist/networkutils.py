@@ -466,7 +466,7 @@ def sr_lookup(osver, server, session=None):
                     return "SR not in system"
 
 
-def sr_lookup_bootstrap(osv, session=None, noalpha2=False):
+def sr_lookup_bootstrap(osv, session=None, no2=False):
     """
     Run lookups for each server for given OS.
 
@@ -476,8 +476,8 @@ def sr_lookup_bootstrap(osv, session=None, noalpha2=False):
     :param session: Requests session object, default is created on the fly.
     :type session: requests.Session()
 
-    :param noalpha2: Whether to skip Alpha2 server. Default is false.
-    :type noalpha2: bool
+    :param no2: Whether to skip Alpha2/Beta2 servers. Default is false.
+    :type no2: bool
     """
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as xec:
         try:
@@ -488,8 +488,9 @@ def sr_lookup_bootstrap(osv, session=None, noalpha2=False):
                 "b1": None,
                 "b2": None
             }
-            if noalpha2:
+            if no2:
                 del results["a2"]
+                del results["b2"]
             for key in results:
                 results[key] = xec.submit(sr_lookup, osv, SERVERS[key], session).result()
             return results
