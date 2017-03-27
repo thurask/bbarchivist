@@ -638,6 +638,30 @@
             "ptcrbid": ""
         },
         {
+            "device": "KEYONE",
+            "family": "KEYONE",
+            "name": "BBB100-1",
+            "hwid": "",
+            "fccid": "BBB100-1",
+            "ptcrbid": "34391"
+        },
+        {
+            "device": "KEYONE",
+            "family": "KEYONE",
+            "name": "BBB100-2",
+            "hwid": "",
+            "fccid": "BBB100-2",
+            "ptcrbid": ""
+        },
+        {
+            "device": "KEYONE",
+            "family": "KEYONE",
+            "name": "BBB100-3",
+            "hwid": "",
+            "fccid": "BBB100-3",
+            "ptcrbid": ""
+        },
+        {
             "device": "UNKNOWN",
             "family": "UNRELEASED",
             "name": "SQE100-1",
@@ -780,6 +804,7 @@
     "droidfamilies": [
         "Priv",
         "DTEK50",
-        "DTEK60"
+        "DTEK60",
+        "KEYONE"
     ]
 }

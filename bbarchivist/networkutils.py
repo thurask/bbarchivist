@@ -551,7 +551,9 @@ def ptcrb_scraper(ptcrbid):
     """
     baseurl = "https://ptcrb.com/vendor/complete/view_complete_request_guest.cfm?modelid={0}".format(
         ptcrbid)
-    soup = generic_soup_parser(baseurl)
+    sess = requests.Session()
+    sess.headers.update({"Referer": "https://ptcrb.com/vendor/complete/complete_request.cfm"})
+    soup = generic_soup_parser(baseurl, sess)
     text = soup.get_text()
     text = text.replace("\r\n", " ")
     prelimlist = re.findall("OS .+[^\\n]", text, re.IGNORECASE)
