@@ -118,6 +118,8 @@ flake8.txt
 /temp_**
 pyinst-dist/
 pyinst-build/
+pyinst-dist-64/
+pyinst-build-64/
 7z/
 longversion.txt
 version.txt

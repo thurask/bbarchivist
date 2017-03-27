@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Generate .exe files with PyInstaller."""
 
-from os import remove, listdir, devnull, getcwd
-from os.path import join, basename
+from os import remove, listdir, devnull, getcwd, makedirs
+from os.path import join, basename, exists
+from platform import architecture
 from shutil import copy, rmtree
 from subprocess import call, STDOUT
 from requests import certs, get
@@ -26,6 +27,19 @@ def clean_versions():
     """
     remove("version.txt")
     remove("longversion.txt")
+
+
+def bitsdir(indir):
+    """
+    Create directories based on indir segregated on bit type.
+    """
+    if architecture()[0] == "64bit":
+        indirx = "{0}-64".format(indir)
+    else:
+        indirx = indir
+    if not exists(indirx):
+        makedirs(indirx)
+    return indirx
 
 
 def generate_specs():
@@ -76,8 +90,8 @@ def call_specs():
     Call pyinstaller to make specs.
     """
     specs = [x for x in listdir() if x.endswith(".spec")]
-    for spec in specs:  # UPX 3.91 BSODs my computer, disable for now
-        cmd = "pyinstaller --onefile --noupx --workpath pyinst-build --distpath pyinst-dist {0}".format(spec)
+    for spec in specs:  # use UPX 3.93 or up
+        cmd = "pyinstaller --onefile --workpath {2} --distpath {1} {0}".format(spec, bitsdir("pyinst-dist"), bitsdir("pyinst-build"))
         call(cmd, shell=True)
 
 
@@ -91,7 +105,8 @@ def sz_wrapper(outdir):
         pass
     else:
         copy(join("7z", "7za.exe"), outdir)
-        copy(join("7z", "x64", "7za.exe"), join(outdir, "7za64.exe"))
+        if architecture()[0] == "64bit":
+            copy(join("7z", "x64", "7za.exe"), join(outdir, "7za64.exe"))
         rmtree("7z", ignore_errors=True)
 
 
@@ -102,7 +117,7 @@ def main():
     write_versions()
     generate_specs()
     call_specs()
-    outdir = "pyinst-dist"
+    outdir = bitsdir("pyinst-dist")
     copy("version.txt", outdir)
     copy("longversion.txt", outdir)
     copy(CAP.location, outdir)

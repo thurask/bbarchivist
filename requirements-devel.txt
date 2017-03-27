@@ -11,4 +11,5 @@ httmock>0.0
 sphinx>0.0
 sphinx_rtd_theme>0.0
 #pyinstaller>0.0
+#if you're using Python 3.6: git+https://github.com/pyinstaller/pyinstaller.git
 #versioneer + pyinstaller require pywin32!
