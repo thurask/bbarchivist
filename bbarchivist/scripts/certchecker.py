@@ -75,7 +75,7 @@ def grab_args():
         else:
             certchecker_main(args.device)
     else:
-        device = scriptutils.questionnaire_device("DEVICE (SXX100-#/FCCID/HWID): ")
+        device = scriptutils.questionnaire_device("DEVICE (XXX100-#/FCCID/HWID): ")
         print(" ")
         certchecker_main(device)
         decorators.enter_to_exit(True)

@@ -243,7 +243,7 @@ def s2b(input_check):
 
 def is_amd64():
     """
-    Check if script is running on an AMD64 system.
+    Check if script is running on an AMD64 system (Python can be 32/64, this is for subprocess)
     """
     return platform.machine().endswith("64")
 

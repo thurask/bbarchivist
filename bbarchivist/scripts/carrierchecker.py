@@ -198,7 +198,7 @@ def carrierchecker_argfilter(mcc, mnc, device, directory):
     :param mnc: Network code.
     :type mnc: int
 
-    :param device: Device ID (SXX100-#)
+    :param device: Device ID (XXX100-#)
     :type device: str
 
     :param directory: Where to store files. Default is local directory.
@@ -228,7 +228,7 @@ def carrierchecker_jsonprepare(mcc, mnc, device):
     :param mnc: Network code.
     :type mnc: int
 
-    :param device: Device ID (SXX100-#).
+    :param device: Device ID (XXX100-#).
     :type device: str
     """
     data = jsonutils.load_json("devices")
@@ -372,7 +372,7 @@ def carrierchecker_main(mcc, mnc, device,
     :param mnc: Network code.
     :type mnc: int
 
-    :param device: Device ID (SXX100-#).
+    :param device: Device ID (XXX100-#).
     :type device: str
 
     :param download: Whether or not to download. Default is false.

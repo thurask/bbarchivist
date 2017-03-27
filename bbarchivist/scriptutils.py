@@ -974,7 +974,7 @@ def questionnaire_device(message=None):
     """
     Get device from questionnaire.
     """
-    message = "DEVICE (SXX100-#): " if message is None else message
+    message = "DEVICE (XXX100-#): " if message is None else message
     device = input(message)
     if not device:
         print("NO DEVICE SPECIFIED!")
