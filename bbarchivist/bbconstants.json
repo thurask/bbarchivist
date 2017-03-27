@@ -662,6 +662,14 @@
             "ptcrbid": ""
         },
         {
+            "device": "AURORA",
+            "family": "AURORA",
+            "name": "BBC100-1",
+            "hwid": "",
+            "fccid": "",
+            "ptcrbid": ""
+        },
+        {
             "device": "UNKNOWN",
             "family": "UNRELEASED",
             "name": "SQE100-1",
@@ -805,6 +813,7 @@
         "Priv",
         "DTEK50",
         "DTEK60",
-        "KEYONE"
+        "KEYONE",
+        "AURORA"
     ]
 }
