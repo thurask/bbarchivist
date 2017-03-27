@@ -29,6 +29,10 @@ README
     :target: https://www.codacy.com/app/thuraski/bbarchivist?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=thurask/bbarchivist&amp;utm_campaign=Badge_Grade
     :alt: Codacy Badge
 
+.. image:: https://requires.io/github/thurask/bbarchivist/requirements.svg?branch=master
+     :target: https://requires.io/github/thurask/bbarchivist/requirements/?branch=master
+     :alt: Requirements Status
+
 A Python 3.2+ package for various BlackBerry 10/BlackBerry Android-related functions and scripts.
 
 Packaged Executables
