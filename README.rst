@@ -29,21 +29,21 @@ README
     :target: https://www.codacy.com/app/thuraski/bbarchivist?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=thurask/bbarchivist&amp;utm_campaign=Badge_Grade
     :alt: Codacy Badge
 
-A Python 3.2+ package for various BlackBerry 10/Priv-related functions and scripts.
+A Python 3.2+ package for various BlackBerry 10/BlackBerry Android-related functions and scripts.
 
 Packaged Executables
 --------------------
 
 As of version 2.3.0 (18 December 2015), a few scripts are packaged as Windows executables on `GitHub <https://github.com/thurask/bbarchivist/releases>`__.
 
-To use, just download the bbarchivist-<version> archive attached to the latest release, unpack somewhere and double click an executable.
+To use, just download the bbarchivist-<version>-<system bit> archive attached to the latest release, unpack somewhere and double click an executable.
 
 Alternatively, if you require full functionality or Linux/Mac/BSD support, keep reading.
 
 Installation
 ------------
 
-Requires Python >=3.2, with 3.5 or later preferred.
+Requires Python >=3.2, with 3.6 or later preferred.
 
 To get the latest stable version, install with pip:
 
@@ -78,6 +78,7 @@ The optional `simplejson <https://simplejson.readthedocs.io/en/latest/>`__ modul
 performance with dealing with JSON.
 
 The optional `defusedxml <https://bitbucket.org/tiran/defusedxml>`__ module is installed for safer XML handling.
+Use defusedxml 0.4.1 if you're using Python 3.2 or 3.3.
 
 External Programs
 ~~~~~~~~~~~~~~~~~
