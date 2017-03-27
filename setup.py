@@ -20,15 +20,15 @@ def main():
     Perform setuptools setup.
     """
     cond_requires = [
-        'python-gnupg',
-        'beautifulsoup4'
+        'python-gnupg>=0.3.9',
+        'beautifulsoup4>=4.5.3'
     ]
-    if version_info[1] == 2:  # 3.2
-        cond_requires.extend(['shutilwhich', 'requests==2.10', 'defusedxml==0.4.1'])
-    elif version_info[1] == 3:  # 3.3+
-        cond_requires.extend(['simplejson', 'requests', 'defusedxml==0.4.1'])
-    else:
-        cond_requires.extend(['simplejson', 'requests', 'defusedxml'])
+    if version_info[1] == 2:  # 3.2; shutilwhich, no simplejson, old requests/defusedxml
+        cond_requires.extend(['shutilwhich>=1.1.0', 'requests==2.10', 'defusedxml==0.4.1'])
+    elif version_info[1] == 3:  # 3.3; simplejson, old defusedxml
+        cond_requires.extend(['simplejson>=3.10.0', 'requests>=2.10.0', 'defusedxml==0.4.1'])
+    else:  # 3.4+; simplejson, defusedxml
+        cond_requires.extend(['simplejson>=3.10.0', 'requests>=2.10.0', 'defusedxml>=0.4.1'])
     scriptlist = [
         'bb-archivist=bbarchivist.scripts.archivist:grab_args',
         'bb-lazyloader=bbarchivist.scripts.lazyloader:grab_args',

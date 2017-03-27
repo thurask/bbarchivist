@@ -1,15 +1,15 @@
-requests>0.0
+requests>=2.10.0
 python-gnupg>=0.3.9
 #if you're using GnuPG 2.1: hg+https://bitbucket.org/vinay.sajip/python-gnupg
-defusedxml>0.0
-shutilwhich>0.0
-beautifulsoup4>0.0
-mock>0.0
-pytest>=2.8.0
-pytest-cov>0.0
-httmock>0.0
-sphinx>0.0
-sphinx_rtd_theme>0.0
+defusedxml>=0.4.1
+shutilwhich>=1.1.0
+beautifulsoup4>=4.5.3
+mock>=2.0.0
+pytest>=2.9.2
+pytest-cov>=2.4.0
+httmock>=1.2.6
+#sphinx>0.0
+#sphinx_rtd_theme>0.0
 #pyinstaller>0.0
 #if you're using Python 3.6: git+https://github.com/pyinstaller/pyinstaller.git
 #versioneer + pyinstaller require pywin32!
