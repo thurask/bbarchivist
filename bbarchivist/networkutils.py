@@ -784,8 +784,8 @@ def chunker(iterable, inc):
     """
     Convert an iterable into a list of inc sized lists.
 
-    :param chunker: Iterable to chunk.
-    :type chunker: list
+    :param iterable: Iterable to chunk.
+    :type iterable: list/tuple/string
 
     :param inc: Increment; how big each chunk is.
     :type inc: int

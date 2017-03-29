@@ -29,13 +29,24 @@ def zlib_hash(filepath, method, blocksize=16 * 1024 * 1024):
     :param blocksize: How much of file to read at once. Default is 16MB.
     :type blocksize: int
     """
-    hashfunc = zlib.crc32 if method == "crc32" else zlib.adler32
-    seed = 0 if method == "crc32" else 1
+    hashfunc, seed = zlib_handler(method)
     with open(filepath, 'rb') as file:
         for chunk in iter(lambda: file.read(blocksize), b''):
             seed = hashfunc(chunk, seed)
     final = format(seed & 0xFFFFFFFF, "08x")
     return final
+
+
+def zlib_handler(method):
+    """
+    Prepare hash method and seed depending on CRC32/Adler32.
+
+    :param method: "crc32" or "adler32".
+    :type method: str
+    """
+    hashfunc = zlib.crc32 if method == "crc32" else zlib.adler32
+    seed = 0 if method == "crc32" else 1
+    return hashfunc, seed
 
 
 def hashlib_hash(filepath, engine, blocksize=16 * 1024 * 1024):
