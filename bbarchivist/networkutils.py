@@ -47,6 +47,17 @@ def pem_wrapper(method):
     return wrapper
 
 
+def generic_session(session=None):
+    """
+    Create a Requests session object on the fly, if need be.
+
+    :param session: Requests session object, created if this is None.
+    :type session: requests.Session()
+    """
+    sess = requests.Session() if session is None else session
+    return sess
+
+
 def generic_soup_parser(url, session=None):
     """
     Get a BeautifulSoup HTML parser for some URL.
@@ -57,7 +68,7 @@ def generic_soup_parser(url, session=None):
     :param session: Requests session object, default is created on the fly.
     :type session: requests.Session()
     """
-    session = requests.Session() if session is None else session
+    session = generic_session(session)
     req = session.get(url)
     soup = BeautifulSoup(req.content, "html.parser")
     return soup
@@ -74,7 +85,7 @@ def get_length(url, session=None):
     :param session: Requests session object, default is created on the fly.
     :type session: requests.Session()
     """
-    session = requests.Session() if session is None else session
+    session = generic_session(session)
     if url is None:
         return 0
     try:
@@ -99,7 +110,7 @@ def download(url, output_directory=None, session=None):
     :param session: Requests session object, default is created on the fly.
     :type session: requests.Session()
     """
-    session = requests.Session() if session is None else session
+    session = generic_session(session)
     output_directory = os.getcwd() if output_directory is None else output_directory
     lfname = url.split('/')[-1]
     sname = utilities.stripper(lfname)
@@ -193,7 +204,7 @@ def availability(url, session=None):
     :param session: Requests session object, default is created on the fly.
     :type session: requests.Session()
     """
-    session = requests.Session() if session is None else session
+    session = generic_session(session)
     try:
         avlty = session.head(url)
         status = int(avlty.status_code)
@@ -232,7 +243,7 @@ def carrier_checker(mcc, mnc, session=None):
     :param session: Requests session object, default is created on the fly.
     :type session: requests.Session()
     """
-    session = requests.Session() if session is None else session
+    session = generic_session(session)
     url = "http://appworld.blackberry.com/ClientAPI/checkcarrier?homemcc={0}&homemnc={1}&devicevendorid=-1&pin=0".format(
         mcc, mnc)
     user_agent = {'User-agent': 'AppWorld/5.1.0.60'}
@@ -282,7 +293,7 @@ def carrier_query(npc, device, upgrade=False, blitz=False, forced=None, session=
     :param session: Requests session object, default is created on the fly.
     :type session: requests.Session()
     """
-    session = requests.Session() if session is None else session
+    session = generic_session(session)
     upg = "upgrade" if upgrade else "repair"
     forced = "latest" if forced is None else forced
     url = "https://cs.sl.blackberry.com/cse/updateDetails/2.2/"
@@ -426,7 +437,7 @@ def sr_lookup(osver, server, session=None):
     :param session: Requests session object, default is created on the fly.
     :type session: requests.Session()
     """
-    session = requests.Session() if session is None else session
+    session = generic_session(session)
     reg = re.compile(r"(\d{1,4}\.)(\d{1,4}\.)(\d{1,4}\.)(\d{1,4})")
     query = '<?xml version="1.0" encoding="UTF-8"?>'
     query += '<srVersionLookupRequest version="2.0.0"'
@@ -515,7 +526,7 @@ def available_bundle_lookup(mcc, mnc, device, session=None):
     :param session: Requests session object, default is created on the fly.
     :type session: requests.Session()
     """
-    session = requests.Session() if session is None else session
+    session = generic_session(session)
     server = "https://cs.sl.blackberry.com/cse/availableBundles/1.0.0/"
     npc = return_npc(mcc, mnc)
     query = '<?xml version="1.0" encoding="UTF-8"?>'
@@ -542,16 +553,19 @@ def available_bundle_lookup(mcc, mnc, device, session=None):
 
 
 @pem_wrapper
-def ptcrb_scraper(ptcrbid):
+def ptcrb_scraper(ptcrbid, session=None):
     """
     Get the PTCRB results for a given device.
 
     :param ptcrbid: Numerical ID from PTCRB (end of URL).
     :type ptcrbid: str
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
     """
     baseurl = "https://ptcrb.com/vendor/complete/view_complete_request_guest.cfm?modelid={0}".format(
         ptcrbid)
-    sess = requests.Session()
+    sess = generic_session(session)
     sess.headers.update({"Referer": "https://ptcrb.com/vendor/complete/complete_request.cfm"})
     soup = generic_soup_parser(baseurl, sess)
     text = soup.get_text()
@@ -625,16 +639,19 @@ def ptcrb_item_cleaner(item):
 
 
 @pem_wrapper
-def kernel_scraper(utils=False):
+def kernel_scraper(utils=False, session=None):
     """
     Scrape BlackBerry's GitHub kernel repo for available branches.
 
     :param utils: Check android-utils repo instead of android-linux-kernel. Default is False.
     :type utils: bool
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
     """
     repo = "android-utils" if utils else "android-linux-kernel"
     kernlist = []
-    sess = requests.Session()
+    sess = generic_session(session)
     for page in range(1, 10):
         url = "https://github.com/blackberry/{0}/branches/all?page={1}".format(repo, page)
         soup = generic_soup_parser(url, sess)
@@ -818,7 +835,7 @@ def loader_page_scraper(session=None):
     :type session: requests.Session()
     """
     url = "http://ca.blackberry.com/support/smartphones/Android-OS-Reload.html"
-    session = requests.Session() if session is None else session
+    session = generic_session(session)
     soup = generic_soup_parser(url, session)
     tables = soup.find_all("table")
     headers = table_headers(soup.find_all("p"))
@@ -870,7 +887,7 @@ def base_metadata(url, session=None):
     :param session: Requests session object, default is created on the fly.
     :type session: requests.Session()
     """
-    session = requests.Session() if session is None else session
+    session = generic_session(session)
     req = session.get(url)
     data = req.content
     entries = data.split(b"\n")
@@ -937,7 +954,7 @@ def devalpha_urls(osversion, skel, session=None):
     :param session: Requests session object, default is created on the fly.
     :type session: requests.Session()
     """
-    session = requests.Session() if session is None else session
+    session = generic_session(session)
     url = "http://downloads.blackberry.com/upr/developers/downloads/{0}{1}.exe".format(skel, osversion)
     req = session.head(url)
     if req.status_code == 200:
