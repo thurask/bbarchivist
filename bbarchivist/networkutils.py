@@ -437,8 +437,6 @@ def sr_lookup(osver, server, session=None):
     :param session: Requests session object, default is created on the fly.
     :type session: requests.Session()
     """
-    session = generic_session(session)
-    reg = re.compile(r"(\d{1,4}\.)(\d{1,4}\.)(\d{1,4}\.)(\d{1,4})")
     query = '<?xml version="1.0" encoding="UTF-8"?>'
     query += '<srVersionLookupRequest version="2.0.0"'
     query += ' authEchoTS="1366644680359">'
@@ -457,24 +455,67 @@ def sr_lookup(osver, server, session=None):
     query += '<omadmEnabled>false</omadmEnabled>'
     query += '</software></clientProperties>'
     query += '</srVersionLookupRequest>'
+    reqtext = sr_lookup_poster(query, server, session)
+    packtext = sr_lookup_xmlparser(reqtext)
+    return packtext
+
+
+def sr_lookup_poster(query, server, session=None):
+    """
+    Post the XML payload for a software release lookup.
+
+    :param query: XML payload.
+    :type query: str
+
+    :param server: Server to use.
+    :type server: str
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
+    """
+    session = generic_session(session)
     header = {"Content-Type": "text/xml;charset=UTF-8"}
     try:
         req = session.post(server, headers=header, data=query, timeout=1)
     except (requests.exceptions.Timeout, requests.exceptions.ConnectionError):
-        return "SR not in system"
-    try:
-        root = ElementTree.fromstring(req.text)
-    except ElementTree.ParseError:
-        return "SR not in system"
+        reqtext = "SR not in system"
     else:
-        packages = root.findall('./data/content/')
-        for package in packages:
-            if package.text is not None:
-                match = reg.match(package.text)
-                if match:
-                    return package.text
-                else:
-                    return "SR not in system"
+        reqtext = req.text
+    finally:
+        return reqtext
+
+
+def sr_lookup_xmlparser(reqtext):
+    """
+    Take the text of a software lookup request response and parse it as XML.
+
+    :param reqtext: Response text, hopefully XML formatted.
+    :type reqtext: str
+    """
+    try:
+        root = ElementTree.fromstring(reqtext)
+    except ElementTree.ParseError:
+        packtext = "SR not in system"
+    else:
+        packtext = sr_lookup_extractor(root)
+    finally:
+        return packtext
+
+
+def sr_lookup_extractor(root):
+    """
+    Take an ElementTree and extract a software release from it.
+
+    :param root: ElementTree we're barking up.
+    :type root: xml.etree.ElementTree.ElementTree
+    """
+    reg = re.compile(r"(\d{1,4}\.)(\d{1,4}\.)(\d{1,4}\.)(\d{1,4})")
+    packages = root.findall('./data/content/')
+    for package in packages:
+        if package.text is not None:
+            match = reg.match(package.text)
+            packtext = package.text if match else "SR not in system"
+            return packtext
 
 
 def sr_lookup_bootstrap(osv, session=None, no2=False):
