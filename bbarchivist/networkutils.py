@@ -947,6 +947,48 @@ def devalpha_urls(osversion, skel, session=None):
     return finals
 
 
+def devalpha_urls_serieshandler(osversion, skeletons):
+    """
+    Process list of candidate Dev Alpha autoloader URLs.
+
+    :param osversion: OS version.
+    :type osversion: str
+
+    :param skeletons: List of skeleton formats to try.
+    :type skeletons: list
+    """
+    skels = skeletons
+    for idx, skel in enumerate(skeletons):
+        if "<SERIES>" in skel:
+            skels[idx] = skel.replace("<SERIES>", series_generator(osversion))
+    return skels
+
+
+def devalpha_urls_bulk(osversion, skeletons, xec, session=None):
+    """
+    Construct list of valid Dev Alpha autoloader URLs.
+
+    :param osversion: OS version.
+    :type osversion: str
+
+    :param skeletons: List of skeleton formats to try.
+    :type skeletons: list
+
+    :param xec: ThreadPoolExecutor instance.
+    :type xec: concurrent.futures.ThreadPoolExecutor
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
+    """
+    finals = {}
+    skels = devalpha_urls_serieshandler(osversion, skeletons)
+    for skel in skels:
+        final = xec.submit(devalpha_urls, osversion, skel, session).result()
+        if final:
+            finals[final[0]] = final[1]
+    return finals
+
+
 def devalpha_urls_bootstrap(osversion, skeletons, session=None):
     """
     Get list of valid Dev Alpha autoloader URLs.
@@ -962,16 +1004,7 @@ def devalpha_urls_bootstrap(osversion, skeletons, session=None):
     """
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as xec:
         try:
-            finals = {}
-            skels = skeletons
-            for idx, skel in enumerate(skeletons):
-                if "<SERIES>" in skel:
-                    skels[idx] = skel.replace("<SERIES>", series_generator(osversion))
-            for skel in skels:
-                final = xec.submit(devalpha_urls, osversion, skel, session).result()
-                if final:
-                    finals[final[0]] = final[1]
-            return finals
+            return devalpha_urls_bulk(osversion, skeletons, xec, session)
         except KeyboardInterrupt:
             xec.shutdown(wait=False)
 

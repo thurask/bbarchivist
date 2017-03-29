@@ -155,6 +155,30 @@ def bar_tester(filepath):
     return brokens
 
 
+def remove_empty_folder(curdir, subdirs, files):
+    """
+    Remove a folder if it's empty.
+
+    :param curdir: Target folder.
+    :type curdir: str
+
+    :param subdirs: Subdirectories inside target folder.
+    :type subdirs: list(str)
+
+    :param files: Files inside target folder.
+    :type files: list(str)
+    """
+    while True:
+        try:
+            if not subdirs and not files:
+                os.rmdir(curdir)
+        except OSError:
+            continue
+        except NotImplementedError:
+            break
+        break
+
+
 def remove_empty_folders(a_folder):
     """
     Remove empty folders in a given folder using os.walk().
@@ -163,15 +187,7 @@ def remove_empty_folders(a_folder):
     :type a_folder: str
     """
     for curdir, subdirs, files in os.walk(a_folder):
-        while True:
-            try:
-                if not subdirs and not files:
-                    os.rmdir(curdir)
-            except OSError:
-                continue
-            except NotImplementedError:
-                break
-            break
+        remove_empty_folder(curdir, subdirs, files)
 
 
 def persistent_remove(afile):
