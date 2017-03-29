@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Python interface for cap."""
+"""Python interface for cap/cfp."""
 
-from bbarchivist import bbconstants  # cap version
+from bbarchivist import bbconstants  # cap/cfp version
 from bbarchivist import scriptutils  # default parser
 from bbarchivist import utilities  # platform
 
@@ -16,5 +16,8 @@ def cap_main():
     """
     scriptutils.generic_windows_shim("bb-cap", "BlackBerry CAP.", utilities.grab_cap(), bbconstants.CAP.version)
 
-if __name__ == "__main__":
-    cap_main()
+def cfp_main():
+    """
+    Run cfp.
+    """
+    scriptutils.generic_windows_shim("bb-cfp", "BlackBerry CFP.", utilities.grab_cfp(), bbconstants.CFP.version)
