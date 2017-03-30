@@ -60,12 +60,9 @@ def find_signed_file(match, localdir, title, silent=False):
     return signedfile
 
 
-def read_os_files(localdir, core=False):
+def generate_os_fixes(core=False):
     """
-    Read list of OS signed files, return name assignments.
-
-    :param localdir: Directory to use.
-    :type localdir: str
+    Generate name regexes for OS signed files.
 
     :param core: If we're using a core OS image. Default is false.
     :type core: bool
@@ -84,6 +81,20 @@ def read_os_files(localdir, core=False):
         fix8930 = "*qc8x30.desktop.BB*.signed"
         fix8974_new = "*qc8974.desktop.BB*.signed"
         fix8974_old = "*qc8974.*_sfi.desktop.BB*.signed"
+    return fix8960, fixomap_new, fixomap_old, fix8930, fix8974_new, fix8974_old
+
+
+def read_os_files(localdir, core=False):
+    """
+    Read list of OS signed files, return name assignments.
+
+    :param localdir: Directory to use.
+    :type localdir: str
+
+    :param core: If we're using a core OS image. Default is false.
+    :type core: bool
+    """
+    fix8960, fixomap_new, fixomap_old, fix8930, fix8974_new, fix8974_old = generate_os_fixes(core)
     # 8960
     os_8960 = find_signed_file(fix8960, localdir, "8960 OS")
     # 8x30 (10.3.1 MR+)
