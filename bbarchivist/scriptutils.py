@@ -622,6 +622,22 @@ def comp_joiner(rootdir, localdir, filelist):
     return joinedfiles
 
 
+def linkgen_sdk_dicter(indict, origtext, newtext):
+    """
+    Prepare SDK radio/OS dictionaries.
+
+    :param indict: Dictionary of radio and OS pairs.
+    :type: dict(str:str)
+
+    :param origtext: String in indict's values that must be replaced.
+    :type origtext: str
+
+    :param newtext: What to replace origtext with.
+    :type newtext: str
+    """
+    return {key: val.replace(origtext, newtext) for key, val in indict.items()}
+
+
 def linkgen_sdk(sdk, oses, cores):
     """
     Generate SDK debrick/core images.
@@ -636,10 +652,10 @@ def linkgen_sdk(sdk, oses, cores):
     :type cores: dict(str:str)
     """
     if sdk:
-        oses2 = {key: val.replace("factory_sfi", "sdk") for key, val in oses.items()}
-        cores2 = {key: val.replace("factory_sfi", "sdk") for key, val in cores.items()}
-        oses = {key: val.replace("verizon_sfi", "sdk") for key, val in oses2.items()}
-        cores = {key: val.replace("verizon_sfi", "sdk") for key, val in cores2.items()}
+        oses2 = linkgen_sdk_dicter(oses, "factory_sfi", "sdk")
+        cores2 = linkgen_sdk_dicter(cores, "factory_sfi", "sdk")
+        oses = linkgen_sdk_dicter(oses2, "verizon_sfi", "sdk")
+        cores = linkgen_sdk_dicter(cores2, "verizon_sfi", "sdk")
     return oses, cores
 
 
