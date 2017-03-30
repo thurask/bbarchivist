@@ -481,8 +481,7 @@ def sr_lookup_poster(query, server, session=None):
         reqtext = "SR not in system"
     else:
         reqtext = req.text
-    finally:
-        return reqtext
+    return reqtext
 
 
 def sr_lookup_xmlparser(reqtext):
@@ -498,8 +497,7 @@ def sr_lookup_xmlparser(reqtext):
         packtext = "SR not in system"
     else:
         packtext = sr_lookup_extractor(root)
-    finally:
-        return packtext
+    return packtext
 
 
 def sr_lookup_extractor(root):
