@@ -55,8 +55,7 @@ def grab_args():
             action="store_true")
         parser.set_defaults()
         args = parser.parse_args(sys.argv[1:])
-        if args.folder is None:
-            args.folder = os.getcwd()
+        args.folder = utilities.dirhandler(args.folder, os.getcwd())
         downloader_main(args.os, args.radio, args.swrelease,
                         args.folder, args.debricks, args.radios,
                         args.cores, args.altsw)
@@ -119,8 +118,7 @@ def downloader_main(osversion, radioversion=None, softwareversion=None,
     softwareversion, swchecked = scriptutils.return_sw_checked(softwareversion, osversion)
     if altsw:
         altsw, altchecked = scriptutils.return_radio_sw_checked(altsw, radioversion)
-    if localdir is None:
-        localdir = os.getcwd()
+    localdir = utilities.dirhandler(localdir, os.getcwd())
     scriptutils.standard_preamble("downloader", osversion, softwareversion, radioversion, altsw)
     if not any((debricks, radios, cores)):
         print("NO FILES SPECIFIED, DEFAULTING TO DEBRICKS + RADIOS")

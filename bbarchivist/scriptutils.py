@@ -1111,9 +1111,8 @@ def generate_workfolder(folder=None):
     :param folder: Folder to check.
     :type folder: str
     """
-    if folder is None:
-        folder = os.getcwd()
-    elif folder is not None and not os.path.exists(folder):
+    folder = utilities.dirhandler(folder, os.getcwd())
+    if folder is not None and not os.path.exists(folder):
         os.makedirs(folder)
     return folder
 

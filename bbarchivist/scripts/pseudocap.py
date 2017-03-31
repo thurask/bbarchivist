@@ -27,8 +27,7 @@ def pseudocap_main():
         nargs="+")
     parser.set_defaults()
     args = parser.parse_args(sys.argv[1:])
-    if args.folder is None:
-        args.folder = os.getcwd()
+    args.folder = utilities.dirhandler(args.folder, os.getcwd())
     if not args.filename.endswith(".exe"):
         args.filename += ".exe"
     args.files = utilities.signed_file_args(args.files)

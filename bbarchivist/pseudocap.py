@@ -76,7 +76,7 @@ def make_offset(files, folder=None):
     :param folder: Working folder. Optional. Default is local.
     :type folder: str
     """
-    folder = os.getcwd() if folder is None else folder
+    folder = utilities.dirhandler(folder, os.getcwd())
     capfile = utilities.grab_cap()
     filelist = [file for file in files if file]
     fcount = b'0' + bytes(str(len(filelist)), 'ascii')
@@ -149,7 +149,7 @@ def make_autoloader(filename, files, folder=None):
     :param folder: Working folder. Optional, default is local.
     :type folder: str
     """
-    folder = os.getcwd() if folder is None else folder
+    folder = utilities.dirhandler(folder, os.getcwd())
     offset = make_offset(files, folder)
     filelist = [os.path.abspath(file) for file in files if file]
     print("CREATING: {0}".format(filename))

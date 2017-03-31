@@ -576,8 +576,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     softwareversion, swchecked = scriptutils.return_sw_checked(softwareversion, osversion)
     if altsw == "checkme":
         altsw, altchecked = scriptutils.return_radio_sw_checked(altsw, radioversion)
-    if localdir is None:
-        localdir = os.getcwd()
+    localdir = utilities.dirhandler(localdir, os.getcwd())
     if hashed and hashdict is None:
         hashdict = hashutils.verifier_config_loader()
         hashutils.verifier_config_writer(hashdict)

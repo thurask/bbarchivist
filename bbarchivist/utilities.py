@@ -78,6 +78,20 @@ def new_enough(minver):
     return False if minver > sys.version_info[1] else True
 
 
+def dirhandler(directory, defaultdir):
+    """
+    If directory is None, turn it into defaultdir.
+
+    :param directory: Target directory.
+    :type directory: str
+
+    :param defaultdir: Default directory.
+    :type defaultdir: str
+    """
+    directory = defaultdir if directory is None else directory
+    return directory
+
+
 def fsizer(file_size):
     """
     Raw byte file size to human-readable string.
@@ -773,15 +787,28 @@ def verify_bulk_loaders(ldir):
         return brokens
 
 
-def workers(input_data):
+def list_workers(input_data, workerlimit):
+    """
+    Count number of threads, either length of iterable or provided limit.
+
+    :param input_data: Input data, some iterable.
+    :type input_data: list
+
+    :param workerlimit: Maximum number of workers.
+    :type workerlimit: int
+    """
+    runners = len(input_data) if len(input_data) < workerlimit else workerlimit
+    return runners
+
+
+def cpu_workers(input_data):
     """
     Count number of CPU workers, smaller of number of threads and length of data.
 
     :param input_data: Input data, some iterable.
     :type input_data: list
     """
-    runners = len(input_data) if len(input_data) < compat.enum_cpus() else compat.enum_cpus()
-    return runners
+    return list_workers(input_data, compat.enum_cpus())
 
 
 def prep_logfile():

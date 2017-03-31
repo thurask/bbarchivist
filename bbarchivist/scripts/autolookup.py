@@ -107,23 +107,30 @@ def grab_args():
             args.production,
             args.no2)
     else:
-        osversion = input("OS VERSION: ")
-        recurse = utilities.s2b(input("LOOP (Y/N)?: "))
-        if recurse:
-            print("Press Ctrl+C to stop loop")
-        print(" ")
-        autolookup_main(
-            osversion,
-            recurse,
-            True,
-            False,
-            3,
-            False,
-            False,
-            9996,
-            False,
-            False)
-        decorators.enter_to_exit(True)
+        questionnaire()
+
+
+def questionnaire():
+    """
+    Questions to ask if no arguments given.
+    """
+    osversion = input("OS VERSION: ")
+    recurse = utilities.s2b(input("LOOP (Y/N)?: "))
+    if recurse:
+        print("Press Ctrl+C to stop loop")
+    print(" ")
+    autolookup_main(
+        osversion,
+        recurse,
+        True,
+        False,
+        3,
+        False,
+        False,
+        9996,
+        False,
+        False)
+    decorators.enter_to_exit(True)
 
 
 @decorators.wrap_keyboard_except

@@ -105,8 +105,7 @@ def grab_args():
         if args.codes:
             webbrowser.open("https://en.wikipedia.org/wiki/Mobile_country_code")
         else:
-            if args.folder is None:
-                args.folder = os.getcwd()
+            args.folder = utilities.dirhandler(args.folder, os.getcwd())
             if args.blitz:
                 args.download = True
                 args.upgrade = True  # blitz takes precedence
@@ -214,7 +213,7 @@ def carrierchecker_argfilter(mcc, mnc, device, directory):
         print("INVALID DEVICE!")
         raise SystemExit
     device = device.upper()
-    directory = os.getcwd() if directory is None else directory
+    directory = utilities.dirhandler(directory, os.getcwd())
     return device, directory
 
 

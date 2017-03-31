@@ -332,7 +332,7 @@ def verifier(ldir, kwargs=None, selective=False):
     """
     kwargs = verifier_config_loader() if kwargs is None else kwargs
     fxs = prep_verifier(ldir, selective)
-    with concurrent.futures.ThreadPoolExecutor(max_workers=utilities.workers(fxs)) as xec:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=utilities.cpu_workers(fxs)) as xec:
         for file in fxs:
             verifier_individual(xec, ldir, file, kwargs)
 

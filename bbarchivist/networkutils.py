@@ -111,7 +111,7 @@ def download(url, output_directory=None, session=None):
     :type session: requests.Session()
     """
     session = generic_session(session)
-    output_directory = os.getcwd() if output_directory is None else output_directory
+    output_directory = utilities.dirhandler(output_directory, os.getcwd())
     lfname = url.split('/')[-1]
     sname = utilities.stripper(lfname)
     fname = os.path.join(output_directory, lfname)

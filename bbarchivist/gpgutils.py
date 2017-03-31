@@ -108,7 +108,7 @@ def gpgrunner_clean(gpg, workingdir, keyid=None, pword=None, selective=False):
     :type selective: bool
     """
     keyid, files = prep_gpgrunner(workingdir, keyid)
-    with concurrent.futures.ThreadPoolExecutor(max_workers=utilities.workers(files)) as xec:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=utilities.cpu_workers(files)) as xec:
         for file in files:
             gpgwriter(gpg, xec, file, workingdir, selective, keyid, pword)
 

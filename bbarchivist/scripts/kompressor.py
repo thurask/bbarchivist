@@ -41,8 +41,7 @@ def kompressor_main():
         default=None)
     parser.set_defaults()
     args = parser.parse_args(sys.argv[1:])
-    if args.folder is None:
-        args.folder = os.getcwd()
+    args.folder = utilities.dirhandler(args.folder, os.getcwd())
     if args.method is None:
         method = archiveutils.compress_config_loader()
         if method == "7z" and not utilities.prep_seven_zip(False):

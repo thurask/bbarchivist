@@ -28,8 +28,7 @@ def infogenerator_main():
             type=utilities.droidlookup_devicetype)
         parser.set_defaults()
         args = parser.parse_args(sys.argv[1:])
-        if args.folder is None:
-            args.folder = os.getcwd()
+        args.folder = utilities.dirhandler(args.folder, os.getcwd())
         scriptutils.make_info(args.folder, args.os, args.radio, args.swrelease, args.device)
     else:
         folder = os.getcwd()

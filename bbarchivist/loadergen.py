@@ -6,6 +6,7 @@ import os  # path work
 import glob  # filename matching
 from bbarchivist import exceptions  # exception handling
 from bbarchivist import pseudocap  # implement cap
+from bbarchivist import utilities  # directory handler
 from bbarchivist import jsonutils  # json
 
 __author__ = "Thurask"
@@ -228,7 +229,7 @@ def generate_loaders(osversion, radioversion, radios=True, localdir=None, altrad
     :type core: bool
     """
     # default parsing
-    localdir = os.getcwd() if localdir is None else localdir
+    localdir = utilities.dirhandler(localdir, os.getcwd())
     print("GETTING FILENAMES...")
     filedict = read_files(localdir, core)
     osversion, radioversion = pretty_formatter(osversion, radioversion)
@@ -375,7 +376,7 @@ def generate_lazy_loader(
     :type core: bool
     """
     # default parsing
-    localdir = os.getcwd() if localdir is None else localdir
+    localdir = utilities.dirhandler(localdir, os.getcwd())
     print("CREATING LOADER...")
     suffix = format_suffix(bool(altradio), altradio, core)
     osfile = None

@@ -75,8 +75,7 @@ def gpgrunner_main():
         action="store_true")
     parser.set_defaults()
     args = parser.parse_args(sys.argv[1:])
-    if args.folder is None:
-        args.folder = os.getcwd()
+    args.folder = utilities.dirhandler(args.folder, os.getcwd())
     workfolder = args.folder
     key, password = prep_key_pass()
     print(" ")
