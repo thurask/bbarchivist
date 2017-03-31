@@ -123,3 +123,8 @@ pyinst-build-64/
 7z/
 longversion.txt
 version.txt
+
+#VS2017 being irritating
+Backup/
+Backup1/
+UpgradeLog.htm
