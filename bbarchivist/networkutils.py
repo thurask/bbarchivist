@@ -721,8 +721,12 @@ def root_generator(folder, build, variant="common"):
     dtek50x = "bbSupport/DTEK50" if build[:3] == "AAF" else "bbfoundation/hashfiles_priv/dtek50"
     #DTEK60 specific
     dtek60x = dtek50x  # still uses dtek50 folder, for some reason
+    #KEYone specific
+    keyonex = "bbfoundation/hashfiles_priv/keyone"  # PLACEHOLDER
+    #Aurora specific
+    aurorax = "bbfoundation/hashfiles_priv/aurora"  # PLACEHOLDER
     #Pack it up
-    roots = {"Priv": privx, "DTEK50": dtek50x, "DTEK60": dtek60x}
+    roots = {"Priv": privx, "DTEK50": dtek50x, "DTEK60": dtek60x, "KEYone": keyonex, "Aurora": aurorax}
     return roots
 
 
@@ -743,7 +747,7 @@ def make_droid_skeleton(method, build, device, variant="common"):
     :type variant: str
     """
     folder = {"vzw-vzw": "verizon", "na-att": "att", "na-tmo": "tmo", "common": "default"}
-    devices = {"Priv": "qc8992", "DTEK50": "qc8952_64_sfi", "DTEK60": "qc8996"}
+    devices = {"Priv": "qc8992", "DTEK50": "qc8952_64_sfi", "DTEK60": "qc8996", "KEYone": "qc8953", "Aurora": "qc8917"}  # PLACEHOLDER
     roots = root_generator(folder, build, variant)
     base = "bbry_{2}_autoloader_user-{0}-{1}".format(variant, build.upper(), devices[device])
     if method is None:
