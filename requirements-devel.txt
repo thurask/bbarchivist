@@ -7,6 +7,7 @@ beautifulsoup4>=4.5.3
 mock>=2.0.0
 pytest>=2.9.2
 #if you're using Python 3.6: https://github.com/tartley/colorama/pull/121
+#git+https://github.com/scop/colorama.git@py36escseq
 pytest-cov>=2.4.0
 httmock>=1.2.6
 #sphinx>0.0
