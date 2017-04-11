@@ -52,7 +52,7 @@ class GPGFileMock(object):
 
 
 @pytest.mark.needsgpg
-@pytest.mark.skipif(NOGNUPG)
+@pytest.mark.skipif(NOGNUPG, reason="GnuPG broken or not installed")
 class TestClassGPGutils:
     """
     Test GPG-related tools.
