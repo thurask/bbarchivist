@@ -51,6 +51,8 @@ class GPGFileMock(object):
         print("MOCKED!")
 
 
+@pytest.mark.needsgpg
+@pytest.mark.skipif(NOGNUPG)
 class TestClassGPGutils:
     """
     Test GPG-related tools.
