@@ -314,6 +314,10 @@ def url_gen(osversion, radioversion, softwareversion):
     vzw = create_bar_url(softwareversion, "qc8960.verizon_sfi.desktop", osversion)
     oses.insert(2, vzw)
     cores.insert(2, oses[2].replace(".desktop", ""))
+    splitos = [int(i) for i in osversion.split(".")]
+    if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 3):
+        radlist = radlist[1:]
+        oslist = oslist[1:]
     ospairs = {}
     for title, url in zip(oslist, oses):
         ospairs[title] = url
