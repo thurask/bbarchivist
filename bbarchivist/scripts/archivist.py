@@ -572,6 +572,8 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     :param oldstyle: Whether to make old-style checksum files. Default is false.
     :type oldstyle: bool
     """
+    if deleted and not compressed:
+        deleted = False  # don't delete what we want to keep
     radioversion = scriptutils.return_radio_version(osversion, radioversion)
     softwareversion, swchecked = scriptutils.return_sw_checked(softwareversion, osversion)
     if altsw == "checkme":
