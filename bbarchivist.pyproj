@@ -12,8 +12,6 @@
     <OutputPath>.</OutputPath>
     <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <InterpreterId>{f19a6a5f-2c75-4255-96d7-335a6c04a9f6}</InterpreterId>
-    <InterpreterVersion>3.5</InterpreterVersion>
     <IsWindowsApplication>False</IsWindowsApplication>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
@@ -262,8 +260,6 @@
     <Folder Include="tests\" />
     <Folder Include="docs" />
   </ItemGroup>
-  <ItemGroup>
-    <InterpreterReference Include="{f19a6a5f-2c75-4255-96d7-335a6c04a9f6}\3.5" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
 </Project>
