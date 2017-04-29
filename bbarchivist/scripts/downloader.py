@@ -152,6 +152,7 @@ def downloader_main(osversion, radioversion=None, softwareversion=None,
         urllist += radurls
     if cores:
         urllist += corurls
+    urllist = list(set(urllist))  # pop duplicates
     if urllist:
         sess = requests.Session()
         networkutils.download_bootstrap(urllist, localdir, workers=5, session=sess)

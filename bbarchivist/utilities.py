@@ -509,17 +509,35 @@ def generate_urls(softwareversion, osversion, radioversion, core=False):
         create_bar_url(softwareversion, "qc8974.wtr2", radioversion)
     ]
     coreurls = []
-    splitos = [int(i) for i in osversion.split(".")]
-    osurls[2] = filter_1031(osurls[2], splitos, 5)
-    osurls[3] = filter_1031(osurls[3], splitos, 6)
+    osurls, radiourls = filter_urls(osurls, radiourls, osversion)
     if core:
         coreurls = [x.replace(".desktop", "") for x in osurls]
     return osurls, radiourls, coreurls
 
 
+def filter_urls(osurls, radiourls, osversion):
+    """
+    Filter lists of OS and radio URLs.
+
+    :param osurls: List of OS URLs.
+    :type osurls: list(str)
+
+    :param radiourls: List of radio URLs.
+    :type radiourls: list(str)
+
+    :param osversion: OS version.
+    :type osversion: str
+    """
+    splitos = [int(i) for i in osversion.split(".")]
+    osurls[2] = filter_1031(osurls[2], splitos, 5)  # Z3 10.3.1+
+    osurls[3] = filter_1031(osurls[3], splitos, 6)  # Passport 10.3.1+
+    osurls[0], radiourls[0] = pop_stl1(osurls[0], radiourls[0], splitos)  # STL100-1 10.3.3+
+    return osurls, radiourls
+
+
 def filter_1031(osurl, splitos, device):
     """
-    Modify URLs to reflect changes in 10.3.1+.
+    Modify URLs to reflect changes in 10.3.1.
 
     :param osurl: OS URL to modify.
     :type osurl: str
@@ -534,6 +552,25 @@ def filter_1031(osurl, splitos, device):
         filterdict = {5: ("qc8960.factory_sfi", "qc8960.factory_sfi_hybrid_qc8x30"), 6: ("qc8974.factory_sfi", "qc8960.factory_sfi_hybrid_qc8974")}
         osurl = filter_osversion(osurl, device, filterdict)
     return osurl
+
+
+def pop_stl1(osurl, radiourl, splitos):
+    """
+    Replace STL100-1 links in 10.3.3+.
+
+    :param osurl: OS URL to modify.
+    :type osurl: str
+
+    :param radiourl: Radio URL to modify.
+    :type radiourl: str
+
+    :param splitos: OS version, split and cast to int: [10, 3, 3, 2205]
+    :type splitos: list(int)
+    """
+    if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 3):
+        osurl = osurl.replace("winchester", "qc8960")  # duplicates get filtered out later
+        radiourl = radiourl.replace("m5730", "qc8960")
+    return osurl, radiourl
 
 
 def filter_osversion(osurl, device, filterdict):

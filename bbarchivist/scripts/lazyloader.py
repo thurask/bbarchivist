@@ -240,6 +240,13 @@ def lazyloader_main(device, osversion, radioversion=None,
     if core:
         osurl = osurl.replace(".desktop", "")
 
+    #Terminate if device is STL100-1 and OS >= 10.3.3
+    splitos = [int(i) for i in osversion.split(".")]
+    if device == 0 and ((splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 3)):
+        print("STL100-1 UNSUPPORTED IN 10.3.3+!")
+        print("\nEXITING...")
+        raise SystemExit
+
     if download:
         # Check availability of software releases
         scriptutils.check_sw(baseurl, softwareversion, swc)

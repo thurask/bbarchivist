@@ -597,6 +597,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
         radiourls2 = [x.replace(baseurl, alturl) for x in radiourls]
         radiourls = radiourls2
         del radiourls2
+    radiourls = list(set(radiourls))  # pop duplicates
     archivist_checksw(baseurl, softwareversion, swchecked)
     if altsw:
         scriptutils.check_radio_sw(alturl, altsw, altchecked)
