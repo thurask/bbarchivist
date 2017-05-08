@@ -64,12 +64,21 @@ def grab_args():
             help="Only scan one OS build",
             action="store_true",
             default=False)
+        parser.add_argument(
+            "-a",
+            "--all-devices",
+            dest="alldevices",
+            help="Scan all devices, not just known ones",
+            action="store_true",
+            default=False)
         args = parser.parse_args(sys.argv[1:])
         parser.set_defaults()
         if args.single:
             args.ceil = args.floor  # range(x, x+1) == x
         if args.device is None:
             famlist = jsonutils.load_json("droidfamilies")
+            if not args.alldevices:
+                famlist = famlist[:3]  # Priv/DTEKx0, but not Keyone/Aurora
             droidlookup_main(famlist, args.branch, args.floor, args.ceil, args.type)
         else:
             droidlookup_main(args.device, args.branch, args.floor, args.ceil, args.type)
