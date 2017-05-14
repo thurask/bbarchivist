@@ -152,7 +152,7 @@ def ls_mock(url, request):
     """
     Mock for loader scraping.
     """
-    thebody = '<p><b>BlackBerry DTEK50</b></p><table><tbody><tr><td style="padding-right: 20px;">BlackBerry common SW for STH100-1 &amp; STH100-2 devices</td><td>AAG326</td><td><a href="https://bbapps.download.blackberry.com/Priv/bbry_qc8952_64_sfi_autoloader_user-common-AAG326.zip" target="_blank">Click Here</a></td></tr></tbody></table>'
+    thebody = '<p><b>BlackBerry DTEK50</b></p><table><tbody><tr><td style="padding-right: 20px;">BlackBerry common SW for STH100-1 &amp; STH100-2 devices</td><td>AAG326</td><td><a href="https://bbapps.download.blackberry.com/Priv/bbry_qc8952_64_sfi_autoloader_user-common-AAG326.zip" target="_blank">Click Here</a></td></tr></tbody></table>' if "blackberrymobile" not in request.url else '<ul class="list-two special-a"></ul><li><ul class="list-two special-b"><li class="list-two-a"><p>BlackBerry common SW for BBB100-1 devices use this if you bought your device direct from retailer or through a carrier other than those listed below.</p></li><li class="list-two-b"><p>AAK399</p></li><li class="list-two-c"><p><a href="http://54.247.87.13/softwareupgrade/BBM/bbry_qc8953_autoloader_user-common-AAK399%20-With%20SHA%20files.zip">Click here</a></p></li></ul>'
     return {'status_code': 200, 'content': thebody}
 
 
@@ -161,6 +161,22 @@ def pa_good_mock(url, request):
     Mock for Android autoloader lookup, best case.
     """
     thebody = "https://bbapps.download.blackberry.com/Priv/bbry_qc8992_autoloader_user-common-AAD250.zip"
+    return {'status_code': 200, 'content': thebody}
+
+
+def pa_bbm_mock(url, request):
+    """
+    Mock for Android autoloader lookup, new site.
+    """
+    thebody = "http://54.247.87.13/softwareupgrade/BBM/bbry_qc8953_autoloader_user-common-AAL093.zip"
+    return {'status_code': 200, 'content': thebody}
+
+
+def pa_bbm_hash_mock(url, request):
+    """
+    Mock for Android autoloader lookup, new site.
+    """
+    thebody = "http://54.247.87.13/softwareupgrade/BBM/bbry_qc8953_autoloader_user-common-AAL093.sha512sum"
     return {'status_code': 200, 'content': thebody}
 
 
@@ -628,6 +644,7 @@ class TestClassNetworkutilsParsing:
             results = bn.droid_scanner("AAD250", "Priv")
             assert "user-common-AAD250" in results[0]
 
+
     def test_autoloader_scan_bad(self):
         """
         Test Android autoloader lookup, worst case.
@@ -636,6 +653,14 @@ class TestClassNetworkutilsParsing:
             results = bn.droid_scanner("AAD250", "Priv")
             assert results is None
 
+    def test_autoloader_scan_bbm(self):
+        """
+        Test Android autoloader lookup, new site.
+        """
+        with httmock.HTTMock(pa_bbm_mock):
+            results = bn.droid_scanner("AAL093", "KEYone")
+            assert "user-common-AAL093" in results[0]
+
     def test_autoloader_scan_hash(self):
         """
         Test Android autoloader hash lookup.
@@ -643,6 +668,14 @@ class TestClassNetworkutilsParsing:
         with httmock.HTTMock(pa_hash_mock):
             results = bn.droid_scanner("AAD250", "Priv", "sha256")
             assert "user-common-AAD250" in results[0]
+
+    def test_autoloader_scan_hash_bbm(self):
+        """
+        Test Android autoloader hash lookup, new site.
+        """
+        with httmock.HTTMock(pa_bbm_hash_mock):
+            results = bn.droid_scanner("AAL093", "KEYone", "sha512")
+            assert "user-common-AAL093" in results[0]
 
     def test_autoloader_scan_list(self):
         """

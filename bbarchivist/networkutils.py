@@ -721,13 +721,61 @@ def root_generator(folder, build, variant="common"):
     dtek50x = "bbSupport/DTEK50" if build[:3] == "AAF" else "bbfoundation/hashfiles_priv/dtek50"
     #DTEK60 specific
     dtek60x = dtek50x  # still uses dtek50 folder, for some reason
-    #KEYone specific
-    keyonex = "bbfoundation/hashfiles_priv/keyone"  # PLACEHOLDER
-    #Aurora specific
-    aurorax = "bbfoundation/hashfiles_priv/aurora"  # PLACEHOLDER
     #Pack it up
-    roots = {"Priv": privx, "DTEK50": dtek50x, "DTEK60": dtek60x, "KEYone": keyonex, "Aurora": aurorax}
+    roots = {"Priv": privx, "DTEK50": dtek50x, "DTEK60": dtek60x}
     return roots
+
+
+def make_droid_skeleton_bbm(method, build, device, variant="common"):
+    """
+    Make an Android autoloader/hash URL, on the BB Mobile site.
+
+    :param method: None for regular OS links, "sha256/512" for SHA256 or 512 hash.
+    :type method: str
+
+    :param build: Build to check, 3 letters + 3 numbers.
+    :type build: str
+
+    :param device: Device to check.
+    :type device: str
+
+    :param variant: Autoloader variant. Default is "common".
+    :type variant: str
+    """
+    devices = {"KEYone": "qc8953"}
+    base = "bbry_{2}_autoloader_user-{0}-{1}".format(variant, build.upper(), devices[device])
+    if method is None:
+        skel = "http://54.247.87.13/softwareupgrade/BBM/{0}.zip".format(base)
+    else:
+        skel = "http://54.247.87.13/softwareupgrade/BBM/{0}.{1}sum".format(base, method.lower())
+    return skel
+
+
+def make_droid_skeleton_og(method, build, device, variant="common"):
+    """
+    Make an Android autoloader/hash URL, on the original site.
+
+    :param method: None for regular OS links, "sha256/512" for SHA256 or 512 hash.
+    :type method: str
+
+    :param build: Build to check, 3 letters + 3 numbers.
+    :type build: str
+
+    :param device: Device to check.
+    :type device: str
+
+    :param variant: Autoloader variant. Default is "common".
+    :type variant: str
+    """
+    folder = {"vzw-vzw": "verizon", "na-att": "att", "na-tmo": "tmo", "common": "default"}
+    devices = {"Priv": "qc8992", "DTEK50": "qc8952_64_sfi", "DTEK60": "qc8996"}
+    roots = root_generator(folder, build, variant)
+    base = "bbry_{2}_autoloader_user-{0}-{1}".format(variant, build.upper(), devices[device])
+    if method is None:
+        skel = "https://bbapps.download.blackberry.com/Priv/{0}.zip".format(base)
+    else:
+        skel = "http://ca.blackberry.com/content/dam/{1}/{0}.{2}sum".format(base, roots[device], method.lower())
+    return skel
 
 
 def make_droid_skeleton(method, build, device, variant="common"):
@@ -746,14 +794,13 @@ def make_droid_skeleton(method, build, device, variant="common"):
     :param variant: Autoloader variant. Default is "common".
     :type variant: str
     """
-    folder = {"vzw-vzw": "verizon", "na-att": "att", "na-tmo": "tmo", "common": "default"}
-    devices = {"Priv": "qc8992", "DTEK50": "qc8952_64_sfi", "DTEK60": "qc8996", "KEYone": "qc8953", "Aurora": "qc8917"}  # PLACEHOLDER
-    roots = root_generator(folder, build, variant)
-    base = "bbry_{2}_autoloader_user-{0}-{1}".format(variant, build.upper(), devices[device])
-    if method is None:
-        skel = "https://bbapps.download.blackberry.com/Priv/{0}.zip".format(base)
-    else:
-        skel = "http://ca.blackberry.com/content/dam/{1}/{0}.{2}sum".format(base, roots[device], method.lower())
+    # No Aurora
+    oglist = ("Priv", "DTEK50", "DTEK60")  # BlackBerry
+    bbmlist = ("KEYone")   # BB Mobile
+    if device in oglist:
+        skel = make_droid_skeleton_og(method, build, device, variant)
+    elif device in bbmlist:
+        skel = make_droid_skeleton_bbm(method, build, device, variant)
     return skel
 
 
@@ -770,9 +817,9 @@ def bulk_droid_skeletons(devs, build, method=None):
     :param method: None for regular OS links, "sha256/512" for SHA256 or 512 hash.
     :type method: str
     """
-    carrier_variants = ("common", "vzw-vzw", "na-tmo", "na-att")  # device variants
+    carrier_variants = ("common", "vzw-vzw", "na-tmo", "na-att")  # TODO: add Sprint KEYone
     common_variants = ("common", )  # no Americans
-    carrier_devices = ("Priv", )  # may this list never expand in the future
+    carrier_devices = ("Priv", )  # TODO: add KEYone carrier loaders
     skels = []
     for dev in devs:
         varlist = carrier_variants if dev in carrier_devices else common_variants
@@ -872,21 +919,47 @@ def table_headers(pees):
 @pem_wrapper
 def loader_page_scraper(session=None):
     """
-    Return scraped autoloader page.
+    Return scraped autoloader pages.
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
+    """
+    session = generic_session(session)
+    loader_page_scraper_og(session)
+    loader_page_scraper_bbm(session)
+
+
+def loader_page_scraper_og(session=None):
+    """
+    Return scraped autoloader page, original site.
 
     :param session: Requests session object, default is created on the fly.
     :type session: requests.Session()
     """
     url = "http://ca.blackberry.com/support/smartphones/Android-OS-Reload.html"
-    session = generic_session(session)
     soup = generic_soup_parser(url, session)
     tables = soup.find_all("table")
     headers = table_headers(soup.find_all("p"))
     for idx, table in enumerate(tables):
-        loader_page_chunker(idx, table, headers)
+        loader_page_chunker_og(idx, table, headers)
 
 
-def loader_page_chunker(idx, table, headers):
+def loader_page_scraper_bbm(session=None):
+    """
+    Return scraped autoloader page, new site.
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
+    """
+    url = "http://www.blackberrymobile.com/support/reload-software/"
+    soup = generic_soup_parser(url, session)
+    ulls = soup.find_all("ul", {"class": "list-two"})[1:]
+    print("~~~BlackBerry KEYone~~~")
+    for ull in ulls:
+        loader_page_chunker_bbm(ull)
+
+
+def loader_page_chunker_og(idx, table, headers):
     """
     Given a loader page table, chunk it into lists of table cells.
 
@@ -904,6 +977,18 @@ def loader_page_chunker(idx, table, headers):
     for chunk in chunks:
         loader_page_printer(chunk)
     print(" ")
+
+
+def loader_page_chunker_bbm(ull):
+    """
+    Given a loader page list, chunk it into lists of list items.
+
+    :param ull: HTML unordered list tag.
+    :type ull: bs4.element.Tag
+    """
+    chunks = chunker(ull.find_all("li"), 3)
+    for chunk in chunks:
+        loader_page_printer(chunk)
 
 
 def loader_page_printer(chunk):

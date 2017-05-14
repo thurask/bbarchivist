@@ -75,11 +75,14 @@ def grab_args():
         parser.set_defaults()
         if args.single:
             args.ceil = args.floor  # range(x, x+1) == x
+        famlist = jsonutils.load_json("droidfamilies")
+        cleanlist = famlist[:4]  # Priv/DTEK50/DTEK60/KEYone
         if args.device is None:
-            famlist = jsonutils.load_json("droidfamilies")
             if not args.alldevices:
-                famlist = famlist[:3]  # Priv/DTEKx0, but not Keyone/Aurora
+                famlist = cleanlist
             droidlookup_main(famlist, args.branch, args.floor, args.ceil, args.type)
+        elif args.device not in cleanlist:
+            print("Selected device {0} has unknown autoloader scheme!".format(args.device))
         else:
             droidlookup_main(args.device, args.branch, args.floor, args.ceil, args.type)
     else:
