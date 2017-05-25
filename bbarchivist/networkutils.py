@@ -953,7 +953,7 @@ def loader_page_scraper_bbm(session=None):
     """
     url = "http://www.blackberrymobile.com/support/reload-software/"
     soup = generic_soup_parser(url, session)
-    ulls = soup.find_all("ul", {"class": "list-two"})[1:]
+    ulls = soup.find_all("ul", {"class": re.compile("list-two special-.")})[1:]
     print("~~~BlackBerry KEYone~~~")
     for ull in ulls:
         loader_page_chunker_bbm(ull)
