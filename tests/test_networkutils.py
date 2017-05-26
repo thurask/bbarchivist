@@ -455,14 +455,16 @@ class TestClassNetworkutilsParsing:
         Test carrier checking, best case.
         """
         with httmock.HTTMock(cc_good_mock):
-            assert bn.carrier_checker(302, 220) == ('Canada', 'TELUS (CA)')
+            response = bn.carrier_checker(302, 220)
+        assert response == ('Canada', 'TELUS (CA)')
 
     def test_carrier_checker_bad(self):
         """
         Test carrier checking, worst case.
         """
         with httmock.HTTMock(cc_bad_mock):
-            assert bn.carrier_checker(666, 666) == ('United States', 'default')
+            response = bn.carrier_checker(666, 666)
+        assert response == ('United States', 'default')
 
     def test_upd_req_good(self):
         """

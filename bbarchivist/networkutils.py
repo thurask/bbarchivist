@@ -774,7 +774,7 @@ def make_droid_skeleton_og(method, build, device, variant="common"):
     if method is None:
         skel = "https://bbapps.download.blackberry.com/Priv/{0}.zip".format(base)
     else:
-        skel = "http://ca.blackberry.com/content/dam/{1}/{0}.{2}sum".format(base, roots[device], method.lower())
+        skel = "https://ca.blackberry.com/content/dam/{1}/{0}.{2}sum".format(base, roots[device], method.lower())
     return skel
 
 
@@ -817,12 +817,15 @@ def bulk_droid_skeletons(devs, build, method=None):
     :param method: None for regular OS links, "sha256/512" for SHA256 or 512 hash.
     :type method: str
     """
-    carrier_variants = ("common", "vzw-vzw", "na-tmo", "na-att")  # TODO: add Sprint KEYone
-    common_variants = ("common", )  # no Americans
-    carrier_devices = ("Priv", )  # TODO: add KEYone carrier loaders
+    carrier_variants = {
+        "Priv": ("common", "vzw-vzw", "na-tmo", "na-att"),
+        "KEYone": ("common", "usa-vzw", "usa-sprint", "global-att")  # verify this
+    }
+    common_variants = ("common", )  # for single-variant devices
+    carrier_devices = ("Priv", )  # add KEYone when verified
     skels = []
     for dev in devs:
-        varlist = carrier_variants if dev in carrier_devices else common_variants
+        varlist = carrier_variants[dev] if dev in carrier_devices else common_variants
         for var in varlist:
             skel = make_droid_skeleton(method, build, dev, var)
             skels.append(skel)
@@ -936,7 +939,7 @@ def loader_page_scraper_og(session=None):
     :param session: Requests session object, default is created on the fly.
     :type session: requests.Session()
     """
-    url = "http://ca.blackberry.com/support/smartphones/Android-OS-Reload.html"
+    url = "https://ca.blackberry.com/support/smartphones/Android-OS-Reload.html"
     soup = generic_soup_parser(url, session)
     tables = soup.find_all("table")
     headers = table_headers(soup.find_all("p"))
@@ -951,7 +954,7 @@ def loader_page_scraper_bbm(session=None):
     :param session: Requests session object, default is created on the fly.
     :type session: requests.Session()
     """
-    url = "http://www.blackberrymobile.com/support/reload-software/"
+    url = "https://www.blackberrymobile.com/support/reload-software/"
     soup = generic_soup_parser(url, session)
     ulls = soup.find_all("ul", {"class": re.compile("list-two special-.")})[1:]
     print("~~~BlackBerry KEYone~~~")
