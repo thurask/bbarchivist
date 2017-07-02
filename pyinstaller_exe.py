@@ -67,7 +67,7 @@ def get_sevenzip():
     """
     Get 7-Zip.
     """
-    szurl = "http://www.7-zip.org/a/7z1604-extra.7z"
+    szurl = "http://www.7-zip.org/a/7z1700-extra.7z"
     psz = prep_seven_zip()
     if psz:
         szexe = get_seven_zip()
