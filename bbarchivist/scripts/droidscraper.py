@@ -20,7 +20,9 @@ def droidscraper_main():
     parser.parse_args(sys.argv[1:])
     scriptutils.slim_preamble("DROIDSCRAPER")
     print(" ")
-    networkutils.loader_page_scraper()
+    #networkutils.loader_page_scraper()  # uncomment when BB Mobile gets their shit together
+    session = networkutils.generic_session()  # in the meantime...
+    networkutils.loader_page_scraper_og(session)
     decorators.enter_to_exit(True)
 
 
