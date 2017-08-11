@@ -9,6 +9,9 @@ except (ImportError, AttributeError):
 import re  # regexes
 import concurrent.futures  # multiprocessing/threading
 import glob  # pem file lookup
+import hashlib  # salt
+import time  # salt
+import random  # salt
 import requests  # downloading
 from bs4 import BeautifulSoup  # scraping
 from bbarchivist import utilities  # parse filesize
@@ -230,6 +233,122 @@ def clean_availability(results, server):
 
 
 @pem_wrapper
+def tcl_check(curef, session=None):
+    """
+    Check TCL server for updates.
+
+    :param curef: PRD of the phone variant to check.
+    :type curef: str
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
+    """
+    sess = generic_session(session)
+    geturl = "http://g2master-us-east.tctmobile.com/check.php"
+    params = {"id": "543212345000000", "curef": curef, "fv": "AAM481", "mode": 4, "type": "Firmware", "cltp": 2010, "cktp": 2, "rtd": 1, "chnl": 2}
+    req = sess.get(geturl, params=params)
+    if req.status_code == 200:
+        return(req.text)
+    else:
+        return None
+
+
+def parse_tcl_check(data):
+    """
+    Extract version and file info from TCL update server response.
+
+    :param data: The data to parse.
+    :type data: str
+    """
+    root = ElementTree.fromstring(data)
+    tv = root.find("VERSION").find("TV").text
+    fwid = root.find("FIRMWARE").find("FW_ID").text
+    fileinfo = root.find("FIRMWARE").find("FILESET").find("FILE")
+    filename = fileinfo.find("FILENAME").text
+    filesize = fileinfo.find("SIZE").text
+    filehash = fileinfo.find("CHECKSUM").text
+    return tv, fwid, filename, filesize, filehash
+
+
+def tcl_salt():
+    """
+    Generate salt value for TCL server tools.
+    """
+    millis = round(time.time() * 1000)
+    tail = "{0:06d}".format(random.randint(0, 999999))
+    return "{0}{1}".format(str(millis), tail)
+
+
+def vkhash(curef, tv, fwid, salt):
+    """
+    Generate hash from TCL update server variables.
+
+    :param curef: PRD of the phone variant to check.
+    :type curef: str
+
+    :param tv: Target software version.
+    :type tv: str
+
+    :param fwid: Firmware ID for desired download file.
+    :type fwid: str
+
+    :param salt: Salt hash.
+    :type salt: str
+    """
+    vdkey = "1271941121281905392291845155542171963889169361242115412511417616616958244916823523421516924614377131161951402261451161002051042011757216713912611682532031591181861081836612643016596231212872211620511861302106446924625728571011411121471811641125920123641181975581511602312222261817375462445966911723844130106116313122624220514"
+    query = "id={0}&salt={1}&curef={2}&fv={3}&tv={4}&type={5}&fw_id={6}&mode={7}&cltp={8}{9}".format("543212345000000", salt, curef, "AAM481", tv, "Firmware", fwid, 4, 2010, vdkey)
+    engine = hashlib.sha1()
+    engine.update(bytes(query, "utf-8"))
+    return engine.hexdigest()
+
+
+@pem_wrapper
+def tcl_download_request(curef, tv, fwid, salt, vkh, session=None):
+    """
+    Check TCL server for download URLs.
+
+    :param curef: PRD of the phone variant to check.
+    :type curef: str
+
+    :param tv: Target software version.
+    :type tv: str
+
+    :param fwid: Firmware ID for desired download file.
+    :type fwid: str
+
+    :param salt: Salt hash.
+    :type salt: str
+
+    :param vkh: VDKey-based hash.
+    :type vkh: str
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
+    """
+    sess = generic_session(session)
+    posturl = "http://g2master-us-east.tctmobile.com/download_request.php"
+    params = {"id": "543212345000000", "curef": curef, "fv": "AAM481", "mode": 4, "type": "Firmware", "tv": tv, "fw_id": fwid, "salt": salt, "vk": vkh, "cltp": 2010}
+    req = sess.post(posturl, data=params)
+    if req.status_code == 200:
+        return req.text
+    else:
+        return None
+
+
+def parse_tcl_download_request(body):
+    """
+    Extract file URL from TCL update server response.
+
+    :param data: The data to parse.
+    :type data: str
+    """
+    root = ElementTree.fromstring(body)
+    slave = root.find("SLAVE_LIST").find("SLAVE").text
+    dlurl = root.find("FILE_LIST").find("FILE").find("DOWNLOAD_URL").text
+    return "http://{0}{1}".format(slave, dlurl)
+
+
+@pem_wrapper
 def carrier_checker(mcc, mnc, session=None):
     """
     Query BlackBerry World to map a MCC and a MNC to a country and carrier.
@@ -244,8 +363,7 @@ def carrier_checker(mcc, mnc, session=None):
     :type session: requests.Session()
     """
     session = generic_session(session)
-    url = "http://appworld.blackberry.com/ClientAPI/checkcarrier?homemcc={0}&homemnc={1}&devicevendorid=-1&pin=0".format(
-        mcc, mnc)
+    url = "http://appworld.blackberry.com/ClientAPI/checkcarrier?homemcc={0}&homemnc={1}&devicevendorid=-1&pin=0".format(mcc, mnc)
     user_agent = {'User-agent': 'AppWorld/5.1.0.60'}
     req = session.get(url, headers=user_agent)
     root = ElementTree.fromstring(req.text)

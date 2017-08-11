@@ -4,6 +4,8 @@ A higher level interface for :mod:`bbarchivist.pseudocap`."""
 
 import os  # path work
 import glob  # filename matching
+import shutil  # file copying
+from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import exceptions  # exception handling
 from bbarchivist import pseudocap  # implement cap
 from bbarchivist import utilities  # directory handler
@@ -442,3 +444,124 @@ def generate_lazy_filename(osversion, suffix, device):
             fname = key['parts']
             break
     return "{0}{1}{2}{3}.exe".format(fname[0], osversion, suffix, fname[1])
+
+
+def generate_tclloader_script(dirname, batchfile, shfile):
+    """
+    Copy script files from site-packages to loader directory.
+
+    :param dirname: Name for final directory and loader.
+    :type dirname: str
+
+    :param batchfile: Path to flashall.bat.
+    :type batchfile: str
+
+    :param shfile: Path to flashall.sh.
+    :type shfile: str
+    """
+    shutil.copy(batchfile, os.path.join(dirname, "flashall.bat"))
+    shutil.copy(shfile, os.path.join(dirname, "flashall.sh"))
+
+
+def generate_tclloader_host(hostin, hostout):
+    """
+    Generate host directory, i.e. fastboot.
+
+    :param hostin: Directory containing files to copy.
+    :type hostin: str
+
+    :param hostout: Directory that files are to be copied to.
+    :type hostout: str
+    """
+    macfile = os.path.join("darwin-x86", "bin", "fastboot")
+    linfile = os.path.join("linux-x86", "bin", "fastboot")
+    winx = ["AdbWinApi.dll", "AdbWinUsbApi.dll", "fastboot.exe"]
+    winfiles = [os.path.join("windows-x86", "bin", x) for x in winx]
+    shutil.copy(os.path.join(hostin, macfile), os.path.join(hostout, macfile))
+    shutil.copy(os.path.join(hostin, linfile), os.path.join(hostout, linfile))
+    for file in winfiles:
+        shutil.copy(os.path.join(hostin, file), os.path.join(hostout, file))
+
+
+def generate_tclloader_sig(sigin, sigout):
+    """
+    Generate signature files.
+
+    :param sigin: Directory containing files to copy.
+    :type sigin: str
+
+    :param sigout: Directory that files are to be copied to.
+    :type sigout: str
+    """
+    shutil.copy(os.path.join(sigin, "boot.img.production.sig"), os.path.join(sigout, "boot.img.sig"))
+    shutil.copy(os.path.join(sigin, "recovery.img.production.sig"), os.path.join(sigout, "recovery.img.sig"))
+
+
+def generate_tclloader_mbn(mdnin, mdnout):
+    """
+    Generate mbn files.
+
+    :param mdnin: Directory containing files to copy.
+    :type mdnin: str
+
+    :param mdnout: Directory that files are to be copied to.
+    :type mdnout: str
+    """
+    files = ["devcfg.mbn", "devcfg_cn.mbn", "rpm.mbn", "tz.mbn"]
+    for file in files:
+        shutil.copy(os.path.join(mdnin, file), os.path.join(mdnout, file))
+
+
+def generate_tclloader_img(imgin, imgout):
+    """
+    Generate partition images and radios.
+
+    :param imgin: Directory containing files to copy.
+    :type imgin: str
+
+    :param imgout: Directory that files are to be copied to.
+    :type imgout: str
+    """
+    imgs = ["oem_att", "oem_china", "oem_common", "oem_sprint", "oem_vzw", "recovery", "system", "userdata", "cache", "boot"]
+    for img in imgs:
+        shutil.copy(os.path.join(imgin, "{0}.img".format(img)), os.path.join(imgout, "{0}.img".format(img)))
+    radios = ["china", "emea", "global", "india", "japan", "usa"]
+    for rad in radios:
+        shutil.copy(os.path.join(imgin, "NON-HLOS-{0}.bin".format(rad)), os.path.join(imgout, "NON-HLOS-{0}.bin".format(rad)))
+    others = ["adspso.bin", "emmc_appsboot.mbn", "sbl1_signed.mbn"]
+    for file in others:
+        shutil.copy(os.path.join(imgin, file), os.path.join(imgout, file))
+
+
+def generate_tclloader(localdir, dirname, platform):
+    """
+    Generate Android loader from extracted template files.
+
+    :param localdir: Directory containing extracted template files.
+    :type localdir: str
+
+    :param dirname: Name for final directory and loader.
+    :type dirname: str
+
+    :param platform: Platform type (i.e. subdirectory of target/product).
+    :type platform: str
+    """
+    if not os.path.exists(dirname):
+        os.makedirs(dirname)
+    hostdir = os.path.join(dirname, "host")
+    os.makedirs(hostdir)
+    os.makedirs(os.path.join(hostdir, "darwin-x86", "bin"))
+    os.makedirs(os.path.join(hostdir, "linux-x86", "bin"))
+    os.makedirs(os.path.join(hostdir, "windows-x86", "bin"))
+    imgdir = os.path.join(dirname, "img")
+    os.makedirs(imgdir)
+    generate_tclloader_script(dirname, bbconstants.FLASHBAT.location, bbconstants.FLASHSH.location)
+    hdir = os.path.join(localdir, "host")
+    generate_tclloader_host(hdir, hostdir)
+    pdir = os.path.join(localdir, "target", "product", platform)
+    generate_tclloader_img(pdir, imgdir)
+    sdir = os.path.join(pdir, "sig")
+    generate_tclloader_sig(sdir, imgdir)
+    qdir = os.path.join(pdir, "qcbc")
+    generate_tclloader_mbn(qdir, imgdir)
+    

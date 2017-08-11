@@ -1,6 +1,8 @@
 include README.rst
 include bbarchivist/cap-3.11.0.27.dat
 include bbarchivist/cfp-3.10.0.57.dat
+include bbarchivist/flashall.bat-0.dat
+include bbarchivist/flashall.sh-0.dat
 include bbarchivist/bbconstants.json
 include versioneer.py
 include bbarchivist/_version.py

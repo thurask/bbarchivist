@@ -2,6 +2,7 @@
 """Test the loadergen module."""
 
 import os
+import zipfile
 from shutil import rmtree, copyfile
 from hashlib import sha512
 try:
@@ -166,9 +167,7 @@ class TestClassLoadergen:
         """
         Test OS/radio version formatting.
         """
-        assert bl.pretty_formatter("10.3.2.680",
-                                   "10.3.2.681") == ("10.3.02.0680",
-                                                     "10.3.02.0681")
+        assert bl.pretty_formatter("10.3.2.680", "10.3.2.681") == ("10.3.02.0680", "10.3.02.0681")
 
     def test_wrap_pseudocap_none(self):
         """
@@ -184,3 +183,65 @@ class TestClassLoadergen:
         with mock.patch('bbarchivist.pseudocap.make_autoloader', mock.MagicMock(side_effect=IndexError)):
             bl.wrap_pseudocap("filename.exe", os.getcwd(), "qc8960.factory_sfi.signed", None)
             assert "Could not create" in capsys.readouterr()[0]
+
+
+class TestClassLoadergenTcl:
+    """
+    Test Android autoloader generation.
+    """
+
+    @classmethod
+    def setup_class(cls):
+        """
+        Create loader template file structure.
+        """
+        if not os.path.exists("autoloader-signed"):
+            os.makedirs("autoloader-signed", exist_ok=True)
+        verdir = os.path.abspath(os.path.join(os.getcwd(), "autoloader-signed"))
+        os.makedirs(os.path.join(verdir, "host", "darwin-x86", "bin"), exist_ok=True)
+        os.makedirs(os.path.join(verdir, "host", "linux-x86", "bin"), exist_ok=True)
+        os.makedirs(os.path.join(verdir, "host", "windows-x86", "bin"), exist_ok=True)
+        imgdir = os.path.join(verdir, "target", "product", "bbry_qc8953")
+        os.makedirs(os.path.join(imgdir, "qcbc"), exist_ok=True)
+        os.makedirs(os.path.join(imgdir, "sig"), exist_ok=True)
+        with open("smack.dat", "w") as targetfile:
+            targetfile.write("The quick brown fox jumps over the lazy dog")
+        copyfile("smack.dat", os.path.join(verdir, "flashall.bat"))
+        copyfile("smack.dat", os.path.join(verdir, "flashall.sh"))
+        copyfile("smack.dat", os.path.join(verdir, "host", "linux-x86", "bin", "fastboot"))
+        copyfile("smack.dat", os.path.join(verdir, "host", "darwin-x86", "bin", "fastboot"))
+        copyfile("smack.dat", os.path.join(verdir, "host", "windows-x86", "bin", "AdbWinApi.dll"))
+        copyfile("smack.dat", os.path.join(verdir, "host", "windows-x86", "bin", "AdbWinUsbApi.dll"))
+        copyfile("smack.dat", os.path.join(verdir, "host", "windows-x86", "bin", "fastboot.exe"))
+        imgs = ["oem_att", "oem_china", "oem_common", "oem_sprint", "oem_vzw", "recovery", "system", "userdata", "cache", "boot"]
+        for img in imgs:
+            copyfile("smack.dat", os.path.join(imgdir, "{0}.img".format(img)))
+        radios = ["china", "emea", "global", "india", "japan", "usa"]
+        for rad in radios:
+            copyfile("smack.dat", os.path.join(imgdir, "NON-HLOS-{0}.bin".format(rad)))
+        others = ["adspso.bin", "emmc_appsboot.mbn", "sbl1_signed.mbn"] 
+        for file in others:
+            copyfile("smack.dat", os.path.join(imgdir, "{0}".format(file)))
+        mbns = ["devcfg.mbn", "devcfg_cn.mbn", "rpm.mbn", "tz.mbn"]
+        for mbn in mbns:
+            copyfile("smack.dat", os.path.join(imgdir, "qcbc", mbn))
+        sigs = ["boot.img.production.sig", "recovery.img.production.sig"]
+        for sig in sigs:
+            copyfile("smack.dat", os.path.join(imgdir, "sig", sig))
+
+    def test_tclloader(self):
+        """
+        Test generating loader from template.
+        """
+        bl.generate_tclloader("autoloader-signed", "snek", "bbry_qc8953")
+        os.remove(os.path.join("snek", "flashall.bat"))
+        os.remove(os.path.join("snek", "flashall.sh"))
+        copyfile("smack.dat", os.path.join("snek", "flashall.bat"))
+        copyfile("smack.dat", os.path.join("snek", "flashall.sh"))
+        with zipfile.ZipFile("snek.zip", 'w', zipfile.ZIP_DEFLATED, allowZip64=True) as zfile:
+            for root, dirs, files in os.walk("snek"):
+                for file in files:
+                    abs_filename = os.path.join(root, file)
+                    abs_arcname = abs_filename.replace("autoloader-signed{0}".format(os.sep), "")
+                    zfile.write(abs_filename, abs_arcname)
+        assert os.path.getsize("snek.zip") == 5398

@@ -30,6 +30,11 @@ def setup_module(module):
     if os.path.exists("a_temp_folder"):
         rmtree("a_temp_folder")
     os.mkdir("a_temp_folder")
+    if os.path.exists("loader_folder"):
+        rmtree("loader_folder")
+    os.mkdir("loader_folder")
+    with open(os.path.join("loader_folder", "snek.txt"), "w") as afile:
+        afile.write("The quick brown fox jumps over the lazy dog")
 
 
 def teardown_module(module):
@@ -92,12 +97,37 @@ class TestClassArchiveutilsCompression:
         else:
             pass
 
+    def test_compress_tcl_sz(self):
+        """
+        Test 7z compression for Android autoloaders.
+        """
+        exists = prep_seven_zip()
+        if exists:
+            szexe = get_seven_zip(False)
+            ba.pack_tclloader("loader_folder", "snek")
+            result = ba.sz_verify("snek.7z", szexe)
+            if os.path.exists("snek.7z"):
+                os.remove("snek.7z")
+            assert result
+        else:
+            pass
+
     def test_compress_zip(self):
         """
         Test zip compression.
         """
         ba.compress(os.getcwd(), "zip")
         assert ba.zip_verify("Z10_BIGLOADER.zip")
+
+    def test_compress_tcl_zip(self):
+        """
+        Test zip compression for Android autoloaders.
+        """
+        with mock.patch('bbarchivist.utilities.prep_seven_zip', mock.MagicMock(return_value=False)):
+            ba.pack_tclloader("loader_folder", "snek")
+        assert ba.zip_verify("snek.zip")
+        if os.path.exists("snek.zip"):
+                os.remove("snek.zip")
 
     def test_compress_zip_fail(self):
         """

@@ -4,6 +4,10 @@
 import os
 from shutil import rmtree
 from hashlib import sha512
+try:
+    import unittest.mock as mock
+except ImportError:
+    import mock
 import httmock
 import requests
 import bbarchivist.networkutils as bn
@@ -282,8 +286,23 @@ def da_mock(url, request):
     csize = "987654321" if "Snek" in request.url else "12345"
     code = 404 if "BB10" in request.url else 200
     headers = {'content-length': csize}
-    return httmock.response(status_code=code,
-                            headers=headers)
+    return httmock.response(status_code=code, headers=headers)
+
+
+def tcl_check_mock(url,request):
+    """
+    Mock for TCL update checking.
+    """
+    badbody = b'<?xml version="1.0" encoding="utf-8"?>\n<GOTU><UPDATE_DESC>0</UPDATE_DESC><ENCODING_ERROR>0</ENCODING_ERROR><CUREF>PRD-63764-001</CUREF><VERSION><TYPE>4</TYPE><FV>AAM481</FV><TV>AAM693</TV><SVN>20170717_173202</SVN><RELEASE_INFO><year>2017</year><month>07</month><day>17</day><hour>17</hour><minute>29</minute><second>20</second><timezone>GMT 8</timezone><publisher>jin.zeng.hz</publisher></RELEASE_INFO></VERSION><FIRMWARE><FW_ID>258098</FW_ID><FILESET_COUNT>1</FILESET_COUNT><FILESET><FILE><FILENAME>bbry_qc8953_sfi-user-production_signed-AAM693.zip</FILENAME><FILE_ID>261497</FILE_ID><SIZE>2712821341</SIZE><CHECKSUM>97a9f933c70fbe7c106037aaba19c6aedd9136d2</CHECKSUM><FILE_VERSION>1</FILE_VERSION><INDEX>0</INDEX></FILE></FILESET></FIRMWARE><DESCRIPTION/></GOTU>\n'
+    return {'status_code': 200, 'content': badbody}
+
+
+def tcl_request_mock(url,request):
+    """
+    Mock for TCL download URL request.
+    """
+    badbody = b'<?xml version="1.0" encoding="utf-8"?>\n<GOTU><FILE_LIST><FILE><FILE_ID>261497</FILE_ID><DOWNLOAD_URL>/ce570ddc079e2744558f191895e524d02a60476f/cfcdde91ea7f810311d1f973726e390f77a9ff1b/258098/261497</DOWNLOAD_URL></FILE></FILE_LIST><SLAVE_LIST><SLAVE>g2slave-ap-north-01.tctmobile.com</SLAVE><SLAVE>g2slave-ap-north-01.tctmobile.com</SLAVE><SLAVE>g2slave-eu-west-01.tctmobile.com</SLAVE><SLAVE>g2slave-eu-west-01.tctmobile.com</SLAVE><SLAVE>g2slave-us-east-01.tctmobile.com</SLAVE><SLAVE>g2slave-us-east-01.tctmobile.com</SLAVE></SLAVE_LIST></GOTU>\n'
+    return {'status_code': 200, 'content': badbody}
 
 
 def timeout_mock(url, request):
@@ -712,3 +731,51 @@ class TestClassNetworkutilsParsing:
         with httmock.HTTMock(ls_mock):
             bn.loader_page_scraper()
             assert "BlackBerry common SW for STH100-1 & STH100-2 devices\n    AAG326: https://bbapps.download.blackberry.com/Priv/bbry_qc8952_64_sfi_autoloader_user-common-AAG326.zip" in capsys.readouterr()[0]
+
+
+class TestClassNetworkutilsTcl:
+    """
+    Test functions that are used for checking for Android updates.
+    """
+
+    def test_tcl_check(self):
+        """
+        Test checking for Android updates.
+        """
+        with httmock.HTTMock(tcl_check_mock):
+            ctxt = bn.tcl_check("PRD-63764-001")
+        tv, fw, fn, fs, fh = bn.parse_tcl_check(ctxt)
+        assert tv == "AAM693"
+        assert fw == "258098"
+        assert fn == "bbry_qc8953_sfi-user-production_signed-AAM693.zip"
+        assert fs == "2712821341"
+        assert fh == "97a9f933c70fbe7c106037aaba19c6aedd9136d2"
+
+    def test_tcl_check_fail(self):
+        """
+        Test checking for Android updates, worst case.
+        """
+        with httmock.HTTMock(pa_bad_mock):
+            ctxt = bn.tcl_check("PRD-63764-001")
+        assert ctxt is None
+
+    def test_tcl_request(self):
+        """
+        Test checking for Android update URLs.
+        """
+        with httmock.HTTMock(tcl_request_mock):
+            salt = bn.tcl_salt()
+            vkh = bn.vkhash("PRD-63764-001", "AAM693", "258098", salt)
+            utxt = bn.tcl_download_request("PRD-63764-001", "AAM693", "258098", salt, vkh)
+        dlurl = bn.parse_tcl_download_request(utxt)
+        assert "/ce570ddc079e2744558f191895e524d02a60476f/cfcdde91ea7f810311d1f973726e390f77a9ff1b/258098/261497" in dlurl
+
+    def test_tcl_request_fail(self):
+        """
+        Test checking for Android update URLs, worst case.
+        """
+        with httmock.HTTMock(pa_bad_mock):
+            salt = bn.tcl_salt()
+            vkh = bn.vkhash("PRD-63764-001", "AAM693", "258098", salt)
+            utxt = bn.tcl_download_request("PRD-63764-001", "AAM693", "258098", salt, vkh)
+        assert utxt is None

@@ -31,6 +31,21 @@ def smart_is_tarfile(filepath):
         return istar
 
 
+def szcodes():
+    """
+    Return dictionary of 7-Zip error codes.
+    """
+    szc = {
+        0: "NO ERRORS",
+        1: "COMPLETED WITH WARNINGS",
+        2: "FATAL ERROR",
+        7: "COMMAND LINE ERROR",
+        8: "OUT OF MEMORY ERROR",
+        255: "USER STOPPED PROCESS"
+    }
+    return szc
+
+
 @decorators.timer
 def sz_compress(filepath, filename, szexe=None, strength=5, errors=False):
     """
@@ -51,23 +66,15 @@ def sz_compress(filepath, filename, szexe=None, strength=5, errors=False):
     :param errors: Print completion status message. Default is false.
     :type errors: bool
     """
-    szcodes = {
-        0: "NO ERRORS",
-        1: "COMPLETED WITH WARNINGS",
-        2: "FATAL ERROR",
-        7: "COMMAND LINE ERROR",
-        8: "OUT OF MEMORY ERROR",
-        255: "USER STOPPED PROCESS"
-    }
     strength = str(strength)
+    szc = szcodes()
     rawname = os.path.dirname(filepath)
     thr = str(utilities.get_core_count())
     fold = os.path.join(rawname, filename)
-    cmd = '{0} a -mx{1} -m0=lzma2 -mmt{2} "{3}.7z" "{4}"'.format(szexe, strength,
-                                                                 thr, filepath, fold)
+    cmd = '{0} a -mx{1} -m0=lzma2 -mmt{2} "{3}.7z" "{4}"'.format(szexe, strength, thr, filepath, fold)
     excode = sz_subprocess(cmd)
     if errors:
-        print(szcodes[excode])
+        print(szc[excode])
 
 
 def sz_subprocess(cmd):
@@ -605,3 +612,56 @@ def compress_config_writer(method=None, homepath=None):
     method = compress_config_loader() if method is None else method
     results = {"method": method}
     iniconfig.generic_writer("compression", results, homepath)
+
+
+@decorators.timer
+def pack_tclloader(dirname, filename):
+    """
+    Compress Android autoloader folder.
+
+    :param dirname: Target folder.
+    :type dirname: str
+
+    :param filename: File title, without extension.
+    :type filename: str
+    """
+    if utilities.prep_seven_zip():
+        pack_tclloader_sz(dirname, filename)
+    else:
+        pack_tclloader_zip(dirname, filename)
+
+
+def pack_tclloader_sz(dirname, filename):
+    """
+    Compress Android autoloader folder into a 7z file.
+
+    :param dirname: Target folder.
+    :type dirname: str
+
+    :param filename: File title, without extension.
+    :type filename: str
+    """
+    szexe = utilities.get_seven_zip()
+    strength = calculate_strength()
+    thr = str(utilities.get_core_count())
+    cmd = '{0} a -mx{1} -m0=lzma2 -mmt{2} "{3}.7z" "./{4}/*"'.format(szexe, strength, thr, filename, dirname)
+    sz_subprocess(cmd)
+
+
+def pack_tclloader_zip(dirname, filename):
+    """
+    Compress Android autoloader folder into a zip file.
+
+    :param dirname: Target folder.
+    :type dirname: str
+
+    :param filename: File title, without extension.
+    :type filename: str
+    """
+    with zipfile.ZipFile("{0}.zip".format(filename), 'w', zipfile.ZIP_DEFLATED, allowZip64=True) as zfile:
+        for root, dirs, files in os.walk(dirname):
+            for file in files:
+                print("ZIPPING: {0}".format(utilities.stripper(file)))
+                abs_filename = os.path.join(root, file)
+                abs_arcname = abs_filename.replace("{0}{1}".format(dirname, os.sep), "")
+                zfile.write(abs_filename, abs_arcname)
