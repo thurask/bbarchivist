@@ -5,7 +5,7 @@
 import os
 import subprocess
 import requests
-from bbarchivist.bbconstants import CAP, CFP
+from bbarchivist.bbconstants import CAP, CFP, FLASHBAT, FLASHSH
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -70,11 +70,13 @@ def git_ignore(datafile):
 
 def main():
     """
-    Download cap and cfp files, in lieu of Git-LFS.
+    Download dat files, in lieu of Git-LFS.
     """
     files = []
     files = prep_file(CAP, files)
     files = prep_file(CFP, files)
+	files = prep_file(FLASHBAT, files)
+	files = prep_file(FLASHSH, files)
     outdir = os.path.join(os.getcwd(), "bbarchivist")
     if files:
         for file in files:

@@ -32,6 +32,8 @@
     <Content Include="bbarchivist\bbconstants.json" />
     <Content Include="bbarchivist\cap-3.11.0.27.dat" />
     <Content Include="bbarchivist\cfp-3.10.0.57.dat" />
+    <Content Include="bbarchivist\flashall.bat-0.dat" />
+    <Content Include="bbarchivist\flashall.sh-0.dat" />
     <Content Include="docs\bbarchivist.rst" />
     <Content Include="docs\bbarchivist.scripts.rst" />
     <Content Include="docs\cxsetup.rst" />
@@ -53,6 +55,7 @@
     <Content Include="requirements-devel.txt" />
     <Content Include="setup.cfg" />
     <Content Include="test_coverage.bat" />
+    <Content Include="test_coverage_nogpg.bat" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="bbarchivist\barutils.py">

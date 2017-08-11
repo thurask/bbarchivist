@@ -564,4 +564,3 @@ def generate_tclloader(localdir, dirname, platform):
     generate_tclloader_sig(sdir, imgdir)
     qdir = os.path.join(pdir, "qcbc")
     generate_tclloader_mbn(qdir, imgdir)
-    
