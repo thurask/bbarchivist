@@ -660,6 +660,7 @@ def pack_tclloader_zip(dirname, filename):
     """
     with zipfile.ZipFile("{0}.zip".format(filename), 'w', zipfile.ZIP_DEFLATED, allowZip64=True) as zfile:
         for root, dirs, files in os.walk(dirname):
+            del dirs
             for file in files:
                 print("ZIPPING: {0}".format(utilities.stripper(file)))
                 abs_filename = os.path.join(root, file)

@@ -248,7 +248,7 @@ def tcl_check(curef, session=None):
     params = {"id": "543212345000000", "curef": curef, "fv": "AAM481", "mode": 4, "type": "Firmware", "cltp": 2010, "cktp": 2, "rtd": 1, "chnl": 2}
     req = sess.get(geturl, params=params)
     if req.status_code == 200:
-        return(req.text)
+        return req.text
     else:
         return None
 
@@ -261,13 +261,13 @@ def parse_tcl_check(data):
     :type data: str
     """
     root = ElementTree.fromstring(data)
-    tv = root.find("VERSION").find("TV").text
+    tvver = root.find("VERSION").find("TV").text
     fwid = root.find("FIRMWARE").find("FW_ID").text
     fileinfo = root.find("FIRMWARE").find("FILESET").find("FILE")
     filename = fileinfo.find("FILENAME").text
     filesize = fileinfo.find("SIZE").text
     filehash = fileinfo.find("CHECKSUM").text
-    return tv, fwid, filename, filesize, filehash
+    return tvver, fwid, filename, filesize, filehash
 
 
 def tcl_salt():
@@ -279,15 +279,15 @@ def tcl_salt():
     return "{0}{1}".format(str(millis), tail)
 
 
-def vkhash(curef, tv, fwid, salt):
+def vkhash(curef, tvver, fwid, salt):
     """
     Generate hash from TCL update server variables.
 
     :param curef: PRD of the phone variant to check.
     :type curef: str
 
-    :param tv: Target software version.
-    :type tv: str
+    :param tvver: Target software version.
+    :type tvver: str
 
     :param fwid: Firmware ID for desired download file.
     :type fwid: str
@@ -296,22 +296,22 @@ def vkhash(curef, tv, fwid, salt):
     :type salt: str
     """
     vdkey = "1271941121281905392291845155542171963889169361242115412511417616616958244916823523421516924614377131161951402261451161002051042011757216713912611682532031591181861081836612643016596231212872211620511861302106446924625728571011411121471811641125920123641181975581511602312222261817375462445966911723844130106116313122624220514"
-    query = "id={0}&salt={1}&curef={2}&fv={3}&tv={4}&type={5}&fw_id={6}&mode={7}&cltp={8}{9}".format("543212345000000", salt, curef, "AAM481", tv, "Firmware", fwid, 4, 2010, vdkey)
+    query = "id={0}&salt={1}&curef={2}&fv={3}&tv={4}&type={5}&fw_id={6}&mode={7}&cltp={8}{9}".format("543212345000000", salt, curef, "AAM481", tvver, "Firmware", fwid, 4, 2010, vdkey)
     engine = hashlib.sha1()
     engine.update(bytes(query, "utf-8"))
     return engine.hexdigest()
 
 
 @pem_wrapper
-def tcl_download_request(curef, tv, fwid, salt, vkh, session=None):
+def tcl_download_request(curef, tvver, fwid, salt, vkh, session=None):
     """
     Check TCL server for download URLs.
 
     :param curef: PRD of the phone variant to check.
     :type curef: str
 
-    :param tv: Target software version.
-    :type tv: str
+    :param tvver: Target software version.
+    :type tvver: str
 
     :param fwid: Firmware ID for desired download file.
     :type fwid: str
@@ -327,7 +327,7 @@ def tcl_download_request(curef, tv, fwid, salt, vkh, session=None):
     """
     sess = generic_session(session)
     posturl = "http://g2master-us-east.tctmobile.com/download_request.php"
-    params = {"id": "543212345000000", "curef": curef, "fv": "AAM481", "mode": 4, "type": "Firmware", "tv": tv, "fw_id": fwid, "salt": salt, "vk": vkh, "cltp": 2010}
+    params = {"id": "543212345000000", "curef": curef, "fv": "AAM481", "mode": 4, "type": "Firmware", "tv": tvver, "fw_id": fwid, "salt": salt, "vk": vkh, "cltp": 2010}
     req = sess.post(posturl, data=params)
     if req.status_code == 200:
         return req.text
