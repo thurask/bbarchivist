@@ -75,8 +75,8 @@ def main():
     files = []
     files = prep_file(CAP, files)
     files = prep_file(CFP, files)
-	files = prep_file(FLASHBAT, files)
-	files = prep_file(FLASHSH, files)
+    files = prep_file(FLASHBAT, files)
+    files = prep_file(FLASHSH, files)
     outdir = os.path.join(os.getcwd(), "bbarchivist")
     if files:
         for file in files:
