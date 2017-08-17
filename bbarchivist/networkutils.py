@@ -195,6 +195,19 @@ def download_bootstrap(urls, outdir=None, workers=5, session=None):
     utilities.line_begin()
 
 
+def download_android_tools():
+    """
+    Download Android SDK platform tools.
+    """
+    if os.path.exists("plattools"):
+        os.removedirs("plattools")
+    os.mkdir("plattools")
+    platforms = ("windows", "linux", "darwin")
+    dlurls = ["https://dl.google.com/android/repository/platform-tools-latest-{0}.zip".format(plat) for plat in platforms]
+    sess = generic_session()
+    download_bootstrap(dlurls, outdir="plattools", session=sess)
+
+
 @pem_wrapper
 def availability(url, session=None):
     """

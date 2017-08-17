@@ -614,6 +614,36 @@ def compress_config_writer(method=None, homepath=None):
     iniconfig.generic_writer("compression", results, homepath)
 
 
+def verify_android_tools(tooldir):
+    """
+    Verify Android SDK platform tools archives.
+
+    :param tooldir: Directory containing platform tools zips.
+    :type tooldir: str
+    """
+    zipver = [zip_verify(os.path.join(os.path.abspath(tooldir), x)) for x in os.listdir(os.path.abspath(tooldir)) if x.endswith(".zip")]
+    if set(zipver) == {True}:  # all OK
+        return True
+    else:
+        return False
+
+
+def extract_android_tools(tooldir):
+    """
+    Extract Android SDK platform tools archives.
+
+    :param tooldir: Directory containing platform tools zips.
+    :type tooldir: str
+    """
+    plats = [x for x in os.listdir(os.path.abspath(tooldir)) if x.endswith(".zip")]
+    for zipx in plats:
+        platform = os.path.basename(zipx).replace("platform-tools-latest-", "").replace(".zip", "")
+        platdir = os.path.join(os.path.abspath(tooldir), platform)
+        os.makedirs(platdir)
+        zipf = zipfile.ZipFile(os.path.join(os.path.abspath(tooldir), zipx))
+        zipf.extractall(platdir)
+
+
 @decorators.timer
 def pack_tclloader(dirname, filename):
     """

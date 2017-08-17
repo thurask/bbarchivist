@@ -463,9 +463,9 @@ def generate_tclloader_script(dirname, batchfile, shfile):
     shutil.copy(shfile, os.path.join(dirname, "flashall.sh"))
 
 
-def generate_tclloader_host(hostin, hostout):
+def generate_google_host(hostin, hostout):
     """
-    Generate host directory, i.e. fastboot.
+    Generate host directory from Google platform tools, i.e. fastboot.
 
     :param hostin: Directory containing files to copy.
     :type hostin: str
@@ -473,6 +473,25 @@ def generate_tclloader_host(hostin, hostout):
     :param hostout: Directory that files are to be copied to.
     :type hostout: str
     """
+    platforms = ["linux", "windows", "darwin"]
+    inouts = {os.path.join(hostin, plat, "platform-tools"): os.path.join(hostout, "{0}-x86".format(plat), "bin") for plat in platforms}
+    for infile, outfile in inouts.items():
+        shutil.copytree(infile, outfile)        
+
+
+def generate_tclloader_host(hostin, hostout):
+    """
+    Generate host directory from autoloader template, i.e. fastboot.
+
+    :param hostin: Directory containing files to copy.
+    :type hostin: str
+
+    :param hostout: Directory that files are to be copied to.
+    :type hostout: str
+    """
+    os.makedirs(os.path.join(hostout, "darwin-x86", "bin"))
+    os.makedirs(os.path.join(hostout, "linux-x86", "bin"))
+    os.makedirs(os.path.join(hostout, "windows-x86", "bin"))
     macfile = os.path.join("darwin-x86", "bin", "fastboot")
     linfile = os.path.join("linux-x86", "bin", "fastboot")
     winx = ["AdbWinApi.dll", "AdbWinUsbApi.dll", "fastboot.exe"]
@@ -533,7 +552,7 @@ def generate_tclloader_img(imgin, imgout):
         shutil.copy(os.path.join(imgin, file), os.path.join(imgout, file))
 
 
-def generate_tclloader(localdir, dirname, platform):
+def generate_tclloader(localdir, dirname, platform, localtools=False):
     """
     Generate Android loader from extracted template files.
 
@@ -545,19 +564,23 @@ def generate_tclloader(localdir, dirname, platform):
 
     :param platform: Platform type (i.e. subdirectory of target/product).
     :type platform: str
+
+    :param localtools: If host files will be copied from a template rather than a download. Default is False.
+    :type localtools: bool
     """
     if not os.path.exists(dirname):
         os.makedirs(dirname)
     hostdir = os.path.join(dirname, "host")
     os.makedirs(hostdir)
-    os.makedirs(os.path.join(hostdir, "darwin-x86", "bin"))
-    os.makedirs(os.path.join(hostdir, "linux-x86", "bin"))
-    os.makedirs(os.path.join(hostdir, "windows-x86", "bin"))
     imgdir = os.path.join(dirname, "img")
     os.makedirs(imgdir)
     generate_tclloader_script(dirname, bbconstants.FLASHBAT.location, bbconstants.FLASHSH.location)
-    hdir = os.path.join(localdir, "host")
-    generate_tclloader_host(hdir, hostdir)
+    if localtools:
+        hdir = os.path.join(localdir, "host")
+        generate_tclloader_host(hdir, hostdir)
+    else:
+        platdir = "plattools"
+        generate_google_host(platdir, hostdir)
     pdir = os.path.join(localdir, "target", "product", platform)
     generate_tclloader_img(pdir, imgdir)
     sdir = os.path.join(pdir, "sig")

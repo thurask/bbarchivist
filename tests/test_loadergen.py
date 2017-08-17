@@ -229,11 +229,11 @@ class TestClassLoadergenTcl:
         for sig in sigs:
             copyfile("smack.dat", os.path.join(imgdir, "sig", sig))
 
-    def test_tclloader(self):
+    def test_tclloader_local(self):
         """
-        Test generating loader from template.
+        Test generating loader from template, using local host files.
         """
-        bl.generate_tclloader("autoloader-signed", "snek", "bbry_qc8953")
+        bl.generate_tclloader("autoloader-signed", "snek", "bbry_qc8953", localtools=True)
         os.remove(os.path.join("snek", "flashall.bat"))
         os.remove(os.path.join("snek", "flashall.sh"))
         copyfile("smack.dat", os.path.join("snek", "flashall.bat"))
@@ -245,3 +245,29 @@ class TestClassLoadergenTcl:
                     abs_arcname = abs_filename.replace("autoloader-signed{0}".format(os.sep), "")
                     zfile.write(abs_filename, abs_arcname)
         assert os.path.getsize("snek.zip") == 5398
+
+    def test_tclloader_network(self):
+        """
+        Test generating loader from template, using downloaded host files.
+        """
+        platdir = os.path.abspath(os.path.join(os.getcwd(), "plattools"))
+        os.makedirs(os.path.join(platdir, "darwin", "platform-tools"), exist_ok=True)
+        os.makedirs(os.path.join(platdir, "linux", "platform-tools"), exist_ok=True)
+        os.makedirs(os.path.join(platdir, "windows", "platform-tools"), exist_ok=True)
+        copyfile("smack.dat", os.path.join(platdir, "darwin", "platform-tools", "fastboot"))
+        copyfile("smack.dat", os.path.join(platdir, "linux", "platform-tools", "fastboot"))
+        copyfile("smack.dat", os.path.join(platdir, "windows", "platform-tools", "AdbWinApi.dll"))
+        copyfile("smack.dat", os.path.join(platdir, "windows", "platform-tools", "AdbWinUsbApi.dll"))
+        copyfile("smack.dat", os.path.join(platdir, "windows", "platform-tools", "fastboot.exe"))
+        bl.generate_tclloader("autoloader-signed", "snek2", "bbry_qc8953", localtools=False)
+        os.remove(os.path.join("snek2", "flashall.bat"))
+        os.remove(os.path.join("snek2", "flashall.sh"))
+        copyfile("smack.dat", os.path.join("snek2", "flashall.bat"))
+        copyfile("smack.dat", os.path.join("snek2", "flashall.sh"))
+        with zipfile.ZipFile("snek2.zip", 'w', zipfile.ZIP_DEFLATED, allowZip64=True) as zfile:
+            for root, dirs, files in os.walk("snek2"):
+                for file in files:
+                    abs_filename = os.path.join(root, file)
+                    abs_arcname = abs_filename.replace("autoloader-signed{0}".format(os.sep), "")
+                    zfile.write(abs_filename, abs_arcname)
+        assert os.path.getsize("snek2.zip") == 5462

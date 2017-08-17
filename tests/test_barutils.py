@@ -201,12 +201,10 @@ class TestClassBarutilsSha512:
         """
         mstring = b"Somestuff\nName: target.signed\nDigest: tmpeiqm5cFdIwu5YWw4aOkEojS2vw74tsS-onS8qPhT53sEd5LqGW7Ueqmws_rKUE5RV402n2CehlQSwkGwBwQ\nmorestuff"
         fstring = b"Jackdaws love my big sphinx of quartz"
-        with zipfile.ZipFile("mfest.bar.dummy", mode="w",
-                             compression=zipfile.ZIP_DEFLATED) as zfile:
+        with zipfile.ZipFile("mfest.bar.dummy", mode="w", compression=zipfile.ZIP_DEFLATED) as zfile:
             zfile.writestr("MANIFEST.MF", mstring)
             zfile.writestr("target.signed", fstring)
-        with zipfile.ZipFile("nomfest.bar.dummy", mode="w",
-                             compression=zipfile.ZIP_DEFLATED) as zfile:
+        with zipfile.ZipFile("nomfest.bar.dummy", mode="w", compression=zipfile.ZIP_DEFLATED) as zfile:
             zfile.writestr("target.signed", fstring)
         with open("target.signed", "wb") as targetfile:
             targetfile.write(fstring)
@@ -215,9 +213,7 @@ class TestClassBarutilsSha512:
         """
         Test retrieval of SHA512 hash (in Base64) from a bar file's manifest.
         """
-        assert bb.retrieve_sha512("mfest.bar.dummy") == (
-            b"target.signed",
-            b"tmpeiqm5cFdIwu5YWw4aOkEojS2vw74tsS-onS8qPhT53sEd5LqGW7Ueqmws_rKUE5RV402n2CehlQSwkGwBwQ")
+        assert bb.retrieve_sha512("mfest.bar.dummy") == (b"target.signed", b"tmpeiqm5cFdIwu5YWw4aOkEojS2vw74tsS-onS8qPhT53sEd5LqGW7Ueqmws_rKUE5RV402n2CehlQSwkGwBwQ")
 
     def test_sha512_retrieve_fail(self, capsys):
         """
@@ -238,9 +234,7 @@ class TestClassBarutilsSha512:
         """
         Test comparison of signed file hash with that from the manifest.
         """
-        assert bb.verify_sha512(
-            "target.signed",
-            b"tmpeiqm5cFdIwu5YWw4aOkEojS2vw74tsS-onS8qPhT53sEd5LqGW7Ueqmws_rKUE5RV402n2CehlQSwkGwBwQ")
+        assert bb.verify_sha512("target.signed", b"tmpeiqm5cFdIwu5YWw4aOkEojS2vw74tsS-onS8qPhT53sEd5LqGW7Ueqmws_rKUE5RV402n2CehlQSwkGwBwQ")
 
 
 class TestClassBarutilsLoaderMover:

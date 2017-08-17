@@ -406,6 +406,25 @@ class TestClassNetworkutils:
                     else:
                         break
 
+    def test_download_android_tools(self):
+        """
+        Test downloading Android SDK platform tools.
+        """
+        os.mkdir("plattools")
+        with httmock.HTTMock(download_mock):
+            bn.download_android_tools()
+        for zipf in os.listdir("plattools"):
+            shahash = sha512()
+            with open(os.path.join("plattools", zipf), 'rb') as file:
+                while True:
+                    data = file.read()
+                    if not data:
+                        break
+                    shahash.update(data)
+            print("{0}: {1}".format(zipf, shahash.hexdigest()))
+            assert shahash.hexdigest() == "02c25df184ba5ed0eb7faa43b61fc2d0752a8230cc23d3f3085af55919198f83d1664277c6c4c00d78c0f95528fe8ab9f6dc145b8f9cc4b9a0f24482a1630bd9"
+        rmtree("plattools", ignore_errors=True)
+
     def test_return_npc(self):
         """
         Test NPC generation.

@@ -3,6 +3,7 @@
 
 import os
 import tempfile
+import zipfile
 from shutil import rmtree
 try:
     import unittest.mock as mock
@@ -565,3 +566,33 @@ class TestClassArchiveutilsConfig:
             with mock.patch('bbarchivist.archiveutils.compress_config_loader', mock.MagicMock(return_value="tbz")):
                 ba.compress_config_writer()
             assert ba.compress_config_loader() == "tbz"
+
+class TestClassArchiveutils:
+    """
+    Test miscellaneous tools.
+    """
+
+    @classmethod
+    def setup_class(cls):
+        """
+        Create loader template file structure.
+        """
+        if not os.path.exists("tooldir"):
+            os.mkdir("tooldir")
+        with zipfile.ZipFile(os.path.join("tooldir", "platform-tools-latest-linux.zip"), mode="w", compression=zipfile.ZIP_DEFLATED) as zfile:
+            zfile.writestr("snek", b"Jackdaws love my big sphinx of quartz")
+
+    def test_android_tools(self):
+        """
+        Test Android SDK platform tools utilities.
+        """ 
+        ba.verify_android_tools("tooldir")
+        ba.extract_android_tools("tooldir")
+        
+
+    def test_android_tools_fail(self):
+        """
+        Test when verification fails.
+        """
+        with mock.patch('bbarchivist.archiveutils.zip_verify', mock.MagicMock(return_value=False)):
+            assert ba.verify_android_tools("tooldir") == False
