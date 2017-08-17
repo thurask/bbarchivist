@@ -25,9 +25,9 @@ def main():
     ]
     if version_info[1] == 2:  # 3.2; shutilwhich, no simplejson, old requests/defusedxml
         cond_requires.extend(['shutilwhich>=1.1.0', 'requests==2.10', 'defusedxml==0.4.1'])
-    elif version_info[1] == 3:  # 3.3; simplejson, old defusedxml
-        cond_requires.extend(['simplejson>=3.10.0', 'requests>=2.10.0', 'defusedxml==0.4.1'])
-    else:  # 3.4+; simplejson, defusedxml
+    elif version_info[1] == 3:  # 3.3; simplejson, old requests/defusedxml
+        cond_requires.extend(['simplejson>=3.10.0', 'requests>=2.10.0,<2.18.4', 'defusedxml==0.4.1'])
+    else:  # 3.4+; simplejson, new requests/defusedxml
         cond_requires.extend(['simplejson>=3.10.0', 'requests>=2.10.0', 'defusedxml>=0.4.1'])
     scriptlist = [
         'bb-archivist=bbarchivist.scripts.archivist:grab_args',
