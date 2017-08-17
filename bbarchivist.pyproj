@@ -48,6 +48,9 @@
     <Content Include="bbarchivist\json\integermap.json">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="bbarchivist\json\prds.json">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="docs\bbarchivist.rst" />
     <Content Include="docs\bbarchivist.scripts.rst" />
     <Content Include="docs\cxsetup.rst" />
