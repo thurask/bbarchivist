@@ -680,6 +680,14 @@
     {
       "device": "KEYONE",
       "family": "KEYONE",
+      "name": "BBB100-5",
+      "hwid": "",
+      "fccid": "BBB100-5",
+      "ptcrbid": ""
+    },
+    {
+      "device": "KEYONE",
+      "family": "KEYONE",
       "name": "BBB100-6",
       "hwid": "",
       "fccid": "BBB100-6",

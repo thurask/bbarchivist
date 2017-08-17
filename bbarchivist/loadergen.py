@@ -476,7 +476,7 @@ def generate_google_host(hostin, hostout):
     platforms = ["linux", "windows", "darwin"]
     inouts = {os.path.join(hostin, plat, "platform-tools"): os.path.join(hostout, "{0}-x86".format(plat), "bin") for plat in platforms}
     for infile, outfile in inouts.items():
-        shutil.copytree(infile, outfile)        
+        shutil.copytree(infile, outfile)
 
 
 def generate_tclloader_host(hostin, hostout):
