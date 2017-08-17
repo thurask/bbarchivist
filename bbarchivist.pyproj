@@ -29,11 +29,25 @@
     <Content Include=".scrutinizer.yml" />
     <Content Include=".travis.yml" />
     <Content Include="appveyor.yml" />
-    <Content Include="bbarchivist\bbconstants.json" />
+    <Content Include="bbarchivist\json\appstoremove.json">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="bbarchivist\json\devices.json">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="bbarchivist\cap-3.11.0.27.dat" />
     <Content Include="bbarchivist\cfp-3.10.0.57.dat" />
     <Content Include="bbarchivist\flashall.bat-0.dat" />
     <Content Include="bbarchivist\flashall.sh-0.dat" />
+    <Content Include="bbarchivist\json\devskeletons.json">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="bbarchivist\json\droidfamilies.json">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="bbarchivist\json\integermap.json">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="docs\bbarchivist.rst" />
     <Content Include="docs\bbarchivist.scripts.rst" />
     <Content Include="docs\cxsetup.rst" />
@@ -259,6 +273,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bbarchivist" />
+    <Folder Include="bbarchivist\json\" />
     <Folder Include="bbarchivist\scripts" />
     <Folder Include="tests\" />
     <Folder Include="docs" />

@@ -47,7 +47,9 @@ def setup_module(module):
     devices = {}
     devices['devices'] = devlist
     dmp = json.dumps(devices)
-    with open("bbconstants.json", "w") as targetfile:
+    if not os.path.exists("json"):
+        os.mkdir("json")
+    with open(os.path.join("json", "devices.json"), "w") as targetfile:
         targetfile.write(dmp)
 
 
@@ -99,7 +101,7 @@ class TestClassJsonutils:
         """
         Test finding JSON file location.
         """
-        assert os.path.dirname(bj.grab_json()) == os.getcwd()
+        assert bj.grab_json("devices") == os.path.join(os.getcwd(), "json", "devices.json")
 
     def test_load_json(self):
         """

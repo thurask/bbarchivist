@@ -67,8 +67,8 @@ CFP = Datafile("3.10.0.57", "cfp", 16361984)
 FLASHBAT = Datafile("0", "flashall.bat", 2824)
 #: flashall.sh.dat
 FLASHSH = Datafile("0", "flashall.sh", 2838)
-#: JSON storage file.
-JSONFILE = os.path.join(DIRECTORY, "bbconstants.json")
+#: JSON storage directory.
+JSONDIR = os.path.join(DIRECTORY, "json")
 #: Lookup server list.
 SERVERS = {
     "p": "https://cs.sl.blackberry.com/cse/srVersionLookup/2.0.0/",

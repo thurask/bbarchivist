@@ -115,8 +115,7 @@ def grab_args():
                 args.export = False
                 args.blitz = False
             if args.forcedos is not None and args.forcedsw is None:
-                avail = networkutils.sr_lookup(args.forcedos,
-                                               bbconstants.SERVERS['p'])
+                avail = networkutils.sr_lookup(args.forcedos, bbconstants.SERVERS['p'])
                 forced = avail if avail != "SR not in system" else None
             elif args.forcedos is None and args.forcedsw is not None:
                 forced = args.forcedsw

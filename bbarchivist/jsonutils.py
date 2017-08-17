@@ -17,15 +17,19 @@ __license__ = "WTFPL v2"
 __copyright__ = "2015-2017 Thurask"
 
 
-def grab_json():
+def grab_json(filename):
     """
     Figure out where JSON is, local or system-supplied.
+
+    :param filename: Desired JSON database name.
+    :type filename: str
     """
     jfile = None
     try:
-        jfile = glob.glob(os.path.join(os.getcwd(), "bbconstants.json"))[0]
+        jfile = glob.glob(os.path.join(os.getcwd(), "json"))[0]
     except IndexError:
-        jfile = bbconstants.JSONFILE
+        jfile = bbconstants.JSONDIR
+    jfile = os.path.join(jfile, "{0}.json".format(filename))
     return os.path.abspath(jfile)
 
 
@@ -40,7 +44,7 @@ def load_json(table, jfile=None):
     :type jfile: str
     """
     if jfile is None:
-        jfile = grab_json()
+        jfile = grab_json(table)
     with open(jfile) as thefile:
         data = json.load(thefile)
     return data[table]
