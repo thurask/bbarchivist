@@ -162,3 +162,11 @@ class TestClassJsonutils:
         """
         bj.list_family(self.devlist)
         assert "GRUNTMASTER" in capsys.readouterr()[0]
+
+    def test_list_prds(self, capsys):
+        """
+        Test listing PRDs from table.
+        """
+        prdlist = {"KEYone": ["PRD-12345-678"]}
+        bj.list_prds(prdlist)
+        assert "~KEYone~" in capsys.readouterr()[0]

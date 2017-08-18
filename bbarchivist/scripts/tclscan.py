@@ -26,49 +26,49 @@ def grab_args():
             dest="prd",
             help="Only scan one PRD",
             default=None)
-        parser.add_argument(
-            "-s",
-            "--serid",
-            dest="serid",
-            help="Specify serial number",
-            default="543212345000000")
+        fgroup.add_argument(
+            "-l",
+            "--list",
+            dest="printlist",
+            help="List PRDs in database",
+            action="store_true",
+            default=False)
         args = parser.parse_args(sys.argv[1:])
         parser.set_defaults()
-        if args.prd is not None:
-            tclscan_single(args.prd, args.serid)
+        if args.printlist:
+            jsonutils.list_prds()
+        elif args.prd is not None:
+            tclscan_single(args.prd)
         else:
-            tclscan_main(args.serid)
+            tclscan_main()
     else:
         tclscan_main()
 
 
-def tclscan_single(curef, serid):
+def tclscan_single(curef):
     """
     Scan one PRD and produce download URL and filename.
 
     :param curef: PRD of the phone variant to check.
     :type curef: str
-
-    :param curef: Serial number of the phone to check.
-    :type curef: str
     """
-    ctext = networkutils.tcl_check(curef)
+    sess = requests.Session()
+    ctext = networkutils.tcl_check(curef, sess)
+    if ctext is None:
+        raise SystemExit
     tvver, firmwareid, filename, fsize, fhash = networkutils.parse_tcl_check(ctext)
     del fsize, fhash
-    slt = networkutils.tcl_salt()
-    vkh = networkutils.vkhash(serid, curef, tvver, firmwareid, slt)
-    updatetext = update_request(sess, serid, curef, tvver, firmwareid, slt, vkh)
-    downloadurl = parse_request(updatetext)
-    print("{0}: HTTP {1}".format(filename, networkutils.getcode(sess, downloadurl)))
+    salt = networkutils.tcl_salt()
+    vkhsh = networkutils.vkhash(curef, tvver, firmwareid, salt)
+    updatetext = networkutils.tcl_download_request(curef, tvver, firmwareid, salt, vkhsh, sess)
+    downloadurl = networkutils.parse_tcl_download_request(updatetext)
+    print("{0}: HTTP {1}".format(filename, networkutils.getcode(downloadurl, sess)))
     print(downloadurl)
 
 
-def tclscan_main(serid="543212345000000"):
+def tclscan_main():
     """
     Scan every PRD and produce latest versions.
-
-    :param curef: Serial number of the phone to check, filled in by default.
-    :type curef: str
     """
     scriptutils.slim_preamble("TCLSCAN")
     prddict = jsonutils.load_json("prds")
@@ -76,7 +76,7 @@ def tclscan_main(serid="543212345000000"):
     for device in prddict.keys():
         print("~{0}~".format(device))
         for curef in prddict[device]:
-            checktext = check(sess, serid, curef)
+            checktext = networkutils.tcl_check(curef, sess)
             tvver, firmwareid, filename, fsize, fhash = networkutils.parse_tcl_check(checktext)
             del firmwareid, filename, fsize, fhash
             print("{0}: {1}".format(curef, tvver))

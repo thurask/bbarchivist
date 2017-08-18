@@ -101,6 +101,19 @@ def list_devices(table):
         print("{0} {1} - {2} - {3}".format(key['device'], key['name'], hwid, fccid))
 
 
+def list_prds(table):
+    """
+    List all devices, certified or not, in a device table.
+
+    :param table: Dictionary of device : PRD list pairs.
+    :type table: dict(str: list)
+    """
+    for key in table.keys():
+        print("~{0}~".format(key))
+        for prd in table[key]:
+            print(prd)
+
+
 def certchecker_prep(table, device):
     """
     Extract model, family and HWID from a device table.
