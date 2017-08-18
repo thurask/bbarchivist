@@ -18,7 +18,7 @@ class Datafile(object):
         self.version = version
         self.name = datatype
         self.filename = "{0}-{1}.dat".format(datatype, version)
-        self.location = os.path.join(DIRECTORY, self.filename)
+        self.location = os.path.join(DIRECTORY, "datfiles", self.filename)
         self.size = size
 
 

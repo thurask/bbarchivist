@@ -77,7 +77,7 @@ def main():
     files = prep_file(CFP, files)
     files = prep_file(FLASHBAT, files)
     files = prep_file(FLASHSH, files)
-    outdir = os.path.join(os.getcwd(), "bbarchivist")
+    outdir = os.path.join(os.getcwd(), "bbarchivist", "datfiles")
     if files:
         for file in files:
             download(file, outdir)

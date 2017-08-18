@@ -1,5 +1,5 @@
 include README.rst
-include bbarchivist/*.dat
-include bbarchivist/json/*.json
 include versioneer.py
 include bbarchivist/_version.py
+include bbarchivist/datfiles/*.dat
+include bbarchivist/json/*.json
