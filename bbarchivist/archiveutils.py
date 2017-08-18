@@ -622,7 +622,7 @@ def verify_android_tools(tooldir):
     :type tooldir: str
     """
     zipver = [zip_verify(os.path.join(os.path.abspath(tooldir), x)) for x in os.listdir(os.path.abspath(tooldir)) if x.endswith(".zip")]
-    if zipver = [True, True, True]:  # all OK
+    if zipver == [True, True, True]:  # all OK
         return True
     else:
         return False
