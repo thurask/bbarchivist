@@ -26,7 +26,7 @@ def grab_args():
             dest="prd",
             help="Only scan one PRD",
             default=None)
-        fgroup.add_argument(
+        parser.add_argument(
             "-l",
             "--list",
             dest="printlist",
@@ -36,7 +36,8 @@ def grab_args():
         args = parser.parse_args(sys.argv[1:])
         parser.set_defaults()
         if args.printlist:
-            jsonutils.list_prds()
+            prddict = jsonutils.load_json("prds")
+            jsonutils.list_prds(prddict)
         elif args.prd is not None:
             tclscan_single(args.prd)
         else:
