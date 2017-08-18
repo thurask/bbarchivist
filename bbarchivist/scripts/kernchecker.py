@@ -34,11 +34,25 @@ def kernchecker_prep(kernlist):
     """
     Prepare output from kernel list.
 
-    :param kernlist: List of kernel URLs.
+    :param kernlist: List of kernel branches.
     :type kernlist: list(str)
     """
     splitkerns = [x.split("/") for x in kernlist]
     platforms = list({x[0] for x in splitkerns})
+    kerndict = kernchecker_dict(splitkerns, platforms)
+    return kerndict
+
+
+def kernchecker_dict(splitkerns, platforms):
+    """
+    Prepare results dictionary.
+
+    :param splitkerns: Split kernel branches.
+    :type splitkerns: list(str)
+
+    :param platforms: List of platform dicts.
+    :type platforms: list(dict)
+    """
     kerndict = {x: [] for x in platforms}
     for kernel in splitkerns:
         kerndict[kernel[0]].append("\t{0}".format(kernel[1]))
@@ -53,7 +67,7 @@ def kernchecker_main(utils=False):
     :type utils: bool
     """
     scriptutils.slim_preamble("KERNCHECKER")
-    tocheck = "UTILS" if args.utils else "KERNELS"
+    tocheck = "UTILS" if utils else "KERNELS"
     print("\nCHECKING {0}...\n".format(tocheck))
     kernlist = networkutils.kernel_scraper(args.utils)
     kerndict = kernchecker_prep(kernlist)
