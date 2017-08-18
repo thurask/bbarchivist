@@ -43,7 +43,7 @@ def main():
         'bb-sqlexport=bbarchivist.scripts.sqlexport:grab_args',
         'bb-kompressor=bbarchivist.scripts.kompressor:kompressor_main',
         'bb-downloader=bbarchivist.scripts.downloader:grab_args',
-        'bb-kernchecker=bbarchivist.scripts.kernchecker:kernchecker_main',
+        'bb-kernchecker=bbarchivist.scripts.kernchecker:grab_args',
         'bb-cfp=bbarchivist.scripts.exeshim:cfp_main',
         'bb-cap=bbarchivist.scripts.exeshim:cap_main',
         'bb-droidlookup=bbarchivist.scripts.droidlookup:grab_args',
