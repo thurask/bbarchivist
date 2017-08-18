@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Test the bbcconstants module: specifically, frozen version info."""
+"""Test the bbcconstants module."""
 
 import os
 from shutil import rmtree

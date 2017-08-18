@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 """Manually download dat files, if Git-LFS isn't working or something."""
 
 import os

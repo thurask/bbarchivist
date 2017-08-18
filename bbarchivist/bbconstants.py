@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 """This module is used to define constants for the program."""
 
 import os.path  # for producing cap location constant

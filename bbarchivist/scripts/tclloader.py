@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Generate autoloader from TCL autoloader template."""
 
-import os  # path work
 import shutil  # directory work
 import sys  # load arguments
 from bbarchivist import archiveutils  # zip work

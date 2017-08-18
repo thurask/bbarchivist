@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 """The script portion of bbarchivist."""
 
 from bbarchivist import bbconstants  # constants/versions

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""This module is used for creation of autoloaders.
-A higher level interface for :mod:`bbarchivist.pseudocap`."""
+"""This module is used for creation of autoloaders."""
 
 import os  # path work
 import glob  # filename matching
