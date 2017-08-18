@@ -446,6 +446,39 @@ def generate_lazy_filename(osversion, suffix, device):
     return "{0}{1}{2}{3}.exe".format(fname[0], osversion, suffix, fname[1])
 
 
+def point_point_copy(inpath, outpath, filename):
+    """
+    Copy a file from one absolute path to another.
+
+    :param inpath: Input path.
+    :type inpath: str
+
+    :param outpath: Output path.
+    :type outpath: str
+
+    :param filename: Filename.
+    :type filename: str
+    """
+    shutil.copy(os.path.join(inpath, filename), os.path.join(outpath, filename))
+
+
+def point_point_bulk(inpath, outpath, files):
+    """
+    Copy a list of files from one absolute path to another.
+
+    :param inpath: Input path.
+    :type inpath: str
+
+    :param outpath: Output path.
+    :type outpath: str
+
+    :param files: List of filenames.
+    :type files: list(str)
+    """
+    for file in files:
+        point_point_copy(inpath, outpath, file)
+
+
 def generate_tclloader_script(dirname, batchfile, shfile):
     """
     Copy script files from site-packages to loader directory.
@@ -496,10 +529,8 @@ def generate_tclloader_host(hostin, hostout):
     linfile = os.path.join("linux-x86", "bin", "fastboot")
     winx = ["AdbWinApi.dll", "AdbWinUsbApi.dll", "fastboot.exe"]
     winfiles = [os.path.join("windows-x86", "bin", x) for x in winx]
-    shutil.copy(os.path.join(hostin, macfile), os.path.join(hostout, macfile))
-    shutil.copy(os.path.join(hostin, linfile), os.path.join(hostout, linfile))
-    for file in winfiles:
-        shutil.copy(os.path.join(hostin, file), os.path.join(hostout, file))
+    winfiles.extend([linfile, macfile])
+    point_point_bulk(hostin, hostout, winfiles)
 
 
 def generate_tclloader_sig(sigin, sigout):
@@ -527,8 +558,7 @@ def generate_tclloader_mbn(mdnin, mdnout):
     :type mdnout: str
     """
     files = ["devcfg.mbn", "devcfg_cn.mbn", "rpm.mbn", "tz.mbn"]
-    for file in files:
-        shutil.copy(os.path.join(mdnin, file), os.path.join(mdnout, file))
+    point_point_bulk(mdnin, mdnout, files)
 
 
 def generate_tclloader_img(imgin, imgout):
@@ -542,14 +572,11 @@ def generate_tclloader_img(imgin, imgout):
     :type imgout: str
     """
     imgs = ["oem_att", "oem_china", "oem_common", "oem_sprint", "oem_vzw", "recovery", "system", "userdata", "cache", "boot"]
-    for img in imgs:
-        shutil.copy(os.path.join(imgin, "{0}.img".format(img)), os.path.join(imgout, "{0}.img".format(img)))
+    point_point_bulk(imgin, imgout, ["{0}.img".format(img) for img in imgs])
     radios = ["china", "emea", "global", "india", "japan", "usa"]
-    for rad in radios:
-        shutil.copy(os.path.join(imgin, "NON-HLOS-{0}.bin".format(rad)), os.path.join(imgout, "NON-HLOS-{0}.bin".format(rad)))
+    point_point_bulk(imgin, imgout, ["NON-HLOS-{0}.bin".format(rad) for rad in radios])
     others = ["adspso.bin", "emmc_appsboot.mbn", "sbl1_signed.mbn"]
-    for file in others:
-        shutil.copy(os.path.join(imgin, file), os.path.join(imgout, file))
+    point_point_bulk(imgin, imgout, others)
 
 
 def generate_tclloader(localdir, dirname, platform, localtools=False):

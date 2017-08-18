@@ -4,7 +4,6 @@
 import os  # path work
 import shutil  # directory work
 import sys  # load arguments
-import requests  # session
 from bbarchivist import archiveutils  # zip work
 from bbarchivist import decorators  # enter to exit
 from bbarchivist import loadergen  # packing loader

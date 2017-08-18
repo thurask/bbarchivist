@@ -2,7 +2,7 @@
 """This module is used for generation of URLs and related text files."""
 
 from bbarchivist.networkutils import get_length  # network
-from bbarchivist.utilities import create_bar_url, fsizer, generate_urls, stripper  # utils
+from bbarchivist.utilities import create_bar_url, fsizer, generate_urls, stripper, newer_103  # utils
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -315,7 +315,7 @@ def url_gen(osversion, radioversion, softwareversion):
     oses.insert(2, vzw)
     cores.insert(2, oses[2].replace(".desktop", ""))
     splitos = [int(i) for i in osversion.split(".")]
-    if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 3):
+    if newer_103(splitos, 3):
         radlist = radlist[1:]
         oslist = oslist[1:]
     ospairs = {}

@@ -515,6 +515,20 @@ def generate_urls(softwareversion, osversion, radioversion, core=False):
     return osurls, radiourls, coreurls
 
 
+def newer_103(splitos, third):
+    """
+    Return True if given split OS version is 10.3.X or newer.
+
+    :param splitos: OS version, split on the dots: [10, 3, 3, 2205]
+    :type: list(int)
+
+    :param third: The X in 10.3.X.
+    :type third: int
+    """
+    newer = True if ((splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= third)) else False
+    return newer
+
+
 def filter_urls(osurls, radiourls, osversion):
     """
     Filter lists of OS and radio URLs.
@@ -548,7 +562,7 @@ def filter_1031(osurl, splitos, device):
     :param device: Device to use.
     :type device: int
     """
-    if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 1):
+    if newer_103(splitos, 1):
         filterdict = {5: ("qc8960.factory_sfi", "qc8960.factory_sfi_hybrid_qc8x30"), 6: ("qc8974.factory_sfi", "qc8960.factory_sfi_hybrid_qc8974")}
         osurl = filter_osversion(osurl, device, filterdict)
     return osurl
@@ -567,7 +581,7 @@ def pop_stl1(osurl, radiourl, splitos):
     :param splitos: OS version, split and cast to int: [10, 3, 3, 2205]
     :type splitos: list(int)
     """
-    if (splitos[1] >= 4) or (splitos[1] == 3 and splitos[2] >= 3):
+    if newer_103(splitos, 3):
         osurl = osurl.replace("winchester", "qc8960")  # duplicates get filtered out later
         radiourl = radiourl.replace("m5730", "qc8960")
     return osurl, radiourl
