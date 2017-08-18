@@ -16,7 +16,7 @@ def grab_args():
     """
     Parse arguments from argparse/questionnaire.
 
-    Invoke :func:`droidlookup.droidlookup_main` with those arguments.
+    Invoke a function with those arguments.
     """
     if len(sys.argv) > 1:
         parser = scriptutils.default_parser("bb-tclscan", "Check for updates for TCL devices")

@@ -141,6 +141,9 @@
     <Compile Include="bbarchivist\scripts\swlookup.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="bbarchivist\scripts\tclloader.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="bbarchivist\scripts\tclscan.py">
       <SubType>Code</SubType>
     </Compile>

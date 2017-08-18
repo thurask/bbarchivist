@@ -53,7 +53,8 @@ def main():
         'bb-infogen=bbarchivist.scripts.infogenerator:infogenerator_main',
         'bb-droidscraper=bbarchivist.scripts.droidscraper:droidscraper_main',
         'bb-barlinker=bbarchivist.scripts.barlinker:barlinker_main',
-        'bb-tclscan=bbarchivist.scripts.tclscan:grab_args'
+        'bb-tclscan=bbarchivist.scripts.tclscan:grab_args',
+        'bb-tclloader=bbarchivist.scripts.tclloader:grab_args'
     ]
     setup(name='bbarchivist',
           version=versioneer.get_version().split("-")[0],

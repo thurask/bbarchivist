@@ -622,10 +622,24 @@ def verify_android_tools(tooldir):
     :type tooldir: str
     """
     zipver = [zip_verify(os.path.join(os.path.abspath(tooldir), x)) for x in os.listdir(os.path.abspath(tooldir)) if x.endswith(".zip")]
-    if set(zipver) == {True}:  # all OK
+    if zipver = [True, True, True]:  # all OK
         return True
     else:
         return False
+
+
+def extract_zip(infile, outpath):
+    """
+    Extract a zip file to a given output path.
+
+    :param infile: Path to input zip file.
+    :type infile: str
+
+    :param outpath: Path to extract input zip to.
+    :type outpath: str
+    """
+    zipf = zipfile.ZipFile(infile)
+    zipf.extractall(outpath)
 
 
 def extract_android_tools(tooldir):
@@ -640,8 +654,7 @@ def extract_android_tools(tooldir):
         platform = os.path.basename(zipx).replace("platform-tools-latest-", "").replace(".zip", "")
         platdir = os.path.join(os.path.abspath(tooldir), platform)
         os.makedirs(platdir)
-        zipf = zipfile.ZipFile(os.path.join(os.path.abspath(tooldir), zipx))
-        zipf.extractall(platdir)
+        extract_zip(os.path.join(os.path.abspath(tooldir), zipx), platdir)
 
 
 @decorators.timer
