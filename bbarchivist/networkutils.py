@@ -209,6 +209,26 @@ def download_android_tools():
 
 
 @pem_wrapper
+def getcode(url, session=None):
+    """
+    Return status code of given URL.
+
+    :param url: URL to check.
+    :type url: str
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
+    """
+    session = generic_session(session)
+    try:
+        shead = session.head(url)
+        status = int(shead.status_code)
+        return status
+    except requests.ConnectionError:
+        return 404
+
+
+@pem_wrapper
 def availability(url, session=None):
     """
     Check HTTP status code of given URL.
@@ -220,13 +240,8 @@ def availability(url, session=None):
     :param session: Requests session object, default is created on the fly.
     :type session: requests.Session()
     """
-    session = generic_session(session)
-    try:
-        avlty = session.head(url)
-        status = int(avlty.status_code)
-        return status == 200 or 300 < status <= 308
-    except requests.ConnectionError:
-        return False
+    status = getcode(url, session)
+    return status == 200 or 300 < status <= 308
 
 
 def clean_availability(results, server):

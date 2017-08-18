@@ -4,10 +4,10 @@
 from os import remove, listdir, devnull, getcwd, makedirs
 from os.path import join, basename, exists
 from platform import architecture
-from shutil import copy, rmtree
+from shutil import copy, rmtree, copytree
 from subprocess import call, STDOUT
 from requests import certs, get
-from bbarchivist.bbconstants import VERSION, LONGVERSION, CAP, JSONFILE, COMMITDATE
+from bbarchivist.bbconstants import VERSION, LONGVERSION, CAP, JSONDIR, COMMITDATE
 from bbarchivist.utilities import prep_seven_zip, get_seven_zip
 
 
@@ -46,7 +46,7 @@ def generate_specs():
     """
     Generate pyinstaller spec files.
     """
-    scripts = ["archivist", "autolookup", "barlinker", "carrierchecker", "certchecker", "devloader", "downloader", "droidlookup", "droidscraper", "escreens", "kernchecker", "lazyloader", "linkgen", "metachecker", "swlookup"]
+    scripts = ["archivist", "autolookup", "barlinker", "carrierchecker", "certchecker", "devloader", "downloader", "droidlookup", "droidscraper", "escreens", "kernchecker", "lazyloader", "linkgen", "metachecker", "swlookup", "tclscan"]
     here = getcwd().replace("\\", "\\\\")
     for script in scripts:
         template = "# -*- mode: python -*-\n\nblock_cipher = None\n\n\na = Analysis(['bbarchivist\\\\scripts\\\\{0}.py'],\n             pathex=['{1}'],\n             binaries=None,\n             datas=None,\n             hiddenimports=[],\n             hookspath=[],\n             runtime_hooks=[],\n             excludes=[],\n             win_no_prefer_redirects=False,\n             win_private_assemblies=False,\n             cipher=block_cipher)\npyz = PYZ(a.pure, a.zipped_data,\n             cipher=block_cipher)\nexe = EXE(pyz,\n          a.scripts,\n          a.binaries,\n          a.zipfiles,\n          a.datas,\n          name='{0}',\n          debug=False,\n          strip=False,\n          upx=False,\n          console=True )\n".format(script, here)
@@ -67,7 +67,8 @@ def get_sevenzip():
     """
     Get 7-Zip.
     """
-    szurl = "http://www.7-zip.org/a/7z1700-extra.7z"
+    szver = "1700"
+    szurl = "http://www.7-zip.org/a/7z{0}-extra.7z".format(szver)
     psz = prep_seven_zip()
     if psz:
         szexe = get_seven_zip()
@@ -110,6 +111,13 @@ def sz_wrapper(outdir):
         rmtree("7z", ignore_errors=True)
 
 
+def copy_json(outdir):
+    """
+    Copy JSON folder to outdir.
+    """
+    copytree(JSONDIR, join(outdir, "json"))
+
+
 def main():
     """
     Create .exes with dynamic spec files.
@@ -121,7 +129,7 @@ def main():
     copy("version.txt", outdir)
     copy("longversion.txt", outdir)
     copy(CAP.location, outdir)
-    copy(JSONFILE, outdir)
+    copy_json(outdir)
     copy(certs.where(), join(outdir, "cacerts.pem"))
     sz_wrapper(outdir)
     clean_versions()

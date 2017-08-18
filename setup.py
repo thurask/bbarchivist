@@ -52,7 +52,8 @@ def main():
         'bb-swlookup=bbarchivist.scripts.swlookup:grab_args',
         'bb-infogen=bbarchivist.scripts.infogenerator:infogenerator_main',
         'bb-droidscraper=bbarchivist.scripts.droidscraper:droidscraper_main',
-        'bb-barlinker=bbarchivist.scripts.barlinker:barlinker_main'
+        'bb-barlinker=bbarchivist.scripts.barlinker:barlinker_main',
+        'bb-tclscan=bbarchivist.scripts.tclscan:grab_args'
     ]
     setup(name='bbarchivist',
           version=versioneer.get_version().split("-")[0],
