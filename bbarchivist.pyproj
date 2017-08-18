@@ -35,10 +35,10 @@
     <Content Include="bbarchivist\json\devices.json">
       <SubType>Code</SubType>
     </Content>
-    <Content Include="bbarchivist\cap-3.11.0.27.dat" />
-    <Content Include="bbarchivist\cfp-3.10.0.57.dat" />
-    <Content Include="bbarchivist\flashall.bat-0.dat" />
-    <Content Include="bbarchivist\flashall.sh-0.dat" />
+    <Content Include="bbarchivist\datfiles\cap-3.11.0.27.dat" />
+    <Content Include="bbarchivist\datfiles\cfp-3.10.0.57.dat" />
+    <Content Include="bbarchivist\datfiles\flashall.bat-0.dat" />
+    <Content Include="bbarchivist\datfiles\flashall.sh-0.dat" />
     <Content Include="bbarchivist\json\devskeletons.json">
       <SubType>Code</SubType>
     </Content>
@@ -280,6 +280,7 @@
   <ItemGroup>
     <Folder Include="bbarchivist" />
     <Folder Include="bbarchivist\json\" />
+    <Folder Include="bbarchivist\datfiles\" />
     <Folder Include="bbarchivist\scripts" />
     <Folder Include="tests\" />
     <Folder Include="docs" />
