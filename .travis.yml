@@ -22,6 +22,7 @@ install:
     - if [[ $TRAVIS_PYTHON_VERSION == 3.2 ]]; then pip install coveralls=="1.0a2"; else pip install coveralls; fi
     - if [[ $TRAVIS_PYTHON_VERSION == 3.2 ]]; then pip install pytest=="2.9.2"; else pip install pytest; fi
     - if [[ $TRAVIS_PYTHON_VERSION != 3.2 ]]; then pip install codeclimate-test-reporter; fi
+    - if [[ $TRAVIS_PYTHON_VERSION == 3.2 ]]; then pip uninstall --yes defusedxml; fi
     - pip install scrutinizer-ocular
 script:
     - py.test -v --cov=bbarchivist
