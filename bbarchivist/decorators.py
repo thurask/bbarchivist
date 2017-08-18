@@ -71,15 +71,28 @@ def sql_excepthandler(integrity):
             """
             Try function, handle sqlite3.Error, optionally pass sqlite3.IntegrityError.
             """
-            try:
-                result = method(*args, **kwargs)
-                return result
-            except sqlite3.IntegrityError if bool(integrity) else exceptions.DummyException:
-                dummy.UselessStdout.write("ASDASDASD")  # DummyException never going to happen
-            except sqlite3.Error as sqerror:
-                print(sqerror)
+            return sql_exceptwrapper(method, integrity, *args, **kwargs)
         return wrapper
     return exceptdecorator
+
+
+def sql_exceptwrapper(method, integrity, *args, **kwargs):
+    """
+    Try function, handle sqlite3.Error, optionally pass sqlite3.IntegrityError.
+
+    :param method: Method to use.
+    :type method: function
+
+    :param integrity: Whether to allow sqlite3.IntegrityError.
+    :type integrity: bool
+    """
+    try:
+        result = method(*args, **kwargs)
+        return result
+    except sqlite3.IntegrityError if bool(integrity) else exceptions.DummyException:
+        dummy.UselessStdout.write("ASDASDASD")  # DummyException never going to happen
+    except sqlite3.Error as sqerror:
+        print(sqerror)
 
 
 def sql_existhandler(sqlpath):
