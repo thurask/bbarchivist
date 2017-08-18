@@ -657,6 +657,35 @@ def comp_joiner(rootdir, localdir, filelist):
     return joinedfiles
 
 
+def kernchecker_prep(kernlist):
+    """
+    Prepare output from kernel list.
+
+    :param kernlist: List of kernel branches.
+    :type kernlist: list(str)
+    """
+    splitkerns = [x.split("/") for x in kernlist]
+    platforms = list({x[0] for x in splitkerns})
+    kerndict = kernchecker_dict(splitkerns, platforms)
+    return kerndict
+
+
+def kernchecker_dict(splitkerns, platforms):
+    """
+    Prepare results dictionary.
+
+    :param splitkerns: Split kernel branches.
+    :type splitkerns: list(str)
+
+    :param platforms: List of platform dicts.
+    :type platforms: list(dict)
+    """
+    kerndict = {x: [] for x in platforms}
+    for kernel in splitkerns:
+        kerndict[kernel[0]].append("\t{0}".format(kernel[1]))
+    return kerndict
+
+
 def linkgen_sdk_dicter(indict, origtext, newtext):
     """
     Prepare SDK radio/OS dictionaries.

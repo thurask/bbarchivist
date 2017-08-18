@@ -410,6 +410,13 @@ class TestClassScriptutilsSoftware:
                         with mock.patch('bbarchivist.smtputils.prep_email', mock.MagicMock(side_effect=None)):
                             assert bs.prod_avail({"p": "10.3.3.1465"}, mailer=True, osversion="10.3.3.2163") == ("10.3.3.1465", "PD", "Available")
 
+    def test_kernchecker_prep(self):
+        """
+        Test preparing output for kernel checker script.
+        """
+        kernlist = ['msm8992/AAL747', 'msm8992/AAL746', 'msm8996/AAJ051']
+        assert bs.kernchecker_prep(kernlist) == {"msm8992": ["\tAAL747", "\tAAL746"], "msm8996": ["\tAAJ051"]}
+
 
 class TestClassScriptutilsIO:
     """
