@@ -59,6 +59,95 @@ def grab_args():
     tclloader_main(args.loaderfile, args.loadername, args.directory, args.localtools, args.compress)
 
 
+def tclloader_prep(loaderfile, directory=False):
+    """
+    Prepare directory name and OS version.
+
+    :param loaderfile: Path to input file/folder.
+    :type loaderfile: str
+
+    :param directory: If the input file is a folder. Default is False.
+    :type directory: bool
+    """
+    loaderdir = loaderfile if directory else loaderfile.replace(".zip", "")
+    osver = loaderdir.split("-")[-1]
+    return loaderdir, osver
+
+
+def tclloader_extract(loaderfile, loaderdir, directory=False):
+    """
+    Extract autoloader template zip if needed.
+
+    :param loaderfile: Path to input file.
+    :type loaderfile: str
+
+    :param loaderdir: Path to output folder.
+    :type loaderdir: str
+
+    :param directory: If the input file is a folder. Default is False.
+    :type directory: bool
+    """
+    if not directory:
+        print("EXTRACTING FILE")
+        archiveutils.extract_zip(loaderfile, loaderdir)
+
+
+def tclloader_fastboot(localtools=False):
+    """
+    Download fastboot if needed.
+
+    :param localtools: If fastboot is to be copied from the input itself. Default is False.
+    :type localtools: bool
+    """
+    if not localtools:
+        print("DOWNLOADING FASTBOOT")
+        networkutils.download_android_tools("plattools")
+        print("VERIFYING FASTBOOT")
+        andver = archiveutils.verify_android_tools("plattools")
+        if andver:
+            print("FASTBOOT OK, EXTRACTING")
+            archiveutils.extract_android_tools("plattools")
+        else:
+            print("FASTBOOT DOWNLOAD FAILED, REVERTING TO LOCAL")
+            localtools = True
+    return localtools
+
+
+def tclloader_filename(loaderdir, osver, loadername=None):
+    """
+    Prepare platform and filename.
+
+    :param loaderdir: Path to input folder.
+    :type loaderdir: str
+
+    :param osver: OS version.
+    :type osver: str
+
+    :param loadername: Name of final autoloader. Default is auto-generated.
+    :type loadername: str
+    """
+    platform = os.listdir(os.path.join(loaderdir, "target", "product"))[0]
+    if loadername is None:
+        loadername = "{0}_autoloader_user-all-{1}".format(platform, osver)
+    return loadername, platform
+
+
+def tclloader_compress(compress=False, loadername=None):
+    """
+    Compress the final autoloader if needed.
+
+    :param compress: If the final loader is to be compressed. Default is False.
+    :type compress: bool
+
+    :param loadername: Name of final autoloader.
+    :type loadername: str
+    """
+    if compress:
+        print("PACKING LOADER")
+        archiveutils.pack_tclloader(loadername, loadername)
+        print("COMPRESSION FINISHED")
+
+
 def tclloader_main(loaderfile, loadername=None, directory=False, localtools=False, compress=False):
     """
     Scan every PRD and produce latest versions.
@@ -79,33 +168,16 @@ def tclloader_main(loaderfile, loadername=None, directory=False, localtools=Fals
     :type compress: bool
     """
     scriptutils.slim_preamble("TCLLOADER")
-    loaderdir = loaderfile if directory else loaderfile.replace(".zip", "")
-    osver = loaderdir.split("-")[-1]
-    if not directory:
-        print("EXTRACTING FILE")
-        archiveutils.extract_zip(loaderfile, loaderdir)
-    if not localtools:
-        print("DOWNLOADING FASTBOOT")
-        networkutils.download_android_tools("plattools")
-        print("VERIFYING FASTBOOT")
-        andver = archiveutils.verify_android_tools("plattools")
-        if andver:
-            print("FASTBOOT OK, EXTRACTING")
-            archiveutils.extract_android_tools("plattools")
-        else:
-            print("FASTBOOT DOWNLOAD FAILED, REVERTING TO LOCAL")
-            localtools = True
-    platform = os.listdir(os.path.join(loaderdir, "target", "product"))[0]
-    if loadername is None:
-        loadername = "{0}_autoloader_user-all-{1}".format(platform, osver)
+    loaderdir, osver = tclloader_prep(loaderfile, directory)
+    tclloader_extract(loaderfile, loaderdir, directory)
+    localtools = tclloader_fastboot(localtools)
+    loadername, platform = tclloader_filename(loaderdir, osver, loadername)
     print("CREATING LOADER")
     loadergen.generate_tclloader(loaderdir, loadername, platform, localtools)
     shutil.rmtree("plattools")
-    if compress:
-        print("PACKING LOADER")
-        archiveutils.pack_tclloader(loadername, loadername)
-        print("COMPRESSION FINISHED")
+    tclloader_compress(compress, loadername)
     print("LOADER COMPLETE!")
+
 
 if __name__ == "__main__":
     grab_args()

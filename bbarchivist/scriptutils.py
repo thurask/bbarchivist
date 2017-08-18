@@ -372,18 +372,53 @@ def check_radio_bulk(radiourls, radioversion):
         if radav:
             break
     else:
-        print("RADIO VERSION NOT FOUND")
-        cont = utilities.s2b(input("INPUT MANUALLY? Y/N: "))
-        if cont:
-            rad2 = input("RADIO VERSION: ")
-            radiourls = [url.replace(radioversion, rad2) for url in radiourls]
-            radioversion = rad2
-        else:
-            going = utilities.s2b(input("KEEP GOING? Y/N: "))
-            if not going:
-                print("\nEXITING...")
-                raise SystemExit
+        radiourls, radioversion = check_radio_bulk_notfound()
     return radiourls, radioversion
+
+
+def check_radio_bulk_notfound(radiourls, radioversion):
+    """
+    What to do if radio links aren't found.
+
+    :param radiourls: Radio URLs to check.
+    :type radiourls: list(str)
+
+    :param radioversion: Radio version.
+    :type radioversion: str
+    """
+    print("RADIO VERSION NOT FOUND")
+    cont = utilities.s2b(input("INPUT MANUALLY? Y/N: "))
+    if cont:
+        radiourls, radioversion = check_radio_bulk_go(radiourls, radioversion)
+    else:
+        check_radio_bulk_stop()
+    return radiourls, radioversion
+
+
+def check_radio_bulk_go(radiourls, radioversion):
+    """
+    Replace radio version and URLs, and keep going.
+
+    :param radiourls: Radio URLs to check.
+    :type radiourls: list(str)
+
+    :param radioversion: Radio version.
+    :type radioversion: str
+    """
+    rad2 = input("RADIO VERSION: ")
+    radiourls = [url.replace(radioversion, rad2) for url in radiourls]
+    radioversion = rad2
+    return radiourls, radioversion
+
+
+def check_radio_bulk_stop():
+    """
+    Ask if we should keep going once no radio has been found.
+    """
+    going = utilities.s2b(input("KEEP GOING? Y/N: "))
+    if not going:
+        print("\nEXITING...")
+        raise SystemExit
 
 
 def bulk_avail(urllist):
