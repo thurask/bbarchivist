@@ -231,6 +231,30 @@ class TestClassScriptutils:
                 bs.questionnaire_device()
                 assert "NO DEVICE SPECIFIED!" in capsys.readouterr()[0]
 
+    def test_kernchecker_prep(self):
+        """
+        Test preparing output for kernel checker script.
+        """
+        kernlist = ['msm8992/AAL747', 'msm8992/AAL746', 'msm8996/AAJ051']
+        assert bs.kernchecker_prep(kernlist) == {"msm8992": ["\tAAL747", "\tAAL746"], "msm8996": ["\tAAJ051"]}
+
+    def test_tclloader_prep(self):
+        """
+        Test preparing names for Android autoloader generation.
+        """
+        loadername = "bbry_qc8953_sfi-user-production_signed-AAN358.zip"
+        assert bs.tclloader_prep(loadername) == (loadername.replace(".zip", ""), "AAN358")
+        assert bs.tclloader_prep(loadername.replace(".zip", ""), True) == (loadername.replace(".zip", ""), "AAN358")
+
+    def test_tclloader_filename(self):
+        """
+        Test preparing filename for Android autoloader generation.
+        """
+        loaderdir = "bbry_qc8953_sfi-user-production_signed-AAN358"
+        loadername = "bbry_qc8953_autoloader_user-all-AAN358"
+        with mock.patch("os.listdir", mock.MagicMock(return_value=["bbry_qc8953"])):
+            assert bs.tclloader_filename(loaderdir, "AAN358") == (loadername, "bbry_qc8953")
+
 
 class TestClassScriptutilsSoftware:
     """
@@ -409,13 +433,6 @@ class TestClassScriptutilsSoftware:
                     with mock.patch('bbarchivist.scriptutils.linkgen', mock.MagicMock(side_effect=None)):
                         with mock.patch('bbarchivist.smtputils.prep_email', mock.MagicMock(side_effect=None)):
                             assert bs.prod_avail({"p": "10.3.3.1465"}, mailer=True, osversion="10.3.3.2163") == ("10.3.3.1465", "PD", "Available")
-
-    def test_kernchecker_prep(self):
-        """
-        Test preparing output for kernel checker script.
-        """
-        kernlist = ['msm8992/AAL747', 'msm8992/AAL746', 'msm8996/AAJ051']
-        assert bs.kernchecker_prep(kernlist) == {"msm8992": ["\tAAL747", "\tAAL746"], "msm8996": ["\tAAJ051"]}
 
 
 class TestClassScriptutilsIO:

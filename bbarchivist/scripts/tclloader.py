@@ -59,21 +59,6 @@ def grab_args():
     tclloader_main(args.loaderfile, args.loadername, args.directory, args.localtools, args.compress)
 
 
-def tclloader_prep(loaderfile, directory=False):
-    """
-    Prepare directory name and OS version.
-
-    :param loaderfile: Path to input file/folder.
-    :type loaderfile: str
-
-    :param directory: If the input file is a folder. Default is False.
-    :type directory: bool
-    """
-    loaderdir = loaderfile if directory else loaderfile.replace(".zip", "")
-    osver = loaderdir.split("-")[-1]
-    return loaderdir, osver
-
-
 def tclloader_extract(loaderfile, loaderdir, directory=False):
     """
     Extract autoloader template zip if needed.
@@ -113,25 +98,6 @@ def tclloader_fastboot(localtools=False):
     return localtools
 
 
-def tclloader_filename(loaderdir, osver, loadername=None):
-    """
-    Prepare platform and filename.
-
-    :param loaderdir: Path to input folder.
-    :type loaderdir: str
-
-    :param osver: OS version.
-    :type osver: str
-
-    :param loadername: Name of final autoloader. Default is auto-generated.
-    :type loadername: str
-    """
-    platform = os.listdir(os.path.join(loaderdir, "target", "product"))[0]
-    if loadername is None:
-        loadername = "{0}_autoloader_user-all-{1}".format(platform, osver)
-    return loadername, platform
-
-
 def tclloader_compress(compress=False, loadername=None):
     """
     Compress the final autoloader if needed.
@@ -168,10 +134,10 @@ def tclloader_main(loaderfile, loadername=None, directory=False, localtools=Fals
     :type compress: bool
     """
     scriptutils.slim_preamble("TCLLOADER")
-    loaderdir, osver = tclloader_prep(loaderfile, directory)
+    loaderdir, osver = scriptutils.tclloader_prep(loaderfile, directory)
     tclloader_extract(loaderfile, loaderdir, directory)
     localtools = tclloader_fastboot(localtools)
-    loadername, platform = tclloader_filename(loaderdir, osver, loadername)
+    loadername, platform = scriptutils.tclloader_filename(loaderdir, osver, loadername)
     print("CREATING LOADER")
     loadergen.generate_tclloader(loaderdir, loadername, platform, localtools)
     shutil.rmtree("plattools")

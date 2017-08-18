@@ -686,6 +686,40 @@ def kernchecker_dict(splitkerns, platforms):
     return kerndict
 
 
+def tclloader_prep(loaderfile, directory=False):
+    """
+    Prepare directory name and OS version.
+
+    :param loaderfile: Path to input file/folder.
+    :type loaderfile: str
+
+    :param directory: If the input file is a folder. Default is False.
+    :type directory: bool
+    """
+    loaderdir = loaderfile if directory else loaderfile.replace(".zip", "")
+    osver = loaderdir.split("-")[-1]
+    return loaderdir, osver
+
+
+def tclloader_filename(loaderdir, osver, loadername=None):
+    """
+    Prepare platform and filename.
+
+    :param loaderdir: Path to input folder.
+    :type loaderdir: str
+
+    :param osver: OS version.
+    :type osver: str
+
+    :param loadername: Name of final autoloader. Default is auto-generated.
+    :type loadername: str
+    """
+    platform = os.listdir(os.path.join(loaderdir, "target", "product"))[0]
+    if loadername is None:
+        loadername = "{0}_autoloader_user-all-{1}".format(platform, osver)
+    return loadername, platform
+
+
 def linkgen_sdk_dicter(indict, origtext, newtext):
     """
     Prepare SDK radio/OS dictionaries.
