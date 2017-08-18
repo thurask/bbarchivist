@@ -372,7 +372,7 @@ def check_radio_bulk(radiourls, radioversion):
         if radav:
             break
     else:
-        radiourls, radioversion = check_radio_bulk_notfound()
+        radiourls, radioversion = check_radio_bulk_notfound(radiourls, radioversion)
     return radiourls, radioversion
 
 
