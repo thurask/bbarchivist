@@ -4,7 +4,7 @@
 import os
 import tempfile
 import zipfile
-from shutil import rmtree
+from shutil import copyfile, rmtree
 try:
     import unittest.mock as mock
 except ImportError:
@@ -581,6 +581,8 @@ class TestClassArchiveutils:
             os.mkdir("tooldir")
         with zipfile.ZipFile(os.path.join("tooldir", "platform-tools-latest-linux.zip"), mode="w", compression=zipfile.ZIP_DEFLATED) as zfile:
             zfile.writestr("snek", b"Jackdaws love my big sphinx of quartz")
+        copyfile(os.path.join("tooldir", "platform-tools-latest-linux.zip"), os.path.join("tooldir", "platform-tools-latest-darwin.zip"))
+        copyfile(os.path.join("tooldir", "platform-tools-latest-linux.zip"), os.path.join("tooldir", "platform-tools-latest-windows.zip"))
 
     def test_android_tools(self):
         """
