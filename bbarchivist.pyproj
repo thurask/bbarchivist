@@ -22,6 +22,7 @@
   <ItemGroup>
     <Content Include=".checkignore" />
     <Content Include=".codeclimate.yml" />
+    <Content Include=".codecov.yml" />
     <Content Include=".coveragerc" />
     <Content Include=".coveralls.yml" />
     <Content Include=".gitattributes" />

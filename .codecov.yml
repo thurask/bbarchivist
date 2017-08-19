@@ -1,0 +1,11 @@
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+        if_not_found: success
+        against: master
+    patch:
+      default:
+        target: auto
+        if_not_found: success
