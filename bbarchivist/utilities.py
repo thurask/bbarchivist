@@ -834,7 +834,7 @@ def verify_bulk_loaders(ldir):
         pass
     else:
         files = verify_bulk_loaders_filefilter(ldir)
-        brokens = verify_bulk_loaders_brokenfilter(files)
+        brokens = verify_bulk_loaders_brokens(files)
         return brokens
 
 
@@ -849,7 +849,7 @@ def verify_bulk_loaders_filefilter(ldir):
     return files
 
 
-def verify_bulk_loaders_brokenfilter(files):
+def verify_bulk_loaders_brokens(files):
     """
     Prepare filtered file list for :func:`verify_bulk_loaders`.
 
