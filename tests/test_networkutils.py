@@ -4,6 +4,10 @@
 import os
 from shutil import rmtree
 from hashlib import sha512
+try:
+    import unittest.mock as mock
+except ImportError:
+    import mock
 import httmock
 import requests
 import bbarchivist.networkutils as bn
@@ -380,10 +384,7 @@ class TestClassNetworkutils:
         """
         Test multiple downloading.
         """
-        baseurl = "http://google.com/"
-        urllist = []
-        for i in ["idle", "cleese", "gilliam", "jones", "palin", "chapman"]:
-            urllist.append(baseurl + i + ".dat")
+        urllist = ["http://google.com/{0}.dat".format(i) for i in ["idle", "cleese", "gilliam", "jones", "palin", "chapman"]]
         with httmock.HTTMock(download_mock):
             bn.download_bootstrap(urllist, workers=7)
         filelist = [x.replace("http://google.com/", "") for x in urllist]

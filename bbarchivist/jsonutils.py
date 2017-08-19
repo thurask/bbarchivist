@@ -103,7 +103,7 @@ def list_devices(table):
 
 def list_prds(table):
     """
-    List all devices, certified or not, in a device table.
+    List all PRDs in a PRD table.
 
     :param table: Dictionary of device : PRD list pairs.
     :type table: dict(str: list)

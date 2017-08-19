@@ -39,6 +39,5 @@ class TestClassBBConstants:
         with open("longversion.txt", "w") as afile:
             afile.write("2.5.1+devel-ga392773\n2016-05-16T20:43:31-0400")
         import bbarchivist.bbconstants as bb
-        assert bb.frozen_versions() == ("2.5.1+devel", "+devel", "ga392773",
-                                        "2.5.1+devel-ga392773", "2016-05-16T20:43:31-0400")
+        assert bb.frozen_versions() == ("2.5.1+devel", "+devel", "ga392773", "2.5.1+devel-ga392773", "2016-05-16T20:43:31-0400")
         monkeypatch.setattr("sys.frozen", False, raising=False)
