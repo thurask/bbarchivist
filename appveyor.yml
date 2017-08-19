@@ -1,4 +1,6 @@
 environment:
+  COVERALLS_REPO_TOKEN:
+    secure: bYwUQ/6lG1y5LN0GW2s3Gshf08tT4N1CK0hbZAy6iYp+8dneIGdvxTsQ7Nf8giMe
   matrix:
     - PYTHON: "C:\\Python35"
     - PYTHON: "C:\\Python36"
@@ -9,6 +11,7 @@ install:
   - cinst 7zip.commandline
   - "%PYTHON%\\python.exe -m pip install ."
   - "%PYTHON%\\python.exe -m pip install -r requirements-devel.txt"
+  - "%PYTHON%\\python.exe -m pip install coverage coveralls"
 
 build: off
 
@@ -17,5 +20,7 @@ cache:
   - C:\ProgramData\chocolatey\lib -> appveyor.yml
 
 test_script:
-  - "%PYTHON%\\python.exe -m pytest -v"
+  - "%PYTHON%\\python.exe -m pytest -v --cov=bbarchivist"
 
+after_test:
+  - COVERALLS_REPO_TOKEN=%COVERALLS_REPO_TOKEN% coveralls
