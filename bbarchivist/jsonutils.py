@@ -50,6 +50,38 @@ def load_json(table, jfile=None):
     return data[table]
 
 
+def extract_cert_secret(key, device):
+    """
+    Check if device is marked as secret.
+
+    :param key: Device entry.
+    :type key: dict
+
+    :param device: HWID, FCCID or name of device.
+    :param device: str
+    """
+    not_secret = device in key['name'] and 'secret' not in key
+    return not_secret
+
+
+def extract_cert_check(key, device, not_secret):
+    """
+    Check function for extracting PTCRB info.
+
+    :param key: Device entry.
+    :type key: dict
+
+    :param device: HWID, FCCID or name of device.
+    :type device: str
+
+    :param not_secret: If device is not market as secret.
+    :type not_secret: bool
+    """
+    keylist = key['hwid'], key['fccid'], key['ptcrbid']
+    goforit = (device in keylist or not_secret) and key['ptcrbid']
+    return goforit
+
+
 def extract_cert(table, device):
     """
     Extract PTCRB info from a list of dicts.
@@ -61,9 +93,9 @@ def extract_cert(table, device):
     :type device: str
     """
     for key in table:
-        keylist = key['hwid'], key['fccid'], key['ptcrbid']
-        not_secret = device in key['name'] and 'secret' not in key
-        if (device in keylist or not_secret) and key['ptcrbid']:
+        not_secret = extract_cert_secret(key, device)
+        goforit = extract_cert_check(key, device, not_secret)
+        if goforit:
             device = key['device']
             name = key['name']
             ptcrbid = key['ptcrbid']

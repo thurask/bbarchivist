@@ -307,6 +307,40 @@ def carrierchecker_export(mcc, mnc, files, hwid, osv, radv, swv, export=False, u
         scriptutils.export_cchecker(files, npc, hwid, osv, radv, swv, upgrade, forced)
 
 
+def carrierchecker_download_prep(files, directory, osv, radv, swv, family, blitz=False):
+    """
+    Prepare for downloading files.
+
+    :param files: List of files.
+    :type files: list(str)
+
+    :param directory: Where to store files. Default is local directory.
+    :type directory: str
+
+    :param osv: OS version, 10.x.y.zzzz.
+    :type osv: str
+
+    :param radv: Radio version, 10.x.y.zzzz.
+    :type radv: str
+
+    :param swv: Software release, 10.x.y.zzzz.
+    :type swv: str
+
+    :param family: Device family.
+    :type family: str
+
+    :param blitz: Whether or not to create a blitz package. Default is false.
+    :type blitz: bool
+    """
+    suffix = "-BLITZ" if blitz else "-{0}".format(family)
+    bardir = os.path.join(directory, "{0}{1}".format(swv, suffix))
+    if not os.path.exists(bardir):
+        os.makedirs(bardir)
+    if blitz:
+        files = scriptutils.generate_blitz_links(files, osv, radv, swv)
+    return bardir, files
+
+
 def carrierchecker_download(files, directory, osv, radv, swv, family, download=False, blitz=False, session=None):
     """
     Download files, create blitz if specified.
@@ -339,12 +373,7 @@ def carrierchecker_download(files, directory, osv, radv, swv, family, download=F
     :type session: requests.Session()
     """
     if download:
-        suffix = "-BLITZ" if blitz else "-{0}".format(family)
-        bardir = os.path.join(directory, "{0}{1}".format(swv, suffix))
-        if not os.path.exists(bardir):
-            os.makedirs(bardir)
-        if blitz:
-            files = scriptutils.generate_blitz_links(files, osv, radv, swv)
+        bardir, files = carrierchecker_download_prep(files, directory, osv, radv, swv, family, blitz)
         print("\nDOWNLOADING...")
         networkutils.download_bootstrap(files, outdir=bardir, session=session)
         scriptutils.test_bar_files(bardir, files)

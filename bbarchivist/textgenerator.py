@@ -281,6 +281,40 @@ def export_devloader(osversion, finals):
         dev_link_writer(target, finals)
 
 
+def url_gen_filter(osversion, oslist, radlist):
+    """
+    Filter OS and radio name list.
+
+    :param osversion: OS version.
+    :type osversion: str
+
+    :param radlist: List of OS platforms.
+    :type oslist: list(str)
+
+    :param radlist: List of radio platforms.
+    :type radlist: list(str)
+    """
+    splitos = [int(i) for i in osversion.split(".")]
+    if newer_103(splitos, 3):
+        radlist = radlist[1:]
+        oslist = oslist[1:]
+    return oslist, radlist
+
+
+def url_gen_dicter(inlist, filelist):
+    """
+    Prepare name:URL dicts for a given pair of names and URLs.
+
+    :param inlist: List of dictionary keys (OS/radio platforms)
+    :type inlist: list(str)
+
+    :param filelist: List of dictionary values (URLs)
+    :type filelist: list(str)
+    """
+    pairs = {title: url for title, url in zip(inlist, filelist)}
+    return pairs
+
+
 def url_gen(osversion, radioversion, softwareversion):
     """
     Return all debrick, core and radio URLs from given OS, radio software.
@@ -294,37 +328,14 @@ def url_gen(osversion, radioversion, softwareversion):
     :param radioversion: Radio version.
     :type radioversion: str
     """
-    radlist = [
-        "STL100-1",
-        "STL100-X/P9982",
-        "STL100-4",
-        "Q10/Q5/P9983",
-        "Z30/LEAP/CLASSIC",
-        "Z3",
-        "PASSPORT"
-    ]
-    oslist = [
-        "STL100-1",
-        "QC8960",
-        "VERIZON QC8960",
-        "Z3",
-        "PASSPORT"
-    ]
+    radlist = ["STL100-1", "STL100-X/P9982", "STL100-4", "Q10/Q5/P9983", "Z30/LEAP/CLASSIC", "Z3", "PASSPORT"]
+    oslist = ["STL100-1", "QC8960", "VERIZON QC8960", "Z3", "PASSPORT"]
     oses, radios, cores = generate_urls(softwareversion, osversion, radioversion, True)
     vzw = create_bar_url(softwareversion, "qc8960.verizon_sfi.desktop", osversion)
     oses.insert(2, vzw)
     cores.insert(2, oses[2].replace(".desktop", ""))
-    splitos = [int(i) for i in osversion.split(".")]
-    if newer_103(splitos, 3):
-        radlist = radlist[1:]
-        oslist = oslist[1:]
-    ospairs = {}
-    for title, url in zip(oslist, oses):
-        ospairs[title] = url
-    corepairs = {}
-    for title, url in zip(oslist, cores):
-        corepairs[title] = url
-    radiopairs = {}
-    for title, url in zip(radlist, radios):
-        radiopairs[title] = url
+    oslist, radlist = url_gen_filter(osversion, oslist, radlist)
+    ospairs = url_gen_dicter(oslist, oses)
+    corepairs = url_gen_dicter(oslist, cores)
+    radiopairs = url_gen_dicter(radlist, radios)
     return ospairs, corepairs, radiopairs

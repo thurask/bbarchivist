@@ -73,20 +73,30 @@ def grab_args():
             default=False)
         args = parser.parse_args(sys.argv[1:])
         parser.set_defaults()
-        if args.single:
-            args.ceil = args.floor  # range(x, x+1) == x
-        famlist = jsonutils.load_json("droidfamilies")
-        cleanlist = famlist[:4]  # Priv/DTEK50/DTEK60/KEYone
-        if args.device is None:
-            if not args.alldevices:
-                famlist = cleanlist
-            droidlookup_main(famlist, args.branch, args.floor, args.ceil, args.type)
-        elif args.device not in cleanlist:
-            print("Selected device {0} has unknown autoloader scheme!".format(args.device))
-        else:
-            droidlookup_main(args.device, args.branch, args.floor, args.ceil, args.type)
+        execute_args(args)
     else:
         questionnaire()
+
+
+def execute_args(args):
+    """
+    Get args and decide what to do with them.
+
+    :param args: Arguments.
+    :type args: argparse.Namespace
+    """
+    if args.single:
+        args.ceil = args.floor  # range(x, x+1) == x
+    famlist = jsonutils.load_json("droidfamilies")
+    cleanlist = famlist[:4]  # Priv/DTEK50/DTEK60/KEYone
+    if args.device is None:
+        if not args.alldevices:
+            famlist = cleanlist
+        droidlookup_main(famlist, args.branch, args.floor, args.ceil, args.type)
+    elif args.device not in cleanlist:
+        print("Selected device {0} has unknown autoloader scheme!".format(args.device))
+    else:
+        droidlookup_main(args.device, args.branch, args.floor, args.ceil, args.type)
 
 
 def questionnaire_single():

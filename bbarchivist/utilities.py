@@ -833,9 +833,31 @@ def verify_bulk_loaders(ldir):
     if not is_windows():
         pass
     else:
-        files = [os.path.join(ldir, file) for file in os.listdir(ldir) if not os.path.isdir(file)]
-        brokens = [file for file in bulkfilter(files) if file]
+        files = verify_bulk_loaders_filefilter(ldir)
+        brokens = verify_bulk_loaders_brokenfilter(files)
         return brokens
+
+
+def verify_bulk_loaders_filefilter(ldir):
+    """
+    Prepare file names for :func:`verify_bulk_loaders`.
+
+    :param ldir: Directory to use.
+    :type ldir: str
+    """
+    files = [os.path.join(ldir, file) for file in os.listdir(ldir) if not os.path.isdir(file)]
+    return files
+
+
+def verify_bulk_loaders_brokenfilter(files):
+    """
+    Prepare filtered file list for :func:`verify_bulk_loaders`.
+
+    :param files: List of files.
+    :type files: list(str)
+    """
+    brokens = [file for file in bulkfilter(files) if file]
+    return brokens
 
 
 def list_workers(input_data, workerlimit):
