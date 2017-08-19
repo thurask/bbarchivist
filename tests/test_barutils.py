@@ -3,7 +3,7 @@
 
 import os
 import tempfile
-from shutil import rmtree, copyfile
+from shutil import rmtree, copyfile, Error
 from hashlib import sha512
 import zipfile
 try:
@@ -123,7 +123,7 @@ class TestClassBarutilsRemovers:
         """
         if not os.path.exists("a_temp_folder"):
             os.mkdir("a_temp_folder")
-        with mock.patch('os.rmdir', mock.MagicMock(side_effect=NotImplementedError)):
+        with mock.patch('os.rmdir', mock.MagicMock(side_effect=(OSError, NotImplementedError))):
             bb.remove_empty_folders(os.getcwd())
         assert "a_temp_folder" in os.listdir()
 
@@ -148,6 +148,17 @@ class TestClassBarutilsRemovers:
         os.mkdir("uncompR")
         bb.remove_unpacked_loaders("uncompL", "uncompR", True)
         assert any(["uncompL", "uncompR"]) not in os.listdir()
+
+    def test_persistent_remove(self):
+        """
+        Test repeatedly attempting to remove a file.
+        """
+        with tempfile.TemporaryDirectory() as tempdir:
+            signeddir = os.path.abspath(tempdir)
+            with open(os.path.join(signeddir, "killme"), "w") as afile:
+                afile.write("Haters gonna hate")
+            with mock.patch("os.remove", mock.MagicMock(side_effect=(PermissionError, None))):
+                bb.persistent_remove(os.path.join(signeddir, "killme"))
 
 
 class TestClassBarutilsBarTester:
@@ -348,3 +359,20 @@ class TestClassBarutilsBarMover:
         rad2 = os.path.join(os.getcwd(), "bars", "radioversion", "SMALLBAR2.bar")
         bb.replace_bars_bulk(os.getcwd(), [os1, os2, rad1, rad2])
         assert all(x in os.listdir() for x in ["BIGBAR2.bar", "SMALLBAR2.bar", "BIGBAR.bar", "SMALLBAR.bar"])
+
+    def test_atomic_move_fail(self):
+        """
+        Test failing atomic move.
+        """
+        with mock.patch("shutil.move", mock.MagicMock(side_effect=Error)):
+            with mock.patch("os.remove", mock.MagicMock(side_effect=None)):
+                bb.atomic_move("snek.zip", "snekx")
+
+    def test_persist_move_fail(self):
+        """
+        Test failing persistent move.
+        """
+        with mock.patch("shutil.move", mock.MagicMock(side_effect=(Error, None))):
+            with mock.patch("os.remove", mock.MagicMock(side_effect=None)):
+                bb.persistent_move("snek.zip", "snekx")
+

@@ -407,6 +407,14 @@ class TestClassNetworkutils:
                     else:
                         break
 
+    def test_download_bootstrap_fail(self):
+        """
+        Test multiple downloading, worst case.
+        """
+        urllist = ["http://google.com/{0}.dat".format(i) for i in ["idle", "cleese", "gilliam", "jones", "palin", "chapman"]]
+        with mock.patch("concurrent.futures.ThreadPoolExecutor.submit", mock.MagicMock(side_effect=KeyboardInterrupt)):
+            bn.download_bootstrap(urllist, workers=7)
+
     def test_download_android_tools(self):
         """
         Test downloading Android SDK platform tools.
@@ -455,6 +463,14 @@ class TestClassNetworkutils:
                   "http://downloads.blackberry.com/upr/developers/downloads/Autoload-SnekTL100-1-10.2.3.4567.exe":"987654321"}
         with httmock.HTTMock(da_mock):
             assert bn.dev_dupe_cleaner(bn.devalpha_urls_bootstrap("10.2.3.4567", skels)) == finals
+
+    def test_devalpha_boostrap_fail(self):
+        """
+        Test failing to generate Dev Alpha URLs.
+        """
+        skels = ["Autoload-DevAlphaX-", "Autoload-DevAlphaSnek", "Autoload-SnekTL100-1-", "Autoload-<SERIES>-"]
+        with mock.patch("bbarchivist.networkutils.devalpha_urls_bulk", mock.MagicMock(side_effect=KeyboardInterrupt)):
+            bn.devalpha_urls_bootstrap("10.2.3.4567", skels)
 
 class TestClassNetworkutilsParsing:
     """
@@ -613,6 +629,13 @@ class TestClassNetworkutilsParsing:
             findings = bn.sr_lookup_bootstrap("10.3.2.798", no2=True)
             for key in findings:
                 assert findings[key] == "10.3.2.516"
+
+    def test_sr_boostrap_fail(self):
+        """
+        Test multiple software lookups, worst case.
+        """
+        with mock.patch("bbarchivist.networkutils.sr_lookup", mock.MagicMock(side_effect=KeyboardInterrupt)):
+            bn.sr_lookup_bootstrap("10.3.2.798")
 
     def test_bundle_lookup_big(self):
         """
