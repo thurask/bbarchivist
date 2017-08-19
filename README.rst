@@ -9,9 +9,9 @@ README
     :target: https://ci.appveyor.com/project/thurask/bbarchivist
     :alt: Appveyor
 
-.. image:: https://coveralls.io/repos/thurask/bbarchivist/badge.svg?branch=master&service=github
-    :target: https://coveralls.io/github/thurask/bbarchivist?branch=master
-    :alt: Coveralls.io
+.. image:: https://codecov.io/gh/thurask/bbarchivist/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/thurask/bbarchivist
+    :alt: Codecov
 
 .. image:: https://scrutinizer-ci.com/g/thurask/bbarchivist/badges/quality-score.png?b=master
     :target: https://scrutinizer-ci.com/g/thurask/bbarchivist/?branch=master
@@ -21,13 +21,13 @@ README
    :target: https://codeclimate.com/github/thurask/bbarchivist
    :alt: Code Climate
 
-.. image:: https://readthedocs.org/projects/bbarchivist/badge/?version=latest
-    :target: https://bbarchivist.readthedocs.io/en/latest/?badge=latest
-    :alt: Documentation Status
-
 .. image:: https://api.codacy.com/project/badge/Grade/71913fc9723340d5bf4a3396fead1026
     :target: https://www.codacy.com/app/thuraski/bbarchivist?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=thurask/bbarchivist&amp;utm_campaign=Badge_Grade
     :alt: Codacy Badge
+
+.. image:: https://readthedocs.org/projects/bbarchivist/badge/?version=latest
+    :target: https://bbarchivist.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
 
 .. image:: https://requires.io/github/thurask/bbarchivist/requirements.svg?branch=master
      :target: https://requires.io/github/thurask/bbarchivist/requirements/?branch=master

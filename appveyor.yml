@@ -1,6 +1,6 @@
 environment:
-  COVERALLS_REPO_TOKEN:
-    secure: bYwUQ/6lG1y5LN0GW2s3Gshf08tT4N1CK0hbZAy6iYp+8dneIGdvxTsQ7Nf8giMe
+  CODECOV_TOKEN:
+    secure: U/Icc3L/5XW50cUc/aui8k8eJauXjFVZL0rSbarLwASIyQc4yQpn5SJIbdtbBXRu
   matrix:
     - PYTHON: "C:\\Python35"
     - PYTHON: "C:\\Python36"
@@ -12,7 +12,7 @@ install:
   - cinst 7zip.commandline
   - "%PYTHON%\\python.exe -m pip install ."
   - "%PYTHON%\\python.exe -m pip install -r requirements-devel.txt"
-  - "%PYTHON%\\python.exe -m pip install coverage coveralls"
+  - "%PYTHON%\\python.exe -m pip install coverage codecov"
 
 build: off
 
@@ -22,4 +22,4 @@ cache:
 
 test_script:
   - "%PYTHON%\\python.exe -m pytest -v --cov=bbarchivist --cov-config .coveragerc tests/"
-  - coveralls
+  - codecov --token=%CODECOV_TOKEN%
