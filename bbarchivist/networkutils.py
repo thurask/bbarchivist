@@ -266,7 +266,7 @@ def clean_availability(results, server):
 
 
 @pem_wrapper
-def tcl_check(curef, session=None):
+def tcl_check(curef, session=None, mode=4, fvver="AAM481"):
     """
     Check TCL server for updates.
 
@@ -275,10 +275,16 @@ def tcl_check(curef, session=None):
 
     :param session: Requests session object, default is created on the fly.
     :type session: requests.Session()
+
+    :param mode: 4 if downloading autoloaders, 2 if downloading OTA deltas.
+    :type mode: int
+
+    :param fvver: Initial software version, must be specific if downloading OTA deltas.
+    :type fvver: str
     """
     sess = generic_session(session)
     geturl = "http://g2master-us-east.tctmobile.com/check.php"
-    params = {"id": "543212345000000", "curef": curef, "fv": "AAM481", "mode": 4, "type": "Firmware", "cltp": 2010, "cktp": 2, "rtd": 1, "chnl": 2}
+    params = {"id": "543212345000000", "curef": curef, "fv": fvver, "mode": mode, "type": "Firmware", "cltp": 2010, "cktp": 2, "rtd": 1, "chnl": 2}
     req = sess.get(geturl, params=params)
     if req.status_code == 200:
         return req.text
@@ -312,7 +318,7 @@ def tcl_salt():
     return "{0}{1}".format(str(millis), tail)
 
 
-def vkhash(curef, tvver, fwid, salt):
+def vkhash(curef, tvver, fwid, salt, mode=4, fvver="AAM481"):
     """
     Generate hash from TCL update server variables.
 
@@ -327,16 +333,22 @@ def vkhash(curef, tvver, fwid, salt):
 
     :param salt: Salt hash.
     :type salt: str
+
+    :param mode: 4 if downloading autoloaders, 2 if downloading OTA deltas.
+    :type mode: int
+
+    :param fvver: Initial software version, must be specific if downloading OTA deltas.
+    :type fvver: str
     """
     vdkey = "1271941121281905392291845155542171963889169361242115412511417616616958244916823523421516924614377131161951402261451161002051042011757216713912611682532031591181861081836612643016596231212872211620511861302106446924625728571011411121471811641125920123641181975581511602312222261817375462445966911723844130106116313122624220514"
-    query = "id={0}&salt={1}&curef={2}&fv={3}&tv={4}&type={5}&fw_id={6}&mode={7}&cltp={8}{9}".format("543212345000000", salt, curef, "AAM481", tvver, "Firmware", fwid, 4, 2010, vdkey)
+    query = "id={0}&salt={1}&curef={2}&fv={3}&tv={4}&type={5}&fw_id={6}&mode={7}&cltp={8}{9}".format("543212345000000", salt, curef, fvver, tvver, "Firmware", fwid, mode, 2010, vdkey)
     engine = hashlib.sha1()
     engine.update(bytes(query, "utf-8"))
     return engine.hexdigest()
 
 
 @pem_wrapper
-def tcl_download_request(curef, tvver, fwid, salt, vkh, session=None):
+def tcl_download_request(curef, tvver, fwid, salt, vkh, session=None, mode=4, fvver="AAM481"):
     """
     Check TCL server for download URLs.
 
@@ -357,10 +369,16 @@ def tcl_download_request(curef, tvver, fwid, salt, vkh, session=None):
 
     :param session: Requests session object, default is created on the fly.
     :type session: requests.Session()
+
+    :param mode: 4 if downloading autoloaders, 2 if downloading OTA deltas.
+    :type mode: int
+
+    :param fvver: Initial software version, must be specific if downloading OTA deltas.
+    :type fvver: str
     """
     sess = generic_session(session)
     posturl = "http://g2master-us-east.tctmobile.com/download_request.php"
-    params = {"id": "543212345000000", "curef": curef, "fv": "AAM481", "mode": 4, "type": "Firmware", "tv": tvver, "fw_id": fwid, "salt": salt, "vk": vkh, "cltp": 2010}
+    params = {"id": "543212345000000", "curef": curef, "fv": fvver, "mode": mode, "type": "Firmware", "tv": tvver, "fw_id": fwid, "salt": salt, "vk": vkh, "cltp": 2010, "foot": 1}
     req = sess.post(posturl, data=params)
     if req.status_code == 200:
         return req.text
