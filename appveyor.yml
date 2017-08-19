@@ -20,7 +20,5 @@ cache:
   - C:\ProgramData\chocolatey\lib -> appveyor.yml
 
 test_script:
-  - "%PYTHON%\\python.exe -m pytest -v --cov=bbarchivist"
-
-after_test:
+  - "%PYTHON%\\python.exe -m pytest -v --cov=bbarchivist --cov-config .coveragerc tests/"
   - coveralls
