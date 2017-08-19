@@ -200,7 +200,7 @@ def persistent_remove(afile):
     while True:
         try:
             os.remove(afile)
-        except PermissionError:
+        except (OSError, PermissionError):
             continue
         else:
             break

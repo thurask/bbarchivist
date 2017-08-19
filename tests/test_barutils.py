@@ -157,7 +157,7 @@ class TestClassBarutilsRemovers:
             signeddir = os.path.abspath(tempdir)
             with open(os.path.join(signeddir, "killme"), "w") as afile:
                 afile.write("Haters gonna hate")
-            with mock.patch("os.remove", mock.MagicMock(side_effect=(PermissionError, None))):
+            with mock.patch("os.remove", mock.MagicMock(side_effect=(OSError, None))):
                 bb.persistent_remove(os.path.join(signeddir, "killme"))
 
 
