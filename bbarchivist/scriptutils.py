@@ -767,13 +767,13 @@ def tcl_prd_scan(curef, download=False, mode=4, fvver="AAM481"):
     :type fvver: str
     """
     sess = requests.Session()
-    ctext = networkutils.tcl_check(curef, sess)
+    ctext = networkutils.tcl_check(curef, sess, mode, fvver)
     if ctext is None:
         raise SystemExit
     tvver, firmwareid, filename, filesize, filehash = networkutils.parse_tcl_check(ctext)
     salt = networkutils.tcl_salt()
-    vkhsh = networkutils.vkhash(curef, tvver, firmwareid, salt)
-    updatetext = networkutils.tcl_download_request(curef, tvver, firmwareid, salt, vkhsh, sess)
+    vkhsh = networkutils.vkhash(curef, tvver, firmwareid, salt, mode, fvver)
+    updatetext = networkutils.tcl_download_request(curef, tvver, firmwareid, salt, vkhsh, sess, mode, fvver)
     downloadurl = networkutils.parse_tcl_download_request(updatetext)
     statcode = networkutils.getcode(downloadurl, sess)
     print("{0}: HTTP {1}".format(filename, statcode))
