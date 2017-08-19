@@ -378,7 +378,9 @@ def tcl_download_request(curef, tvver, fwid, salt, vkh, session=None, mode=4, fv
     """
     sess = generic_session(session)
     posturl = "http://g2master-us-east.tctmobile.com/download_request.php"
-    params = {"id": "543212345000000", "curef": curef, "fv": fvver, "mode": mode, "type": "Firmware", "tv": tvver, "fw_id": fwid, "salt": salt, "vk": vkh, "cltp": 2010, "foot": 1}
+    params = {"id": "543212345000000", "curef": curef, "fv": fvver, "mode": mode, "type": "Firmware", "tv": tvver, "fw_id": fwid, "salt": salt, "vk": vkh, "cltp": 2010}
+    if mode == 4:
+        params["foot"] = 1
     req = sess.post(posturl, data=params)
     if req.status_code == 200:
         return req.text

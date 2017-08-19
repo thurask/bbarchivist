@@ -720,6 +720,68 @@ def tclloader_filename(loaderdir, osver, loadername=None):
     return loadername, platform
 
 
+def tcl_download(downloadurl, filename, filesize, filehash):
+    """
+    Download autoloader file, rename, and verify.
+
+    :param downloadurl: Download URL.
+    :type downloadurl: str
+
+    :param filename: Name of autoloader file.
+    :type filename: str
+
+    :param filesize: Size of autoloader file.
+    :type filesize: str
+
+    :param filehash: SHA-1 hash of autoloader file.
+    :type filehash: str
+    """
+    print("FILENAME: {0}".format(filename))
+    print("LENGTH: {0}".format(utilities.fsizer(filesize)))
+    networkutils.download(downloadurl)
+    print("DOWNLOAD COMPLETE")
+    os.rename(downloadurl.split("/")[-1], filename)
+    method = hashutils.get_engine("sha1")
+    shahash = hashutils.hashlib_hash(filename, method)
+    if shahash == filehash:
+        print("HASH CHECK OK")
+    else:
+        print(shahash)
+        print("HASH FAILED!")
+
+
+def tcl_prd_scan(curef, download=False, mode=4, fvver="AAM481"):
+    """
+    Scan one PRD and produce download URL and filename.
+
+    :param curef: PRD of the phone variant to check.
+    :type curef: str
+
+    :param download: If we'll download the file that this returns. Default is False.
+    :type download: bool
+
+    :param mode: 4 if downloading autoloaders, 2 if downloading OTA deltas.
+    :type mode: int
+
+    :param fvver: Initial software version, must be specific if downloading OTA deltas.
+    :type fvver: str
+    """
+    sess = requests.Session()
+    ctext = networkutils.tcl_check(curef, sess)
+    if ctext is None:
+        raise SystemExit
+    tvver, firmwareid, filename, filesize, filehash = networkutils.parse_tcl_check(ctext)
+    salt = networkutils.tcl_salt()
+    vkhsh = networkutils.vkhash(curef, tvver, firmwareid, salt)
+    updatetext = networkutils.tcl_download_request(curef, tvver, firmwareid, salt, vkhsh, sess)
+    downloadurl = networkutils.parse_tcl_download_request(updatetext)
+    statcode = networkutils.getcode(downloadurl, sess)
+    print("{0}: HTTP {1}".format(filename, statcode))
+    print(downloadurl)
+    if statcode == 200 and download:
+        tcl_download(downloadurl, filename, filesize, filehash)
+
+
 def linkgen_sdk_dicter(indict, origtext, newtext):
     """
     Prepare SDK radio/OS dictionaries.

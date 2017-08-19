@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
 """Check latest update for TCL API devices."""
 
-import os  # file work
 import sys  # load arguments
 import requests  # session
-from bbarchivist import hashutils  # hash work
 from bbarchivist import jsonutils  # json
 from bbarchivist import networkutils  # lookup
 from bbarchivist import scriptutils  # default parser
-from bbarchivist import utilities  # filesize
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -59,52 +56,13 @@ def tclscan_single(curef, download=False):
 
     :param curef: PRD of the phone variant to check.
     :type curef: str
+
+    :param download: If we'll download the file that this returns. Default is False.
+    :type download: bool
     """
-    sess = requests.Session()
-    ctext = networkutils.tcl_check(curef, sess)
-    if ctext is None:
-        raise SystemExit
-    tvver, firmwareid, filename, filesize, filehash = networkutils.parse_tcl_check(ctext)
-    salt = networkutils.tcl_salt()
-    vkhsh = networkutils.vkhash(curef, tvver, firmwareid, salt)
-    updatetext = networkutils.tcl_download_request(curef, tvver, firmwareid, salt, vkhsh, sess)
-    downloadurl = networkutils.parse_tcl_download_request(updatetext)
-    statcode = networkutils.getcode(downloadurl, sess)
-    print("{0}: HTTP {1}".format(filename, statcode))
-    print(downloadurl)
-    if statcode == 200 and download:
-        #tclscan_download(downloadurl, filename, filesize, filehash)
-        print("DOWNLOAD DOESN'T WORK YET!!!")
-
-
-def tclscan_download(downloadurl, filename, filesize, filehash):
-    """
-    Download autoloader file, rename, and verify.
-
-    :param downloadurl: Download URL.
-    :type downloadurl: str
-
-    :param filename: Name of autoloader file.
-    :type filename: str
-
-    :param filesize: Size of autoloader file.
-    :type filesize: str
-
-    :param filehash: SHA-1 hash of autoloader file.
-    :type filehash: str
-    """
-    print("FILENAME: {0}".format(filename))
-    print("LENGTH: {0}".format(utilities.fsizer(filesize)))
-    networkutils.download(downloadurl)
-    print("DOWNLOAD COMPLETE")
-    os.rename(downloadurl.split("/")[-1], filename)
-    method = hashutils.get_engine("sha1")
-    shahash = hashutils.hashlib_hash(filename, method)
-    if shahash == filehash:
-        print("HASH CHECK OK")
-    else:
-        print(shahash)
-        print("HASH FAILED!")
+    scriptutils.tcl_prd_scan(curef, False)
+    if download:
+        print("LARGE DOWNLOAD DOESN'T WORK YET")
 
 
 def tclscan_main():

@@ -238,6 +238,12 @@ class TestClassScriptutils:
         kernlist = ['msm8992/AAL747', 'msm8992/AAL746', 'msm8996/AAJ051']
         assert bs.kernchecker_prep(kernlist) == {"msm8992": ["\tAAL747", "\tAAL746"], "msm8996": ["\tAAJ051"]}
 
+
+class TestClassScriptutilsTCL:
+    """
+    Test Android autoloader-related utilities.
+    """
+
     def test_tclloader_prep(self):
         """
         Test preparing names for Android autoloader generation.
@@ -254,6 +260,59 @@ class TestClassScriptutils:
         loadername = "bbry_qc8953_autoloader_user-all-AAN358"
         with mock.patch("os.listdir", mock.MagicMock(return_value=["bbry_qc8953"])):
             assert bs.tclloader_filename(loaderdir, "AAN358") == (loadername, "bbry_qc8953")
+
+    def test_tcl_prd_scan(self, capsys):
+        """
+        Test scanning a PRD.
+        """
+        with mock.patch("bbarchivist.networkutils.tcl_check", mock.MagicMock(return_value=6)):
+            with mock.patch("bbarchivist.networkutils.parse_tcl_check", mock.MagicMock(return_value=(6, 6, 6, 6, 6))):
+                with mock.patch("bbarchivist.networkutils.vkhash", mock.MagicMock(return_value=6)):
+                    with mock.patch("bbarchivist.networkutils.tcl_download_request", mock.MagicMock(return_value=6)):
+                        with mock.patch("bbarchivist.networkutils.parse_tcl_download_request", mock.MagicMock(return_value="https://snek.snek/update.zip")):
+                            with mock.patch("bbarchivist.networkutils.getcode", mock.MagicMock(return_value=200)):
+                                bs.tcl_prd_scan("PRD-63116-001")
+                                assert "snek.snek" in capsys.readouterr()[0]
+
+    def test_tcl_prd_scan_fail(self):
+        """
+        Test scanning a PRD and failing.
+        """
+        with mock.patch("bbarchivist.networkutils.tcl_check", mock.MagicMock(return_value=None)):
+            with pytest.raises(SystemExit):
+                bs.tcl_prd_scan("PRD-63116-001")
+
+    def test_tcl_prd_scan_dlpass(self, capsys):
+        """
+        Test scanning a PRD, downloading a file, and passing.
+        """
+        with mock.patch("bbarchivist.networkutils.tcl_check", mock.MagicMock(return_value=6)):
+            with mock.patch("bbarchivist.networkutils.parse_tcl_check", mock.MagicMock(return_value=(6, 6, "snek.zip", 6, 6))):
+                with mock.patch("bbarchivist.networkutils.vkhash", mock.MagicMock(return_value=6)):
+                    with mock.patch("bbarchivist.networkutils.tcl_download_request", mock.MagicMock(return_value=6)):
+                        with mock.patch("bbarchivist.networkutils.parse_tcl_download_request", mock.MagicMock(return_value="https://snek.snek/update.zip")):
+                            with mock.patch("bbarchivist.networkutils.getcode", mock.MagicMock(return_value=200)):
+                                with mock.patch("bbarchivist.networkutils.download", mock.MagicMock(side_effect=None)):
+                                    with mock.patch("os.rename", mock.MagicMock(side_effect=None)):
+                                        with mock.patch("bbarchivist.hashutils.hashlib_hash", mock.MagicMock(return_value=6)):
+                                            bs.tcl_prd_scan("PRD-63116-001", download=True)
+                                            assert "HASH CHECK OK" in capsys.readouterr()[0]
+
+    def test_tcl_prd_scan_dlfail(self, capsys):
+        """
+        Test scanning a PRD, downloading a file, and failing.
+        """
+        with mock.patch("bbarchivist.networkutils.tcl_check", mock.MagicMock(return_value=6)):
+            with mock.patch("bbarchivist.networkutils.parse_tcl_check", mock.MagicMock(return_value=(6, 6, "snek.zip", 6, 6))):
+                with mock.patch("bbarchivist.networkutils.vkhash", mock.MagicMock(return_value=6)):
+                    with mock.patch("bbarchivist.networkutils.tcl_download_request", mock.MagicMock(return_value=6)):
+                        with mock.patch("bbarchivist.networkutils.parse_tcl_download_request", mock.MagicMock(return_value="https://snek.snek/update.zip")):
+                            with mock.patch("bbarchivist.networkutils.getcode", mock.MagicMock(return_value=200)):
+                                with mock.patch("bbarchivist.networkutils.download", mock.MagicMock(side_effect=None)):
+                                    with mock.patch("os.rename", mock.MagicMock(side_effect=None)):
+                                        with mock.patch("bbarchivist.hashutils.hashlib_hash", mock.MagicMock(return_value=7)):
+                                            bs.tcl_prd_scan("PRD-63116-001", download=True)
+                                            assert "HASH FAILED" in capsys.readouterr()[0]
 
 
 class TestClassScriptutilsSoftware:
