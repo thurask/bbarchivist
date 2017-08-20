@@ -802,6 +802,13 @@ class TestClassScriptutilsArguments:
         verarg = [x for x in newpar._actions if isinstance(x, argparse._VersionAction)][0]
         assert verarg.version == "name deadbeef committed 1970-01-01|SNEKSNEK"
 
+    def test_arg_verify_none(self, capsys):
+        """
+        Test if argument is None.
+        """
+        with pytest.raises(argparse.ArgumentError):
+            bs.arg_verify_none(None, "SNEK!")
+
 
 class TestClassScriptutilsShim:
     """

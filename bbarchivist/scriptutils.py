@@ -134,6 +134,20 @@ def generic_windows_shim(scriptname, scriptdesc, target, version):
         print("Sorry, Windows only.")
 
 
+def arg_verify_none(argval, message):
+    """
+    Check if an argument is None, error out if it is.
+
+    :param argval: Argument to check.
+    :type argval: str
+
+    :param message: Error message to print.
+    :type message: str
+    """
+    if argval is None:
+        raise argparse.ArgumentError(argument=None, message=message)
+
+
 def external_version(parser, addition):
     """
     Modify the version string of argparse.ArgumentParser, adding something.

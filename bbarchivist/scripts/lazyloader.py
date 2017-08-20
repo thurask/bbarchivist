@@ -27,8 +27,7 @@ def grab_args():
     Invoke :func:`lazyloader.lazyloader_main` with arguments.
     """
     if len(sys.argv) > 1:
-        parser = scriptutils.default_parser("bb-lazyloader", "Create one autoloader",
-                                            ("folder", "osr"))
+        parser = scriptutils.default_parser("bb-lazyloader", "Create one autoloader", ("folder", "osr"))
         devgroup = parser.add_argument_group(
             "devices",
             "Device to load (one required)")
@@ -106,28 +105,24 @@ def grab_args():
             action="store_true")
         parser.set_defaults(device=None)
         args = parser.parse_args(sys.argv[1:])
-        args.folder = scriptutils.generate_workfolder(args.folder)
-        if not utilities.is_windows():
-            args.autoloader = False
-        else:
-            if args.os is None:
-                raise argparse.ArgumentError(argument=None,
-                                             message="No OS specified!")
-            if args.device is None:
-                raise argparse.ArgumentError(argument=None,
-                                             message="No device specified!")
-            else:
-                lazyloader_main(args.device,
-                                args.os,
-                                args.radio,
-                                args.swrelease,
-                                args.folder,
-                                args.autoloader,
-                                args.download,
-                                args.altsw,
-                                args.core)
+        execute_args(args)
     else:
         questionnaire()
+
+
+def execute_args(args):
+    """
+    Get args and decide what to do with them.
+
+    :param args: Arguments.
+    :type args: argparse.Namespace
+    """
+    args.folder = scriptutils.generate_workfolder(args.folder)
+    if not utilities.is_windows():
+        args.autoloader = False
+    scriptutils.arg_verify_none(args.os, "No OS specified!")
+    scriptutils.arg_verify_none(args.device, "No device specified!")
+    lazyloader_main(args.device, args.os, args.radio, args.swrelease, args.folder, args.autoloader, args.download, args.altsw, args.core)
 
 
 def questionnaire():
