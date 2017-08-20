@@ -54,16 +54,11 @@
     </Content>
     <Content Include="docs\bbarchivist.rst" />
     <Content Include="docs\bbarchivist.scripts.rst" />
-    <Content Include="docs\cxsetup.rst" />
-    <Content Include="docs\download_dats.rst" />
     <Content Include="docs\html.bat" />
     <Content Include="docs\index.rst" />
     <Content Include="docs\make.bat" />
     <Content Include="docs\Makefile" />
     <Content Include="docs\modules.rst" />
-    <Content Include="docs\setup.rst" />
-    <Content Include="docs\tests.rst" />
-    <Content Include="docs\versioneer.rst" />
     <Content Include="gen_docs.bat" />
     <Content Include="LICENSE" />
     <Content Include="MANIFEST.in" />
@@ -166,7 +161,7 @@
     <Compile Include="bbarchivist\scripts\autolookup.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="bbarchivist\scripts\pseudocap.py">
+    <Compile Include="bbarchivist\scripts\pycaptool.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="bbarchivist\scripts\carrierchecker.py">
