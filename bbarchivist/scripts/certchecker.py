@@ -58,27 +58,48 @@ def grab_args():
             default=False)
         parser.set_defaults()
         args = parser.parse_args(sys.argv[1:])
-        if args.database:
-            jsonutils.list_devices(datafile)
-        elif args.certs:
-            jsonutils.list_available_certs(datafile)
-        elif args.list:
-            jsonutils.list_family(datafile)
-        elif args.family:
-            family = jsonutils.read_family(datafile, args.device.upper())
-            for ptcrbid in family:
-                certchecker_main(ptcrbid)
-                print("")
-        elif args.device is None:
-            print("NO DEVICE SPECIFIED!")
-            raise SystemExit
-        else:
-            certchecker_main(args.device)
+        execute_args(args)
     else:
         device = scriptutils.questionnaire_device("DEVICE (XXX100-#/FCCID/HWID): ")
         print(" ")
         certchecker_main(device)
         decorators.enter_to_exit(True)
+
+
+def execute_args(args):
+    """
+    Get args and decide what to do with them.
+
+    :param args: Arguments.
+    :type args: argparse.Namespace
+    """
+    if args.database:
+        jsonutils.list_devices(datafile)
+    elif args.certs:
+        jsonutils.list_available_certs(datafile)
+    elif args.list:
+        jsonutils.list_family(datafile)
+    else:
+        execute_args_end(args)
+
+
+def execute_args_end(args):
+    """
+    Continue the first half.
+
+    :param args: Arguments.
+    :type args: argparse.Namespace
+    """
+    if args.family:
+        family = jsonutils.read_family(datafile, args.device.upper())
+        for ptcrbid in family:
+            certchecker_main(ptcrbid)
+            print("")
+    elif args.device is None:
+        print("NO DEVICE SPECIFIED!")
+        raise SystemExit
+    else:
+        certchecker_main(args.device)
 
 
 def certchecker_main(device):

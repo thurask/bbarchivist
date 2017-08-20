@@ -71,19 +71,29 @@ def get_sevenzip():
     szurl = "http://www.7-zip.org/a/7z{0}-extra.7z".format(szver)
     psz = prep_seven_zip()
     if psz:
-        szexe = get_seven_zip()
-        szfile = basename(szurl)
-        with open(szfile, "wb") as afile:
-            req = get(szurl, stream=True)
-            for chunk in req.iter_content(chunk_size=1024):
-                afile.write(chunk)
-        cmd = "{0} x {1} -o7z".format(szexe, szfile)
-        with open(devnull, "wb") as dnull:
-            call(cmd, stdout=dnull, stderr=STDOUT, shell=True)
-        remove(basename(szurl))
+        get_sevenzip_write(szurl)
     else:
         print("GO TO {0} AND DO IT MANUALLY".format(szurl))
         raise SystemError
+
+
+def get_sevenzip_write(szurl):
+    """
+    Download 7-Zip file.
+
+    :param szurl: Link to 7z download.
+    :type szurl: str
+    """
+    szexe = get_seven_zip()
+    szfile = basename(szurl)
+    with open(szfile, "wb") as afile:
+        req = get(szurl, stream=True)
+        for chunk in req.iter_content(chunk_size=1024):
+            afile.write(chunk)
+    cmd = "{0} x {1} -o7z".format(szexe, szfile)
+    with open(devnull, "wb") as dnull:
+        call(cmd, stdout=dnull, stderr=STDOUT, shell=True)
+    remove(basename(szurl))
 
 
 def call_specs():
