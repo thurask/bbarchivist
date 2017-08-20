@@ -170,13 +170,29 @@ def remove_empty_folder(curdir, subdirs, files):
     """
     while True:
         try:
-            if not subdirs and not files:
-                os.rmdir(curdir)
+            indiv_folder_remove(curdir, subdirs, files)
         except OSError:
             continue
         except NotImplementedError:
             break
         break
+
+
+def indiv_folder_remove(curdir, subdirs, files):
+    """
+    Remove a folder if it's empty, the actual function.
+
+    :param curdir: Target folder.
+    :type curdir: str
+
+    :param subdirs: Subdirectories inside target folder.
+    :type subdirs: list(str)
+
+    :param files: Files inside target folder.
+    :type files: list(str)
+    """
+    if not subdirs and not files:
+        os.rmdir(curdir)
 
 
 def remove_empty_folders(a_folder):

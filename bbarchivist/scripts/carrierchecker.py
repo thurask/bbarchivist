@@ -25,20 +25,23 @@ def grab_args():
     """
     if len(sys.argv) > 1:
         parser = scriptutils.default_parser("bb-cchecker", "Carrier info checking")
-        parser.add_argument("mcc",
-                            help="1-3 digit country code",
-                            type=utilities.valid_carrier,
-                            nargs="?",
-                            default=None)
-        parser.add_argument("mnc",
-                            help="1-3 digit carrier code",
-                            type=utilities.valid_carrier,
-                            nargs="?",
-                            default=None)
-        parser.add_argument("device",
-                            help="'STL100-1', 'SQW100-3', etc.",
-                            nargs="?",
-                            default=None)
+        parser.add_argument(
+            "mcc",
+            help="1-3 digit country code",
+            type=utilities.valid_carrier,
+            nargs="?",
+            default=None)
+        parser.add_argument(
+            "mnc",
+            help="1-3 digit carrier code",
+            type=utilities.valid_carrier,
+            nargs="?",
+            default=None)
+        parser.add_argument(
+            "device",
+            help="'STL100-1', 'SQW100-3', etc.",
+            nargs="?",
+            default=None)
         parser.add_argument(
             "-c", "--codes",
             dest="codes",
@@ -105,37 +108,58 @@ def grab_args():
         if args.codes:
             webbrowser.open("https://en.wikipedia.org/wiki/Mobile_country_code")
         else:
-            args.folder = utilities.dirhandler(args.folder, os.getcwd())
-            if args.blitz:
-                args.download = True
-                args.upgrade = True  # blitz takes precedence
-            if args.bundles:
-                args.download = False
-                args.upgrade = False
-                args.export = False
-                args.blitz = False
-            if args.forcedos is not None and args.forcedsw is None:
-                avail = networkutils.sr_lookup(args.forcedos, bbconstants.SERVERS['p'])
-                forced = avail if avail != "SR not in system" else None
-            elif args.forcedos is None and args.forcedsw is not None:
-                forced = args.forcedsw
-            else:
-                forced = None
-            carrierchecker_main(
-                args.mcc,
-                args.mnc,
-                args.device,
-                args.download,
-                args.upgrade,
-                args.folder,
-                args.export,
-                args.blitz,
-                args.bundles,
-                forced,
-                args.selective)
+            execute_args(args)
     else:
         questionnaire()
     decorators.enter_to_exit(True)
+
+
+def forced_avail(args):
+    """
+    Determine the forced argument after availability checking.
+
+    :param args: Arguments.
+    :type args: argparse.Namespace
+    """
+    avail = networkutils.sr_lookup(args.forcedos, bbconstants.SERVERS['p'])
+    forced = avail if avail != "SR not in system" else None
+    return forced
+
+
+def forced_args(args):
+    """
+    Determine the forced argument.
+
+    :param args: Arguments.
+    :type args: argparse.Namespace
+    """
+    if args.forcedos is not None and args.forcedsw is None:
+        forced = forced_avail(args)
+    elif args.forcedos is None and args.forcedsw is not None:
+        forced = args.forcedsw
+    else:
+        forced = None
+    return forced
+
+
+def execute_args(args):
+    """
+    Get args and decide what to do with them.
+
+    :param args: Arguments.
+    :type args: argparse.Namespace
+    """
+    args.folder = utilities.dirhandler(args.folder, os.getcwd())
+    if args.blitz:
+        args.download = True
+        args.upgrade = True  # blitz takes precedence
+    if args.bundles:
+        args.download = False
+        args.upgrade = False
+        args.export = False
+        args.blitz = False
+    forced = forced_args(args)
+    carrierchecker_main(args.mcc, args.mnc, args.device, args.download, args.upgrade, args.folder, args.export, args.blitz, args.bundles, forced, args.selective)
 
 
 def questionnaire_3digit(message):
@@ -172,18 +196,7 @@ def questionnaire():
         blitz = False if not download else (utilities.s2b(input("CREATE BLITZ?: ")) if upgrade else False)
     directory = os.getcwd()
     print(" ")
-    carrierchecker_main(
-        mcc,
-        mnc,
-        device,
-        download,
-        upgrade,
-        directory,
-        export,
-        blitz,
-        bundles,
-        None,
-        False)
+    carrierchecker_main(mcc, mnc, device, download, upgrade, directory, export, blitz, bundles, None, False)
 
 
 def carrierchecker_argfilter(mcc, mnc, device, directory):
@@ -382,14 +395,7 @@ def carrierchecker_download(files, directory, osv, radv, swv, family, download=F
         print("\nFINISHED!!!")
 
 
-def carrierchecker_main(mcc, mnc, device,
-                        download=False, upgrade=True,
-                        directory=None,
-                        export=False,
-                        blitz=False,
-                        bundles=False,
-                        forced=None,
-                        selective=False):
+def carrierchecker_main(mcc, mnc, device, download=False, upgrade=True, directory=None, export=False, blitz=False, bundles=False, forced=None, selective=False):
     """
     Wrap around :mod:`bbarchivist.networkutils` carrier checking.
 

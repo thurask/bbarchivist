@@ -54,19 +54,7 @@ def grab_args():
             default=3,
             type=utilities.positive_integer,
             metavar="INT")
-        if not getattr(sys, 'frozen', False):
-            parser.add_argument(
-                "-s", "--sql",
-                dest="sql",
-                help="Add valid links to database",
-                action="store_true",
-                default=False)
-            parser.add_argument(
-                "-e", "--email",
-                dest="email",
-                help="Email valid links to self",
-                action="store_true",
-                default=False)
+        parser = frozen_args(parser)
         parser.add_argument(
             "-c", "--ceiling",
             dest="ceiling",
@@ -89,25 +77,47 @@ def grab_args():
             default=False)
         args = parser.parse_args(sys.argv[1:])
         parser.set_defaults()
-        if getattr(sys, 'frozen', False):
-            args.sql = False
-            args.email = False
-        if args.quiet:
-            args.production = True  # impossible otherwise
-        autolookup_main(
-            args.os,
-            args.recurse,
-            args.log,
-            args.autogen,
-            args.increment,
-            args.sql,
-            args.quiet,
-            args.ceiling,
-            args.email,
-            args.production,
-            args.no2)
+        execute_args(args)
     else:
         questionnaire()
+
+
+def frozen_args(parser):
+    """
+    Add args to parser if not frozen.
+
+    :param parser: Parser to modify.
+    :type parser: argparse.ArgumentParser
+    """
+    if not getattr(sys, 'frozen', False):
+        parser.add_argument(
+            "-s", "--sql",
+            dest="sql",
+            help="Add valid links to database",
+            action="store_true",
+            default=False)
+        parser.add_argument(
+            "-e", "--email",
+            dest="email",
+            help="Email valid links to self",
+            action="store_true",
+            default=False)
+    return parser
+
+
+def execute_args(args):
+    """
+    Get args and decide what to do with them.
+
+    :param args: Arguments.
+    :type args: argparse.Namespace
+    """
+    if getattr(sys, 'frozen', False):
+        args.sql = False
+        args.email = False
+    if args.quiet:
+        args.production = True  # impossible otherwise
+    autolookup_main(args.os, args.recurse, args.log, args.autogen, args.increment, args.sql, args.quiet, args.ceiling, args.email, args.production, args.no2)
 
 
 def questionnaire():
@@ -119,23 +129,12 @@ def questionnaire():
     if recurse:
         print("Press Ctrl+C to stop loop")
     print(" ")
-    autolookup_main(
-        osversion,
-        recurse,
-        True,
-        False,
-        3,
-        False,
-        False,
-        9996,
-        False,
-        False)
+    autolookup_main(osversion, recurse, True, False, 3, False, False, 9996, False, False)
     decorators.enter_to_exit(True)
 
 
 @decorators.wrap_keyboard_except
-def autolookup_main(osversion, loop=False, log=False, autogen=False, inc=3, sql=False,
-                    quiet=False, ceiling=9996, mailer=False, prod=False, no2=False):
+def autolookup_main(osversion, loop=False, log=False, autogen=False, inc=3, sql=False, quiet=False, ceiling=9996, mailer=False, prod=False, no2=False):
     """
     Lookup a software release from an OS. Can iterate.
 
