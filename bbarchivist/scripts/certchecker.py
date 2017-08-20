@@ -99,7 +99,7 @@ def execute_args_end(args, datafile):
     if args.family:
         family = jsonutils.read_family(datafile, args.device.upper())
         for ptcrbid in family:
-            certchecker_main(ptcrbid)
+            certchecker_main(ptcrbid, datafile)
             print("")
     elif args.device is None:
         print("NO DEVICE SPECIFIED!")
