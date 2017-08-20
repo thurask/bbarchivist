@@ -72,8 +72,8 @@
     <Content Include="README.rst" />
     <Content Include="requirements-devel.txt" />
     <Content Include="setup.cfg" />
-    <Content Include="test_coverage.bat" />
-    <Content Include="test_coverage_nogpg.bat" />
+    <Content Include="run_cov_tests.bat" />
+    <Content Include="run_cov_tests_nogpg.bat" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="bbarchivist\barutils.py">
