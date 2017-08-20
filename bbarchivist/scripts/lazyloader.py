@@ -206,7 +206,7 @@ def questionnaire():
     """
     localdir = os.getcwd()
     osver, radiover, swver = questionnaire_getversions()
-    swver, radiover, altcheck, altsw = questionnaire_check(swver, radiover)
+    swver, radiover, altsw = questionnaire_check(swver, radiover)
     device = questionnaire_devices()
     autoloader = questionnaire_loader()
     print(" ")
