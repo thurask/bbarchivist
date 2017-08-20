@@ -28,14 +28,6 @@ bbarchivist.scripts.barlinker module
     :undoc-members:
     :show-inheritance:
 
-bbarchivist.scripts.cap module
-------------------------------
-
-.. automodule:: bbarchivist.scripts.cap
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 bbarchivist.scripts.carrierchecker module
 -----------------------------------------
 
@@ -48,14 +40,6 @@ bbarchivist.scripts.certchecker module
 --------------------------------------
 
 .. automodule:: bbarchivist.scripts.certchecker
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-bbarchivist.scripts.cfp module
-------------------------------
-
-.. automodule:: bbarchivist.scripts.cfp
     :members:
     :undoc-members:
     :show-inheritance:
@@ -96,6 +80,14 @@ bbarchivist.scripts.escreens module
 -----------------------------------
 
 .. automodule:: bbarchivist.scripts.escreens
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+bbarchivist.scripts.exeshim module
+------------------------------
+
+.. automodule:: bbarchivist.scripts.exeshim
     :members:
     :undoc-members:
     :show-inheritance:
@@ -164,10 +156,10 @@ bbarchivist.scripts.metachecker module
     :undoc-members:
     :show-inheritance:
 
-bbarchivist.scripts.pseudocap module
+bbarchivist.scripts.pycaptool module
 ------------------------------------
 
-.. automodule:: bbarchivist.scripts.pseudocap
+.. automodule:: bbarchivist.scripts.pycaptool
     :members:
     :undoc-members:
     :show-inheritance:
@@ -184,6 +176,30 @@ bbarchivist.scripts.swlookup module
 -----------------------------------
 
 .. automodule:: bbarchivist.scripts.swlookup
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+bbarchivist.scripts.tcldelta module
+-----------------------------------
+
+.. automodule:: bbarchivist.scripts.tcldelta
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+bbarchivist.scripts.tclloader module
+-----------------------------------
+
+.. automodule:: bbarchivist.scripts.tclloader
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+bbarchivist.scripts.tclscan module
+-----------------------------------
+
+.. automodule:: bbarchivist.scripts.tclscan
     :members:
     :undoc-members:
     :show-inheritance:

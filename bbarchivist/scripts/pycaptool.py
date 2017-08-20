@@ -12,19 +12,15 @@ __license__ = "WTFPL v2"
 __copyright__ = "2015-2017 Thurask"
 
 
-def pseudocap_main():
+def pycaptool_main():
     """
     Parse arguments from argparse.
 
     Invoke :func:`bbarchivist.pseudocap.make_autoloader` with arguments.
     """
-    parser = scriptutils.default_parser("bb-pseudocap", "BlackBerry CAP, in Python.",
-                                        ("folder"))
+    parser = scriptutils.default_parser("bb-pseudocap", "BlackBerry CAP, in Python.", ("folder"))
     parser.add_argument("filename", help="Filename")
-    parser.add_argument(
-        "files",
-        help="1-6 signed files, space separated",
-        nargs="+")
+    parser.add_argument("files", help="1-6 signed files, space separated", nargs="+")
     parser.set_defaults()
     args = parser.parse_args(sys.argv[1:])
     args.folder = utilities.dirhandler(args.folder, os.getcwd())
@@ -35,4 +31,4 @@ def pseudocap_main():
 
 
 if __name__ == "__main__":
-    pseudocap_main()
+    pycaptool_main()

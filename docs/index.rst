@@ -14,8 +14,6 @@ Welcome to bbarchivist's documentation!
 
    bbarchivist
 
-   tests
-
 Indices and tables
 ==================
 

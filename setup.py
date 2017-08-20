@@ -40,7 +40,7 @@ def main():
         'bb-linkgen=bbarchivist.scripts.linkgen:grab_args',
         'bb-gpgrunner=bbarchivist.scripts.gpgrunner:gpgrunner_main',
         'bb-autolookup=bbarchivist.scripts.autolookup:grab_args',
-        'bb-pseudocap=bbarchivist.scripts.pseudocap:pseudocap_main',
+        'bb-pseudocap=bbarchivist.scripts.pycaptool:pycaptool_main',
         'bb-sqlexport=bbarchivist.scripts.sqlexport:grab_args',
         'bb-kompressor=bbarchivist.scripts.kompressor:kompressor_main',
         'bb-downloader=bbarchivist.scripts.downloader:grab_args',
