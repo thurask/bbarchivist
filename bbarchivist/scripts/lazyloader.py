@@ -27,9 +27,7 @@ def grab_args():
     """
     if len(sys.argv) > 1:
         parser = scriptutils.default_parser("bb-lazyloader", "Create one autoloader", ("folder", "osr"))
-        devgroup = parser.add_argument_group(
-            "devices",
-            "Device to load (one required)")
+        devgroup = parser.add_argument_group("devices", "Device to load (one required)")
         compgroup = devgroup.add_mutually_exclusive_group()
         compgroup.add_argument(
             "--stl100-1",
@@ -124,37 +122,63 @@ def execute_args(args):
     lazyloader_main(args.device, args.os, args.radio, args.swrelease, args.folder, args.autoloader, args.download, args.altsw, args.core)
 
 
-def questionnaire():
+def questionnaire_getversions():
     """
-    Questions to ask if no arguments given.
+    Get OS, radio, and software versions.
     """
-    localdir = os.getcwd()
     while True:
         osversion = input("OS VERSION (REQUIRED): ")
         if osversion:
             break
     radioversion = input("RADIO VERSION (PRESS ENTER TO GUESS): ")
     softwareversion = input("OS SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
+    return osversion, radioversion, softwareversion
+
+
+def questionnaire_check(softwareversion, radioversion):
+    """
+    Check software and radio versions.
+
+    :param softwareversion: Software version, 10.x.y.zzzz.
+    :type softwareversion: str
+
+    :param radioversion: Radio version, 10.x.y.zzzz.
+    :type radioversion: str
+    """
     if not softwareversion:
         softwareversion = None
     if not radioversion:
         radioversion = None
-        altcheck = False
         altsw = None
     else:
-        altcheck = utilities.s2b(input("USING ALTERNATE RADIO (Y/N)?: "))
-        if altcheck:
-            altsw = input("RADIO SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
-            if not altsw:
-                altsw = "checkme"
+        radioversion, altsw = questionnaire_radiocheck(radioversion, altsw)
+    return softwareversion, radioversion, altsw
+
+
+def questionnaire_radiocheck(radioversion, altsw):
+    """
+    Get radio information in working order.
+
+    :param radioversion: Radio version, 10.x.y.zzzz.
+    :type radioversion: str
+
+    :param altsw: Radio software release, if not the same as OS.
+    :type altsw: str
+    """
+    altcheck = utilities.s2b(input("USING ALTERNATE RADIO (Y/N)?: "))
+    if altcheck:
+        altsw = input("RADIO SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
+        if not altsw:
+            altsw = "checkme"
+    return radioversion, altsw
+
+
+def questionnaire_devices():
+    """
+    Ask about which device this script is to be run for.
+    """
     print("DEVICES:")
-    devlist = ["0=STL100-1",
-               "1=STL100-2/3/P9982",
-               "2=STL100-4",
-               "3=Q10/Q5/P9983",
-               "4=Z30/CLASSIC/LEAP",
-               "5=Z3",
-               "6=PASSPORT"]
+    devlist = ["0=STL100-1", "1=STL100-2/3/P9982", "2=STL100-4", "3=Q10/Q5/P9983", "4=Z30/CLASSIC/LEAP", "5=Z3", "6=PASSPORT"]
     utilities.lprint(devlist)
     while True:
         device = int(input("SELECTED DEVICE: "))
@@ -162,27 +186,34 @@ def questionnaire():
             continue
         else:
             break
+    return device
+
+
+def questionnaire_loader():
+    """
+    Ask about whether to run an autoloader.
+    """
     if utilities.is_windows():
-        autoloader = utilities.s2b(
-            input("RUN AUTOLOADER - WILL WIPE YOUR DEVICE! (Y/N)?: "))
+        autoloader = utilities.s2b(input("RUN AUTOLOADER - WILL WIPE YOUR DEVICE! (Y/N)?: "))
     else:
         autoloader = False
+    return autoloader
+
+
+def questionnaire():
+    """
+    Questions to ask if no arguments given.
+    """
+    localdir = os.getcwd()
+    osver, radiover, swver = questionnaire_getversions()
+    swver, radiover, altcheck, altsw = questionnaire_check(swver, radiover)
+    device = questionnaire_devices()
+    autoloader = questionnaire_loader()
     print(" ")
-    lazyloader_main(
-        device,
-        osversion,
-        radioversion,
-        softwareversion,
-        localdir,
-        autoloader,
-        True,
-        altsw,
-        False)
+    lazyloader_main(device, osver, radiover, swver, localdir, autoloader, True, altsw, False)
 
 
-def lazyloader_main(device, osversion, radioversion=None,
-                    softwareversion=None, localdir=None, autoloader=False,
-                    download=True, altsw=None, core=False):
+def lazyloader_main(device, osversion, radioversion=None, softwareversion=None, localdir=None, autoloader=False, download=True, altsw=None, core=False):
     """
     Wrap the tools necessary to make one autoloader.
 
