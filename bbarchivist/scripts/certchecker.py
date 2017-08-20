@@ -19,8 +19,8 @@ def grab_args():
 
     Invoke :func:`certchecker.certchecker_main` with arguments.
     """
+    datafile = jsonutils.load_json('devices')
     if len(sys.argv) > 1:
-        datafile = jsonutils.load_json('devices')
         parser = scriptutils.default_parser("bb-certchecker", "Certification scraper")
         parser.add_argument(
             "device",
@@ -58,20 +58,23 @@ def grab_args():
             default=False)
         parser.set_defaults()
         args = parser.parse_args(sys.argv[1:])
-        execute_args(args)
+        execute_args(args, datafile)
     else:
         device = scriptutils.questionnaire_device("DEVICE (XXX100-#/FCCID/HWID): ")
         print(" ")
-        certchecker_main(device)
+        certchecker_main(device, datafile)
         decorators.enter_to_exit(True)
 
 
-def execute_args(args):
+def execute_args(args, datafile):
     """
     Get args and decide what to do with them.
 
     :param args: Arguments.
     :type args: argparse.Namespace
+
+    :param datafile: List of device entries.
+    :type datafile: list(dict)
     """
     if args.database:
         jsonutils.list_devices(datafile)
@@ -80,15 +83,18 @@ def execute_args(args):
     elif args.list:
         jsonutils.list_family(datafile)
     else:
-        execute_args_end(args)
+        execute_args_end(args, datafile)
 
 
-def execute_args_end(args):
+def execute_args_end(args, datafile):
     """
     Continue the first half.
 
     :param args: Arguments.
     :type args: argparse.Namespace
+
+    :param datafile: List of device entries.
+    :type datafile: list(dict)
     """
     if args.family:
         family = jsonutils.read_family(datafile, args.device.upper())
@@ -99,17 +105,19 @@ def execute_args_end(args):
         print("NO DEVICE SPECIFIED!")
         raise SystemExit
     else:
-        certchecker_main(args.device)
+        certchecker_main(args.device, datafile)
 
 
-def certchecker_main(device):
+def certchecker_main(device, data):
     """
     Wrap around :mod:`bbarchivist.networkutils` certification checking.
 
     :param device: Hardware ID, PTCRB ID, FCC ID or model number.
     :type device: str
+
+    :param data: List of device entries.
+    :type data: list(dict)
     """
-    data = jsonutils.load_json('devices')
     device = device.upper()
     name, ptcrbid, hwid, fccid = jsonutils.extract_cert(data, device)
     scriptutils.slim_preamble("CERTCHECKER")
@@ -122,6 +130,7 @@ def certchecker_main(device):
     print("\nCHECKING CERTIFICATIONS...\n")
     certlist = networkutils.ptcrb_scraper(ptcrbid)
     utilities.lprint(certlist)
+
 
 if __name__ == "__main__":
     grab_args()

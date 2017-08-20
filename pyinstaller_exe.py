@@ -32,6 +32,9 @@ def clean_versions():
 def bitsdir(indir):
     """
     Create directories based on indir segregated on bit type.
+
+    :param indir: Directory to modify.
+    :type indir: str
     """
     if architecture()[0] == "64bit":
         indirx = "{0}-64".format(indir)
@@ -109,21 +112,37 @@ def call_specs():
 def sz_wrapper(outdir):
     """
     Copy 7-Zip to outdir.
+
+    :param outdir: Output directory.
+    :type outdir: str
     """
     try:
         get_sevenzip()
     except SystemError:
         pass
     else:
-        copy(join("7z", "7za.exe"), outdir)
-        if architecture()[0] == "64bit":
-            copy(join("7z", "x64", "7za.exe"), join(outdir, "7za64.exe"))
-        rmtree("7z", ignore_errors=True)
+        sz_wrapper_writer(outdir)
+
+
+def sz_wrapper_writer(outdir):
+    """
+    Copy 7-Zip to outdir, the actual function.
+
+    :param outdir: Output directory.
+    :type outdir: str
+    """
+    copy(join("7z", "7za.exe"), outdir)
+    if architecture()[0] == "64bit":
+        copy(join("7z", "x64", "7za.exe"), join(outdir, "7za64.exe"))
+    rmtree("7z", ignore_errors=True)
 
 
 def copy_json(outdir):
     """
     Copy JSON folder to outdir.
+
+    :param outdir: Output directory.
+    :type outdir: str
     """
     copytree(JSONDIR, join(outdir, "json"))
 
