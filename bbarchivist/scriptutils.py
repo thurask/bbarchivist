@@ -788,12 +788,38 @@ def tcl_prd_scan(curef, download=False, mode=4, fvver="AAM481"):
     salt = networkutils.tcl_salt()
     vkhsh = networkutils.vkhash(curef, tvver, firmwareid, salt, mode, fvver)
     updatetext = networkutils.tcl_download_request(curef, tvver, firmwareid, salt, vkhsh, sess, mode, fvver)
-    downloadurl = networkutils.parse_tcl_download_request(updatetext)
+    downloadurl, encslave = networkutils.parse_tcl_download_request(updatetext)
     statcode = networkutils.getcode(downloadurl, sess)
-    print("{0}: HTTP {1}".format(filename, statcode))
-    print(downloadurl)
+    tcl_prd_print(downloadurl, filename, statcode, encslave, sess)
     if statcode == 200 and download:
         tcl_download(downloadurl, filename, filesize, filehash)
+
+
+def tcl_prd_print(downloadurl, filename, statcode, encslave, session):
+    """
+    :param downloadurl: File to download.
+    :type downloadurl: str
+
+    :param filename: File name from download URL.
+    :type filename: str
+
+    :param statcode: Status code of download URL.
+    :type statcode: int
+
+    :param encslave: Server hosting header script.
+    :type encslave: str
+
+    :param session: Session object.
+    :type session: requests.Session
+    """
+    print("{0}: HTTP {1}".format(filename, statcode))
+    print(downloadurl)
+    if encslave is not None:
+        address = "/{0}".format(downloadurl.split("/", 3)[3:][0])
+        print("CHECKING HEADER...")
+        sentinel = networkutils.encrypt_header(address, encslave, session)
+        if sentinel is not None:
+            print(sentinel)
 
 
 def linkgen_sdk_dicter(indict, origtext, newtext):

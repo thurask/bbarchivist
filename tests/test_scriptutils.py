@@ -12,6 +12,7 @@ try:
 except ImportError:
     import mock
 import pytest
+from requests import Session
 import bbarchivist.scriptutils as bs
 from bbarchivist.bbconstants import LONGVERSION, COMMITDATE, VERSION
 
@@ -269,7 +270,7 @@ class TestClassScriptutilsTCL:
             with mock.patch("bbarchivist.networkutils.parse_tcl_check", mock.MagicMock(return_value=(6, 6, 6, 6, 6))):
                 with mock.patch("bbarchivist.networkutils.vkhash", mock.MagicMock(return_value=6)):
                     with mock.patch("bbarchivist.networkutils.tcl_download_request", mock.MagicMock(return_value=6)):
-                        with mock.patch("bbarchivist.networkutils.parse_tcl_download_request", mock.MagicMock(return_value="https://snek.snek/update.zip")):
+                        with mock.patch("bbarchivist.networkutils.parse_tcl_download_request", mock.MagicMock(return_value=("https://snek.snek/update.zip", None))):
                             with mock.patch("bbarchivist.networkutils.getcode", mock.MagicMock(return_value=200)):
                                 bs.tcl_prd_scan("PRD-63116-001")
                                 assert "snek.snek" in capsys.readouterr()[0]
@@ -290,7 +291,7 @@ class TestClassScriptutilsTCL:
             with mock.patch("bbarchivist.networkutils.parse_tcl_check", mock.MagicMock(return_value=(6, 6, "snek.zip", 6, 6))):
                 with mock.patch("bbarchivist.networkutils.vkhash", mock.MagicMock(return_value=6)):
                     with mock.patch("bbarchivist.networkutils.tcl_download_request", mock.MagicMock(return_value=6)):
-                        with mock.patch("bbarchivist.networkutils.parse_tcl_download_request", mock.MagicMock(return_value="https://snek.snek/update.zip")):
+                        with mock.patch("bbarchivist.networkutils.parse_tcl_download_request", mock.MagicMock(return_value=("https://snek.snek/update.zip", None))):
                             with mock.patch("bbarchivist.networkutils.getcode", mock.MagicMock(return_value=200)):
                                 with mock.patch("bbarchivist.networkutils.download", mock.MagicMock(side_effect=None)):
                                     with mock.patch("os.rename", mock.MagicMock(side_effect=None)):
@@ -306,13 +307,21 @@ class TestClassScriptutilsTCL:
             with mock.patch("bbarchivist.networkutils.parse_tcl_check", mock.MagicMock(return_value=(6, 6, "snek.zip", 6, 6))):
                 with mock.patch("bbarchivist.networkutils.vkhash", mock.MagicMock(return_value=6)):
                     with mock.patch("bbarchivist.networkutils.tcl_download_request", mock.MagicMock(return_value=6)):
-                        with mock.patch("bbarchivist.networkutils.parse_tcl_download_request", mock.MagicMock(return_value="https://snek.snek/update.zip")):
+                        with mock.patch("bbarchivist.networkutils.parse_tcl_download_request", mock.MagicMock(return_value=("https://snek.snek/update.zip", None))):
                             with mock.patch("bbarchivist.networkutils.getcode", mock.MagicMock(return_value=200)):
                                 with mock.patch("bbarchivist.networkutils.download", mock.MagicMock(side_effect=None)):
                                     with mock.patch("os.rename", mock.MagicMock(side_effect=None)):
                                         with mock.patch("bbarchivist.hashutils.hashlib_hash", mock.MagicMock(return_value=7)):
                                             bs.tcl_prd_scan("PRD-63116-001", download=True)
                                             assert "HASH FAILED" in capsys.readouterr()[0]
+
+    def test_tcl_encheader(self, capsys):
+        """
+        Test checking for a file header.
+        """
+        with mock.patch("bbarchivist.networkutils.encrypt_header", mock.MagicMock(return_value="\nHEADER FOUND")):
+            bs.tcl_prd_print("https://snek.snek/update.zip", "update.zip", 200, "127.0.0.1", Session())
+            assert "HEADER FOUND" in capsys.readouterr()[0]
 
 
 class TestClassScriptutilsSoftware:

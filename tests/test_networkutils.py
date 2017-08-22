@@ -289,7 +289,7 @@ def da_mock(url, request):
     return httmock.response(status_code=code, headers=headers)
 
 
-def tcl_check_mock(url,request):
+def tcl_check_mock(url, request):
     """
     Mock for TCL update checking.
     """
@@ -297,12 +297,26 @@ def tcl_check_mock(url,request):
     return {'status_code': 200, 'content': badbody}
 
 
-def tcl_request_mock(url,request):
+def tcl_request_mock(url, request):
     """
     Mock for TCL download URL request.
     """
     badbody = b'<?xml version="1.0" encoding="utf-8"?>\n<GOTU><FILE_LIST><FILE><FILE_ID>261497</FILE_ID><DOWNLOAD_URL>/ce570ddc079e2744558f191895e524d02a60476f/cfcdde91ea7f810311d1f973726e390f77a9ff1b/258098/261497</DOWNLOAD_URL></FILE></FILE_LIST><SLAVE_LIST><SLAVE>g2slave-ap-north-01.tctmobile.com</SLAVE><SLAVE>g2slave-ap-north-01.tctmobile.com</SLAVE><SLAVE>g2slave-eu-west-01.tctmobile.com</SLAVE><SLAVE>g2slave-eu-west-01.tctmobile.com</SLAVE><SLAVE>g2slave-us-east-01.tctmobile.com</SLAVE><SLAVE>g2slave-us-east-01.tctmobile.com</SLAVE></SLAVE_LIST></GOTU>\n'
     return {'status_code': 200, 'content': badbody}
+
+
+def tcl_enc_good_mock(url, request):
+    """
+    Mock for TCL header checking, best case.
+    """
+    return httmock.response(status_code=206, headers={'content-length': 4194320})
+
+
+def tcl_enc_bad_mock(url, rquest):
+    """
+    Mock for TCL header checking, worst case.
+    """
+    return httmock.response(status_code=400, headers={'content-length': 123456})
 
 
 def timeout_mock(url, request):
@@ -806,7 +820,7 @@ class TestClassNetworkutilsTcl:
             salt = bn.tcl_salt()
             vkh = bn.vkhash("PRD-63764-001", "AAM693", "258098", salt)
             utxt = bn.tcl_download_request("PRD-63764-001", "AAM693", "258098", salt, vkh)
-        dlurl = bn.parse_tcl_download_request(utxt)
+        dlurl, encslave = bn.parse_tcl_download_request(utxt)
         assert "/ce570ddc079e2744558f191895e524d02a60476f/cfcdde91ea7f810311d1f973726e390f77a9ff1b/258098/261497" in dlurl
 
     def test_tcl_request_fail(self):
@@ -818,3 +832,19 @@ class TestClassNetworkutilsTcl:
             vkh = bn.vkhash("PRD-63764-001", "AAM693", "258098", salt)
             utxt = bn.tcl_download_request("PRD-63764-001", "AAM693", "258098", salt, vkh)
         assert utxt is None
+
+    def test_tcl_encheader(self):
+        """
+        Test checking header, best case.
+        """
+        with httmock.HTTMock(tcl_enc_good_mock):
+            sentinel = bn.encrypt_header("http://snek.com/snek/update.zip", "snek.com")
+        assert sentinel == "HEADER FOUND"
+
+    def test_tcl_encheader_fail(self):
+        """
+        Test checking header, worst case.
+        """
+        with httmock.HTTMock(tcl_enc_bad_mock):
+            sentinel = bn.encrypt_header("http://snek.com/snek/update.zip", "snek.com")
+        assert sentinel is None

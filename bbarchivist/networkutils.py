@@ -12,6 +12,7 @@ import glob  # pem file lookup
 import hashlib  # salt
 import time  # salt
 import random  # salt
+import base64  # encoding
 import requests  # downloading
 from bs4 import BeautifulSoup  # scraping
 from bbarchivist import utilities  # parse filesize
@@ -388,17 +389,51 @@ def tcl_download_request(curef, tvver, fwid, salt, vkh, session=None, mode=4, fv
         return None
 
 
-def parse_tcl_download_request(body):
+def parse_tcl_download_request(body, mode=4):
     """
-    Extract file URL from TCL update server response.
+    Extract file URL and encryt slave URL from TCL update server response.
 
     :param data: The data to parse.
     :type data: str
+
+    :param mode: 4 if downloading autoloaders, 2 if downloading OTA deltas.
+    :type mode: int
     """
     root = ElementTree.fromstring(body)
-    slave = root.find("SLAVE_LIST").find("SLAVE").text
+    slavelist = root.find("SLAVE_LIST").findall("SLAVE")
+    slave = random.choice(slavelist).text
     dlurl = root.find("FILE_LIST").find("FILE").find("DOWNLOAD_URL").text
-    return "http://{0}{1}".format(slave, dlurl)
+    eslave = root.find("SLAVE_LIST").findall("ENCRYPT_SLAVE")
+    encslave = None if mode == 2 or not eslave else random.choice(eslave).text
+    return "http://{0}{1}".format(slave, dlurl), encslave
+
+
+@pem_wrapper
+def encrypt_header(address, encslave, session=None):
+    """
+    Check encrypted header.
+
+    :param address: File URL minus host.
+    :type address: str
+
+    :param encslave: Server hosting header script.
+    :type encslave: str
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
+    """
+    sess = generic_session(session)
+    encs = {b"YWNjb3VudA==" : b"emhlbmdodWEuZ2Fv", b"cGFzc3dvcmQ=": b"cWFydUQ0b2s="}
+    params = {base64.b64decode(key): base64.b64decode(val) for key, val in encs.items()}
+    params[b"address"] = bytes(address, "utf-8")
+    url = "http://" + encslave + "/encrypt_header.php"
+    req = sess.post(url, data=params)
+    if req.status_code == 206:  # partial
+        contentlength = int(req.headers["Content-Length"])
+        sentinel = "HEADER FOUND" if contentlength == 4194320 else "NO HEADER FOUND"
+        return sentinel
+    else:
+        return None
 
 
 @pem_wrapper
