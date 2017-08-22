@@ -797,6 +797,8 @@ def tcl_prd_scan(curef, download=False, mode=4, fvver="AAM481"):
 
 def tcl_prd_print(downloadurl, filename, statcode, encslave, session):
     """
+    Print output from PRD scanning.
+
     :param downloadurl: File to download.
     :type downloadurl: str
 

@@ -478,7 +478,7 @@ def point_point_bulk(inpath, outpath, files):
         point_point_copy(inpath, outpath, file)
 
 
-def generate_tclloader_script(dirname, batchfile, shfile):
+def generate_tclloader_script(dirname, batchfile, shfile, wipe=True):
     """
     Copy script files from site-packages to loader directory.
 
@@ -490,9 +490,32 @@ def generate_tclloader_script(dirname, batchfile, shfile):
 
     :param shfile: Path to flashall.sh.
     :type shfile: str
+
+    :param wipe: If the final loader wipes userdata. Default is True.
+    :type wipe: bool
     """
     shutil.copy(batchfile, os.path.join(dirname, "flashall.bat"))
     shutil.copy(shfile, os.path.join(dirname, "flashall.sh"))
+    if not wipe:
+        tclloader_nowipe(os.path.join(dirname, "flashall.bat"))
+        tclloader_nowipe(os.path.join(dirname, "flashall.sh"))
+
+
+def tclloader_nowipe(infile):
+    """
+    Modify a script file to strike references to wiping the phone.
+
+    :param infile: Path to script file to modify.
+    :type infile: str
+    """
+    filterout = ("oem securewipe", "flash userdata")
+    with open(infile, "r+", newline="") as afile:
+        content = afile.read()
+        afile.seek(0)
+        for line in content.split("\n"):
+            if not any(part in line for part in filterout):
+                afile.write(line + "\n")
+        afile.truncate()
 
 
 def generate_google_host(hostin, hostout):
@@ -578,7 +601,7 @@ def generate_tclloader_img(imgin, imgout):
     point_point_bulk(imgin, imgout, others)
 
 
-def generate_tclloader(localdir, dirname, platform, localtools=False):
+def generate_tclloader(localdir, dirname, platform, localtools=False, wipe=True):
     """
     Generate Android loader from extracted template files.
 
@@ -593,6 +616,9 @@ def generate_tclloader(localdir, dirname, platform, localtools=False):
 
     :param localtools: If host files will be copied from a template rather than a download. Default is False.
     :type localtools: bool
+
+    :param wipe: If the final loader wipes userdata. Default is True.
+    :type wipe: bool
     """
     if not os.path.exists(dirname):
         os.makedirs(dirname)
@@ -600,7 +626,7 @@ def generate_tclloader(localdir, dirname, platform, localtools=False):
     os.makedirs(hostdir)
     imgdir = os.path.join(dirname, "img")
     os.makedirs(imgdir)
-    generate_tclloader_script(dirname, bbconstants.FLASHBAT.location, bbconstants.FLASHSH.location)
+    generate_tclloader_script(dirname, bbconstants.FLASHBAT.location, bbconstants.FLASHSH.location, wipe)
     if localtools:
         hdir = os.path.join(localdir, "host")
         generate_tclloader_host(hdir, hostdir)

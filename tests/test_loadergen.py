@@ -11,6 +11,7 @@ except ImportError:
     import mock
 import pytest
 import bbarchivist.loadergen as bl
+from bbarchivist.bbconstants import FLASHBAT, FLASHSH
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -219,7 +220,7 @@ class TestClassLoadergenTcl:
         radios = ["china", "emea", "global", "india", "japan", "usa"]
         for rad in radios:
             copyfile("smack.dat", os.path.join(imgdir, "NON-HLOS-{0}.bin".format(rad)))
-        others = ["adspso.bin", "emmc_appsboot.mbn", "sbl1_signed.mbn"] 
+        others = ["adspso.bin", "emmc_appsboot.mbn", "sbl1_signed.mbn"]
         for file in others:
             copyfile("smack.dat", os.path.join(imgdir, "{0}".format(file)))
         mbns = ["devcfg.mbn", "devcfg_cn.mbn", "rpm.mbn", "tz.mbn"]
@@ -271,3 +272,13 @@ class TestClassLoadergenTcl:
                     abs_arcname = abs_filename.replace("autoloader-signed{0}".format(os.sep), "")
                     zfile.write(abs_filename, abs_arcname)
         assert os.path.getsize("snek2.zip") == 5462
+
+    def test_tclloader_nowipe(self):
+        """
+        Test modifying loader scripts.
+        """
+        if not os.path.exists("batcheck"):
+            os.mkdir("batcheck")
+        bl.generate_tclloader_script("batcheck", FLASHBAT.location, FLASHSH.location, False)
+        assert os.path.getsize(os.path.join("batcheck", "flashall.bat")) == 2740
+        assert os.path.getsize(os.path.join("batcheck", "flashall.sh")) == 2762

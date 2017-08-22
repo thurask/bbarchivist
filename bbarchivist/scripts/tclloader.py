@@ -53,9 +53,16 @@ def grab_args():
         help="Compress final autoloader",
         action="store_true",
         default=False)
+    parser.add_argument(
+        "-nw",
+        "--no-wipe",
+        dest="wipe",
+        help="Don't include lines to wipe userdata",
+        action="store_false",
+        default=True)
     args = parser.parse_args(sys.argv[1:])
     parser.set_defaults()
-    tclloader_main(args.loaderfile, args.loadername, args.directory, args.localtools, args.compress)
+    tclloader_main(args.loaderfile, args.loadername, args.directory, args.localtools, args.compress, args.wipe)
 
 
 def tclloader_extract(loaderfile, loaderdir, directory=False):
@@ -113,7 +120,7 @@ def tclloader_compress(compress=False, loadername=None):
         print("COMPRESSION FINISHED")
 
 
-def tclloader_main(loaderfile, loadername=None, directory=False, localtools=False, compress=False):
+def tclloader_main(loaderfile, loadername=None, directory=False, localtools=False, compress=False, wipe=True):
     """
     Scan every PRD and produce latest versions.
 
@@ -131,6 +138,9 @@ def tclloader_main(loaderfile, loadername=None, directory=False, localtools=Fals
 
     :param compress: If the final loader is to be compressed. Default is False.
     :type compress: bool
+
+    :param wipe: If the final loader wipes userdata. Default is True.
+    :type wipe: bool
     """
     scriptutils.slim_preamble("TCLLOADER")
     loaderdir, osver = scriptutils.tclloader_prep(loaderfile, directory)
@@ -138,7 +148,7 @@ def tclloader_main(loaderfile, loadername=None, directory=False, localtools=Fals
     localtools = tclloader_fastboot(localtools)
     loadername, platform = scriptutils.tclloader_filename(loaderdir, osver, loadername)
     print("CREATING LOADER")
-    loadergen.generate_tclloader(loaderdir, loadername, platform, localtools)
+    loadergen.generate_tclloader(loaderdir, loadername, platform, localtools, wipe)
     shutil.rmtree("plattools")
     tclloader_compress(compress, loadername)
     print("LOADER COMPLETE!")

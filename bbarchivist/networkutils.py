@@ -391,7 +391,7 @@ def tcl_download_request(curef, tvver, fwid, salt, vkh, session=None, mode=4, fv
 
 def parse_tcl_download_request(body, mode=4):
     """
-    Extract file URL and encryt slave URL from TCL update server response.
+    Extract file URL and encrypt slave URL from TCL update server response.
 
     :param data: The data to parse.
     :type data: str
