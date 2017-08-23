@@ -34,15 +34,16 @@ def teardown_module(module):
     rmtree("temp_networkutils", ignore_errors=True)
 
 
+@httmock.all_requests
 def cl_good_mock(url, request):
     """
     HTTMock mock for content_length.
     """
     headers = {'content-length': '525600'}
-    return httmock.response(status_code=200,
-                            headers=headers)
+    return httmock.response(status_code=200, headers=headers)
 
 
+@httmock.all_requests
 def conn_error_mock(url, request):
     """
     HTTMock mock for content_length, connection error.
@@ -50,44 +51,37 @@ def conn_error_mock(url, request):
     raise requests.ConnectionError
 
 
-@httmock.urlmatch(netloc=r'(.*\.)?google\.com$')
+@httmock.all_requests
 def download_mock(url, request):
     """
     HTTMock mock for downloading.
     """
     content = b"Jackdaws love my big sphinx of quartz" * 5000
     headers = {'content-length': len(content)}
-    return httmock.response(status_code=200,
-                            content=content,
-                            headers=headers)
+    return httmock.response(status_code=200, content=content, headers=headers)
 
 
-@httmock.urlmatch(netloc=r'(.*\.)?google\.com$')
+@httmock.all_requests
 def download_mock_fail(url, request):
     """
     HTTMock mock for download failure.
     """
     content = b"Jackdaws love my big sphinx of quartz" * 5000
     headers = {'content-length': len(content)}
-    return httmock.response(status_code=404,
-                            content=content,
-                            headers=headers)
+    return httmock.response(status_code=404, content=content, headers=headers)
 
 
-@httmock.urlmatch(netloc=r'(.*\.)?google\.com$')
+@httmock.all_requests
 def download_mock_huge(url, request):
     """
     HTTMock mock for downloading big files.
     """
     content = b"Jackdaws love my big sphinx of quartz" * 5000000
     headers = {'content-length': len(content)}
-    return httmock.response(status_code=200,
-                            content=content,
-                            headers=headers)
+    return httmock.response(status_code=200, content=content, headers=headers)
 
 
-@httmock.urlmatch(
-    scheme="http://appworld.blackberry.com/ClientAPI/checkcarrier?homemcc=302&homemnc=220&devicevendorid=-1&pin=0")
+@httmock.all_requests
 def cc_good_mock(url, request):
     """
     Mock for carrier checking, best case.
@@ -96,8 +90,7 @@ def cc_good_mock(url, request):
     return goodbody
 
 
-@httmock.urlmatch(
-    scheme="http://appworld.blackberry.com/ClientAPI/checkcarrier?homemcc=302&homemnc=220&devicevendorid=-1&pin=0")
+@httmock.all_requests
 def cc_bad_mock(url, request):
     """
     Mock for carrier checking, worst case.
@@ -106,6 +99,7 @@ def cc_bad_mock(url, request):
     return badbody
 
 
+@httmock.all_requests
 def av_good_mock(url, request):
     """
     Mock for availability, best case.
@@ -113,6 +107,7 @@ def av_good_mock(url, request):
     return {'status_code': 301, 'text': 'Light side'}
 
 
+@httmock.all_requests
 def av_bad_mock(url, request):
     """
     Mock for availability, worst case.
@@ -120,6 +115,7 @@ def av_bad_mock(url, request):
     return {'status_code': 404, 'text': 'Dark side'}
 
 
+@httmock.all_requests
 def ps_good_mock(url, request):
     """
     Mock for PTCRB lookup, best case.
@@ -128,6 +124,7 @@ def ps_good_mock(url, request):
     return {'status_code': 200, 'content': thebody}
 
 
+@httmock.all_requests
 def ps_bad_mock(url, request):
     """
     Mock for PTCRB lookup, worst case.
@@ -136,6 +133,7 @@ def ps_bad_mock(url, request):
     return {'status_code': 200, 'content': thebody}
 
 
+@httmock.all_requests
 def ps_priv_mock(url, request):
     """
     Mock for PTCRB lookup, Android cert.
@@ -144,6 +142,7 @@ def ps_priv_mock(url, request):
     return {'status_code': 200, 'content': thebody}
 
 
+@httmock.all_requests
 def gh_mock(url, request):
     """
     Mock for kernel lookup.
@@ -152,6 +151,7 @@ def gh_mock(url, request):
     return {'status_code': 200, 'content': thebody}
 
 
+@httmock.all_requests
 def ls_mock(url, request):
     """
     Mock for loader scraping.
@@ -160,6 +160,7 @@ def ls_mock(url, request):
     return {'status_code': 200, 'content': thebody}
 
 
+@httmock.all_requests
 def pa_good_mock(url, request):
     """
     Mock for Android autoloader lookup, best case.
@@ -168,6 +169,7 @@ def pa_good_mock(url, request):
     return {'status_code': 200, 'content': thebody}
 
 
+@httmock.all_requests
 def pa_bbm_mock(url, request):
     """
     Mock for Android autoloader lookup, new site.
@@ -176,6 +178,7 @@ def pa_bbm_mock(url, request):
     return {'status_code': 200, 'content': thebody}
 
 
+@httmock.all_requests
 def pa_bbm_hash_mock(url, request):
     """
     Mock for Android autoloader lookup, new site.
@@ -184,6 +187,7 @@ def pa_bbm_hash_mock(url, request):
     return {'status_code': 200, 'content': thebody}
 
 
+@httmock.all_requests
 def pa_bad_mock(url, request):
     """
     Mock for Android autoloader lookup, worst case.
@@ -191,6 +195,8 @@ def pa_bad_mock(url, request):
     thebody = "https://bbapps.download.blackberry.com/Priv/bbry_qc8992_autoloader_user-common-AAD250.zip"
     return {'status_code': 404, 'content': thebody}
 
+
+@httmock.all_requests
 def pa_hash_mock(url, request):
     """
     Mock for Android autoloader hash lookup.
@@ -199,6 +205,7 @@ def pa_hash_mock(url, request):
     return {'status_code': 200, 'content': thebody}
 
 
+@httmock.all_requests
 def cq_good_mock(url, request):
     """
     Mock for carrier update checking, ideal case.
@@ -207,6 +214,7 @@ def cq_good_mock(url, request):
     return {'status_code': 200, 'content': thebody}
 
 
+@httmock.all_requests
 def cq_upgrade_mock(url, request):
     """
     Mock for carrier update checking, upgrade bars.
@@ -215,6 +223,7 @@ def cq_upgrade_mock(url, request):
     return {'status_code': 200, 'content': thebody}
 
 
+@httmock.all_requests
 def cq_blitz_mock(url, request):
     """
     Mock for carrier update checking, blitz.
@@ -223,6 +232,7 @@ def cq_blitz_mock(url, request):
     return {'status_code': 200, 'content': thebody}
 
 
+@httmock.all_requests
 def cq_bad_mock(url, request):
     """
     Mock for carrier update checking, bad case.
@@ -231,6 +241,7 @@ def cq_bad_mock(url, request):
     return {'status_code': 200, 'content': thebody}
 
 
+@httmock.all_requests
 def bl_big_mock(url, request):
     """
     Mock for bundle lookup, large output.
@@ -239,6 +250,7 @@ def bl_big_mock(url, request):
     return {'status_code': 200, 'content': bigbody}
 
 
+@httmock.all_requests
 def bl_little_mock(url, request):
     """
     Mock for bundle lookup, small output.
@@ -247,6 +259,7 @@ def bl_little_mock(url, request):
     return {'status_code': 200, 'content': littlebody}
 
 
+@httmock.all_requests
 def sr_good_mock(url, request):
     """
     Mock for software release lookup, SR found.
@@ -255,6 +268,7 @@ def sr_good_mock(url, request):
     return {'status_code': 200, 'content': goodbody}
 
 
+@httmock.all_requests
 def sr_bad_mock(url, request):
     """
     Mock for software release lookup, SR not found.
@@ -263,6 +277,7 @@ def sr_bad_mock(url, request):
     return {'status_code': 200, 'content': badbody}
 
 
+@httmock.all_requests
 def sr_fail_mock(url, request):
     """
     Mock for software release lookup, XML parse error.
@@ -271,6 +286,7 @@ def sr_fail_mock(url, request):
     return {'status_code': 200, 'content': badbody}
 
 
+@httmock.all_requests
 def md_base_mock(url, request):
     """
     Mock for metadata lookup.
@@ -279,6 +295,7 @@ def md_base_mock(url, request):
     return {'status_code': 200, 'content': thebody}
 
 
+@httmock.all_requests
 def da_mock(url, request):
     """
     Mock for Dev Alpha autoloader URL generation.
@@ -289,6 +306,7 @@ def da_mock(url, request):
     return httmock.response(status_code=code, headers=headers)
 
 
+@httmock.all_requests
 def tcl_check_mock(url, request):
     """
     Mock for TCL update checking.
@@ -297,6 +315,7 @@ def tcl_check_mock(url, request):
     return {'status_code': 200, 'content': badbody}
 
 
+@httmock.all_requests
 def tcl_request_mock(url, request):
     """
     Mock for TCL download URL request.
@@ -305,6 +324,7 @@ def tcl_request_mock(url, request):
     return {'status_code': 200, 'content': badbody}
 
 
+@httmock.all_requests
 def tcl_enc_good_mock(url, request):
     """
     Mock for TCL header checking, best case.
@@ -312,6 +332,7 @@ def tcl_enc_good_mock(url, request):
     return httmock.response(status_code=206, headers={'content-length': 4194320})
 
 
+@httmock.all_requests
 def tcl_enc_bad_mock(url, rquest):
     """
     Mock for TCL header checking, worst case.
@@ -319,6 +340,7 @@ def tcl_enc_bad_mock(url, rquest):
     return httmock.response(status_code=400, headers={'content-length': 123456})
 
 
+@httmock.all_requests
 def timeout_mock(url, request):
     """
     Mock for software release lookup, timeout.
