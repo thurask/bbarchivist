@@ -71,9 +71,12 @@ def tclscan_main():
         print("~{0}~".format(device))
         for curef in prddict[device]:
             checktext = networkutils.tcl_check(curef, sess)
-            tvver, firmwareid, filename, fsize, fhash = networkutils.parse_tcl_check(checktext)
-            del firmwareid, filename, fsize, fhash
-            print("{0}: {1}".format(curef, tvver))
+            if checktext is None:
+                continue
+            else:
+                tvver, firmwareid, filename, fsize, fhash = networkutils.parse_tcl_check(checktext)
+                del firmwareid, filename, fsize, fhash
+                print("{0}: {1}".format(curef, tvver))
 
 
 if __name__ == "__main__":
