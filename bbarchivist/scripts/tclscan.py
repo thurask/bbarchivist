@@ -19,7 +19,7 @@ def grab_args():
     Invoke a function with those arguments.
     """
     parser = scriptutils.default_parser("bb-tclscan", "Check for updates for TCL devices")
-    parser.add_argument("prd", help="Only scan one PRD", default=None)
+    parser.add_argument("prd", help="Only scan one PRD", default=None, nargs="?")
     parser.add_argument(
         "-l",
         "--list",
