@@ -337,11 +337,18 @@ def check_os_bulk(osurls):
         if osav:
             break
     else:
-        print("OS VERSION NOT FOUND")
-        cont = utilities.s2b(input("CONTINUE? Y/N: "))
-        if not cont:
-            print("\nEXITING...")
-            raise SystemExit
+        check_os_bulk_handle()
+
+
+def check_os_bulk_handle():
+    """
+    Handle no existing OS links.
+    """
+    print("OS VERSION NOT FOUND")
+    cont = utilities.s2b(input("CONTINUE? Y/N: "))
+    if not cont:
+        print("\nEXITING...")
+        raise SystemExit
 
 
 def check_radio_single(radiourl, radioversion):
@@ -532,11 +539,28 @@ def test_bar_files_individual(file, localdir, urllist, brokenlist):
         print("TESTING: {0}".format(file))
         thepath = os.path.abspath(os.path.join(localdir, file))
         brokens = barutils.bar_tester(thepath)
-        if brokens is not None:
-            os.remove(brokens)
-            for url in urllist:
-                if brokens in url:
-                    brokenlist.append(url)
+        brokenlist = bar_broken_individual(brokens, urllist, brokenlist)
+    return brokenlist
+
+
+def bar_broken_individual(brokens, urllist, brokenlist):
+    """
+    What to do if a downloaded bar file is broken.
+
+    :param brokens: None if bar is OK, filename if it is not.
+    :type brokens: str
+
+    :param urllist: List of URLs to check.
+    :type urllist: list(str)
+
+    :param brokenlist: List of URLs to download later.
+    :type brokenlist: list(str)
+    """
+    if brokens is not None:
+        os.remove(brokens)
+        for url in urllist:
+            if brokens in url:
+                brokenlist.append(url)
     return brokenlist
 
 

@@ -99,9 +99,7 @@ def fsizer(file_size):
     :param file_size: Number to parse.
     :type file_size: float
     """
-    if file_size is None:
-        file_size = 0
-    fsize = float(file_size)
+    fsize = prep_filesize(file_size)
     for sfix in ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB']:
         if fsize < 1024.0:
             size = "{0:3.2f}{1}".format(fsize, sfix)
@@ -111,6 +109,19 @@ def fsizer(file_size):
     else:
         size = "{0:3.2f}{1}".format(fsize, 'YB')
     return size
+
+
+def prep_filesize(file_size):
+    """
+    Convert file size to float.
+
+    :param file_size: Number to parse.
+    :type file_size: float
+    """
+    if file_size is None:
+        file_size = 0.0
+    fsize = float(file_size)
+    return fsize
 
 
 def signed_file_args(files):
@@ -306,9 +317,7 @@ def win_seven_zip(talkative=False):
     """
     talkaprint("CHECKING INSTALLED FILES...", talkative)
     try:
-        import winreg  # windows registry
-        hk7z = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\\7-Zip")
-        path = winreg.QueryValueEx(hk7z, "Path")
+        path = wsz_registry(talkative)
     except OSError as exc:
         if talkative:
             exceptions.handle_exception(exc, xit=None)
@@ -319,6 +328,19 @@ def win_seven_zip(talkative=False):
         return '"{0}"'.format(os.path.join(path[0], "7z.exe"))
 
 
+def wsz_registry(talkative=False):
+    """
+    Check Windows registry for 7-Zip executable location.
+
+    :param talkative: Whether to output to screen. False by default.
+    :type talkative: bool
+    """
+    import winreg  # windows registry
+    hk7z = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\\7-Zip")
+    path = winreg.QueryValueEx(hk7z, "Path")
+    return path
+
+
 def win_seven_zip_local(talkative=False):
     """
     If 7-Zip isn't in the registry, fall back onto supplied executables.
@@ -327,13 +349,43 @@ def win_seven_zip_local(talkative=False):
     :param talkative: Whether to output to screen. False by default.
     :type talkative: bool
     """
-    filecount = len([x for x in os.listdir(os.getcwd()) if x in ["7za.exe", "7z.exe"]])
+    filecount = wsz_filecount()
     if filecount == 2:
-        talkaprint("7ZIP USING LOCAL FILES", talkative)
-        szexe = "7za.64.exe" if is_amd64() else "7za.exe"
+        szexe = wsz_local_good(talkative)
     else:
-        talkaprint("NO LOCAL FILES", talkative)
-        szexe = "error"
+        szexe = wsz_local_bad(talkative)
+    return szexe
+
+
+def wsz_filecount():
+    """
+    Get count of 7-Zip executables in local folder.
+    """
+    filecount = len([x for x in os.listdir(os.getcwd()) if x in ["7za.exe", "7z.exe"]])
+    return filecount
+
+
+def wsz_local_good(talkative=False):
+    """
+    Get 7-Zip exe name if everything is good.
+
+    :param talkative: Whether to output to screen. False by default.
+    :type talkative: bool
+    """
+    talkaprint("7ZIP USING LOCAL FILES", talkative)
+    szexe = "7za.64.exe" if is_amd64() else "7za.exe"
+    return szexe
+
+
+def wsz_local_bad(talkative=False):
+    """
+    Handle 7-Zip exe name in case of issues.
+
+    :param talkative: Whether to output to screen. False by default.
+    :type talkative: bool
+    """
+    talkaprint("NO LOCAL FILES", talkative)
+    szexe = "error"
     return szexe
 
 
