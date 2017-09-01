@@ -13,6 +13,8 @@ import hashlib  # salt
 import time  # salt
 import random  # salt
 import base64  # encoding
+import binascii  # encoding
+import zlib  # encoding
 import requests  # downloading
 from bs4 import BeautifulSoup  # scraping
 from bbarchivist import utilities  # parse filesize
@@ -341,8 +343,9 @@ def vkhash(curef, tvver, fwid, salt, mode=4, fvver="AAM481"):
     :param fvver: Initial software version, must be specific if downloading OTA deltas.
     :type fvver: str
     """
-    vdkey = "1271941121281905392291845155542171963889169361242115412511417616616958244916823523421516924614377131161951402261451161002051042011757216713912611682532031591181861081836612643016596231212872211620511861302106446924625728571011411121471811641125920123641181975581511602312222261817375462445966911723844130106116313122624220514"
-    query = "id={0}&salt={1}&curef={2}&fv={3}&tv={4}&type={5}&fw_id={6}&mode={7}&cltp={8}{9}".format("543212345000000", salt, curef, fvver, tvver, "Firmware", fwid, mode, 2010, vdkey)
+    vdkey = b"eJwdjwEOwDAIAr8kKFr//7HhmqXp8AIIDrYAgg8byiUXrwRJRXja+d6iNxu0AhUooDCN9rd6rDLxmGIakUVWo3IGCTRWqCAt6X4jGEIUAxgN0eYWnp+LkpHQAg/PsO90ELsy0Npm/n2HbtPndFgGEV31R9OmT4O4nrddjc3Qt6nWscx7e+WRHq5UnOudtjw5skuV09pFhvmqnOEIs4ljPeel1wfLYUF4\n"
+    vdk = zlib.decompress(binascii.a2b_base64(vdkey))
+    query = "id={0}&salt={1}&curef={2}&fv={3}&tv={4}&type={5}&fw_id={6}&mode={7}&cltp={8}{9}".format("543212345000000", salt, curef, fvver, tvver, "Firmware", fwid, mode, 2010, vdk.decode("utf-8"))
     engine = hashlib.sha1()
     engine.update(bytes(query, "utf-8"))
     return engine.hexdigest()
