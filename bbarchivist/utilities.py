@@ -317,7 +317,7 @@ def win_seven_zip(talkative=False):
     """
     talkaprint("CHECKING INSTALLED FILES...", talkative)
     try:
-        path = wsz_registry(talkative)
+        path = wsz_registry()
     except OSError as exc:
         if talkative:
             exceptions.handle_exception(exc, xit=None)
@@ -328,12 +328,9 @@ def win_seven_zip(talkative=False):
         return '"{0}"'.format(os.path.join(path[0], "7z.exe"))
 
 
-def wsz_registry(talkative=False):
+def wsz_registry():
     """
     Check Windows registry for 7-Zip executable location.
-
-    :param talkative: Whether to output to screen. False by default.
-    :type talkative: bool
     """
     import winreg  # windows registry
     hk7z = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\\7-Zip")
@@ -719,6 +716,23 @@ def bulk_urls(softwareversion, osversion, radioversion, core=False, altsw=None):
     radurls = list(set(radurls))
     if core:
         coreurls = list(set(coreurls))
+    radurls = bulk_urls_altsw(radurls, baseurl, altsw)
+    return osurls, coreurls, radurls
+
+
+def bulk_urls_altsw(radurls, baseurl, altsw=None):
+    """
+    Handle alternate software release for radio.
+
+    :param radurls: List of radio URLs.
+    :type radurls: list(str)
+
+    :param baseurl: Base URL (from http to hashed SW release).
+    :type baseurl: str
+
+    :param altsw: Radio software release, if not the same as OS.
+    :type altsw: str
+    """
     if altsw is not None:
         altbase = create_base_url(altsw)
         radiourls2 = []
@@ -726,7 +740,7 @@ def bulk_urls(softwareversion, osversion, radioversion, core=False, altsw=None):
             radiourls2.append(rad.replace(baseurl, altbase))
         radurls = radiourls2
         del radiourls2
-    return osurls, coreurls, radurls
+    return radurls
 
 
 def line_begin():

@@ -243,7 +243,7 @@ def check_sw(baseurl, softwareversion, swchecked, altsw=False):
     Check existence of software release.
 
     :param baseurl: Base URL (from http to hashed SW release).
-    :type basurl: str
+    :type baseurl: str
 
     :param softwareversion: Software release.
     :type softwareversion: str
@@ -257,17 +257,40 @@ def check_sw(baseurl, softwareversion, swchecked, altsw=False):
     message = "CHECKING RADIO SOFTWARE RELEASE..." if altsw else "CHECKING SOFTWARE RELEASE..."
     print(message)
     if not swchecked:
-        avlty = networkutils.availability(baseurl)
-        if avlty:
-            print("SOFTWARE RELEASE {0} EXISTS".format(softwareversion))
-        else:
-            print("SOFTWARE RELEASE {0} NOT FOUND".format(softwareversion))
-            cont = utilities.s2b(input("CONTINUE? Y/N: "))
-            if not cont:
-                print("\nEXITING...")
-                raise SystemExit
+        check_sw_actual(baseurl, softwareversion)
     else:
         print("SOFTWARE RELEASE {0} EXISTS".format(softwareversion))
+
+
+def check_sw_actual(baseurl, softwareversion):
+    """
+    Get the status of a software release.
+
+    :param baseurl: Base URL (from http to hashed SW release).
+    :type baseurl: str
+
+    :param softwareversion: Software release.
+    :type softwareversion: str
+    """
+    avlty = networkutils.availability(baseurl)
+    if avlty:
+        print("SOFTWARE RELEASE {0} EXISTS".format(softwareversion))
+    else:
+        check_sw_handle(softwareversion)
+
+
+def check_sw_handle(softwareversion):
+    """
+    Handle non-existent software release.
+
+    :param softwareversion: Software release.
+    :type softwareversion: str
+    """
+    print("SOFTWARE RELEASE {0} NOT FOUND".format(softwareversion))
+    cont = utilities.s2b(input("CONTINUE? Y/N: "))
+    if not cont:
+        print("\nEXITING...")
+        raise SystemExit
 
 
 def check_radio_sw(alturl, altsw, altchecked):

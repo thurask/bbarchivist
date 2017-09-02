@@ -439,6 +439,21 @@ def encrypt_header(address, encslave, session=None):
         return None
 
 
+def cchecker_get_tags(root):
+    """
+    Get country and carrier from XML.
+
+    :param root: ElementTree we're barking up.
+    :type root: xml.etree.ElementTree.ElementTree
+    """
+    for child in root:
+        if child.tag == "country":
+            country = child.get("name")
+        if child.tag == "carrier":
+            carrier = child.get("name")
+    return country, carrier
+
+
 @pem_wrapper
 def carrier_checker(mcc, mnc, session=None):
     """
@@ -458,11 +473,7 @@ def carrier_checker(mcc, mnc, session=None):
     user_agent = {'User-agent': 'AppWorld/5.1.0.60'}
     req = session.get(url, headers=user_agent)
     root = ElementTree.fromstring(req.text)
-    for child in root:
-        if child.tag == "country":
-            country = child.get("name")
-        if child.tag == "carrier":
-            carrier = child.get("name")
+    country, carrier = cchecker_get_tags(root)
     return country, carrier
 
 
@@ -1074,12 +1085,29 @@ def droid_scanner(build, device, method=None, session=None):
     devs = prepare_droid_list(device)
     skels = bulk_droid_skeletons(devs, build, method)
     with concurrent.futures.ThreadPoolExecutor(max_workers=len(skels)) as xec:
-        results = []
-        for skel in skels:
-            avail = xec.submit(availability, skel, session)
-            if avail.result():
-                results.append(skel)
+        results = droid_scanner_worker(xec, skels, session)
     return results if results else None
+
+
+def droid_scanner_worker(xec, skels, session=None):
+    """
+    Worker to check for Android autoloaders.
+
+    :param xec: ThreadPoolExecutor instance.
+    :type xec: concurrent.futures.ThreadPoolExecutor
+
+    :param skels: List of skeleton formats.
+    :type skels: list(str)
+
+    :param session: Requests session object, default is created on the fly.
+    :type session: requests.Session()
+    """
+    results = []
+    for skel in skels:
+        avail = xec.submit(availability, skel, session)
+        if avail.result():
+            results.append(skel)
+    return results
 
 
 def chunker(iterable, inc):

@@ -273,9 +273,22 @@ def create_blitz(a_folder, swver):
                 zfile.write(abs_filename, abs_arcname)
 
 
-def move_loaders(ldir,
-                 exedir_os, exedir_rad,
-                 zipdir_os, zipdir_rad):
+def move_loaders_prep(ldir, suf):
+    """
+    Prepare a list of filenames for moving loaders.
+
+    :param ldir:
+    :type ldir: str
+
+    :param suf: Suffix(es) to check.
+    :type suf: str or list or tuple
+    """
+    pfx = bbconstants.PREFIXES
+    loaders = [os.path.join(ldir, file) for file in os.listdir(ldir) if utilities.prepends(file, pfx, suf)]
+    return loaders
+
+
+def move_loaders(ldir, exedir_os, exedir_rad, zipdir_os, zipdir_rad):
     """
     Move autoloaders to zipped and loaders directories in localdir.
 
@@ -295,10 +308,9 @@ def move_loaders(ldir,
     :type zipdir_rad: str
     """
     arx = bbconstants.ARCS
-    pfx = bbconstants.PREFIXES
-    loaders = [os.path.join(ldir, file) for file in os.listdir(ldir) if utilities.prepends(file, pfx, ".exe")]
+    loaders = move_loaders_prep(ldir, ".exe")
     move_loader_pairs(loaders, exedir_os, exedir_rad)
-    zippeds = [os.path.join(ldir, file) for file in os.listdir(ldir) if utilities.prepends(file, pfx, arx)]
+    zippeds = move_loaders_prep(ldir, arx)
     move_loader_pairs(zippeds, zipdir_os, zipdir_rad)
 
 
