@@ -530,10 +530,8 @@ def test_bar_files(localdir, urllist):
     :param urllist: List of URLs to check.
     :type urllist: list(str)
     """
-    brokenlist = []
     print("TESTING BAR FILES...")
-    for file in os.listdir(localdir):
-        brokenlist = test_bar_files_individual(file, localdir, urllist, brokenlist)
+    brokenlist = [test_bar_files_individual(file, localdir, urllist, brokenlist) for file in os.listdir(localdir)]
     if brokenlist:
         print("SOME FILES ARE BROKEN!")
         utilities.lprint(brokenlist)

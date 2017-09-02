@@ -832,10 +832,7 @@ def ptcrb_scraper(ptcrbid, session=None):
     prelimlist = re.findall("OS .+[^\\n]", text, re.IGNORECASE)
     if not prelimlist:  # Priv
         prelimlist = re.findall(r"[A-Z]{3}[0-9]{3}[\s]", text)
-    cleanlist = []
-    for item in prelimlist:
-        if not item.endswith("\r\n"):  # they should hire QC people...
-            cleanlist.append(ptcrb_item_cleaner(item))
+    cleanlist = [ptcrb_item_cleaner(item) for item in prelimlist if not item.endswith("\r\n")]
     return cleanlist
 
 

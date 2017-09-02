@@ -735,9 +735,7 @@ def bulk_urls_altsw(radurls, baseurl, altsw=None):
     """
     if altsw is not None:
         altbase = create_base_url(altsw)
-        radiourls2 = []
-        for rad in radurls:
-            radiourls2.append(rad.replace(baseurl, altbase))
+        radiourls2 = [rad.replace(baseurl, altbase) for rad in radurls]
         radurls = radiourls2
         del radiourls2
     return radurls
