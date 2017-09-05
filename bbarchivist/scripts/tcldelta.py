@@ -2,6 +2,7 @@
 """Grab latest delta update for TCL API devices."""
 
 import sys  # load arguments
+from bbarchivist import decorators  # enter to exit
 from bbarchivist import scriptutils  # default parser
 
 __author__ = "Thurask"
@@ -16,8 +17,8 @@ def grab_args():
     Invoke a function with those arguments.
     """
     parser = scriptutils.default_parser("bb-tcldelta", "Check for delta updates for TCL devices")
-    parser.add_argument("curef", help="PRD to check")
-    parser.add_argument("fvver", help="Current OS version")
+    parser.add_argument("curef", help="PRD to check", default=None, nargs="?")
+    parser.add_argument("fvver", help="Current OS version", default=None, nargs="?")
     parser.add_argument(
         "-d",
         "--download",
@@ -27,7 +28,24 @@ def grab_args():
         default=False)
     args = parser.parse_args(sys.argv[1:])
     parser.set_defaults()
+    if None in (args.curef, args.fvver):
+        args = questionnaire(args)
     tcldelta_main(args.curef, args.fvver, args.download)
+    decorators.enter_to_exit(True)
+
+
+def questionnaire(args):
+    """
+    Clear up missing arguments.
+
+    :param args: Arguments.
+    :type args: argparse.Namespace
+    """
+    if args.curef is None:
+        args.curef = input("CUREF: ")
+    if args.fvver is None:
+        args.fvver = input("STARTING OS: ")
+    return args
 
 
 def tcldelta_main(curef, fvver, download=False):
