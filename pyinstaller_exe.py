@@ -7,7 +7,7 @@ from platform import architecture
 from shutil import copy, rmtree, copytree
 from subprocess import call, STDOUT
 from requests import certs, get
-from bbarchivist.bbconstants import VERSION, LONGVERSION, CAP, JSONDIR, COMMITDATE
+from bbarchivist.bbconstants import VERSION, LONGVERSION, CAP, FLASHBAT, FLASHSH, JSONDIR, COMMITDATE
 from bbarchivist.utilities import prep_seven_zip, get_seven_zip
 
 
@@ -158,6 +158,8 @@ def main():
     copy("version.txt", outdir)
     copy("longversion.txt", outdir)
     copy(CAP.location, outdir)
+    copy(FLASHBAT.location, outdir)
+    copy(FLASHSH.location, outdir)
     copy_json(outdir)
     copy(certs.where(), join(outdir, "cacerts.pem"))
     sz_wrapper(outdir)
