@@ -3,6 +3,7 @@
 
 import sys  # load arguments
 import requests  # session
+from bbarchivist import decorators  # enter to exit
 from bbarchivist import jsonutils  # json
 from bbarchivist import networkutils  # lookup
 from bbarchivist import scriptutils  # default parser
@@ -43,6 +44,7 @@ def grab_args():
         tclscan_single(args.prd, args.download)
     else:
         tclscan_main()
+        decorators.enter_to_exit(True)
 
 
 def tclscan_single(curef, download=False):
