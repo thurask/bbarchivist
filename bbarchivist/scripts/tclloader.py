@@ -60,6 +60,9 @@ def grab_args():
         help="Don't include lines to wipe userdata",
         action="store_false",
         default=True)
+    if len(sys.argv) == 1 and getattr(sys, 'frozen', False):
+        print("You're better off running this from command line")
+        decorators.enter_to_exit(True)
     args = parser.parse_args(sys.argv[1:])
     parser.set_defaults()
     tclloader_main(args.loaderfile, args.loadername, args.directory, args.localtools, args.compress, args.wipe)
