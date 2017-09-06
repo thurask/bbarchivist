@@ -226,7 +226,7 @@ class TestClassLoadergenTcl:
         mbns = ["devcfg.mbn", "devcfg_cn.mbn", "rpm.mbn", "tz.mbn"]
         for mbn in mbns:
             copyfile("smack.dat", os.path.join(imgdir, "qcbc", mbn))
-        sigs = ["boot.img.production.sig", "recovery.img.production.sig"]
+        sigs = ["boot.img.production.sig", "boot.img.production-sprint.sig", "recovery.img.production.sig", "recovery.img.production-sprint.sig"]
         for sig in sigs:
             copyfile("smack.dat", os.path.join(imgdir, "sig", sig))
 
@@ -245,7 +245,7 @@ class TestClassLoadergenTcl:
                     abs_filename = os.path.join(root, file)
                     abs_arcname = abs_filename.replace("autoloader-signed{0}".format(os.sep), "")
                     zfile.write(abs_filename, abs_arcname)
-        assert os.path.getsize("snek.zip") == 5398
+        assert os.path.getsize("snek.zip") == 5754
 
     def test_tclloader_network(self):
         """
@@ -271,7 +271,7 @@ class TestClassLoadergenTcl:
                     abs_filename = os.path.join(root, file)
                     abs_arcname = abs_filename.replace("autoloader-signed{0}".format(os.sep), "")
                     zfile.write(abs_filename, abs_arcname)
-        assert os.path.getsize("snek2.zip") == 5462
+        assert os.path.getsize("snek2.zip") == 5822
 
     def test_tclloader_nowipe(self):
         """
@@ -280,5 +280,5 @@ class TestClassLoadergenTcl:
         if not os.path.exists("batcheck"):
             os.mkdir("batcheck")
         bl.generate_tclloader_script("batcheck", FLASHBAT.location, FLASHSH.location, False)
-        assert os.path.getsize(os.path.join("batcheck", "flashall.bat")) == 2740
-        assert os.path.getsize(os.path.join("batcheck", "flashall.sh")) == 2762
+        assert os.path.getsize(os.path.join("batcheck", "flashall.bat")) == 2791
+        assert os.path.getsize(os.path.join("batcheck", "flashall.sh")) == 2813

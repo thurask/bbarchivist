@@ -557,7 +557,7 @@ def generate_tclloader_host(hostin, hostout):
 
 def generate_tclloader_sig(sigin, sigout):
     """
-    Generate signature files.
+    Generate common signature files.
 
     :param sigin: Directory containing files to copy.
     :type sigin: str
@@ -567,6 +567,55 @@ def generate_tclloader_sig(sigin, sigout):
     """
     shutil.copy(os.path.join(sigin, "boot.img.production.sig"), os.path.join(sigout, "boot.img.sig"))
     shutil.copy(os.path.join(sigin, "recovery.img.production.sig"), os.path.join(sigout, "recovery.img.sig"))
+
+
+def generate_tclloader_csig(sigin, sigout, carrier):
+    """
+    Generate carrier variant signature files.
+
+    :param sigin: Directory containing files to copy.
+    :type sigin: str
+
+    :param sigout: Directory that files are to be copied to.
+    :type sigout: str
+
+    :param carrier: Carrier to check: att, sprint, china, vzw
+    :type carrier: str
+    """
+    shutil.copy(os.path.join(sigin, "boot.img.production-{0}.sig".format(carrier)), os.path.join(sigout, "boot.img{0}.sig".format(carrier)))
+    shutil.copy(os.path.join(sigin, "recovery.img.production-{0}.sig".format(carrier)), os.path.join(sigout, "recovery.img{0}.sig".format(carrier)))
+
+
+def generate_tclloader_carriers(sigin, sigout):
+    """
+    Collect carrier variant signature files.
+
+    :param sigin: Directory containing files to copy.
+    :type sigin: str
+
+    :param sigout: Directory that files are to be copied to.
+    :type sigout: str
+    """
+    prods = set(x.split("-")[-1].split(".")[0] for x in os.listdir(sigin) if "production-" in x) - {"boot", "recovery"}
+    if prods:
+        generate_tclloader_carriter(sigin, sigout, prods)
+
+
+def generate_tclloader_carriter(sigin, sigout, prods):
+    """
+    Iterate carrier variant signature files.
+
+    :param sigin: Directory containing files to copy.
+    :type sigin: str
+
+    :param sigout: Directory that files are to be copied to.
+    :type sigout: str
+
+    :param prods: Set of carriers.
+    :type prods: set(str)
+    """
+    for carr in prods:
+        generate_tclloader_csig(sigin, sigout, carr)
 
 
 def generate_tclloader_mbn(mdnin, mdnout):
@@ -637,5 +686,6 @@ def generate_tclloader(localdir, dirname, platform, localtools=False, wipe=True)
     generate_tclloader_img(pdir, imgdir)
     sdir = os.path.join(pdir, "sig")
     generate_tclloader_sig(sdir, imgdir)
+    generate_tclloader_carriers(sdir, imgdir)
     qdir = os.path.join(pdir, "qcbc")
     generate_tclloader_mbn(qdir, imgdir)

@@ -38,8 +38,8 @@
     </Content>
     <Content Include="bbarchivist\datfiles\cap-3.11.0.27.dat" />
     <Content Include="bbarchivist\datfiles\cfp-3.10.0.57.dat" />
-    <Content Include="bbarchivist\datfiles\flashall.bat-0.dat" />
-    <Content Include="bbarchivist\datfiles\flashall.sh-0.dat" />
+    <Content Include="bbarchivist\datfiles\flashall.bat-1.dat" />
+    <Content Include="bbarchivist\datfiles\flashall.sh-1.dat" />
     <Content Include="bbarchivist\json\devskeletons.json">
       <SubType>Code</SubType>
     </Content>
