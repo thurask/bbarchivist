@@ -632,6 +632,68 @@ def generate_tclloader_mbn(mdnin, mdnout):
     point_point_bulk(mdnin, mdnout, files)
 
 
+def generate_tclloader_oemset(oemin, oems):
+    """
+    Generate sets for OEM variants.
+
+    :param oemin: Directory containing files to copy.
+    :type oemin: str
+
+    :param oems: List of OEM variants.
+    :type oems: list(str)
+    """
+    ofiles = set(os.path.join(oemin, "{0}.img".format(oem)) for oem in oems)
+    infiles = set(os.path.join(oemin, filex) for filex in os.listdir(oemin) if "oem_" in filex)
+    return ofiles, infiles
+
+
+def generate_tclloader_oemfilt(oemin, oems):
+    """
+    Filter non-existent OEM variants.
+
+    :param oemin: Directory containing files to copy.
+    :type oemin: str
+
+    :param oems: List of OEM variants.
+    :type oems: list(str)
+    """
+    ofiles, infiles = generate_tclloader_oemset(oemin, oems)
+    coll = [os.path.basename(oemf).replace(".img", "") for oemf in ofiles - infiles]
+    oems = [oemp for oemp in oems if oemp not in coll]
+    return oems
+
+
+def generate_tclloader_radset(radin, rads):
+    """
+    Generate sets for radio variants.
+
+    :param radin: Directory containing files to copy.
+    :type radin: str
+
+    :param rads: List of radio variants.
+    :type rads: list(str)
+    """
+    rfiles = set(os.path.join(radin, "NON-HLOS-{0}.bin".format(rad)) for rad in rads)
+    infiles = set(os.path.join(radin, filex) for filex in os.listdir(radin) if "NON-HLOS-" in filex)
+    return rfiles, infiles
+
+
+def generate_tclloader_radfilt(radin, rads):
+    """
+    Filter non-existent radio variants.
+
+    :param radin: Directory containing files to copy.
+    :type radin: str
+
+    :param rads: List of radio variants.
+    :type rads: list(str)
+    """
+    rfiles, infiles = generate_tclloader_radset(radin, rads)
+    coll = [os.path.basename(radf).replace(".bin", "").replace("NON-HLOS-", "") for radf in rfiles - infiles]
+    rads = [radp for radp in rads if radp not in coll]
+    return rads
+
+
 def generate_tclloader_img(imgin, imgout):
     """
     Generate partition images and radios.
@@ -642,9 +704,13 @@ def generate_tclloader_img(imgin, imgout):
     :param imgout: Directory that files are to be copied to.
     :type imgout: str
     """
-    imgs = ["oem_att", "oem_china", "oem_common", "oem_sprint", "oem_vzw", "recovery", "system", "userdata", "cache", "boot"]
+    imgs = ["recovery", "system", "userdata", "cache", "boot"]
     point_point_bulk(imgin, imgout, ["{0}.img".format(img) for img in imgs])
+    oems = ["oem_att", "oem_china", "oem_common", "oem_sprint", "oem_vzw"]
+    oems = generate_tclloader_oemfilt(imgin, oems)
+    point_point_bulk(imgin, imgout, ["{0}.img".format(oem) for oem in oems])
     radios = ["china", "emea", "global", "india", "japan", "usa"]
+    radios = generate_tclloader_radfilt(imgin, radios)
     point_point_bulk(imgin, imgout, ["NON-HLOS-{0}.bin".format(rad) for rad in radios])
     others = ["adspso.bin", "emmc_appsboot.mbn", "sbl1_signed.mbn"]
     point_point_bulk(imgin, imgout, others)
