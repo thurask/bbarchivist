@@ -133,9 +133,9 @@ def forced_args(args):
     :param args: Arguments.
     :type args: argparse.Namespace
     """
-    if args.forcedos is not None and args.forcedsw is None:
+    if utilities.one_and_none(args.forcedsw, args.forcedos):
         forced = forced_avail(args)
-    elif args.forcedos is None and args.forcedsw is not None:
+    elif utilities.one_and_none(args.forcedos, args.forcedsw):
         forced = args.forcedsw
     else:
         forced = None

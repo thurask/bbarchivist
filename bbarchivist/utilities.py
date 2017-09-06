@@ -162,6 +162,18 @@ def positive_integer(input_int):
     return int(input_int)
 
 
+def valid_method_poptxz(methodlist):
+    """
+    Remove .tar.xz support if system is too old.
+
+    :param methodlist: List of all methods.
+    :type methodlist: tuple(str)
+    """
+    if not new_enough(3):
+        methodlist = [x for x in bbconstants.METHODS if x != "txz"]
+    return methodlist
+
+
 def valid_method(method):
     """
     Check if compression method is valid, raise argparse error if it isn't.
@@ -170,8 +182,7 @@ def valid_method(method):
     :type method: str
     """
     methodlist = bbconstants.METHODS
-    if not new_enough(3):
-        methodlist = [x for x in bbconstants.METHODS if x != "txz"]
+    methodlist = valid_method_poptxz(methodlist)
     if method not in methodlist:
         info = "Invalid method {0}.".format(method)
         raise argparse.ArgumentError(argument=None, message=info)
@@ -1013,6 +1024,20 @@ def cappath_config_writer(cappath=None, homepath=None):
     cappath = grab_cap() if cappath is None else cappath
     results = {"path": cappath}
     iniconfig.generic_writer("cappath", results, homepath)
+
+
+def one_and_none(first, second):
+    """
+    Check if one element in a pair is None and one isn't.
+
+    :param first: To return True, this must be None.
+    :type first: str
+
+    :param second: To return True, this mustbe false.
+    :type second: str
+    """
+    sentinel = True if first is None and second is not None else False
+    return sentinel
 
 
 def def_args(dirs):

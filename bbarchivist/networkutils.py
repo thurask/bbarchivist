@@ -321,6 +321,15 @@ def tcl_salt():
     return "{0}{1}".format(str(millis), tail)
 
 
+def unpack_vdkey():
+    """
+    Draw the curtain back.
+    """
+    vdkey = b"eJwdjwEOwDAIAr8kKFr//7HhmqXp8AIIDrYAgg8byiUXrwRJRXja+d6iNxu0AhUooDCN9rd6rDLxmGIakUVWo3IGCTRWqCAt6X4jGEIUAxgN0eYWnp+LkpHQAg/PsO90ELsy0Npm/n2HbtPndFgGEV31R9OmT4O4nrddjc3Qt6nWscx7e+WRHq5UnOudtjw5skuV09pFhvmqnOEIs4ljPeel1wfLYUF4\n"
+    vdk = zlib.decompress(binascii.a2b_base64(vdkey))
+    return vdk.decode("utf-8")
+
+
 def vkhash(curef, tvver, fwid, salt, mode=4, fvver="AAM481"):
     """
     Generate hash from TCL update server variables.
@@ -343,9 +352,8 @@ def vkhash(curef, tvver, fwid, salt, mode=4, fvver="AAM481"):
     :param fvver: Initial software version, must be specific if downloading OTA deltas.
     :type fvver: str
     """
-    vdkey = b"eJwdjwEOwDAIAr8kKFr//7HhmqXp8AIIDrYAgg8byiUXrwRJRXja+d6iNxu0AhUooDCN9rd6rDLxmGIakUVWo3IGCTRWqCAt6X4jGEIUAxgN0eYWnp+LkpHQAg/PsO90ELsy0Npm/n2HbtPndFgGEV31R9OmT4O4nrddjc3Qt6nWscx7e+WRHq5UnOudtjw5skuV09pFhvmqnOEIs4ljPeel1wfLYUF4\n"
-    vdk = zlib.decompress(binascii.a2b_base64(vdkey))
-    query = "id={0}&salt={1}&curef={2}&fv={3}&tv={4}&type={5}&fw_id={6}&mode={7}&cltp={8}{9}".format("543212345000000", salt, curef, fvver, tvver, "Firmware", fwid, mode, 2010, vdk.decode("utf-8"))
+    vdk = unpack_vdkey()
+    query = "id={0}&salt={1}&curef={2}&fv={3}&tv={4}&type={5}&fw_id={6}&mode={7}&cltp={8}{9}".format("543212345000000", salt, curef, fvver, tvver, "Firmware", fwid, mode, 2010, vdk)
     engine = hashlib.sha1()
     engine.update(bytes(query, "utf-8"))
     return engine.hexdigest()

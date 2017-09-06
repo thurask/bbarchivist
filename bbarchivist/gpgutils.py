@@ -113,6 +113,33 @@ def gpgrunner_clean(gpg, workingdir, keyid=None, pword=None, selective=False):
             gpgwriter(gpg, xec, file, workingdir, selective, keyid, pword)
 
 
+def gpg_supps(selective=False):
+    """
+    Prepare list of support files.
+
+    :param selective: Filtering filenames/extensions. Default is false.
+    :type selective: bool
+    """
+    sup = bbconstants.SUPPS + (".txt",) if selective else bbconstants.SUPPS
+    return sup
+
+
+def gpg_prepends(file, selective=False):
+    """
+    Check if file matches certain criteria.
+
+    :param file: File inside workingdir that is being verified.
+    :type file: str
+
+    :param selective: Filtering filenames/extensions. Default is false.
+    :type selective: bool
+    """
+    aps = bbconstants.ARCSPLUS
+    pfx = bbconstants.PREFIXES
+    sentinel = (utilities.prepends(file, pfx, aps)) if selective else True
+    return sentinel
+
+
 def gpgwriter(gpg, xec, file, workingdir, selective=False, keyid=None, pword=None):
     """
     Write individual GPG signatures.
@@ -138,11 +165,9 @@ def gpgwriter(gpg, xec, file, workingdir, selective=False, keyid=None, pword=Non
     :param pword: Passphrase for given key.
     :type pword: str
     """
-    sup = bbconstants.SUPPS + (".txt",) if selective else bbconstants.SUPPS
+    sup = gpg_supps(selective)
     if not file.endswith(sup):
-        aps = bbconstants.ARCSPLUS
-        pfx = bbconstants.PREFIXES
-        if (utilities.prepends(file, pfx, aps)) if selective else True:
+        if gpg_prepends(file, selective):
             gpgwriter_clean(gpg, xec, file, workingdir, keyid, pword)
 
 

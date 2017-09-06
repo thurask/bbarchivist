@@ -674,6 +674,12 @@ class TestClassUtilitiesArgparse:
         """
         assert bu.droidlookup_devicetype(None) == None
 
+    def test_one_and_none(self):
+        """
+        Test checking a pair of arguments such that only one is None.
+        """
+        assert bu.one_and_none(None, "snek")
+
 
 class TestClassUtilitiesConfig:
     """
