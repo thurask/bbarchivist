@@ -830,17 +830,14 @@ def ptcrb_scraper(ptcrbid, session=None):
     :param session: Requests session object, default is created on the fly.
     :type session: requests.Session()
     """
-    baseurl = "https://ptcrb.com/vendor/complete/view_complete_request_guest.cfm?modelid={0}".format(
-        ptcrbid)
+    baseurl = "https://www.ptcrb.com/certified-devices/device-details/?model={0}".format(ptcrbid)
     sess = generic_session(session)
-    sess.headers.update({"Referer": "https://ptcrb.com/vendor/complete/complete_request.cfm"})
+    sess.headers.update({"User-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.79 Safari/537.36"})
     soup = generic_soup_parser(baseurl, sess)
-    text = soup.get_text()
-    text = text.replace("\r\n", " ")
-    prelimlist = re.findall("OS .+[^\\n]", text, re.IGNORECASE)
-    if not prelimlist:  # Priv
-        prelimlist = re.findall(r"[A-Z]{3}[0-9]{3}[\s]", text)
-    cleanlist = [ptcrb_item_cleaner(item) for item in prelimlist if not item.endswith("\r\n")]
+    certtable = soup.find_all("table")[1]
+    tds = certtable.find_all("td")[1::2]  # every other
+    prelimlist = [tdx.text for tdx in tds]
+    cleanlist = [ptcrb_item_cleaner(item.strip()) for item in prelimlist]
     return cleanlist
 
 
@@ -869,6 +866,8 @@ def ptcrb_item_cleaner(item):
     item = item.replace("<td>", "")
     item = item.replace("</td>", "")
     item = item.replace("\n", "")
+    item = item.replace("SW: OS", "OS")
+    item = item.replace("Software Version: OS", "OS")
     item = item.replace(" (SR", ", SR")
     item = re.sub(r"\s?\((.*)$", "", item)
     item = re.sub(r"\sSV.*$", "", item)
@@ -881,11 +880,13 @@ def ptcrb_item_cleaner(item):
         templist = item.split("OS")
         templist[0] = "OS"
         item = "".join([templist[0], templist[1]])
+    item = item.replace("SR10", "SR 10")
     item = item.replace("SR", "SW Release")
     item = item.replace(" Version:", ":")
     item = item.replace("Version ", " ")
     item = item.replace(":1", ": 1")
     item = item.replace(", ", " ")
+    item = item.replace(",", " ")
     item = item.replace("Software", "SW")
     item = item.replace("  ", " ")
     item = item.replace("OS ", "OS: ")
@@ -894,11 +895,15 @@ def ptcrb_item_cleaner(item):
     spaclist = item.split(" ")
     if len(spaclist) > 1:
         spaclist[1] = space_pad(spaclist[1], 11)
+    if len(spaclist) > 3:
         spaclist[3] = space_pad(spaclist[3], 11)
-    else:
-        spaclist.insert(0, "OS:")
     item = " ".join(spaclist)
     item = item.strip()
+    item = item.replace("\r", "")
+    if item.startswith("10"):
+        item = "OS: {0}".format(item)
+    item = item.replace(":    ", ": ")
+    item = item.replace(":   ", ": ")
     return item
 
 

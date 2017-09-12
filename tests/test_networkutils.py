@@ -120,7 +120,7 @@ def ps_good_mock(url, request):
     """
     Mock for PTCRB lookup, best case.
     """
-    thebody = "CER-59665-001 - Rev2-x05-05\nOS Version: 10.3.0.1052 Radio Version: 10.3.0.1053 SW Release Version: 10.3.0.675\nInitial\nAug 18, 2014"
+    thebody = "<table></table><table><td>CER-59665-001 - Rev2-x05-05</td><td>10.3.3.2205</td><td>snek</td><td>OS Version: 10.3.0.1052 Radio Version: 10.3.0.1053 SW Release Version: 10.3.0.675</td></table>"
     return {'status_code': 200, 'content': thebody}
 
 
@@ -129,7 +129,7 @@ def ps_bad_mock(url, request):
     """
     Mock for PTCRB lookup, worst case.
     """
-    thebody = "CER-59665-001 - Rev2-x05-05\nOS Version: 10.3.2.698 Radio Version: 10.3.2.699 SW Release Version: 10.3.2.700 OS Version: 10.3.2.698 Radio Version: 10.3.2.699 SW Release Version: 10.3.2.700\nInitial\nSma 1, 2016"
+    thebody = "<table></table><table><td>CER-59665-001 - Rev2-x05-05</td><td>OS Version: 10.3.2.698 Radio Version: 10.3.2.699 SW Release Version: 10.3.2.700 OS Version: 10.3.2.698 Radio Version: 10.3.2.699 SW Release Version: 10.3.2.700</td></table>"
     return {'status_code': 200, 'content': thebody}
 
 
@@ -138,7 +138,7 @@ def ps_priv_mock(url, request):
     """
     Mock for PTCRB lookup, Android cert.
     """
-    thebody = "HW Version CER-62542-001 Rev 7-x08-01	AAD027\nInitial\nAug 18, 2014"
+    thebody = "<table></table><table><td>HW Version CER-62542-001 Rev 7-x08-01</td><td>AAD027</td></table>"
     return {'status_code': 200, 'content': thebody}
 
 
@@ -706,7 +706,7 @@ class TestClassNetworkutilsParsing:
         """
         with httmock.HTTMock(ps_good_mock):
             results = bn.ptcrb_scraper("RGY181LW")
-            assert "10.3.0.1052" in results[0]
+            assert "10.3.3.2205" in results[0]
 
     def test_ptcrb_scraper_bad(self):
         """
