@@ -51,7 +51,7 @@ def grab_capini(datafile):
         return bbconstants.CAP.location  # no ini cap
     else:
         cappath_config_writer(os.path.abspath(afile))
-        return os.path.abspath(afile)  # ini cap:
+        return os.path.abspath(afile)  # ini cap
 
 
 def grab_cap():
@@ -369,7 +369,7 @@ def wsz_filecount():
     """
     Get count of 7-Zip executables in local folder.
     """
-    filecount = len([x for x in os.listdir(os.getcwd()) if x in ["7za.exe", "7z.exe"]])
+    filecount = len([x for x in os.listdir(os.getcwd()) if x in ["7za.exe", "7za64.exe"]])
     return filecount
 
 
@@ -381,7 +381,7 @@ def wsz_local_good(talkative=False):
     :type talkative: bool
     """
     talkaprint("7ZIP USING LOCAL FILES", talkative)
-    szexe = "7za.64.exe" if is_amd64() else "7za.exe"
+    szexe = "7za64.exe" if is_amd64() else "7za.exe"
     return szexe
 
 

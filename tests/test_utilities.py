@@ -135,6 +135,34 @@ class TestClassUtilities7z:
             with mock.patch("bbarchivist.compat.where_which", mock.MagicMock(side_effect=ImportError)):
                 assert not bu.prep_seven_zip(True)
 
+    def test_wsz_fail(self):
+        """
+        Test failing to get 7-Zip on Windows.
+        """
+        with mock.patch('bbarchivist.utilities.wsz_registry', mock.MagicMock(side_effect=OSError)):
+            with mock.patch('platform.machine', mock.MagicMock(return_value="AMD64")):
+                assert bu.win_seven_zip(True) == "7za64.exe"
+
+    def test_wsz_local_good(self):
+        """
+        Test getting 7-Zip exe name.
+        """
+        with mock.patch('bbarchivist.utilities.wsz_filecount', mock.MagicMock(return_value=2)):
+            with mock.patch('platform.machine', mock.MagicMock(return_value="AMD64")):
+                assert bu.win_seven_zip_local() == "7za64.exe"
+
+    def test_wsz_local_bad(self):
+        """
+        Test failing to get 7-Zip exe name.
+        """
+        with mock.patch('bbarchivist.utilities.wsz_filecount', mock.MagicMock(return_value=1)):
+            assert bu.win_seven_zip_local() == "error"
+
+    def test_wsz_filecount(self):
+        """
+        Test counting number of 7-Zip local executables.
+        """
+        assert bu.wsz_filecount() == 2
 
 class TestClassUtilitiesPlatform:
     """
@@ -175,6 +203,20 @@ class TestClassUtilitiesPlatform:
         """
         with mock.patch('bbarchivist.compat.enum_cpus', mock.MagicMock(return_value="123")):
             assert bu.get_core_count() == "123"
+
+    def test_core_count_fail(self):
+        """
+        Test core count, failure case.
+        """
+        with mock.patch('bbarchivist.compat.enum_cpus', mock.MagicMock(side_effect=NotImplementedError)):
+            assert bu.get_core_count() == "1"
+
+    def test_core_count_backup(self):
+        """
+        Test core count, fallback case.
+        """
+        with mock.patch('bbarchivist.compat.enum_cpus', mock.MagicMock(return_value=None)):
+            assert bu.get_core_count() == "1"
 
     def test_new_enough_new(self):
         """
@@ -278,7 +320,7 @@ class TestClassUtilities:
         with mock.patch("bbarchivist.utilities.cappath_config_writer", mock.MagicMock(side_effect=None)):
             with mock.patch("bbarchivist.utilities.cappath_config_loader", mock.MagicMock(return_value=os.path.join(os.getcwd(), "cap.dat"))):
                 with mock.patch("glob.glob", mock.MagicMock(side_effect=glob_side_effect)):
-                    assert os.path.dirname(bu.grab_cap()) == os.getcwd()
+                    assert bu.grab_cap() == os.path.join(os.getcwd(), "cap.dat")
 
     def test_grab_cap_system(self):
         """
@@ -287,7 +329,28 @@ class TestClassUtilities:
         with mock.patch("glob.glob", mock.MagicMock(side_effect=IndexError)):
             with mock.patch("bbarchivist.utilities.cappath_config_writer", mock.MagicMock(side_effect=None)):
                 with mock.patch("bbarchivist.utilities.cappath_config_loader", mock.MagicMock(return_value=None)):
-                    assert os.path.dirname(bu.grab_cfp()) == os.path.dirname(bc.CAP.location)
+                    assert bu.grab_cfp() == bc.CFP.location
+
+    def test_grab_capini_good(self):
+        """
+        Test finding cap location, good mock.
+        """
+        cap = bc.Datafile("3.11.0.20", "cap", 9252412)
+        cap.location = os.path.join(os.getcwd(), cap.filename)
+        with mock.patch('bbarchivist.utilities.cappath_config_loader', mock.MagicMock(return_value=os.path.join(os.getcwd(), "cap-3.11.0.20.dat"))):
+            with mock.patch("bbarchivist.utilities.cappath_config_writer", mock.MagicMock(side_effect=None)):
+                with mock.patch("glob.glob", mock.MagicMock(return_value=[os.path.join(os.getcwd(), "cap-3.11.0.20.dat")])):
+                    assert bu.grab_capini(cap) == os.path.join(os.getcwd(), "cap-3.11.0.20.dat")
+
+    def test_grab_capini_bad(self):
+        """
+        Test finding cap location, good mock.
+        """
+        cap = bc.Datafile("3.11.0.20", "cap", 9252412)
+        cap.location = os.path.join(os.getcwd(), cap.filename)
+        with mock.patch("bbarchivist.utilities.cappath_config_loader", mock.MagicMock(side_effect=IndexError)):
+                with mock.patch("bbarchivist.utilities.cappath_config_writer", mock.MagicMock(side_effect=None)):
+                    assert bu.grab_capini(cap) == bc.CAP.location
 
     def test_grab_cfp(self):
         """
