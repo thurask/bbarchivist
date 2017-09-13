@@ -565,8 +565,8 @@ def generate_tclloader_sig(sigin, sigout):
     :param sigout: Directory that files are to be copied to.
     :type sigout: str
     """
-    shutil.copy(os.path.join(sigin, "boot.img.production.sig"), os.path.join(sigout, "boot.img.sig"))
-    shutil.copy(os.path.join(sigin, "recovery.img.production.sig"), os.path.join(sigout, "recovery.img.sig"))
+    for entry in ["boot", "recovery"]:
+        shutil.copy(os.path.join(sigin, "{0}.img.production.sig".format(entry)), os.path.join(sigout, "{0}.img.sig".format(entry)))
 
 
 def generate_tclloader_csig(sigin, sigout, carrier):
@@ -582,8 +582,8 @@ def generate_tclloader_csig(sigin, sigout, carrier):
     :param carrier: Carrier to check: att, sprint, china, vzw
     :type carrier: str
     """
-    shutil.copy(os.path.join(sigin, "boot.img.production-{0}.sig".format(carrier)), os.path.join(sigout, "boot.img{0}.sig".format(carrier)))
-    shutil.copy(os.path.join(sigin, "recovery.img.production-{0}.sig".format(carrier)), os.path.join(sigout, "recovery.img{0}.sig".format(carrier)))
+    for entry in ["boot", "recovery"]:
+        shutil.copy(os.path.join(sigin, "{1}.img.production-{0}.sig".format(carrier, entry)), os.path.join(sigout, "{1}.img{0}.sig".format(carrier, entry)))
 
 
 def generate_tclloader_carriers(sigin, sigout):
@@ -632,6 +632,30 @@ def generate_tclloader_mbn(mdnin, mdnout):
     point_point_bulk(mdnin, mdnout, files)
 
 
+def generate_tclloader_omniset(omnin, omnilist, prefix, suffix, filt):
+    """
+    Generic function to generate sets.
+
+    :param omnin: Directory containing files to copy.
+    :type omnin: str
+
+    :param omnilist: List of variants.
+    :type omnilist: list(str)
+
+    :param prefix: Prefix, before items in list.
+    :type prefix: str
+
+    :param suffix: Suffix, after items in list.
+    :type suffix: str
+
+    :param filt: Filter, required to pick file out of directory listing.
+    :type filt: str
+    """
+    omfiles = set(os.path.join(omnin, "{1}{0}{2}".format(omni, prefix, suffix)) for omni in omnilist)
+    infiles = set(os.path.join(omnin, filex) for filex in os.listdir(omnin) if filt in filex)
+    return omfiles, infiles
+
+
 def generate_tclloader_oemset(oemin, oems):
     """
     Generate sets for OEM variants.
@@ -642,8 +666,7 @@ def generate_tclloader_oemset(oemin, oems):
     :param oems: List of OEM variants.
     :type oems: list(str)
     """
-    ofiles = set(os.path.join(oemin, "{0}.img".format(oem)) for oem in oems)
-    infiles = set(os.path.join(oemin, filex) for filex in os.listdir(oemin) if "oem_" in filex)
+    ofiles, infiles = generate_tclloader_omniset(oemin, oems, "", ".img", "oem_")
     return ofiles, infiles
 
 
@@ -673,8 +696,7 @@ def generate_tclloader_radset(radin, rads):
     :param rads: List of radio variants.
     :type rads: list(str)
     """
-    rfiles = set(os.path.join(radin, "NON-HLOS-{0}.bin".format(rad)) for rad in rads)
-    infiles = set(os.path.join(radin, filex) for filex in os.listdir(radin) if "NON-HLOS-" in filex)
+    rfiles, infiles = generate_tclloader_omniset(radin, rads, "NON-HLOS-", ".bin", "NON-HLOS-")
     return rfiles, infiles
 
 
