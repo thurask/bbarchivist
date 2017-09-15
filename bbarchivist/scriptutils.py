@@ -840,7 +840,7 @@ def tcl_prd_scan(curef, download=False, mode=4, fvver="AAM481", original=True):
     updatetext = networkutils.tcl_download_request(curef, tvver, firmwareid, salt, vkhsh, sess, mode, fvver)
     downloadurl, encslave = networkutils.parse_tcl_download_request(updatetext)
     statcode = networkutils.getcode(downloadurl, sess)
-    filename = tcl_delta_filename(curef, tvver, fvver, filename, original)
+    filename = tcl_delta_filename(curef, fvver, tvver, filename, original)
     tcl_prd_print(downloadurl, filename, statcode, encslave, sess)
     if statcode == 200 and download:
         tcl_download(downloadurl, filename, filesize, filehash)
