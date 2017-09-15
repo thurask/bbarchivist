@@ -32,7 +32,7 @@ def grab_args():
         "-d",
         "--download",
         dest="download",
-        help="Download update, assumes -p",
+        help="Download update, assumes single PRD",
         action="store_true",
         default=False)
     args = parser.parse_args(sys.argv[1:])
