@@ -811,7 +811,7 @@ def tcl_download(downloadurl, filename, filesize, filehash):
         print("HASH FAILED!")
 
 
-def tcl_prd_scan(curef, download=False, mode=4, fvver="AAM481"):
+def tcl_prd_scan(curef, download=False, mode=4, fvver="AAM481", original=True):
     """
     Scan one PRD and produce download URL and filename.
 
@@ -826,6 +826,9 @@ def tcl_prd_scan(curef, download=False, mode=4, fvver="AAM481"):
 
     :param fvver: Initial software version, must be specific if downloading OTA deltas.
     :type fvver: str
+
+    :param original: If we'll download the file with its original filename instead of delta-safe. Default is True.
+    :type original: bool
     """
     sess = requests.Session()
     ctext = networkutils.tcl_check(curef, sess, mode, fvver)
@@ -837,9 +840,35 @@ def tcl_prd_scan(curef, download=False, mode=4, fvver="AAM481"):
     updatetext = networkutils.tcl_download_request(curef, tvver, firmwareid, salt, vkhsh, sess, mode, fvver)
     downloadurl, encslave = networkutils.parse_tcl_download_request(updatetext)
     statcode = networkutils.getcode(downloadurl, sess)
+    filename = tcl_delta_filename(curef, tvver, fvver, filename, original)
     tcl_prd_print(downloadurl, filename, statcode, encslave, sess)
     if statcode == 200 and download:
         tcl_download(downloadurl, filename, filesize, filehash)
+
+
+def tcl_delta_filename(curef, fvver, tvver, filename, original=True):
+    """
+    Generate compatible filenames for deltas, if needed.
+
+    :param curef: PRD of the phone variant to check.
+    :type curef: str
+
+    :param fvver: Initial software version.
+    :type fvver: str
+
+    :param tvver: Target software version.
+    :type tvver: str
+
+    :param filename: File name from download URL, passed through if not changing filename.
+    :type filename: str
+
+    :param original: If we'll download the file with its original filename instead of delta-safe. Default is True.
+    :type original: bool
+    """
+    if not original:
+        prdver = curef.split("-")[1]
+        filename = "JSU_{0}-{1}to{2}.zip".format(prdver, fvver, tvver)
+    return filename
 
 
 def tcl_prd_print(downloadurl, filename, statcode, encslave, session):

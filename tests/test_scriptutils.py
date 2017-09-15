@@ -323,6 +323,12 @@ class TestClassScriptutilsTCL:
             bs.tcl_prd_print("https://snek.snek/update.zip", "update.zip", 200, "127.0.0.1", Session())
             assert "HEADER FOUND" in capsys.readouterr()[0]
 
+    def test_tcl_deltaname(self):
+        """
+        Test generating delta-safe filenames.
+        """
+        assert bs.tcl_delta_filename("PRD-63116-123", "AAM481", "AAO472", "update.zip", False) == "JSU_63116-AAM481toAAO472.zip"
+
 
 class TestClassScriptutilsSoftware:
     """
