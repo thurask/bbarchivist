@@ -867,7 +867,7 @@ def tcl_delta_filename(curef, fvver, tvver, filename, original=True):
     """
     if not original:
         prdver = curef.split("-")[1]
-        filename = "JSU_{0}-{1}to{2}.zip".format(prdver, fvver, tvver)
+        filename = "JSU_PRD-{0}-{1}to{2}.zip".format(prdver, fvver, tvver)
     return filename
 
 

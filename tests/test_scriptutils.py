@@ -327,7 +327,7 @@ class TestClassScriptutilsTCL:
         """
         Test generating delta-safe filenames.
         """
-        assert bs.tcl_delta_filename("PRD-63116-123", "AAM481", "AAO472", "update.zip", False) == "JSU_63116-AAM481toAAO472.zip"
+        assert bs.tcl_delta_filename("PRD-63116-123", "AAM481", "AAO472", "update.zip", False) == "JSU_PRD-63116-AAM481toAAO472.zip"
 
 
 class TestClassScriptutilsSoftware:
