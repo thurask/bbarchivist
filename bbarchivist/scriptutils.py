@@ -72,39 +72,15 @@ def default_parser(name=None, desc=None, flags=None, vers=None):
     """
     if vers is None:
         vers = longversion()
-    parser = argparse.ArgumentParser(
-        prog=name,
-        description=desc,
-        epilog="https://github.com/thurask/bbarchivist")
-    parser.add_argument(
-        "-v",
-        "--version",
-        action="version",
-        version="{0} {1} committed {2}".format(parser.prog, vers[0], vers[1]))
+    parser = argparse.ArgumentParser(prog=name, description=desc, epilog="https://github.com/thurask/bbarchivist")
+    parser.add_argument("-v", "--version", action="version", version="{0} {1} committed {2}".format(parser.prog, vers[0], vers[1]))
     if flags is not None:
         if "folder" in flags:
-            parser.add_argument(
-                "-f",
-                "--folder",
-                dest="folder",
-                help="Working folder",
-                default=None,
-                metavar="DIR",
-                type=utilities.file_exists)
+            parser.add_argument("-f", "--folder", dest="folder", help="Working folder", default=None, metavar="DIR", type=utilities.file_exists)
         if "osr" in flags:
-            parser.add_argument(
-                "os",
-                help="OS version")
-            parser.add_argument(
-                "radio",
-                help="Radio version, 10.x.y.zzzz",
-                nargs="?",
-                default=None)
-            parser.add_argument(
-                "swrelease",
-                help="Software version, 10.x.y.zzzz",
-                nargs="?",
-                default=None)
+            parser.add_argument("os", help="OS version")
+            parser.add_argument("radio", help="Radio version, 10.x.y.zzzz", nargs="?", default=None)
+            parser.add_argument("swrelease", help="Software version, 10.x.y.zzzz", nargs="?", default=None)
     return parser
 
 
@@ -811,7 +787,7 @@ def tcl_download(downloadurl, filename, filesize, filehash):
         print("HASH FAILED!")
 
 
-def tcl_prd_scan(curef, download=False, mode=4, fvver="AAM481", original=True):
+def tcl_prd_scan(curef, download=False, mode=4, fvver="AAA000", original=True):
     """
     Scan one PRD and produce download URL and filename.
 

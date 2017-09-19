@@ -268,8 +268,26 @@ def clean_availability(results, server):
     return rel, avail
 
 
+def check_prep(curef, mode=4, fvver="AAA000"):
+    """
+    Prepare variables for TCL update check.
+
+    :param curef: PRD of the phone variant to check.
+    :type curef: str
+
+    :param mode: 4 if downloading autoloaders, 2 if downloading OTA deltas.
+    :type mode: int
+
+    :param fvver: Initial software version, must be specific if downloading OTA deltas.
+    :type fvver: str
+    """
+    geturl = "http://g2master-us-east.tctmobile.com/check.php"
+    params = {"id": "543212345000000", "curef": curef, "fv": fvver, "mode": mode, "type": "Firmware", "cltp": 2010, "cktp": 2, "rtd": 1, "chnl": 2}
+    return geturl, params
+
+
 @pem_wrapper
-def tcl_check(curef, session=None, mode=4, fvver="AAM481"):
+def tcl_check(curef, session=None, mode=4, fvver="AAA000"):
     """
     Check TCL server for updates.
 
@@ -286,8 +304,7 @@ def tcl_check(curef, session=None, mode=4, fvver="AAM481"):
     :type fvver: str
     """
     sess = generic_session(session)
-    geturl = "http://g2master-us-east.tctmobile.com/check.php"
-    params = {"id": "543212345000000", "curef": curef, "fv": fvver, "mode": mode, "type": "Firmware", "cltp": 2010, "cktp": 2, "rtd": 1, "chnl": 2}
+    geturl, params = check_prep(curef, mode, fvver)
     req = sess.get(geturl, params=params)
     if req.status_code == 200:
         return req.text
@@ -330,7 +347,7 @@ def unpack_vdkey():
     return vdk.decode("utf-8")
 
 
-def vkhash(curef, tvver, fwid, salt, mode=4, fvver="AAM481"):
+def vkhash(curef, tvver, fwid, salt, mode=4, fvver="AAA000"):
     """
     Generate hash from TCL update server variables.
 
@@ -359,8 +376,40 @@ def vkhash(curef, tvver, fwid, salt, mode=4, fvver="AAM481"):
     return engine.hexdigest()
 
 
+def download_request_prep(curef, tvver, fwid, salt, vkh, mode=4, fvver="AAA000"):
+    """
+    Prepare variables for download server check.
+
+    :param curef: PRD of the phone variant to check.
+    :type curef: str
+
+    :param tvver: Target software version.
+    :type tvver: str
+
+    :param fwid: Firmware ID for desired download file.
+    :type fwid: str
+
+    :param salt: Salt hash.
+    :type salt: str
+
+    :param vkh: VDKey-based hash.
+    :type vkh: str
+
+    :param mode: 4 if downloading autoloaders, 2 if downloading OTA deltas.
+    :type mode: int
+
+    :param fvver: Initial software version, must be specific if downloading OTA deltas.
+    :type fvver: str
+    """
+    posturl = "http://g2master-us-east.tctmobile.com/download_request.php"
+    params = {"id": "543212345000000", "curef": curef, "fv": fvver, "mode": mode, "type": "Firmware", "tv": tvver, "fw_id": fwid, "salt": salt, "vk": vkh, "cltp": 2010}
+    if mode == 4:
+        params["foot"] = 1
+    return posturl, params
+
+
 @pem_wrapper
-def tcl_download_request(curef, tvver, fwid, salt, vkh, session=None, mode=4, fvver="AAM481"):
+def tcl_download_request(curef, tvver, fwid, salt, vkh, session=None, mode=4, fvver="AAA000"):
     """
     Check TCL server for download URLs.
 
@@ -389,10 +438,7 @@ def tcl_download_request(curef, tvver, fwid, salt, vkh, session=None, mode=4, fv
     :type fvver: str
     """
     sess = generic_session(session)
-    posturl = "http://g2master-us-east.tctmobile.com/download_request.php"
-    params = {"id": "543212345000000", "curef": curef, "fv": fvver, "mode": mode, "type": "Firmware", "tv": tvver, "fw_id": fwid, "salt": salt, "vk": vkh, "cltp": 2010}
-    if mode == 4:
-        params["foot"] = 1
+    posturl, params = download_request_prep(curef, tvver, fwid, salt, vkh, mode, fvver)
     req = sess.post(posturl, data=params)
     if req.status_code == 200:
         return req.text
@@ -419,6 +465,23 @@ def parse_tcl_download_request(body, mode=4):
     return "http://{0}{1}".format(slave, dlurl), encslave
 
 
+def encrypt_header_prep(address, encslave):
+    """
+    Prepare variables for encrypted header check.
+
+    :param address: File URL minus host.
+    :type address: str
+
+    :param encslave: Server hosting header script.
+    :type encslave: str
+    """
+    encs = {b"YWNjb3VudA==" : b"emhlbmdodWEuZ2Fv", b"cGFzc3dvcmQ=": b"cWFydUQ0b2s="}
+    params = {base64.b64decode(key): base64.b64decode(val) for key, val in encs.items()}
+    params[b"address"] = bytes(address, "utf-8")
+    posturl = "http://{0}/encrypt_header.php".format(encslave)
+    return posturl, params
+
+
 @pem_wrapper
 def encrypt_header(address, encslave, session=None):
     """
@@ -434,11 +497,8 @@ def encrypt_header(address, encslave, session=None):
     :type session: requests.Session()
     """
     sess = generic_session(session)
-    encs = {b"YWNjb3VudA==" : b"emhlbmdodWEuZ2Fv", b"cGFzc3dvcmQ=": b"cWFydUQ0b2s="}
-    params = {base64.b64decode(key): base64.b64decode(val) for key, val in encs.items()}
-    params[b"address"] = bytes(address, "utf-8")
-    url = "http://" + encslave + "/encrypt_header.php"
-    req = sess.post(url, data=params)
+    posturl, params = encrypt_header_prep(address, encslave)
+    req = sess.post(posturl, data=params)
     if req.status_code == 206:  # partial
         contentlength = int(req.headers["Content-Length"])
         sentinel = "HEADER FOUND" if contentlength == 4194320 else "NO HEADER FOUND"
@@ -856,6 +916,36 @@ def space_pad(instring, minlength):
     return instring
 
 
+def ptcrb_cleaner_multios(item):
+    """
+    Discard multiple entries for "OS".
+
+    :param item: The item to clean.
+    :type item: str
+    """
+    if item.count("OS") > 1:
+        templist = item.split("OS")
+        templist[0] = "OS"
+        item = "".join([templist[0], templist[1]])
+    return item
+
+
+def ptcrb_cleaner_spaces(item):
+    """
+    Pad item with spaces to the right length.
+
+    :param item: The item to clean.
+    :type item: str
+    """
+    spaclist = item.split(" ")
+    if len(spaclist) > 1:
+        spaclist[1] = space_pad(spaclist[1], 11)
+    if len(spaclist) > 3:
+        spaclist[3] = space_pad(spaclist[3], 11)
+    item = " ".join(spaclist)
+    return item
+
+
 def ptcrb_item_cleaner(item):
     """
     Cleanup poorly formatted PTCRB entries written by an intern.
@@ -876,10 +966,7 @@ def ptcrb_item_cleaner(item):
     item = item.replace(";", "")
     item = item.replace("version", "Version")
     item = item.replace("Verison", "Version")
-    if item.count("OS") > 1:
-        templist = item.split("OS")
-        templist[0] = "OS"
-        item = "".join([templist[0], templist[1]])
+    item = ptcrb_cleaner_multios(item)
     item = item.replace("SR10", "SR 10")
     item = item.replace("SR", "SW Release")
     item = item.replace(" Version:", ":")
@@ -892,12 +979,7 @@ def ptcrb_item_cleaner(item):
     item = item.replace("OS ", "OS: ")
     item = item.replace("Radio ", "Radio: ")
     item = item.replace("Release ", "Release: ")
-    spaclist = item.split(" ")
-    if len(spaclist) > 1:
-        spaclist[1] = space_pad(spaclist[1], 11)
-    if len(spaclist) > 3:
-        spaclist[3] = space_pad(spaclist[3], 11)
-    item = " ".join(spaclist)
+    item = ptcrb_cleaner_spaces(item)
     item = item.strip()
     item = item.replace("\r", "")
     if item.startswith("10"):

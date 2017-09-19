@@ -311,7 +311,7 @@ def tcl_check_mock(url, request):
     """
     Mock for TCL update checking.
     """
-    badbody = b'<?xml version="1.0" encoding="utf-8"?>\n<GOTU><UPDATE_DESC>0</UPDATE_DESC><ENCODING_ERROR>0</ENCODING_ERROR><CUREF>PRD-63764-001</CUREF><VERSION><TYPE>4</TYPE><FV>AAM481</FV><TV>AAM693</TV><SVN>20170717_173202</SVN><RELEASE_INFO><year>2017</year><month>07</month><day>17</day><hour>17</hour><minute>29</minute><second>20</second><timezone>GMT 8</timezone><publisher>jin.zeng.hz</publisher></RELEASE_INFO></VERSION><FIRMWARE><FW_ID>258098</FW_ID><FILESET_COUNT>1</FILESET_COUNT><FILESET><FILE><FILENAME>bbry_qc8953_sfi-user-production_signed-AAM693.zip</FILENAME><FILE_ID>261497</FILE_ID><SIZE>2712821341</SIZE><CHECKSUM>97a9f933c70fbe7c106037aaba19c6aedd9136d2</CHECKSUM><FILE_VERSION>1</FILE_VERSION><INDEX>0</INDEX></FILE></FILESET></FIRMWARE><DESCRIPTION/></GOTU>\n'
+    badbody = b'<?xml version="1.0" encoding="utf-8"?>\n<GOTU><UPDATE_DESC>0</UPDATE_DESC><ENCODING_ERROR>0</ENCODING_ERROR><CUREF>PRD-63764-001</CUREF><VERSION><TYPE>4</TYPE><FV>AAA000</FV><TV>AAM693</TV><SVN>20170717_173202</SVN><RELEASE_INFO><year>2017</year><month>07</month><day>17</day><hour>17</hour><minute>29</minute><second>20</second><timezone>GMT 8</timezone><publisher>jin.zeng.hz</publisher></RELEASE_INFO></VERSION><FIRMWARE><FW_ID>258098</FW_ID><FILESET_COUNT>1</FILESET_COUNT><FILESET><FILE><FILENAME>bbry_qc8953_sfi-user-production_signed-AAM693.zip</FILENAME><FILE_ID>261497</FILE_ID><SIZE>2712821341</SIZE><CHECKSUM>97a9f933c70fbe7c106037aaba19c6aedd9136d2</CHECKSUM><FILE_VERSION>1</FILE_VERSION><INDEX>0</INDEX></FILE></FILESET></FIRMWARE><DESCRIPTION/></GOTU>\n'
     return {'status_code': 200, 'content': badbody}
 
 
