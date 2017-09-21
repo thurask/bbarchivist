@@ -18,7 +18,7 @@ import zlib  # encoding
 import requests  # downloading
 from bs4 import BeautifulSoup  # scraping
 from bbarchivist import utilities  # parse filesize
-from bbarchivist.bbconstants import SERVERS  # lookup servers
+from bbarchivist.bbconstants import SERVERS, TCLMASTERS  # lookup servers
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -268,7 +268,26 @@ def clean_availability(results, server):
     return rel, avail
 
 
-def check_prep(curef, mode=4, fvver="AAA000"):
+def tcl_master():
+    """
+    Get a random master server.
+    """
+    return random.choice(TCLMASTERS)
+
+
+def tcl_default_id(devid):
+    """
+    Get an IMEI or a serial number or something.
+
+    :param devid: Return default if this is None.
+    :type devid: str
+    """
+    if devid is None:
+        devid = "543212345000000"
+    return devid
+
+
+def check_prep(curef, mode=4, fvver="AAA000", cltp=2010, cktp=2, rtd=1, chnl=2, devid=None):
     """
     Prepare variables for TCL update check.
 
@@ -280,9 +299,25 @@ def check_prep(curef, mode=4, fvver="AAA000"):
 
     :param fvver: Initial software version, must be specific if downloading OTA deltas.
     :type fvver: str
+
+    :param cltp: 2010 to always show latest version, 10 to show actual updates. Default is 2010.
+    :type cltp: int
+
+    :param cktp: 2 if checking manually, 1 if checking automatically. Default is 2.
+    :type cktp: int
+
+    :param rtd: 2 if rooted, 1 if not. Default is 1.
+    :type rtd: int
+
+    :param chnl: 2 if checking on WiFi, 1 if checking on mobile. Default is 2.
+    :type chnl: int
+
+    :param devid: Serial number/IMEI. Default is fake, not that it matters.
+    :type devid: str
     """
-    geturl = "http://g2master-us-east.tctmobile.com/check.php"
-    params = {"id": "543212345000000", "curef": curef, "fv": fvver, "mode": mode, "type": "Firmware", "cltp": 2010, "cktp": 2, "rtd": 1, "chnl": 2}
+    devid = tcl_default_id(devid)
+    geturl = "http://{0}/check.php".format(tcl_master())
+    params = {"id": devid, "curef": curef, "fv": fvver, "mode": mode, "type": "Firmware", "cltp": cltp, "cktp": cktp, "rtd": rtd, "chnl": chnl}
     return geturl, params
 
 
@@ -347,7 +382,7 @@ def unpack_vdkey():
     return vdk.decode("utf-8")
 
 
-def vkhash(curef, tvver, fwid, salt, mode=4, fvver="AAA000"):
+def vkhash(curef, tvver, fwid, salt, mode=4, fvver="AAA000", cltp=2010, devid=None):
     """
     Generate hash from TCL update server variables.
 
@@ -368,15 +403,22 @@ def vkhash(curef, tvver, fwid, salt, mode=4, fvver="AAA000"):
 
     :param fvver: Initial software version, must be specific if downloading OTA deltas.
     :type fvver: str
+
+    :param cltp: 2010 to always show latest version, 10 to show actual updates. Default is 2010.
+    :type cltp: int
+
+    :param devid: Serial number/IMEI. Default is fake, not that it matters.
+    :type devid: str
     """
     vdk = unpack_vdkey()
-    query = "id={0}&salt={1}&curef={2}&fv={3}&tv={4}&type={5}&fw_id={6}&mode={7}&cltp={8}{9}".format("543212345000000", salt, curef, fvver, tvver, "Firmware", fwid, mode, 2010, vdk)
+    devid = tcl_default_id(devid)
+    query = "id={0}&salt={1}&curef={2}&fv={3}&tv={4}&type={5}&fw_id={6}&mode={7}&cltp={8}{9}".format(devid, salt, curef, fvver, tvver, "Firmware", fwid, mode, cltp, vdk)
     engine = hashlib.sha1()
     engine.update(bytes(query, "utf-8"))
     return engine.hexdigest()
 
 
-def download_request_prep(curef, tvver, fwid, salt, vkh, mode=4, fvver="AAA000"):
+def download_request_prep(curef, tvver, fwid, salt, vkh, mode=4, fvver="AAA000", cltp=2010, devid=None):
     """
     Prepare variables for download server check.
 
@@ -400,9 +442,16 @@ def download_request_prep(curef, tvver, fwid, salt, vkh, mode=4, fvver="AAA000")
 
     :param fvver: Initial software version, must be specific if downloading OTA deltas.
     :type fvver: str
+
+    :param cltp: 2010 to always show latest version, 10 to show actual updates. Default is 2010.
+    :type cltp: int
+
+    :param devid: Serial number/IMEI. Default is fake, not that it matters.
+    :type devid: str
     """
-    posturl = "http://g2master-us-east.tctmobile.com/download_request.php"
-    params = {"id": "543212345000000", "curef": curef, "fv": fvver, "mode": mode, "type": "Firmware", "tv": tvver, "fw_id": fwid, "salt": salt, "vk": vkh, "cltp": 2010}
+    devid = tcl_default_id(devid)
+    posturl = "http://{0}/download_request.php".format(tcl_master())
+    params = {"id": devid, "curef": curef, "fv": fvver, "mode": mode, "type": "Firmware", "tv": tvver, "fw_id": fwid, "salt": salt, "vk": vkh, "cltp": cltp}
     if mode == 4:
         params["foot"] = 1
     return posturl, params

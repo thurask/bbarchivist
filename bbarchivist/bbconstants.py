@@ -95,3 +95,11 @@ DEVICES = (
     "Z30/CLASSIC/LEAP",
     "Z3",
     "PASSPORT")
+#: Master servers.
+TCLMASTERS = (
+    "g2master-us-east.tctmobile.com",
+    "g2master-us-west.tctmobile.com",
+    "g2master-eu-west.tctmobile.com",
+    "g2master-ap-south.tctmobile.com",
+    "g2master-ap-north.tctmobile.com",
+    "g2master-sa-east.tctmobile.com")
