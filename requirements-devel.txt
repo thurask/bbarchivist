@@ -1,16 +1,18 @@
+##GENERAL
 requests>=2.10.0
-python-gnupg>=0.3.9
+python-gnupg>=0.4.1
 #if you're using GnuPG 2.1: hg+https://bitbucket.org/vinay.sajip/python-gnupg
 defusedxml>=0.4.1
 shutilwhich>=1.1.0
+##TESTING
 beautifulsoup4>=4.5.3
 mock>=2.0.0
 pytest>=2.9.2
 #if you're using Python 3.6 and Windows, make sure colorama >= 0.3.8
 pytest-cov>=2.4.0
 httmock>=1.2.6
+##DISTRIBUTION
 #sphinx>0.0
 #sphinx_rtd_theme>0.0
-#pyinstaller>0.0
-#if you're using Python 3.6: git+https://github.com/pyinstaller/pyinstaller.git
+#pyinstaller>=3.3
 #versioneer + pyinstaller require pywin32!
