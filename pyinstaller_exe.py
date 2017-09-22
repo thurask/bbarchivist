@@ -40,8 +40,9 @@ def bitsdir(indir):
         indirx = "{0}-64".format(indir)
     else:
         indirx = indir
-    if not exists(indirx):
-        makedirs(indirx)
+    if exists(indirx):
+        clean_outdir(indirx)
+    makedirs(indirx)
     return indirx
 
 
@@ -99,13 +100,19 @@ def get_sevenzip_write(szurl):
     remove(basename(szurl))
 
 
-def call_specs():
+def call_specs(distdir, builddir):
     """
     Call pyinstaller to make specs.
+
+    :param distdir: Path to distribute files.
+    :type distdir: str
+
+    :param builddir: Path to build files.
+    :type builddir: str
     """
     specs = [x for x in listdir() if x.endswith(".spec")]
     for spec in specs:  # use UPX 3.93 or up
-        cmd = "pyinstaller --onefile --workpath {2} --distpath {1} {0}".format(spec, bitsdir("pyinst-dist"), bitsdir("pyinst-build"))
+        cmd = "pyinstaller --onefile --workpath {2} --distpath {1} {0}".format(spec, distdir, builddir)
         call(cmd, shell=True)
 
 
@@ -147,14 +154,26 @@ def copy_json(outdir):
     copytree(JSONDIR, join(outdir, "json"))
 
 
+def clean_outdir(outdir):
+    """
+    Nuke outdir, if it exists.
+
+    :param outdir: Output directory.
+    :type outdir: str
+    """
+    if exists(outdir):
+        rmtree(outdir, ignore_errors=True)
+
+
 def main():
     """
     Create .exes with dynamic spec files.
     """
+    outdir = bitsdir("pyinst-dist")
+    builddir = bitsdir("pyinst-build")
     write_versions()
     generate_specs()
-    call_specs()
-    outdir = bitsdir("pyinst-dist")
+    call_specs(outdir, builddir)
     copy("version.txt", outdir)
     copy("longversion.txt", outdir)
     copy(CAP.location, outdir)
