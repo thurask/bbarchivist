@@ -46,14 +46,24 @@ def bitsdir(indir):
     return indirx
 
 
+def get_ucrt_dlls():
+    """
+    Get some magic voodoo Windows DLLs.
+    """
+    tail = "x64" if architecture()[0] == "64bit" else "x86"
+    folder = join("C:\\", "Program Files (x86)", "Windows Kits", "10", "Redist", "ucrt", "DLLs", tail)
+    return folder
+
+
 def generate_specs():
     """
     Generate pyinstaller spec files.
     """
     scripts = ["archivist", "autolookup", "barlinker", "carrierchecker", "certchecker", "devloader", "downloader", "droidlookup", "droidscraper", "escreens", "kernchecker", "lazyloader", "linkgen", "metachecker", "swlookup", "tclscan", "tcldelta"]
     here = getcwd().replace("\\", "\\\\")
+    dlldir = get_ucrt_dlls().replace("\\", "\\\\")
     for script in scripts:
-        template = "# -*- mode: python -*-\n\nblock_cipher = None\n\n\na = Analysis(['bbarchivist\\\\scripts\\\\{0}.py'],\n             pathex=['{1}'],\n             binaries=None,\n             datas=None,\n             hiddenimports=[],\n             hookspath=[],\n             runtime_hooks=[],\n             excludes=[],\n             win_no_prefer_redirects=False,\n             win_private_assemblies=False,\n             cipher=block_cipher)\npyz = PYZ(a.pure, a.zipped_data,\n             cipher=block_cipher)\nexe = EXE(pyz,\n          a.scripts,\n          a.binaries,\n          a.zipfiles,\n          a.datas,\n          name='{0}',\n          debug=False,\n          strip=False,\n          upx=False,\n          console=True )\n".format(script, here)
+        template = "# -*- mode: python -*-\n\nblock_cipher = None\n\n\na = Analysis(['bbarchivist\\\\scripts\\\\{0}.py'],\n             pathex=['{1}', '{2}'],\n             binaries=None,\n             datas=None,\n             hiddenimports=[],\n             hookspath=[],\n             runtime_hooks=[],\n             excludes=[],\n             win_no_prefer_redirects=False,\n             win_private_assemblies=False,\n             cipher=block_cipher)\npyz = PYZ(a.pure, a.zipped_data,\n             cipher=block_cipher)\nexe = EXE(pyz,\n          a.scripts,\n          a.binaries,\n          a.zipfiles,\n          a.datas,\n          name='{0}',\n          debug=False,\n          strip=False,\n          upx=False,\n          console=True )\n".format(script, here, dlldir)
         with open("{0}.spec".format(script), "w") as afile:
             afile.write(template)
 
