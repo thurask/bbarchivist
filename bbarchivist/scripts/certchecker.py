@@ -129,7 +129,7 @@ def certchecker_main(device, data):
         print("FCC ID: {0}".format(fccid.upper()))
     print("\nCHECKING CERTIFICATIONS...\n")
     certlist = networkutils.ptcrb_scraper(ptcrbid)
-    utilities.lprint(certlist)
+    utilities.lprint(sorted(certlist, reverse=True))
 
 
 if __name__ == "__main__":
