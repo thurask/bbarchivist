@@ -315,6 +315,25 @@ class TestClassScriptutilsTCL:
                                             bs.tcl_prd_scan("PRD-63116-001", download=True)
                                             assert "HASH FAILED" in capsys.readouterr()[0]
 
+    def test_tcl_otaprep_ota(self):
+        """
+        Test preparing values for OTA scanning, OTA scanning.
+        """
+        assert bs.tcl_prep_otaver("snek") == (2, "snek")
+
+    def test_tcl_otaprep_full(self):
+        """
+        Test preparing values for OTA scanning, full scanning.
+        """
+        assert bs.tcl_prep_otaver(None) == (4, "AAA000")
+
+    def test_tcl_otapreamble(self, capsys):
+        """
+        Test fancy output for OTA scanning.
+        """
+        bs.tcl_mainscan_preamble("snek")
+        assert "OS snek" in capsys.readouterr()[0]
+
     def test_tcl_encheader(self, capsys):
         """
         Test checking for a file header.

@@ -876,6 +876,34 @@ def tcl_prd_print(downloadurl, filename, statcode, encslave, session):
             print(sentinel)
 
 
+def tcl_prep_otaver(ota=None):
+    """
+    Prepare variables for OTA versus full check.
+
+    :param ota: The starting version if we're checking OTA updates, None if we're not. Default is None.
+    :type ota: str
+    """
+    if ota is not None:
+        mode = 2
+        fvver = ota
+    else:
+        mode = 4
+        fvver = "AAA000"
+    return mode, fvver
+
+
+def tcl_mainscan_preamble(ota=None):
+    """
+    Prepare preamble for TCL scanning.
+
+    :param ota: The starting version if we're checking OTA updates, None if we're not. Default is None.
+    :type ota: str
+    """
+    slim_preamble("TCLSCAN")
+    if ota is not None:
+        print("PRDs with OTA from OS {0}".format(ota))
+
+
 def linkgen_sdk_dicter(indict, origtext, newtext):
     """
     Prepare SDK radio/OS dictionaries.
