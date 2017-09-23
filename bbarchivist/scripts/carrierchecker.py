@@ -215,15 +215,11 @@ def carrierchecker_argfilter(mcc, mnc, device, directory):
     :param directory: Where to store files. Default is local directory.
     :type directory: str
     """
-    if mcc is None:
-        print("INVALID MCC!")
-        raise SystemExit
-    elif mnc is None:
-        print("INVALID MNC!")
-        raise SystemExit
-    elif device is None:
-        print("INVALID DEVICE!")
-        raise SystemExit
+    targdir = {"MCC": mcc, "MNC": mnc, "DEVICE": device}
+    for key, value in targdir.items():
+        if value is None:
+            print("INVALID {0}!".format(key))
+            raise SystemExit
     device = device.upper()
     directory = utilities.dirhandler(directory, os.getcwd())
     return device, directory

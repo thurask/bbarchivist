@@ -54,6 +54,66 @@ def longversion():
     return ver
 
 
+def default_parser_vers(vers=None):
+    """
+    Prepare version for default parser.
+
+    :param vers: Versions: [git commit hash, git commit date]
+    :param vers: list(str)
+    """
+    if vers is None:
+        vers = longversion()
+    return vers
+
+
+def default_parser_flags(parser, flags=None):
+    """
+    Handle flags for default parser.
+
+    :param parser: Parser to modify.
+    :type parser: argparse.ArgumentParser
+
+    :param flags: Tuple of sections to add.
+    :type flags: tuple(str)
+    """
+    if flags is not None:
+        parser = dpf_flags_folder(parser, flags)
+        parser = dpf_flags_osr(parser, flags)
+    return parser
+
+
+def dpf_flags_folder(parser, flags=None):
+    """
+    Add generic folder flag to parser.
+
+    :param parser: Parser to modify.
+    :type parser: argparse.ArgumentParser
+
+    :param flags: Tuple of sections to add.
+    :type flags: tuple(str)
+    """
+    if "folder" in flags:
+        parser.add_argument("-f", "--folder", dest="folder", help="Working folder", default=None, metavar="DIR", type=utilities.file_exists)
+    return parser
+
+
+def dpf_flags_osr(parser, flags=None):
+    """
+    Add generic OS/radio/software flags to parser.
+
+    :param parser: Parser to modify.
+    :type parser: argparse.ArgumentParser
+
+    :param flags: Tuple of sections to add.
+    :type flags: tuple(str)
+    """
+    if "osr" in flags:
+        parser.add_argument("os", help="OS version")
+        parser.add_argument("radio", help="Radio version, 10.x.y.zzzz", nargs="?", default=None)
+        parser.add_argument("swrelease", help="Software version, 10.x.y.zzzz", nargs="?", default=None)
+    return parser
+
+
 def default_parser(name=None, desc=None, flags=None, vers=None):
     """
     A generic form of argparse's ArgumentParser.
@@ -70,17 +130,10 @@ def default_parser(name=None, desc=None, flags=None, vers=None):
     :param vers: Versions: [git commit hash, git commit date]
     :param vers: list(str)
     """
-    if vers is None:
-        vers = longversion()
+    vers = default_parser_vers(vers)
     parser = argparse.ArgumentParser(prog=name, description=desc, epilog="https://github.com/thurask/bbarchivist")
     parser.add_argument("-v", "--version", action="version", version="{0} {1} committed {2}".format(parser.prog, vers[0], vers[1]))
-    if flags is not None:
-        if "folder" in flags:
-            parser.add_argument("-f", "--folder", dest="folder", help="Working folder", default=None, metavar="DIR", type=utilities.file_exists)
-        if "osr" in flags:
-            parser.add_argument("os", help="OS version")
-            parser.add_argument("radio", help="Radio version, 10.x.y.zzzz", nargs="?", default=None)
-            parser.add_argument("swrelease", help="Software version, 10.x.y.zzzz", nargs="?", default=None)
+    parser = default_parser_flags(parser, flags)
     return parser
 
 

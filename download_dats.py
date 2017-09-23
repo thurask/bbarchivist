@@ -11,9 +11,9 @@ __license__ = "WTFPL v2"
 __copyright__ = "2015-2017 Thurask"
 
 
-def download(url, output_directory=None):
+def prep_download(url, output_directory=None):
     """
-    Download file from given URL.
+    Prepare download.
 
     :param url: URL to download from.
     :type url: str
@@ -26,12 +26,42 @@ def download(url, output_directory=None):
     lfname = url.split('/')[-1]
     fname = os.path.join(output_directory, lfname)
     sess = requests.Session()
+    return lfname, fname, sess
+
+
+def download_write(req, lfname, file):
+    """
+    Write downloaded chunks to file.
+
+    :param req: Response object.
+    :type req: requests.Response
+
+    :param lfname: Filename.
+    :type lfname: str
+
+    :param file: Open (!!!) file handle. Output file.
+    :type file: str
+    """
+    print("DOWNLOADING {0}".format(lfname))
+    for chunk in req.iter_content(chunk_size=1024):
+        file.write(chunk)
+
+
+def download(url, output_directory=None):
+    """
+    Download file from given URL.
+
+    :param url: URL to download from.
+    :type url: str
+
+    :param output_directory: Download folder. Default is local.
+    :type output_directory: str
+    """
+    lfname, fname, sess = prep_download(url, output_directory)
     with open(fname, "wb") as file:
         req = sess.get(url, stream=True)
         if req.status_code == 200:  # 200 OK
-            print("DOWNLOADING {0}".format(lfname))
-            for chunk in req.iter_content(chunk_size=1024):
-                file.write(chunk)
+            download_write(req, lfname, file)
         else:
             print("ERROR: HTTP {0} IN {1}".format(req.status_code, lfname))
 
