@@ -92,7 +92,7 @@ def tclscan_main(ota=None):
             else:
                 tvver, firmwareid, filename, fsize, fhash = networkutils.parse_tcl_check(checktext)
                 del firmwareid, filename, fsize, fhash
-                print("{0}: {1}".format(curef, tvver))
+                scriptutils.tcl_mainscan_printer(curef, tvver, ota)
 
 
 if __name__ == "__main__":

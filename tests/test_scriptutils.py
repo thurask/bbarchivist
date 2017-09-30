@@ -348,6 +348,20 @@ class TestClassScriptutilsTCL:
         """
         assert bs.tcl_delta_filename("PRD-63116-123", "AAA000", "AAO472", "update.zip", False) == "JSU_PRD-63116-AAA000toAAO472.zip"
 
+    def tcl_scanprint(self, capsys):
+        """
+        Test printing scan output, full scan.
+        """
+        bs.tcl_mainscan_printer("PRD-63999-999", "AAA000")
+        assert "PRD-63999-999: AAA000" in capsys.readouterr()[0]
+
+    def tcl_scanprint_ota(self, capsys):
+        """
+        Test printing scan output, OTA scan.
+        """
+        bs.tcl_mainscan_printer("PRD-63999-999", "ZZZ999", "AAA000")
+        assert "PRD-63999-999: AAA000 to ZZZ999" in capsys.readouterr()[0]
+
 
 class TestClassScriptutilsSoftware:
     """

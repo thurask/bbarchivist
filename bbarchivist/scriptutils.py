@@ -954,7 +954,26 @@ def tcl_mainscan_preamble(ota=None):
     """
     slim_preamble("TCLSCAN")
     if ota is not None:
-        print("PRDs with OTA from OS {0}".format(ota))
+        print("PRDs with OTA from OS {0}".format(ota.upper()))
+
+
+def tcl_mainscan_printer(curef, tvver, ota=None):
+    """
+    Print output of TCL scanning.
+
+    :param curef: PRD of the phone variant to check.
+    :type curef: str
+
+    :param tvver: Target software version.
+    :type tvver: str
+
+    :param ota: The starting version if we're checking OTA updates, None if we're not. Default is None.
+    :type ota: str
+    """
+    if ota is not None:
+        print("{0}: {2} to {1}".format(curef, tvver, ota.upper()))
+    else:
+        print("{0}: {1}".format(curef, tvver))
 
 
 def linkgen_sdk_dicter(indict, origtext, newtext):
