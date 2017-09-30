@@ -332,7 +332,7 @@ class TestClassScriptutilsTCL:
         Test fancy output for OTA scanning.
         """
         bs.tcl_mainscan_preamble("snek")
-        assert "OS snek" in capsys.readouterr()[0]
+        assert "OS SNEK" in capsys.readouterr()[0]
 
     def test_tcl_encheader(self, capsys):
         """
