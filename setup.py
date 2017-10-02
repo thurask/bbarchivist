@@ -51,7 +51,7 @@ def main():
         'bb-metachecker=bbarchivist.scripts.metachecker:metachecker_main',
         'bb-devloader=bbarchivist.scripts.devloader:grab_args',
         'bb-swlookup=bbarchivist.scripts.swlookup:grab_args',
-        'bb-infogen=bbarchivist.scripts.infogenerator:infogenerator_main',
+        'bb-infogen=bbarchivist.scripts.infogenerator:grab_args',
         'bb-droidscraper=bbarchivist.scripts.droidscraper:droidscraper_main',
         'bb-barlinker=bbarchivist.scripts.barlinker:barlinker_main',
         'bb-tclscan=bbarchivist.scripts.tclscan:grab_args',
