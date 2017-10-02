@@ -82,7 +82,7 @@ def infogenerator_main(folder, osver, radio=None, swrelease=None, device=None):
     :param device: Device type, required for Android.
     :type device: str
     """
-    scriptutils.make_info(folder, osver, radio, software, device)
+    scriptutils.make_info(folder, osver, radio, swrelease, device)
 
 
 if __name__ == "__main__":
