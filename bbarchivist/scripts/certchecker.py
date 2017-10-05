@@ -118,7 +118,7 @@ def certchecker_family(args, datafile):
     family = jsonutils.read_family(datafile, args.device.upper())
     for ptcrbid in family:
         certchecker_main(ptcrbid, datafile)
-        if len(family) > 1:
+        if ptcrbid != family[-1]:
             print("")
 
 
