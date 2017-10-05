@@ -97,15 +97,29 @@ def execute_args_end(args, datafile):
     :type datafile: list(dict)
     """
     if args.family:
-        family = jsonutils.read_family(datafile, args.device.upper())
-        for ptcrbid in family:
-            certchecker_main(ptcrbid, datafile)
-            print("")
+        certchecker_family(args, datafile)
     elif args.device is None:
         print("NO DEVICE SPECIFIED!")
         raise SystemExit
     else:
         certchecker_main(args.device, datafile)
+
+
+def certchecker_family(args, datafile):
+    """
+    Output all devices in a family.
+
+    :param args: Arguments.
+    :type args: argparse.Namespace
+
+    :param datafile: List of device entries.
+    :type datafile: list(dict)
+    """
+    family = jsonutils.read_family(datafile, args.device.upper())
+    for ptcrbid in family:
+        certchecker_main(ptcrbid, datafile)
+        if len(family) > 1:
+            print("")
 
 
 def certchecker_main(device, data):
