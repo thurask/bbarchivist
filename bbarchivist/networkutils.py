@@ -1103,7 +1103,7 @@ def make_droid_skeleton_bbm(method, build, device, variant="common"):
     :param variant: Autoloader variant. Default is "common".
     :type variant: str
     """
-    devices = {"KEYone": "qc8953"}
+    devices = {"KEYone": "qc8953", "Motion": "qc8953"}
     base = "bbry_{2}_autoloader_user-{0}-{1}".format(variant, build.upper(), devices[device])
     if method is None:
         skel = "http://54.247.87.13/softwareupgrade/BBM/{0}.zip".format(base)
@@ -1157,7 +1157,7 @@ def make_droid_skeleton(method, build, device, variant="common"):
     """
     # No Aurora
     oglist = ("Priv", "DTEK50", "DTEK60")  # BlackBerry
-    bbmlist = ("KEYone")   # BB Mobile
+    bbmlist = ("KEYone", "Motion")   # BB Mobile
     if device in oglist:
         skel = make_droid_skeleton_og(method, build, device, variant)
     elif device in bbmlist:
@@ -1180,7 +1180,7 @@ def bulk_droid_skeletons(devs, build, method=None):
     """
     carrier_variants = {
         "Priv": ("common", "vzw-vzw", "na-tmo", "na-att"),
-        "KEYone": ("common", "usa-vzw", "usa-sprint", "global-att")  # verify this
+        "KEYone": ("common", "usa-sprint", "global-att", "china-china")
     }
     common_variants = ("common", )  # for single-variant devices
     carrier_devices = ("Priv", )  # add KEYone when verified

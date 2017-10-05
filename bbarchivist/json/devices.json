@@ -604,24 +604,24 @@
       "ptcrbid": ""
     },
     {
-      "device": "UNKNOWN",
-      "family": "UNKNOWN",
+      "device": "MOTION",
+      "family": "MOTION",
       "name": "BBD100-1",
       "hwid": "",
       "fccid": "BBD100-1",
       "ptcrbid": ""
     },
     {
-      "device": "UNKNOWN",
-      "family": "UNKNOWN",
+      "device": "MOTION",
+      "family": "MOTION",
       "name": "BBD100-2",
       "hwid": "",
       "fccid": "BBD100-2",
-      "ptcrbid": ""
+      "ptcrbid": "34952"
     },
     {
-      "device": "UNKNOWN",
-      "family": "UNKNOWN",
+      "device": "MOTION",
+      "family": "MOTION",
       "name": "BBD100-6",
       "hwid": "",
       "fccid": "BBD100-6",
