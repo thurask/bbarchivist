@@ -37,7 +37,7 @@ def prep_pass(key, password):
     """
     if password is None:
         password = getpass.getpass(prompt="PGP PASSPHRASE: ")
-        write = utilities.s2b(input("SAVE PASSPHRASE (Y/N)?: "))
+        write = utilities.i2b("SAVE PASSPHRASE (Y/N)?: ")
     password2 = password if write else None
     gpgutils.gpg_config_writer(key, password2)
     return password

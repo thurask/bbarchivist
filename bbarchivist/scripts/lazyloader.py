@@ -165,7 +165,7 @@ def questionnaire_radiocheck(radioversion, altsw):
     :param altsw: Radio software release, if not the same as OS.
     :type altsw: str
     """
-    altcheck = utilities.s2b(input("USING ALTERNATE RADIO (Y/N)?: "))
+    altcheck = utilities.i2b("USING ALTERNATE RADIO (Y/N)?: ")
     if altcheck:
         altsw = input("RADIO SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
         if not altsw:
@@ -194,7 +194,7 @@ def questionnaire_loader():
     Ask about whether to run an autoloader.
     """
     if utilities.is_windows():
-        autoloader = utilities.s2b(input("RUN AUTOLOADER - WILL WIPE YOUR DEVICE! (Y/N)?: "))
+        autoloader = utilities.i2b("RUN AUTOLOADER - WILL WIPE YOUR DEVICE! (Y/N)?: ")
     else:
         autoloader = False
     return autoloader

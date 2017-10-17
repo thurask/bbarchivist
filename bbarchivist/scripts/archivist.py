@@ -163,12 +163,12 @@ def questionnaire():
     radioversion = None if not radioversion else radioversion
     softwareversion = input("OS SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
     softwareversion = None if not softwareversion else softwareversion
-    altcheck = utilities.s2b(input("USING ALTERNATE RADIO (Y/N)?: "))
+    altcheck = utilities.i2b("USING ALTERNATE RADIO (Y/N)?: ")
     altsw = scriptutils.check_altsw(altcheck)
-    radios = utilities.s2b(input("CREATE RADIO LOADERS (Y/N)?: "))
-    compressed = utilities.s2b(input("COMPRESS LOADERS (Y/N)?: "))
-    deleted = utilities.s2b(input("DELETE UNCOMPRESSED LOADERS (Y/N)?: ")) if compressed else False
-    hashed = utilities.s2b(input("GENERATE HASHES (Y/N)?: "))
+    radios = utilities.i2b("CREATE RADIO LOADERS (Y/N)?: ")
+    compressed = utilities.i2b("COMPRESS LOADERS (Y/N)?: ")
+    deleted = utilities.i2b("DELETE UNCOMPRESSED LOADERS (Y/N)?: ") if compressed else False
+    hashed = utilities.i2b("GENERATE HASHES (Y/N)?: ")
     if getattr(sys, 'frozen', False):
         hashdict = hashutils.verifier_config_loader(os.getcwd())
         compmethod = "7z"

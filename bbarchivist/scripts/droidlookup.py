@@ -225,7 +225,7 @@ def questionnaire():
     """
     Questions to ask if no arguments given.
     """
-    single = utilities.s2b(input("SINGLE OS (Y/N)?: "))
+    single = utilities.i2b("SINGLE OS (Y/N)?: ")
     if single:
         branch, floor, ceil = questionnaire_single()
     else:

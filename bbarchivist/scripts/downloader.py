@@ -71,11 +71,11 @@ def questionnaire():
     osversion = input("OS VERSION: ")
     radioversion = input("RADIO VERSION: ")
     softwareversion = input("SOFTWARE RELEASE: ")
-    debricks = utilities.s2b(input("DOWNLOAD DEBRICKS? Y/N: "))
-    radios = utilities.s2b(input("DOWNLOAD RADIOS? Y/N: "))
+    debricks = utilities.i2b("DOWNLOAD DEBRICKS? Y/N: ")
+    radios = utilities.i2b("DOWNLOAD RADIOS? Y/N: ")
     if not radios:
         radios = False
-    cores = utilities.s2b(input("DOWNLOAD CORES? Y/N: "))
+    cores = utilities.i2b("DOWNLOAD CORES? Y/N: ")
     if not cores:
         cores = False
     altsw = None

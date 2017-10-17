@@ -58,7 +58,7 @@ def grab_args():
         devloader_main(args.os, args.export, args.recurse, args.ceiling, args.increment)
     else:
         osversion = input("OS VERSION: ")
-        export = utilities.s2b(input("EXPORT TO FILE (Y/N)?: "))
+        export = utilities.i2b("EXPORT TO FILE (Y/N)?: ")
         print(" ")
         devloader_main(osversion, export)
         decorators.enter_to_exit(True)

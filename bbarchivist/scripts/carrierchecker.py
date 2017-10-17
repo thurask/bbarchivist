@@ -183,17 +183,17 @@ def questionnaire():
     mcc = questionnaire_3digit("MCC")
     mnc = questionnaire_3digit("MNC")
     device = scriptutils.questionnaire_device()
-    bundles = utilities.s2b(input("CHECK BUNDLES?: "))
+    bundles = utilities.i2b("CHECK BUNDLES?: ")
     if bundles:
         download = False
         upgrade = False
         export = False
         blitz = False
     else:
-        export = utilities.s2b(input("EXPORT TO FILE?: "))
-        download = utilities.s2b(input("DOWNLOAD?: "))
-        upgrade = False if not download else utilities.s2b(input("Y=UPGRADE BARS, N=DEBRICK BARS?: "))
-        blitz = False if not download else (utilities.s2b(input("CREATE BLITZ?: ")) if upgrade else False)
+        export = utilities.i2b("EXPORT TO FILE?: ")
+        download = utilities.i2b("DOWNLOAD?: ")
+        upgrade = False if not download else utilities.i2b("Y=UPGRADE BARS, N=DEBRICK BARS?: ")
+        blitz = False if not download else (utilities.i2b("CREATE BLITZ?: ") if upgrade else False)
     directory = os.getcwd()
     print(" ")
     carrierchecker_main(mcc, mnc, device, download, upgrade, directory, export, blitz, bundles, None, False)

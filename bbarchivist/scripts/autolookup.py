@@ -125,7 +125,7 @@ def questionnaire():
     Questions to ask if no arguments given.
     """
     osversion = input("OS VERSION: ")
-    recurse = utilities.s2b(input("LOOP (Y/N)?: "))
+    recurse = utilities.i2b("LOOP (Y/N)?: ")
     if recurse:
         print("Press Ctrl+C to stop loop")
     print(" ")

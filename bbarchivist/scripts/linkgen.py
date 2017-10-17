@@ -54,14 +54,10 @@ def questionnaire():
     radioversion = input("RADIO VERSION (PRESS ENTER TO GUESS): ")
     softwareversion = input("OS SOFTWARE RELEASE (PRESS ENTER TO GUESS): ")
     radioversion = None if not radioversion else radioversion
-    usealt = False if not radioversion else utilities.s2b(input("ALTERNATE RADIO (Y/N)?: "))
+    usealt = False if not radioversion else utilities.i2b("ALTERNATE RADIO (Y/N)?: ")
     softwareversion = None if not softwareversion else softwareversion
     altsw = scriptutils.check_altsw(usealt)
-    linkgen_main(
-        osversion,
-        radioversion,
-        softwareversion,
-        altsw)
+    linkgen_main(osversion, radioversion, softwareversion, altsw)
     decorators.enter_to_exit(True)
 
 

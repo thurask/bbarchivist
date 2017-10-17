@@ -143,7 +143,7 @@ def smtp_config_generator_ssl(results):
     :type results: dict
     """
     if results['is_ssl'] is None:
-        use_ssl = utilities.s2b(input("Y: SSL, N: TLS (Y/N): "))
+        use_ssl = utilities.i2b("Y: SSL, N: TLS (Y/N): ")
         results['is_ssl'] = "true" if use_ssl else "false"
     return results
 

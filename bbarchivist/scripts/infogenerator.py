@@ -39,7 +39,7 @@ def questionnaire():
     """
     folder = os.getcwd()
     osver = input("OS VERSION: ")
-    android = utilities.s2b(input("ANDROID OS (Y/N)?: "))
+    android = utilities.i2b("ANDROID OS (Y/N)?: ")
     if android:
         device = input("DEVICE: ")
         radio = None

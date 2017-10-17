@@ -216,7 +216,7 @@ def sw_check_contingency(softwareversion):
     """
     if softwareversion == "SR not in system":
         print("SOFTWARE RELEASE NOT FOUND")
-        cont = utilities.s2b(input("INPUT MANUALLY? Y/N: "))
+        cont = utilities.i2b("INPUT MANUALLY? Y/N: ")
         if cont:
             softwareversion = input("SOFTWARE RELEASE: ")
             swchecked = False
@@ -316,7 +316,7 @@ def check_sw_handle(softwareversion):
     :type softwareversion: str
     """
     print("SOFTWARE RELEASE {0} NOT FOUND".format(softwareversion))
-    cont = utilities.s2b(input("CONTINUE? Y/N: "))
+    cont = utilities.i2b("CONTINUE? Y/N: ")
     if not cont:
         print("\nEXITING...")
         raise SystemExit
@@ -370,7 +370,7 @@ def check_os_single(osurl, osversion, device):
     osav = networkutils.availability(osurl)
     if not osav:
         print("{0} NOT AVAILABLE FOR {1}".format(osversion, bbconstants.DEVICES[device]))
-        cont = utilities.s2b(input("CONTINUE? Y/N: "))
+        cont = utilities.i2b("CONTINUE? Y/N: ")
         if not cont:
             print("\nEXITING...")
             raise SystemExit
@@ -397,7 +397,7 @@ def check_os_bulk_handle():
     Handle no existing OS links.
     """
     print("OS VERSION NOT FOUND")
-    cont = utilities.s2b(input("CONTINUE? Y/N: "))
+    cont = utilities.i2b("CONTINUE? Y/N: ")
     if not cont:
         print("\nEXITING...")
         raise SystemExit
@@ -416,13 +416,13 @@ def check_radio_single(radiourl, radioversion):
     radav = networkutils.availability(radiourl)
     if not radav:
         print("RADIO VERSION NOT FOUND")
-        cont = utilities.s2b(input("INPUT MANUALLY? Y/N: "))
+        cont = utilities.i2b("INPUT MANUALLY? Y/N: ")
         if cont:
             rad2 = input("RADIO VERSION: ")
             radiourl = radiourl.replace(radioversion, rad2)
             radioversion = rad2
         else:
-            going = utilities.s2b(input("KEEP GOING? Y/N: "))
+            going = utilities.i2b("KEEP GOING? Y/N: ")
             if not going:
                 print("\nEXITING...")
                 raise SystemExit
@@ -460,7 +460,7 @@ def check_radio_bulk_notfound(radiourls, radioversion):
     :type radioversion: str
     """
     print("RADIO VERSION NOT FOUND")
-    cont = utilities.s2b(input("INPUT MANUALLY? Y/N: "))
+    cont = utilities.i2b("INPUT MANUALLY? Y/N: ")
     if cont:
         radiourls, radioversion = check_radio_bulk_go(radiourls, radioversion)
     else:
@@ -488,7 +488,7 @@ def check_radio_bulk_stop():
     """
     Ask if we should keep going once no radio has been found.
     """
-    going = utilities.s2b(input("KEEP GOING? Y/N: "))
+    going = utilities.i2b("KEEP GOING? Y/N: ")
     if not going:
         print("\nEXITING...")
         raise SystemExit
@@ -539,7 +539,7 @@ def get_sz_executable(compmethod):
         else:
             szexe = ""
             print("7ZIP NOT FOUND")
-            cont = utilities.s2b(input("CONTINUE? Y/N "))
+            cont = utilities.i2b("CONTINUE? Y/N ")
             if cont:
                 print("FALLING BACK TO ZIP...")
                 compmethod = "zip"
@@ -1361,7 +1361,7 @@ def verify_gpg_credentials():
     gpgkey, gpgpass = gpgutils.gpg_config_loader()
     if gpgkey is None or gpgpass is None:
         print("NO PGP KEY/PASS FOUND")
-        cont = utilities.s2b(input("CONTINUE (Y/N)?: "))
+        cont = utilities.i2b("CONTINUE (Y/N)?: ")
         if cont:
             gpgkey = verify_gpg_key(gpgkey)
             gpgpass, writebool = verify_gpg_pass(gpgpass)
@@ -1395,7 +1395,7 @@ def verify_gpg_pass(gpgpass=None):
     """
     if gpgpass is None:
         gpgpass = getpass.getpass(prompt="PGP PASSPHRASE: ")
-        writebool = utilities.s2b(input("SAVE PASSPHRASE (Y/N)?:"))
+        writebool = utilities.i2b("SAVE PASSPHRASE (Y/N)?:")
     else:
         writebool = False
     return gpgpass, writebool

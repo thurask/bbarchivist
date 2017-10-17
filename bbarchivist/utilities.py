@@ -277,6 +277,16 @@ def s2b(input_check):
     return str(input_check).lower() in ("yes", "true", "t", "1", "y")
 
 
+def i2b(input_check):
+    """
+    Return Boolean interpretation of typed input.
+
+    :param input_check: Query to feed into input function.
+    :type input_check: str
+    """
+    return s2b(input(input_check))
+
+
 def is_amd64():
     """
     Check if script is running on an AMD64 system (Python can be 32/64, this is for subprocess)

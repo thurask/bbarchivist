@@ -70,7 +70,7 @@ def questionnaire_ota():
     """
     Ask about OTA versus full scanning.
     """
-    otabool = utilities.s2b("CHECK OTA VERSION (Y/N)?: ")
+    otabool = utilities.i2b("CHECK OTA VERSION (Y/N)?: ")
     if otabool:
         otaver = input("ENTER OTA VERSION (ex. AAO472): ")
     else:
@@ -82,7 +82,7 @@ def questionnaire_single():
     """
     Ask about single versus full scanning.
     """
-    singlebool = utilities.s2b("SCAN SINGLE OS (Y/N)?: ")
+    singlebool = utilities.i2b("SCAN SINGLE OS (Y/N)?: ")
     if singlebool:
         singleprd = input("ENTER PRD TO SCAN (ex. PRD-63116-001): ")
     else:
