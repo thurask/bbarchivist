@@ -7,6 +7,7 @@ from bbarchivist import decorators  # enter to exit
 from bbarchivist import jsonutils  # json
 from bbarchivist import networkutils  # lookup
 from bbarchivist import scriptutils  # default parser
+from bbarchivist import utilities  # bool
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -19,30 +20,43 @@ def grab_args():
 
     Invoke a function with those arguments.
     """
-    parser = scriptutils.default_parser("bb-tclscan", "Check for updates for TCL devices")
-    parser.add_argument("prd", help="Only scan one PRD", default=None, nargs="?")
-    parser.add_argument(
-        "-l",
-        "--list",
-        dest="printlist",
-        help="List PRDs in database",
-        action="store_true",
-        default=False)
-    parser.add_argument(
-        "-d",
-        "--download",
-        dest="download",
-        help="Download update, assumes single PRD",
-        action="store_true",
-        default=False)
-    parser.add_argument(
-        "-o",
-        "--ota-version",
-        dest="otaver",
-        help="Query OTA updates from a given version instead of full OS",
-        default=None)
-    args = parser.parse_args(sys.argv[1:])
-    parser.set_defaults()
+    if len(sys.argv) > 1:
+        parser = scriptutils.default_parser("bb-tclscan", "Check for updates for TCL devices")
+        parser.add_argument("prd", help="Only scan one PRD", default=None, nargs="?")
+        parser.add_argument(
+            "-l",
+            "--list",
+            dest="printlist",
+            help="List PRDs in database",
+            action="store_true",
+            default=False)
+        parser.add_argument(
+            "-d",
+            "--download",
+            dest="download",
+            help="Download update, assumes single PRD",
+            action="store_true",
+            default=False)
+        parser.add_argument(
+            "-o",
+            "--ota-version",
+            dest="otaver",
+            help="Query OTA updates from a given version instead of full OS",
+            default=None)
+        args = parser.parse_args(sys.argv[1:])
+        parser.set_defaults()
+        execute_args(args)
+    else:
+        questionnaire()
+
+
+def execute_args(args):
+    """
+    Get args and decide what to do with them.
+
+    :param args: Arguments.
+    :type args: argparse.Namespace
+    """
     if args.printlist:
         prddict = jsonutils.load_json("prds")
         jsonutils.list_prds(prddict)
@@ -50,7 +64,43 @@ def grab_args():
         tclscan_single(args.prd, args.download, args.otaver)
     else:
         tclscan_main(args.otaver)
-        decorators.enter_to_exit(True)
+
+
+def questionnaire_ota():
+    """
+    Ask about OTA versus full scanning.
+    """
+    otabool = utilities.s2b("CHECK OTA VERSION (Y/N)?: ")
+    if otabool:
+        otaver = input("ENTER OTA VERSION (ex. AAO472): ")
+    else:
+        otaver = None
+    return otaver
+
+
+def questionnaire_single():
+    """
+    Ask about single versus full scanning.
+    """
+    singlebool = utilities.s2b("SCAN SINGLE OS (Y/N)?: ")
+    if singlebool:
+        singleprd = input("ENTER PRD TO SCAN (ex. PRD-63116-001): ")
+    else:
+        singleprd = None
+    return singleprd
+
+
+def questionnaire():
+    """
+    Questions to ask if no arguments given.
+    """
+    singleprd = questionnaire_single()
+    otaver = questionnaire_ota()
+    if singleprd is not None:
+        tclscan_single(singleprd, ota=otaver)
+    else:
+        tclscan_main(otaver)
+    decorators.enter_to_exit(True)
 
 
 def tclscan_single(curef, download=False, ota=None):
