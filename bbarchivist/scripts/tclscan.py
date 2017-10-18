@@ -20,7 +20,9 @@ def grab_args():
 
     Invoke a function with those arguments.
     """
-    if len(sys.argv) > 1:
+    if getattr(sys, "frozen", False) and len(sys.argv) == 1:
+        questionnaire()
+    else:
         parser = scriptutils.default_parser("bb-tclscan", "Check for updates for TCL devices")
         parser.add_argument("prd", help="Only scan one PRD", default=None, nargs="?")
         parser.add_argument(
@@ -46,8 +48,6 @@ def grab_args():
         args = parser.parse_args(sys.argv[1:])
         parser.set_defaults()
         execute_args(args)
-    else:
-        questionnaire()
 
 
 def execute_args(args):
