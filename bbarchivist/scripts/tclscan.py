@@ -45,6 +45,13 @@ def grab_args():
             dest="otaver",
             help="Query OTA updates from a given version instead of full OS",
             default=None)
+        parser.add_argument(
+            "-t",
+            "--device-type",
+            dest="device",
+            help="Scan only one device",
+            default=None,
+            type=utilities.droidlookup_devicetype)
         args = parser.parse_args(sys.argv[1:])
         parser.set_defaults()
         execute_args(args)
@@ -63,7 +70,7 @@ def execute_args(args):
     elif args.prd is not None:
         tclscan_single(args.prd, args.download, args.otaver)
     else:
-        tclscan_main(args.otaver)
+        tclscan_main(args.otaver, args.device)
 
 
 def questionnaire_ota():
@@ -122,16 +129,22 @@ def tclscan_single(curef, download=False, ota=None):
         print("LARGE DOWNLOAD DOESN'T WORK YET")
 
 
-def tclscan_main(ota=None):
+def tclscan_main(ota=None, device=None):
     """
     Scan every PRD and produce latest versions.
 
     :param ota: The starting version if we're checking OTA updates, None if we're not. Default is None.
     :type ota: str
+
+    :param device: The device to check if we're not checking all of them, None if we are. Default is None.
+    :type device: str
     """
     mode, fvver = scriptutils.tcl_prep_otaver(ota)
     scriptutils.tcl_mainscan_preamble(ota)
     prddict = jsonutils.load_json("prds")
+    if device is not None:
+        prddict2 = {dev: prddict[dev] for dev in prddict.keys() if dev == device}
+        prddict = prddict2
     sess = requests.Session()
     for device in prddict.keys():
         print("~{0}~".format(device))
