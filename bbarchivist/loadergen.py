@@ -716,7 +716,44 @@ def generate_tclloader_radfilt(radin, rads):
     return rads
 
 
-def generate_tclloader_img(imgin, imgout):
+def generate_tclloader_deps(platform):
+    """
+    Generate platform-specific file names.
+
+    :param platform: Platform type (i.e. subdirectory of target/product).
+    :type platform: str
+    """
+    if platform == "bbry_qc8953":  # KEYone
+        oems = ["oem_att", "oem_china", "oem_common", "oem_sprint", "oem_vzw"]
+        radios = ["china", "emea", "global", "india", "japan", "usa"]
+    elif platform == "bbry_qc8953krypton":  # Motion
+        oems = ["oem_att", "oem_common", "oem_sprint"]
+        radios = ["americas", "cdma", "dscn", "dsglobal", "ssglobal"]
+    return oems, radios
+
+
+def generate_tclloader_looseends(imgout, platform):
+    """
+    Rename files that need to be renamed.
+
+    :param imgout: Directory that files are to be copied to.
+    :type imgout: str
+
+    :param platform: Platform type (i.e. subdirectory of target/product).
+    :type platform: str
+    """
+    if platform == "bbry_qc8953":  # KEYone
+        pass  # no special exceptions
+    elif platform == "bbry_qc8953krypton":  # Motion
+        oldglobal = os.path.join(imgout, "NON-HLOS-ssglobal.bin")
+        newglobal = os.path.join(imgout, "NON-HLOS-global.bin")
+        os.rename(oldglobal, newglobal)  # SS intl model has different name than modem
+        oldamericas = os.path.join(imgout, "NON-HLOS-americas.bin")
+        newamericas = os.path.join(imgout, "NON-HLOS-dsamericas.bin")
+        shutil.copy(oldamericas, newamericas)  # DS/SS americas model use same modem
+
+
+def generate_tclloader_img(imgin, imgout, platform):
     """
     Generate partition images and radios.
 
@@ -725,17 +762,20 @@ def generate_tclloader_img(imgin, imgout):
 
     :param imgout: Directory that files are to be copied to.
     :type imgout: str
+
+    :param platform: Platform type (i.e. subdirectory of target/product).
+    :type platform: str
     """
     imgs = ["recovery", "system", "userdata", "cache", "boot"]
     point_point_bulk(imgin, imgout, ["{0}.img".format(img) for img in imgs])
-    oems = ["oem_att", "oem_china", "oem_common", "oem_sprint", "oem_vzw"]
+    oems, radios = generate_tclloader_deps(platform)
     oems = generate_tclloader_oemfilt(imgin, oems)
     point_point_bulk(imgin, imgout, ["{0}.img".format(oem) for oem in oems])
-    radios = ["china", "emea", "global", "india", "japan", "usa"]
     radios = generate_tclloader_radfilt(imgin, radios)
     point_point_bulk(imgin, imgout, ["NON-HLOS-{0}.bin".format(rad) for rad in radios])
     others = ["adspso.bin", "emmc_appsboot.mbn", "sbl1_signed.mbn"]
     point_point_bulk(imgin, imgout, others)
+    generate_tclloader_looseends(imgout, platform)
 
 
 def generate_tclloader(localdir, dirname, platform, localtools=False, wipe=True):
@@ -771,7 +811,7 @@ def generate_tclloader(localdir, dirname, platform, localtools=False, wipe=True)
         platdir = "plattools"
         generate_google_host(platdir, hostdir)
     pdir = os.path.join(localdir, "target", "product", platform)
-    generate_tclloader_img(pdir, imgdir)
+    generate_tclloader_img(pdir, imgdir, platform)
     sdir = os.path.join(pdir, "sig")
     generate_tclloader_sig(sdir, imgdir)
     generate_tclloader_carriers(sdir, imgdir)

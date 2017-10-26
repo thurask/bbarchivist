@@ -280,5 +280,23 @@ class TestClassLoadergenTcl:
         if not os.path.exists("batcheck"):
             os.mkdir("batcheck")
         bl.generate_tclloader_script("batcheck", FLASHBAT.location, FLASHSH.location, False)
-        assert os.path.getsize(os.path.join("batcheck", "flashall.bat")) == 2791
-        assert os.path.getsize(os.path.join("batcheck", "flashall.sh")) == 2814
+        assert os.path.getsize(os.path.join("batcheck", "flashall.bat")) == 2741
+        assert os.path.getsize(os.path.join("batcheck", "flashall.sh")) == 2708
+
+    def test_tclloader_deps(self):
+        """
+        Test handling platform dependencies.
+        """
+        oems, radios = bl.generate_tclloader_deps("bbry_qc8953krypton")
+        assert "dsglobal" in radios
+
+    def test_tclloader_ends(self):
+        """
+        Test handling loose ends.
+        """
+        if not os.path.exists("krypton"):
+            os.mkdir("krypton")
+        copyfile("smack.dat", os.path.join("krypton", "NON-HLOS-ssglobal.bin"))
+        copyfile("smack.dat", os.path.join("krypton", "NON-HLOS-americas.bin"))
+        bl.generate_tclloader_looseends("krypton", "bbry_qc8953krypton")
+        assert os.listdir("krypton") == ["NON-HLOS-americas.bin", "NON-HLOS-dsamericas.bin", "NON-HLOS-global.bin"]
