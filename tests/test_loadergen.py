@@ -299,4 +299,4 @@ class TestClassLoadergenTcl:
         copyfile("smack.dat", os.path.join("krypton", "NON-HLOS-ssglobal.bin"))
         copyfile("smack.dat", os.path.join("krypton", "NON-HLOS-americas.bin"))
         bl.generate_tclloader_looseends("krypton", "bbry_qc8953krypton")
-        assert os.listdir("krypton") == ["NON-HLOS-americas.bin", "NON-HLOS-dsamericas.bin", "NON-HLOS-global.bin"]
+        assert sorted(os.listdir("krypton")) == ["NON-HLOS-americas.bin", "NON-HLOS-dsamericas.bin", "NON-HLOS-global.bin"]
