@@ -315,6 +315,29 @@ class TestClassScriptutilsTCL:
                                             bs.tcl_prd_scan("PRD-63116-001", download=True)
                                             assert "HASH FAILED" in capsys.readouterr()[0]
 
+    def test_tcl_newprd(self, capsys):
+        """
+        Test scanning for new PRDs.
+        """
+        with mock.patch("bbarchivist.networkutils.tcl_check", mock.MagicMock(return_value=6)):
+            with mock.patch("bbarchivist.networkutils.parse_tcl_check", mock.MagicMock(return_value=(6, 6, "snek.zip", 6, 6))):
+                prdbase = {"KEYone": ["PRD-63116-001", "PRD-63118-003"]}
+                prddict = bs.tcl_findprd_prepdict(prdbase)
+                prddict = bs.tcl_findprd_checkfilter(prddict, "63119")
+                bs.tcl_findprd(prddict, floor=0, ceiling=111)
+                assert "NOW SCANNING: " in capsys.readouterr()[0]
+
+    def test_tcl_newprd_fail(self, capsys):
+        """
+        Test scanning for new PRDs, worst case.
+        """
+        with mock.patch("bbarchivist.networkutils.tcl_check", mock.MagicMock(return_value=None)):
+            prdbase = {"KEYone": ["PRD-63116-001", "PRD-63118-003"]}
+            prddict = bs.tcl_findprd_prepdict(prdbase)
+            prddict = bs.tcl_findprd_checkfilter(prddict, "63119")
+            bs.tcl_findprd(prddict, floor=0, ceiling=111)
+            assert "PRD-63119-001:" not in capsys.readouterr()[0]
+
     def test_tcl_otaprep_ota(self):
         """
         Test preparing values for OTA scanning, OTA scanning.

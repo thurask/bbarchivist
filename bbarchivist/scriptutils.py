@@ -10,6 +10,7 @@ import shutil  # folder removal
 import subprocess  # running cfp/cap
 import glob  # file lookup
 import threading  # run stuff in background
+import collections  # defaultdict
 import requests  # session
 from bbarchivist import utilities  # little things
 from bbarchivist import decorators  # decorating functions
@@ -974,6 +975,77 @@ def tcl_mainscan_printer(curef, tvver, ota=None):
         print("{0}: {2} to {1}".format(curef, tvver, ota.upper()))
     else:
         print("{0}: {1}".format(curef, tvver))
+
+
+def tcl_findprd_prepdict(prddict):
+    """
+    Prepare dict of center:[ends] entries.
+
+    :param prddict: Device:PRD dictionary.
+    :type prddict: dict(str: list)
+    """
+    prdfinal = collections.defaultdict(list)
+    prda = []
+    for item in prddict.values():
+        prda.extend(item)
+    prds = [x.split(" ")[0].replace("PRD-", "").split("-") for x in prda]
+    prdx = list({x[0]: x[1]} for x in prds)
+    for prdc in prdx:
+        for key, value in prdc.items():
+            prdfinal[key].append(value)
+    return prdfinal
+
+
+def tcl_findprd_checkfilter(prddict, tocheck=None):
+    """
+    Filter PRD dict if needed.
+
+    :param prddict: PRD center:[ends] dictionary.
+    :type prddict: dict(str: list)
+
+    :param tocheck: Specific PRD to check, None if we're checking all variants in database. Default is None.
+    :type tocheck: str
+    """
+    if tocheck is not None:
+        tocheck = tocheck.replace("PRD-", "")
+        prdkeys = list(prddict.keys())
+        for k in prdkeys:
+            if k != tocheck:
+                del prddict[k]
+        if not prddict:
+            prddict[tocheck] = []
+    return prddict
+
+
+def tcl_findprd(prddict, floor=0, ceiling=999):
+    """
+    Check for new PRDs based on PRD database.
+
+    :param prddict: PRD center:[ends] dictionary.
+    :type prddict: dict(str: list)
+
+    :param floor: When to start. Default is 0.
+    :type floor: int
+
+    :param ceiling: When to stop. Default is 999.
+    :type ceiling: int
+    """
+    sess = requests.Session()
+    for center in sorted(prddict.keys()):
+        tails = [int(i) for i in prddict[center]]
+        safes = [g for g in range(floor, ceiling) if g not in tails]
+        print("SCANNING ROOT: {0}{1}".format(center, " "*8))
+        for j in safes:
+            curef = "PRD-{}-{:03}".format(center, j)
+            print("NOW SCANNING: {0}".format(curef), end="\r")
+            checktext = networkutils.tcl_check(curef, sess)
+            if checktext is None:
+                continue
+            else:
+                tvver, firmwareid, filename, fsize, fhash = networkutils.parse_tcl_check(checktext)
+                del firmwareid, filename, fsize, fhash
+                tvver2="{0}{1}".format(tvver, " "*8)
+                tcl_mainscan_printer(curef, tvver2)
 
 
 def linkgen_sdk_dicter(indict, origtext, newtext):

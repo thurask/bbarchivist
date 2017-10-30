@@ -56,7 +56,8 @@ def main():
         'bb-barlinker=bbarchivist.scripts.barlinker:barlinker_main',
         'bb-tclscan=bbarchivist.scripts.tclscan:grab_args',
         'bb-tclloader=bbarchivist.scripts.tclloader:grab_args',
-        'bb-tcldelta=bbarchivist.scripts.tcldelta:grab_args'
+        'bb-tcldelta=bbarchivist.scripts.tcldelta:grab_args',
+        'bb-tclnewprd=bbarchivist.scripts.tclnewprd:grab_args'
     ]
     setup(name='bbarchivist',
           version=versioneer.get_version().split("-")[0],
