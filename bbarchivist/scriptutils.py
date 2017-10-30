@@ -1044,7 +1044,7 @@ def tcl_findprd(prddict, floor=0, ceiling=999):
             else:
                 tvver, firmwareid, filename, fsize, fhash = networkutils.parse_tcl_check(checktext)
                 del firmwareid, filename, fsize, fhash
-                tvver2="{0}{1}".format(tvver, " "*8)
+                tvver2 = "{0}{1}".format(tvver, " "*8)
                 tcl_mainscan_printer(curef, tvver2)
 
 
