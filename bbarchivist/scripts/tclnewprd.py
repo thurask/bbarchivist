@@ -30,7 +30,7 @@ def grab_args():
         "-c", "--ceiling",
         dest="ceiling",
         help="When to stop, default=60",
-        default=60,
+        default=None,
         type=int,
         choices=range(1, 999),
         metavar="INT")
@@ -46,12 +46,12 @@ def execute_args(args):
     :param args: Arguments.
     :type args: argparse.Namespace
     """
-    if args.ceiling == 60 and args.floor > 60:
-        args.ceiling = args.floor + 60  # default range
+    if args.ceiling is None:
+        args.ceiling = args.floor + 59  # default range
     if args.ceiling < args.floor:
         print("INVALID RANGE!")
         raise SystemExit
-    args.ceiling += 1
+    args.ceiling += 1  # because range() is a half-open interval
     tclnewprd_main(args.prd, args.floor, args.ceiling)
 
 
