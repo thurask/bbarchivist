@@ -143,8 +143,7 @@ def tclscan_main(ota=None, device=None):
     scriptutils.tcl_mainscan_preamble(ota)
     prddict = jsonutils.load_json("prds")
     if device is not None:
-        prddict2 = {dev: prddict[dev] for dev in prddict.keys() if dev == device}
-        prddict = prddict2
+        prddict = {device: prddict[device]}
     sess = requests.Session()
     for device in prddict.keys():
         print("~{0}~".format(device))

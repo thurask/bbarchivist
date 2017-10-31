@@ -977,6 +977,45 @@ def tcl_mainscan_printer(curef, tvver, ota=None):
         print("{0}: {1}".format(curef, tvver))
 
 
+def tcl_findprd_prepd_start(prddict):
+    """
+    Collect list of PRD entries.
+
+    :param prddict: Device:PRD dictionary.
+    :type prddict: dict(str: list)
+    """
+    prda = []
+    for item in prddict.values():
+        prda.extend(item)
+    return prda
+
+
+def tcl_findprd_prepd_middle(prda):
+    """
+    Convert PRD entries to list of center:end entries.
+
+    :param prda: List of PRD-xxxxx-yyy entries.
+    :type prda: list(str)
+    """
+    prds = [x.split(" ")[0].replace("PRD-", "").split("-") for x in prda]
+    prdx = list({x[0]: x[1]} for x in prds)
+    return prdx
+
+
+def tcl_findprd_prepd_end(prdx):
+    """
+    Convert list of center:end entries to final center:[ends] dict.
+
+    :param prdx: List of center:end dict entries.
+    :type prdx: list(dict(str: str))
+    """
+    prdf = collections.defaultdict(list)
+    for prdc in prdx:
+        for key, value in prdc.items():
+            prdf[key].append(value)
+    return prdf
+
+
 def tcl_findprd_prepdict(prddict):
     """
     Prepare dict of center:[ends] entries.
@@ -984,15 +1023,9 @@ def tcl_findprd_prepdict(prddict):
     :param prddict: Device:PRD dictionary.
     :type prddict: dict(str: list)
     """
-    prdfinal = collections.defaultdict(list)
-    prda = []
-    for item in prddict.values():
-        prda.extend(item)
-    prds = [x.split(" ")[0].replace("PRD-", "").split("-") for x in prda]
-    prdx = list({x[0]: x[1]} for x in prds)
-    for prdc in prdx:
-        for key, value in prdc.items():
-            prdfinal[key].append(value)
+    prda = tcl_findprd_prepd_start(prddict)
+    prdx = tcl_findprd_prepd_middle(prda)
+    prdfinal = tcl_findprd_prepd_end(prdx)
     return prdfinal
 
 
@@ -1001,20 +1034,81 @@ def tcl_findprd_checkfilter(prddict, tocheck=None):
     Filter PRD dict if needed.
 
     :param prddict: PRD center:[ends] dictionary.
-    :type prddict: dict(str: list)
+    :type prddict: collections.defaultdict(str: list)
 
     :param tocheck: Specific PRD to check, None if we're checking all variants in database. Default is None.
     :type tocheck: str
     """
     if tocheck is not None:
         tocheck = tocheck.replace("PRD-", "")
-        prdkeys = list(prddict.keys())
-        for k in prdkeys:
-            if k != tocheck:
-                del prddict[k]
-        if not prddict:
-            prddict[tocheck] = []
+        prddict2 = collections.defaultdict(list)
+        prddict2[tocheck] = prddict[tocheck]
+        prddict = prddict2
     return prddict
+
+
+def tcl_findprd_centerscan(center, prddict, session, floor=0, ceiling=999):
+    """
+    Individual scanning for the center of a PRD.
+
+    :param center: PRD-center-end.
+    :type center: str
+
+    :param prddict: PRD center:[ends] dictionary.
+    :type prddict: collections.defaultdict(str: list)
+
+    :param session: Session object.
+    :type session: requests.Session
+
+    :param floor: When to start. Default is 0.
+    :type floor: int
+
+    :param ceiling: When to stop. Default is 999.
+    :type ceiling: int
+    """
+    tails = [int(i) for i in prddict[center]]
+    safes = [g for g in range(floor, ceiling) if g not in tails]
+    print("SCANNING ROOT: {0}{1}".format(center, " "*8))
+    tcl_findprd_safescan(safes, center, session)
+
+
+def tcl_findprd_safescan(safes, center, session):
+    """
+    Scan for PRDs known not to be in database.
+
+    :param safes: List of ends within given range that aren't in database.
+    :type safes: list(int)
+
+    :param center: PRD-center-end.
+    :type center: str
+
+    :param session: Session object.
+    :type session: requests.Session
+    """
+    for j in safes:
+        curef = "PRD-{}-{:03}".format(center, j)
+        print("NOW SCANNING: {0}".format(curef), end="\r")
+        checktext = networkutils.tcl_check(curef, session)
+        if checktext is None:
+            continue
+        else:
+            tcl_findprd_safehandle(curef, checktext)
+
+
+def tcl_findprd_safehandle(curef, checktext):
+    """
+    Parse API output and print the relevant bits.
+
+    :param curef: PRD of the phone variant to check.
+    :type curef: str
+
+    :param checktext: The XML formatted data returned from the first stage API check.
+    :type checktext: str
+    """
+    tvver, firmwareid, filename, fsize, fhash = networkutils.parse_tcl_check(checktext)
+    del firmwareid, filename, fsize, fhash
+    tvver2 = "{0}{1}".format(tvver, " "*8)
+    tcl_mainscan_printer(curef, tvver2)
 
 
 def tcl_findprd(prddict, floor=0, ceiling=999):
@@ -1022,7 +1116,7 @@ def tcl_findprd(prddict, floor=0, ceiling=999):
     Check for new PRDs based on PRD database.
 
     :param prddict: PRD center:[ends] dictionary.
-    :type prddict: dict(str: list)
+    :type prddict: collections.defaultdict(str: list)
 
     :param floor: When to start. Default is 0.
     :type floor: int
@@ -1032,20 +1126,7 @@ def tcl_findprd(prddict, floor=0, ceiling=999):
     """
     sess = requests.Session()
     for center in sorted(prddict.keys()):
-        tails = [int(i) for i in prddict[center]]
-        safes = [g for g in range(floor, ceiling) if g not in tails]
-        print("SCANNING ROOT: {0}{1}".format(center, " "*8))
-        for j in safes:
-            curef = "PRD-{}-{:03}".format(center, j)
-            print("NOW SCANNING: {0}".format(curef), end="\r")
-            checktext = networkutils.tcl_check(curef, sess)
-            if checktext is None:
-                continue
-            else:
-                tvver, firmwareid, filename, fsize, fhash = networkutils.parse_tcl_check(checktext)
-                del firmwareid, filename, fsize, fhash
-                tvver2 = "{0}{1}".format(tvver, " "*8)
-                tcl_mainscan_printer(curef, tvver2)
+        tcl_findprd_centerscan(center, prddict, sess, floor, ceiling)
 
 
 def linkgen_sdk_dicter(indict, origtext, newtext):
