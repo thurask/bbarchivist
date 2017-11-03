@@ -323,7 +323,7 @@ class TestClassScriptutilsTCL:
             with mock.patch("bbarchivist.networkutils.parse_tcl_check", mock.MagicMock(return_value=(6, 6, "snek.zip", 6, 6))):
                 prdbase = {"KEYone": ["PRD-63116-001", "PRD-63118-003"]}
                 prddict = bs.tcl_findprd_prepdict(prdbase)
-                prddict = bs.tcl_findprd_checkfilter(prddict, "63119")
+                prddict = bs.tcl_findprd_checkfilter(prddict, ["63119"])
                 bs.tcl_findprd(prddict, floor=0, ceiling=111)
                 assert "NOW SCANNING: " in capsys.readouterr()[0]
 
@@ -334,7 +334,7 @@ class TestClassScriptutilsTCL:
         with mock.patch("bbarchivist.networkutils.tcl_check", mock.MagicMock(return_value=None)):
             prdbase = {"KEYone": ["PRD-63116-001", "PRD-63118-003"]}
             prddict = bs.tcl_findprd_prepdict(prdbase)
-            prddict = bs.tcl_findprd_checkfilter(prddict, "63119")
+            prddict = bs.tcl_findprd_checkfilter(prddict, ["63119"])
             bs.tcl_findprd(prddict, floor=0, ceiling=111)
             assert "PRD-63119-001:" not in capsys.readouterr()[0]
 

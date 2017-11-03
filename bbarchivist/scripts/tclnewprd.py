@@ -17,7 +17,7 @@ def grab_args():
     Invoke a function with those arguments.
     """
     parser = scriptutils.default_parser("bb-tclnewprd", "Check for new PRDs for TCL devices")
-    parser.add_argument("prd", help="Only scan one/custom PRD root", default=None, nargs="?")
+    parser.add_argument("prds", help="Only scan space separated list of PRDs", default=None, nargs="*")
     parser.add_argument(
         "-f", "--floor",
         dest="floor",
@@ -52,15 +52,15 @@ def execute_args(args):
         print("INVALID RANGE!")
         raise SystemExit
     args.ceiling += 1  # because range() is a half-open interval
-    tclnewprd_main(args.prd, args.floor, args.ceiling)
+    tclnewprd_main(args.prds, args.floor, args.ceiling)
 
 
-def tclnewprd_main(prd=None, floor=1, ceiling=60):
+def tclnewprd_main(prds=None, floor=1, ceiling=60):
     """
     Scan every PRD and produce latest versions.
 
-    :param prd: Specific PRD to check, None if we're checking all variants in database. Default is None.
-    :type prd: str
+    :param prds: Specific PRD(s) to check, None if we're checking all variants in database. Default is None.
+    :type prds: list(str)
 
     :param floor: When to start. Default is 1.
     :type floor: int
@@ -71,7 +71,7 @@ def tclnewprd_main(prd=None, floor=1, ceiling=60):
     scriptutils.slim_preamble("TCLNEWPRD")
     prdbase = jsonutils.load_json("prds")
     prddict = scriptutils.tcl_findprd_prepdict(prdbase)
-    prddict = scriptutils.tcl_findprd_checkfilter(prddict, prd)
+    prddict = scriptutils.tcl_findprd_checkfilter(prddict, prds)
     scriptutils.tcl_findprd(prddict, floor, ceiling)
 
 

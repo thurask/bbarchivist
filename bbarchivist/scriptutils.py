@@ -1036,15 +1036,16 @@ def tcl_findprd_checkfilter(prddict, tocheck=None):
     :param prddict: PRD center:[ends] dictionary.
     :type prddict: collections.defaultdict(str: list)
 
-    :param tocheck: Specific PRD to check, None if we're checking all variants in database. Default is None.
-    :type tocheck: str
+    :param tocheck: Specific PRD(s) to check, None if we're checking all variants in database. Default is None.
+    :type tocheck: list(str)
     """
+    prddict2 = prddict
     if tocheck is not None:
-        tocheck = tocheck.replace("PRD-", "")
         prddict2 = collections.defaultdict(list)
-        prddict2[tocheck] = prddict[tocheck]
-        prddict = prddict2
-    return prddict
+        for toch in tocheck:
+            toch = toch.replace("PRD-", "")
+            prddict2[toch] = prddict[toch]
+    return prddict2
 
 
 def tcl_findprd_centerscan(center, prddict, session, floor=0, ceiling=999):
