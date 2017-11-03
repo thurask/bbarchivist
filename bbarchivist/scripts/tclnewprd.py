@@ -46,6 +46,8 @@ def execute_args(args):
     :param args: Arguments.
     :type args: argparse.Namespace
     """
+    if not args.prds:
+        args.prds = None
     if args.ceiling is None:
         args.ceiling = args.floor + 59  # default range
     if args.ceiling < args.floor:
