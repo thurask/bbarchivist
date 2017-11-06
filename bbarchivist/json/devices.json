@@ -622,9 +622,41 @@
     {
       "device": "MOTION",
       "family": "MOTION",
+      "name": "BBD100-3",
+      "hwid": "",
+      "fccid": "BBD100-3",
+      "ptcrbid": ""
+    },
+    {
+      "device": "MOTION",
+      "family": "MOTION",
+      "name": "BBD100-4",
+      "hwid": "",
+      "fccid": "BBD100-4",
+      "ptcrbid": ""
+    },
+    {
+      "device": "MOTION",
+      "family": "MOTION",
+      "name": "BBD100-5",
+      "hwid": "",
+      "fccid": "BBD100-5",
+      "ptcrbid": ""
+    },
+    {
+      "device": "MOTION",
+      "family": "MOTION",
       "name": "BBD100-6",
       "hwid": "",
       "fccid": "BBD100-6",
+      "ptcrbid": ""
+    },
+    {
+      "device": "MOTION",
+      "family": "MOTION",
+      "name": "BBD100-7",
+      "hwid": "",
+      "fccid": "BBD100-7",
       "ptcrbid": ""
     },
     {
@@ -633,6 +665,14 @@
       "name": "BBC100-1",
       "hwid": "FFA1F981",
       "fccid": "",
+      "ptcrbid": ""
+    },
+    {
+      "device": "UNKNOWN",
+      "family": "UNRELEASED",
+      "name": "BBF100-1",
+      "hwid": "",
+      "fccid": "BBF100-1",
       "ptcrbid": ""
     },
     {
