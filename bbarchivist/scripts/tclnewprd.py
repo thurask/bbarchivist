@@ -58,7 +58,8 @@ def questionnaire_prds():
     """
     selectbool = utilities.i2b("SCAN SELECTED PRDS (Y/N)?: ")
     if selectbool:
-        prds = input("ENTER PRD(S) TO SCAN (ex. 63116 63734 63737): ")
+        prdin = input("ENTER PRD(S) TO SCAN (ex. 63116 63734 63737): ")
+        prds = prdin.split(" ")
     else:
         prds = None
     return prds
