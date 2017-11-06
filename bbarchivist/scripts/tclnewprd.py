@@ -4,6 +4,7 @@
 import sys  # load arguments
 from bbarchivist import jsonutils  # json
 from bbarchivist import scriptutils  # default parser
+from bbarchivist import utilities  # bool
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
