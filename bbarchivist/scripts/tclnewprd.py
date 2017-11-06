@@ -2,6 +2,7 @@
 """Check for new PRDs for TCL API devices."""
 
 import sys  # load arguments
+from bbarchivist import decorators  # enter to exit
 from bbarchivist import jsonutils  # json
 from bbarchivist import scriptutils  # default parser
 from bbarchivist import utilities  # bool
