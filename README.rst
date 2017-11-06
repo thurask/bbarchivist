@@ -77,7 +77,7 @@ This library requires the
 and `Beautiful Soup 4 <https://www.crummy.com/software/BeautifulSoup/#Download>`__
 libraries. GPG support requires the `python-gnupg <https://pythonhosted.org/python-gnupg/index.html>`__ library.
 
-Python 3.2 further requires `shutilwhich <https://pypi.python.org/pypi/shutilwhich/>`__.
+Python 3.2 further requires `shutilwhich <https://pypi.org/project/shutilwhich/>`__.
 Installation of shutilwhich on Python 3.3+ has no effect, so it's unnecessary.
 
 The optional `simplejson <https://simplejson.readthedocs.io/en/latest/>`__ module is installed on Python 3.3+, for improved
@@ -109,7 +109,7 @@ Testing
 If you want to run the tests yourself, you'll also need `pytest <https://pytest.org/latest/>`__
 and `httmock <https://github.com/patrys/httmock>`__. Install from the :code:`requirements-devel.txt` file with pip.
 
-If you're testing on Python 3.2, install the `mock backport <https://pypi.python.org/pypi/mock>`__ as well.
+If you're testing on Python 3.2, install the `mock backport <https://pypi.org/project/mock/>`__ as well.
 
 Coverage requires installation of pytest-cov.
 
