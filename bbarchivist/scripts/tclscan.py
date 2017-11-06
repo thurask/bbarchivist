@@ -89,7 +89,7 @@ def questionnaire_single():
     """
     Ask about single versus full scanning.
     """
-    singlebool = utilities.i2b("SCAN SINGLE OS (Y/N)?: ")
+    singlebool = utilities.i2b("SCAN SINGLE DEVICE (Y/N)?: ")
     if singlebool:
         singleprd = input("ENTER PRD TO SCAN (ex. PRD-63116-001): ")
     else:
