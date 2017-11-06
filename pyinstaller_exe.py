@@ -29,6 +29,22 @@ def clean_versions():
     remove("longversion.txt")
 
 
+def is_64bit():
+    """
+    Check if system is 64-bit.
+    """
+    is64 = True if architecture()[0] == "64bit" else False
+    return is64
+
+
+def bit_tail():
+    """
+    String form of 64-bit checking.
+    """
+    tail = "x64" if is_64bit() else "x86"
+    return tail
+
+
 def bitsdir(indir):
     """
     Create directories based on indir segregated on bit type.
@@ -36,10 +52,7 @@ def bitsdir(indir):
     :param indir: Directory to modify.
     :type indir: str
     """
-    if architecture()[0] == "64bit":
-        indirx = "{0}-64".format(indir)
-    else:
-        indirx = indir
+    indirx = "{0}-64".format(indir) if is_64bit() else indir
     if exists(indirx):
         clean_outdir(indirx)
     makedirs(indirx)
@@ -50,7 +63,7 @@ def get_ucrt_dlls():
     """
     Get some magic voodoo Windows DLLs.
     """
-    tail = "x64" if architecture()[0] == "64bit" else "x86"
+    tail = bit_tail()
     folder = join("C:\\", "Program Files (x86)", "Windows Kits", "10", "Redist", "ucrt", "DLLs", tail)
     return folder
 
@@ -62,9 +75,10 @@ def generate_specs():
     scripts = ["archivist", "autolookup", "barlinker", "carrierchecker", "certchecker", "devloader", "downloader", "droidlookup", "droidscraper", "escreens", "kernchecker", "lazyloader", "linkgen", "metachecker", "swlookup", "tclscan", "tcldelta"]
     here = getcwd().replace("\\", "\\\\")
     dlldir = get_ucrt_dlls().replace("\\", "\\\\")
+    tail = bit_tail()
     for script in scripts:
         template = "# -*- mode: python -*-\n\nblock_cipher = None\n\n\na = Analysis(['bbarchivist\\\\scripts\\\\{0}.py'],\n             pathex=['{1}', '{2}'],\n             binaries=None,\n             datas=None,\n             hiddenimports=[],\n             hookspath=[],\n             runtime_hooks=[],\n             excludes=[],\n             win_no_prefer_redirects=False,\n             win_private_assemblies=False,\n             cipher=block_cipher)\npyz = PYZ(a.pure, a.zipped_data,\n             cipher=block_cipher)\nexe = EXE(pyz,\n          a.scripts,\n          a.binaries,\n          a.zipfiles,\n          a.datas,\n          name='{0}',\n          debug=False,\n          strip=False,\n          upx=False,\n          console=True )\n".format(script, here, dlldir)
-        with open("{0}.spec".format(script), "w") as afile:
+        with open("{0}.{1}.spec".format(script, tail), "w") as afile:
             afile.write(template)
 
 
@@ -72,7 +86,8 @@ def clean_specs():
     """
     Remove pyinstaller spec files.
     """
-    specs = [x for x in listdir() if x.endswith(".spec")]
+    tail = bit_tail()
+    specs = [x for x in listdir() if x.endswith("{0}.spec".format(tail))]
     for spec in specs:
         remove(spec)
 
@@ -120,7 +135,8 @@ def call_specs(distdir, builddir):
     :param builddir: Path to build files.
     :type builddir: str
     """
-    specs = [x for x in listdir() if x.endswith(".spec")]
+    tail = bit_tail()
+    specs = [x for x in listdir() if x.endswith("{0}.spec".format(tail))]
     for spec in specs:  # use UPX 3.93 or up
         cmd = "pyinstaller --onefile --workpath {2} --distpath {1} {0}".format(spec, distdir, builddir)
         call(cmd, shell=True)
@@ -149,7 +165,7 @@ def sz_wrapper_writer(outdir):
     :type outdir: str
     """
     copy(join("7z", "7za.exe"), outdir)
-    if architecture()[0] == "64bit":
+    if is_64bit():
         copy(join("7z", "x64", "7za.exe"), join(outdir, "7za64.exe"))
     rmtree("7z", ignore_errors=True)
 
