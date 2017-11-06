@@ -16,27 +16,51 @@ def grab_args():
 
     Invoke a function with those arguments.
     """
-    parser = scriptutils.default_parser("bb-tclnewprd", "Check for new PRDs for TCL devices")
-    parser.add_argument("prds", help="Only scan space separated list of PRDs", default=None, nargs="*")
-    parser.add_argument(
-        "-f", "--floor",
-        dest="floor",
-        help="When to start, default=1",
-        default=1,
-        type=int,
-        choices=range(0, 998),
-        metavar="INT")
-    parser.add_argument(
-        "-c", "--ceiling",
-        dest="ceiling",
-        help="When to stop, default=60",
-        default=None,
-        type=int,
-        choices=range(1, 999),
-        metavar="INT")
-    args = parser.parse_args(sys.argv[1:])
-    parser.set_defaults()
-    execute_args(args)
+    if getattr(sys, "frozen", False) and len(sys.argv) == 1:
+        questionnaire()
+    else:
+        parser = scriptutils.default_parser("bb-tclnewprd", "Check for new PRDs for TCL devices")
+        parser.add_argument("prds", help="Only scan space separated list of PRDs", default=None, nargs="*")
+        parser.add_argument(
+            "-f", "--floor",
+            dest="floor",
+            help="When to start, default=1",
+            default=1,
+            type=int,
+            choices=range(0, 998),
+            metavar="INT")
+        parser.add_argument(
+            "-c", "--ceiling",
+            dest="ceiling",
+            help="When to stop, default=60",
+            default=None,
+            type=int,
+            choices=range(1, 999),
+            metavar="INT")
+        args = parser.parse_args(sys.argv[1:])
+        parser.set_defaults()
+        execute_args(args)
+
+
+def questionnaire():
+    """
+    Questions to ask if no arguments given.
+    """
+    prds = questionnaire_prds()
+    tclnewprd_main(prds=prds, floor=1, ceiling=61)
+    decorators.enter_to_exit(True)
+
+
+def questionnaire_prds():
+    """
+    Ask about individual versus full scanning.
+    """
+    selectbool = utilities.i2b("SCAN SELECTED PRDS (Y/N)?: ")
+    if selectbool:
+        prds = input("ENTER PRD(S) TO SCAN (ex. 63116 63734 63737): ")
+    else:
+        prds = None
+    return prds
 
 
 def execute_args(args):

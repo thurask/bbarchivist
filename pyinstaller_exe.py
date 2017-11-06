@@ -72,7 +72,7 @@ def generate_specs():
     """
     Generate pyinstaller spec files.
     """
-    scripts = ["archivist", "autolookup", "barlinker", "carrierchecker", "certchecker", "devloader", "downloader", "droidlookup", "droidscraper", "escreens", "kernchecker", "lazyloader", "linkgen", "metachecker", "swlookup", "tclscan", "tcldelta"]
+    scripts = ["archivist", "autolookup", "barlinker", "carrierchecker", "certchecker", "devloader", "downloader", "droidlookup", "droidscraper", "escreens", "kernchecker", "lazyloader", "linkgen", "metachecker", "swlookup", "tclscan", "tcldelta", "tclnewprd"]
     here = getcwd().replace("\\", "\\\\")
     dlldir = get_ucrt_dlls().replace("\\", "\\\\")
     tail = bit_tail()
