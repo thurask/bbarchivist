@@ -10,8 +10,6 @@ Welcome to bbarchivist's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   readme
-
    bbarchivist
 
 Indices and tables

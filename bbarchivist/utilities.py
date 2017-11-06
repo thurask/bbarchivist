@@ -1052,7 +1052,7 @@ def one_and_none(first, second):
 
 def def_args(dirs):
     """
-    Return prepared argument list for most instances of :func:`cond_check:.
+    Return prepared argument list for most instances of :func:`cond_check:`.
 
     :param dirs: List of directories.
     :type dirs: list(str)

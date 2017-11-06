@@ -85,7 +85,7 @@ bbarchivist.scripts.escreens module
     :show-inheritance:
 
 bbarchivist.scripts.exeshim module
-------------------------------
+----------------------------------
 
 .. automodule:: bbarchivist.scripts.exeshim
     :members:
@@ -189,7 +189,7 @@ bbarchivist.scripts.tcldelta module
     :show-inheritance:
 
 bbarchivist.scripts.tclloader module
------------------------------------
+------------------------------------
 
 .. automodule:: bbarchivist.scripts.tclloader
     :members:
