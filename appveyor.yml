@@ -9,7 +9,7 @@ environment:
 
 install:
   - set PATH="%PYTHON%";"%PYTHON%\Scripts";%PATH%
-  - cinst 7zip.commandline
+  - cinst 7zip.portable
   - "%PYTHON%\\python.exe -m pip install ."
   - "%PYTHON%\\python.exe -m pip install -r requirements-devel.txt"
   - "%PYTHON%\\python.exe -m pip install coverage codecov"
