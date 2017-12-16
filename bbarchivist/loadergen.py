@@ -724,8 +724,8 @@ def generate_tclloader_deps(platform):
     :type platform: str
     """
     if platform == "bbry_qc8953":  # KEYone
-        oems = ["oem_att", "oem_china", "oem_common", "oem_sprint", "oem_vzw"]
-        radios = ["china", "emea", "global", "india", "japan", "usa"]
+        oems = ["oem_att", "oem_china", "oem_common", "oem_sprint", "oem_vzw", "oem_indonesia"]
+        radios = ["china", "dschina", "emea", "global", "india", "japan", "usa"]
     elif platform == "bbry_qc8953krypton":  # Motion
         oems = ["oem_att", "oem_common", "oem_sprint"]
         radios = ["americas", "cdma", "dscn", "dsglobal", "ssglobal"]
