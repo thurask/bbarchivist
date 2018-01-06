@@ -13,7 +13,7 @@ from bbarchivist import iniconfig  # config parsing
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2015-2017 Thurask"
+__copyright__ = "2015-2018 Thurask"
 
 
 def zlib_hash(filepath, method, blocksize=16 * 1024 * 1024):

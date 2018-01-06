@@ -7,7 +7,7 @@ from bbarchivist import scriptutils  # default parser
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2017 Thurask"
+__copyright__ = "2017-2018 Thurask""
 
 
 def grab_args():
@@ -33,11 +33,18 @@ def grab_args():
         help="Save with original filename (implies -d)",
         action="store_true",
         default=False)
+    parser.add_argument(
+        "-x",
+        "--export",
+        dest="export",
+        help="Write XML to logs folder",
+        action="store_true",
+        default=False)
     args = parser.parse_args(sys.argv[1:])
     parser.set_defaults()
     if None in (args.curef, args.fvver):
         args = questionnaire(args)
-    tcldelta_main(args.curef, args.fvver, args.download, args.original)
+    tcldelta_main(args.curef, args.fvver, args.download, args.original, args.export)
     decorators.enter_to_exit(True)
 
 
@@ -55,7 +62,7 @@ def questionnaire(args):
     return args
 
 
-def tcldelta_main(curef, fvver, download=False, original=False):
+def tcldelta_main(curef, fvver, download=False, original=False, export=False):
     """
     Scan one PRD and produce download URL and filename.
 
@@ -70,8 +77,11 @@ def tcldelta_main(curef, fvver, download=False, original=False):
 
     :param original: If we'll download the file with its original filename instead of delta-safe. Default is False.
     :type original: bool
+
+    :param export: Whether to export XML response to file. Default is False.
+    :type export: bool
     """
-    scriptutils.tcl_prd_scan(curef, download, mode=2, fvver=fvver, original=original)
+    scriptutils.tcl_prd_scan(curef, download, mode=2, fvver=fvver, original=original, export=export)
 
 
 if __name__ == "__main__":

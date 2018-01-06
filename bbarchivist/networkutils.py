@@ -22,7 +22,7 @@ from bbarchivist.bbconstants import SERVERS, TCLMASTERS  # lookup servers
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2015-2017 Thurask"
+__copyright__ = "2015-2018 Thurask"
 
 
 def grab_pem():
@@ -322,7 +322,7 @@ def check_prep(curef, mode=4, fvver="AAA000", cltp=2010, cktp=2, rtd=1, chnl=2, 
 
 
 @pem_wrapper
-def tcl_check(curef, session=None, mode=4, fvver="AAA000"):
+def tcl_check(curef, session=None, mode=4, fvver="AAA000", export=False):
     """
     Check TCL server for updates.
 
@@ -337,14 +337,20 @@ def tcl_check(curef, session=None, mode=4, fvver="AAA000"):
 
     :param fvver: Initial software version, must be specific if downloading OTA deltas.
     :type fvver: str
+
+    :param export: Whether to export XML response to file. Default is False.
+    :type export: bool
     """
     sess = generic_session(session)
     geturl, params = check_prep(curef, mode, fvver)
     req = sess.get(geturl, params=params)
     if req.status_code == 200:
-        return req.text
+        response = req.text
+        if export:
+            dump_tcl_xml(response)
     else:
-        return None
+        response = None
+    return response
 
 
 def parse_tcl_check(data):
@@ -371,6 +377,20 @@ def tcl_salt():
     millis = round(time.time() * 1000)
     tail = "{0:06d}".format(random.randint(0, 999999))
     return "{0}{1}".format(str(millis), tail)
+
+
+def dump_tcl_xml(xmldata):
+    """
+    Write XML responses to output directory.
+
+    :param xmldata: Response XML.
+    :type xmldata: str
+    """
+    outfile = os.path.join(os.getcwd(), "logs", "{0}.xml".format(tcl_salt()))
+    if not os.path.exists(os.path.dirname(outfile)):
+        os.makedirs(os.path.dirname(outfile))
+    with open(outfile, "w", encoding="utf-8") as afile:
+        afile.write(xmldata)
 
 
 def unpack_vdkey():
@@ -458,7 +478,7 @@ def download_request_prep(curef, tvver, fwid, salt, vkh, mode=4, fvver="AAA000",
 
 
 @pem_wrapper
-def tcl_download_request(curef, tvver, fwid, salt, vkh, session=None, mode=4, fvver="AAA000"):
+def tcl_download_request(curef, tvver, fwid, salt, vkh, session=None, mode=4, fvver="AAA000", export=False):
     """
     Check TCL server for download URLs.
 
@@ -485,14 +505,20 @@ def tcl_download_request(curef, tvver, fwid, salt, vkh, session=None, mode=4, fv
 
     :param fvver: Initial software version, must be specific if downloading OTA deltas.
     :type fvver: str
+
+    :param export: Whether to export XML response to file. Default is False.
+    :type export: bool
     """
     sess = generic_session(session)
     posturl, params = download_request_prep(curef, tvver, fwid, salt, vkh, mode, fvver)
     req = sess.post(posturl, data=params)
     if req.status_code == 200:
-        return req.text
+        response = req.text
+        if export:
+            dump_tcl_xml(response)
     else:
-        return None
+        response = None
+    return response
 
 
 def parse_tcl_download_request(body, mode=4):

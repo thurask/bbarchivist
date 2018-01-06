@@ -10,6 +10,10 @@ from requests import certs, get
 from bbarchivist.bbconstants import VERSION, LONGVERSION, CAP, JSONDIR, COMMITDATE
 from bbarchivist.utilities import prep_seven_zip, get_seven_zip
 
+__author__ = "Thurask"
+__license__ = "WTFPL v2"
+__copyright__ = "2016-2018 Thurask"
+
 
 def write_versions():
     """

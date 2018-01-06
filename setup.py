@@ -5,6 +5,10 @@ from sys import version_info
 from setuptools import setup, find_packages
 import versioneer
 
+__author__ = "Thurask"
+__license__ = "WTFPL v2"
+__copyright__ = "2015-2018 Thurask"
+
 
 def readme():
     """

@@ -6,7 +6,7 @@ from shutil import rmtree
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2016-2017 Thurask"
+__copyright__ = "2016-2018 Thurask"
 
 
 def setup_module(module):

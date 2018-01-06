@@ -10,6 +10,10 @@ except ImportError:
 import httmock
 import bbarchivist.textgenerator as bt
 
+__author__ = "Thurask"
+__license__ = "WTFPL v2"
+__copyright__ = "2015-2018 Thurask"
+
 
 def setup_module(module):
     """

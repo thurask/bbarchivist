@@ -11,7 +11,7 @@ from bbarchivist import utilities  # bool
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2017 Thurask"
+__copyright__ = "2017-2018 Thurask""
 
 
 def grab_args():
@@ -52,6 +52,13 @@ def grab_args():
             help="Scan only one device",
             default=None,
             type=utilities.droidlookup_devicetype)
+        parser.add_argument(
+            "-x",
+            "--export",
+            dest="export",
+            help="Write XML to logs folder",
+            action="store_true",
+            default=False)
         args = parser.parse_args(sys.argv[1:])
         parser.set_defaults()
         execute_args(args)
@@ -68,9 +75,9 @@ def execute_args(args):
         prddict = jsonutils.load_json("prds")
         jsonutils.list_prds(prddict)
     elif args.prd is not None:
-        tclscan_single(args.prd, args.download, args.otaver)
+        tclscan_single(args.prd, args.download, args.otaver, args.export)
     else:
-        tclscan_main(args.otaver, args.device)
+        tclscan_main(args.otaver, args.device, args.export)
 
 
 def questionnaire_ota():
@@ -110,7 +117,7 @@ def questionnaire():
     decorators.enter_to_exit(True)
 
 
-def tclscan_single(curef, download=False, ota=None):
+def tclscan_single(curef, download=False, ota=None, export=False):
     """
     Scan one PRD and produce download URL and filename.
 
@@ -122,14 +129,17 @@ def tclscan_single(curef, download=False, ota=None):
 
     :param ota: The starting version if we're checking OTA updates, None if we're not. Default is None.
     :type ota: str
+
+    :param export: Whether to export XML response to file. Default is False.
+    :type export: bool
     """
     mode, fvver = scriptutils.tcl_prep_otaver(ota)
-    scriptutils.tcl_prd_scan(curef, False, mode=mode, fvver=fvver)
+    scriptutils.tcl_prd_scan(curef, False, mode=mode, fvver=fvver, export=export)
     if download:
         print("LARGE DOWNLOAD DOESN'T WORK YET")
 
 
-def tclscan_main(ota=None, device=None):
+def tclscan_main(ota=None, device=None, export=False):
     """
     Scan every PRD and produce latest versions.
 
@@ -138,6 +148,9 @@ def tclscan_main(ota=None, device=None):
 
     :param device: The device to check if we're not checking all of them, None if we are. Default is None.
     :type device: str
+
+    :param export: Whether to export XML response to file. Default is False.
+    :type export: bool
     """
     mode, fvver = scriptutils.tcl_prep_otaver(ota)
     scriptutils.tcl_mainscan_preamble(ota)
@@ -148,7 +161,7 @@ def tclscan_main(ota=None, device=None):
     for device in prddict.keys():
         print("~{0}~".format(device))
         for curef in prddict[device]:
-            checktext = networkutils.tcl_check(curef, sess, mode=mode, fvver=fvver)
+            checktext = networkutils.tcl_check(curef, sess, mode=mode, fvver=fvver, export=export)
             if checktext is None:
                 continue
             else:

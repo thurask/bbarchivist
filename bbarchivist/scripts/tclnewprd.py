@@ -9,7 +9,7 @@ from bbarchivist import utilities  # bool
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2017 Thurask"
+__copyright__ = "2017-2018 Thurask""
 
 
 def grab_args():
@@ -39,6 +39,13 @@ def grab_args():
             type=int,
             choices=range(1, 999),
             metavar="INT")
+        parser.add_argument(
+            "-x",
+            "--export",
+            dest="export",
+            help="Write XML to logs folder",
+            action="store_true",
+            default=False)
         args = parser.parse_args(sys.argv[1:])
         parser.set_defaults()
         execute_args(args)
@@ -81,10 +88,10 @@ def execute_args(args):
         print("INVALID RANGE!")
         raise SystemExit
     args.ceiling += 1  # because range() is a half-open interval
-    tclnewprd_main(args.prds, args.floor, args.ceiling)
+    tclnewprd_main(args.prds, args.floor, args.ceiling, args.export)
 
 
-def tclnewprd_main(prds=None, floor=1, ceiling=60):
+def tclnewprd_main(prds=None, floor=1, ceiling=60, export=False):
     """
     Scan every PRD and produce latest versions.
 
@@ -96,12 +103,15 @@ def tclnewprd_main(prds=None, floor=1, ceiling=60):
 
     :param ceiling: When to stop. Default is 60.
     :type ceiling: int
+
+    :param export: Whether to export XML response to file. Default is False.
+    :type export: bool
     """
     scriptutils.slim_preamble("TCLNEWPRD")
     prdbase = jsonutils.load_json("prds")
     prddict = scriptutils.tcl_findprd_prepdict(prdbase)
     prddict = scriptutils.tcl_findprd_checkfilter(prddict, prds)
-    scriptutils.tcl_findprd(prddict, floor, ceiling)
+    scriptutils.tcl_findprd(prddict, floor, ceiling, export)
 
 
 if __name__ == "__main__":

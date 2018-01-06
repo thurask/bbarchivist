@@ -10,7 +10,7 @@ from bbarchivist import decorators  # sql handlers
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2015-2017 Thurask"
+__copyright__ = "2015-2018 Thurask"
 
 
 def prepare_path():

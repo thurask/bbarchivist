@@ -14,7 +14,7 @@ import bbarchivist.networkutils as bn
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2015-2017 Thurask"
+__copyright__ = "2015-2018 Thurask"
 
 
 def setup_module(module):
@@ -818,7 +818,7 @@ class TestClassNetworkutilsTcl:
         Test checking for Android updates.
         """
         with httmock.HTTMock(tcl_check_mock):
-            ctxt = bn.tcl_check("PRD-63764-001")
+            ctxt = bn.tcl_check("PRD-63764-001", export=True)
         tv, fw, fn, fs, fh = bn.parse_tcl_check(ctxt)
         assert tv == "AAM693"
         assert fw == "258098"
@@ -841,7 +841,7 @@ class TestClassNetworkutilsTcl:
         with httmock.HTTMock(tcl_request_mock):
             salt = bn.tcl_salt()
             vkh = bn.vkhash("PRD-63764-001", "AAM693", "258098", salt)
-            utxt = bn.tcl_download_request("PRD-63764-001", "AAM693", "258098", salt, vkh)
+            utxt = bn.tcl_download_request("PRD-63764-001", "AAM693", "258098", salt, vkh, export=True)
         dlurl, encslave = bn.parse_tcl_download_request(utxt)
         assert "/ce570ddc079e2744558f191895e524d02a60476f/cfcdde91ea7f810311d1f973726e390f77a9ff1b/258098/261497" in dlurl
 

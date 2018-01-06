@@ -26,7 +26,7 @@ from bbarchivist import sqlutils  # sql
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2015-2017 Thurask"
+__copyright__ = "2015-2018 Thurask"
 
 
 def shortversion():
@@ -841,7 +841,7 @@ def tcl_download(downloadurl, filename, filesize, filehash):
         print("HASH FAILED!")
 
 
-def tcl_prd_scan(curef, download=False, mode=4, fvver="AAA000", original=True):
+def tcl_prd_scan(curef, download=False, mode=4, fvver="AAA000", original=True, export=False):
     """
     Scan one PRD and produce download URL and filename.
 
@@ -859,15 +859,18 @@ def tcl_prd_scan(curef, download=False, mode=4, fvver="AAA000", original=True):
 
     :param original: If we'll download the file with its original filename instead of delta-safe. Default is True.
     :type original: bool
+
+    :param export: Whether to export XML response to file. Default is False.
+    :type export: bool
     """
     sess = requests.Session()
-    ctext = networkutils.tcl_check(curef, sess, mode, fvver)
+    ctext = networkutils.tcl_check(curef, sess, mode, fvver, export)
     if ctext is None:
         raise SystemExit
     tvver, firmwareid, filename, filesize, filehash = networkutils.parse_tcl_check(ctext)
     salt = networkutils.tcl_salt()
     vkhsh = networkutils.vkhash(curef, tvver, firmwareid, salt, mode, fvver)
-    updatetext = networkutils.tcl_download_request(curef, tvver, firmwareid, salt, vkhsh, sess, mode, fvver)
+    updatetext = networkutils.tcl_download_request(curef, tvver, firmwareid, salt, vkhsh, sess, mode, fvver, export)
     downloadurl, encslave = networkutils.parse_tcl_download_request(updatetext)
     statcode = networkutils.getcode(downloadurl, sess)
     filename = tcl_delta_filename(curef, fvver, tvver, filename, original)
@@ -1048,7 +1051,7 @@ def tcl_findprd_checkfilter(prddict, tocheck=None):
     return prddict2
 
 
-def tcl_findprd_centerscan(center, prddict, session, floor=0, ceiling=999):
+def tcl_findprd_centerscan(center, prddict, session, floor=0, ceiling=999, export=False):
     """
     Individual scanning for the center of a PRD.
 
@@ -1066,14 +1069,17 @@ def tcl_findprd_centerscan(center, prddict, session, floor=0, ceiling=999):
 
     :param ceiling: When to stop. Default is 999.
     :type ceiling: int
+
+    :param export: Whether to export XML response to file. Default is False.
+    :type export: bool
     """
     tails = [int(i) for i in prddict[center]]
     safes = [g for g in range(floor, ceiling) if g not in tails]
     print("SCANNING ROOT: {0}{1}".format(center, " "*8))
-    tcl_findprd_safescan(safes, center, session)
+    tcl_findprd_safescan(safes, center, session, export)
 
 
-def tcl_findprd_safescan(safes, center, session):
+def tcl_findprd_safescan(safes, center, session, export=False):
     """
     Scan for PRDs known not to be in database.
 
@@ -1085,11 +1091,14 @@ def tcl_findprd_safescan(safes, center, session):
 
     :param session: Session object.
     :type session: requests.Session
+
+    :param export: Whether to export XML response to file. Default is False.
+    :type export: bool
     """
     for j in safes:
         curef = "PRD-{}-{:03}".format(center, j)
         print("NOW SCANNING: {0}".format(curef), end="\r")
-        checktext = networkutils.tcl_check(curef, session)
+        checktext = networkutils.tcl_check(curef, session, export)
         if checktext is None:
             continue
         else:
@@ -1112,7 +1121,7 @@ def tcl_findprd_safehandle(curef, checktext):
     tcl_mainscan_printer(curef, tvver2)
 
 
-def tcl_findprd(prddict, floor=0, ceiling=999):
+def tcl_findprd(prddict, floor=0, ceiling=999, export=False):
     """
     Check for new PRDs based on PRD database.
 
@@ -1124,10 +1133,13 @@ def tcl_findprd(prddict, floor=0, ceiling=999):
 
     :param ceiling: When to stop. Default is 999.
     :type ceiling: int
+
+    :param export: Whether to export XML response to file. Default is False.
+    :type export: bool
     """
     sess = requests.Session()
     for center in sorted(prddict.keys()):
-        tcl_findprd_centerscan(center, prddict, sess, floor, ceiling)
+        tcl_findprd_centerscan(center, prddict, sess, floor, ceiling, export)
 
 
 def linkgen_sdk_dicter(indict, origtext, newtext):
