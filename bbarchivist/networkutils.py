@@ -345,6 +345,7 @@ def tcl_check(curef, session=None, mode=4, fvver="AAA000", export=False):
     geturl, params = check_prep(curef, mode, fvver)
     req = sess.get(geturl, params=params)
     if req.status_code == 200:
+        req.encoding = "utf-8"
         response = req.text
         if export:
             dump_tcl_xml(response)
@@ -513,6 +514,7 @@ def tcl_download_request(curef, tvver, fwid, salt, vkh, session=None, mode=4, fv
     posturl, params = download_request_prep(curef, tvver, fwid, salt, vkh, mode, fvver)
     req = sess.post(posturl, data=params)
     if req.status_code == 200:
+        req.encoding = "utf-8"
         response = req.text
         if export:
             dump_tcl_xml(response)
