@@ -7,7 +7,7 @@ from bbarchivist import scriptutils  # default parser
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2017-2018 Thurask""
+__copyright__ = "2017-2018 Thurask"
 
 
 def grab_args():
