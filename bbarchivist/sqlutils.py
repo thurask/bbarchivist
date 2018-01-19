@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """This module is used for dealing with SQL databases, including CSV export."""
 
-import sqlite3  # the sql library
 import csv  # write to csv
-import os  # paths
 import operator  # for sorting
+import os  # paths
+import sqlite3  # the sql library
 import time  # current date
+
 from bbarchivist import decorators  # sql handlers
 from bbarchivist import iniconfig  # config directory
 

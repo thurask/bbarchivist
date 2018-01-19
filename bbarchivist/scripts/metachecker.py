@@ -2,6 +2,7 @@
 """Checks BlackBerry's developer website for metadata."""
 
 import sys  # load arguments
+
 import requests  # session
 from bbarchivist import decorators  # enter to exit
 from bbarchivist import networkutils  # check function

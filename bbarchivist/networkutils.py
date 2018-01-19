@@ -1,24 +1,26 @@
 #!/usr/bin/env python3
 """This module is used for network connections; APIs, downloading, etc."""
 
+import base64  # encoding
+import binascii  # encoding
+import concurrent.futures  # multiprocessing/threading
+import glob  # pem file lookup
+import hashlib  # salt
 import os  # filesystem read
+import random  # salt
+import re  # regexes
+import time  # salt
+import zlib  # encoding
+
+import requests  # downloading
+from bbarchivist import utilities  # parse filesize
+from bbarchivist.bbconstants import SERVERS, TCLMASTERS  # lookup servers
+from bs4 import BeautifulSoup  # scraping
+
 try:
     from defusedxml import ElementTree  # safer XML parsing
 except (ImportError, AttributeError):
     from xml.etree import ElementTree  # XML parsing
-import re  # regexes
-import concurrent.futures  # multiprocessing/threading
-import glob  # pem file lookup
-import hashlib  # salt
-import time  # salt
-import random  # salt
-import base64  # encoding
-import binascii  # encoding
-import zlib  # encoding
-import requests  # downloading
-from bs4 import BeautifulSoup  # scraping
-from bbarchivist import utilities  # parse filesize
-from bbarchivist.bbconstants import SERVERS, TCLMASTERS  # lookup servers
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

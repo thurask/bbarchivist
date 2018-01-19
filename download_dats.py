@@ -3,6 +3,7 @@
 
 import os
 import subprocess
+
 import requests
 from bbarchivist.bbconstants import CAP, CFP, FLASHBAT, FLASHSH
 

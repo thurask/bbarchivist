@@ -3,15 +3,17 @@
 
 import os
 import zipfile
-from shutil import rmtree, copyfile
 from hashlib import sha512
+from shutil import copyfile, rmtree
+
+import bbarchivist.loadergen as bl
+import pytest
+from bbarchivist.bbconstants import FLASHBAT, FLASHSH
+
 try:
     import unittest.mock as mock
 except ImportError:
     import mock
-import pytest
-import bbarchivist.loadergen as bl
-from bbarchivist.bbconstants import FLASHBAT, FLASHSH
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

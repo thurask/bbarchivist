@@ -2,15 +2,17 @@
 """Test the networkutils module."""
 
 import os
-from shutil import rmtree
 from hashlib import sha512
+from shutil import rmtree
+
+import bbarchivist.networkutils as bn
+import httmock
+import requests
+
 try:
     import unittest.mock as mock
 except ImportError:
     import mock
-import httmock
-import requests
-import bbarchivist.networkutils as bn
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

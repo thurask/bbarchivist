@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """This module is the Python-ized implementation of cap.exe"""
 
-import os  # path work
-import binascii  # to hex and back again
 import base64  # storage
+import binascii  # to hex and back again
+import os  # path work
+
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import utilities  # finding cap
 

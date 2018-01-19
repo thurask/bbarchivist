@@ -1,17 +1,19 @@
 1#!/usr/bin/env python3
 """Test the sqlutils module."""
 
-import os
 import csv
-from shutil import rmtree
+import os
 import sqlite3
+from shutil import rmtree
+
+import bbarchivist.sqlutils as bs
+import pytest
+from bbarchivist.utilities import file_exists
+
 try:
     import unittest.mock as mock
 except ImportError:
     import mock
-import pytest
-import bbarchivist.sqlutils as bs
-from bbarchivist.utilities import file_exists
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

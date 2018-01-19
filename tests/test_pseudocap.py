@@ -2,14 +2,16 @@
 """Test the pseudocap module."""
 
 import os
-from shutil import rmtree, copyfile
 from hashlib import sha512
+from shutil import copyfile, rmtree
+
+import bbarchivist.pseudocap as bp
+import pytest
+
 try:
     import unittest.mock as mock
 except ImportError:
     import mock
-import pytest
-import bbarchivist.pseudocap as bp
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

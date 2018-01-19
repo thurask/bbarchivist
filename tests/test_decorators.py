@@ -3,12 +3,14 @@
 
 import os
 from shutil import rmtree
+
+import bbarchivist.decorators as bd
+import pytest
+
 try:
     import unittest.mock as mock
 except ImportError:
     import mock
-import pytest
-import bbarchivist.decorators as bd
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

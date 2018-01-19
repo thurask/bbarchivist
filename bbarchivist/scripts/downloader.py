@@ -3,11 +3,12 @@
 
 import os  # filesystem read
 import sys  # load arguments
+
 import requests  # session
 from bbarchivist import decorators  # enter to exit
+from bbarchivist import networkutils  # download/lookup
 from bbarchivist import scriptutils  # script stuff
 from bbarchivist import utilities  # input validation
-from bbarchivist import networkutils  # download/lookup
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

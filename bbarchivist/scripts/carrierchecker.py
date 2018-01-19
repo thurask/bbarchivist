@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 """Checks a carrier for an OS version, can download."""
 
-import sys  # load arguments
 import os  # file/path operations
+import sys  # load arguments
 import webbrowser  # code list
+
 import requests  # session
-from bbarchivist import decorators  # enter to exit
 from bbarchivist import bbconstants  # versions/constants
-from bbarchivist import networkutils  # check function
-from bbarchivist import utilities  # input validation
+from bbarchivist import decorators  # enter to exit
 from bbarchivist import jsonutils  # json
+from bbarchivist import networkutils  # check function
 from bbarchivist import scriptutils  # default parser
+from bbarchivist import utilities  # input validation
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

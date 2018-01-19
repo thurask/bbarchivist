@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 """Test the hashutils module."""
 
-from shutil import rmtree, copyfile
 import hashlib
-from configparser import ConfigParser
 import os
+from configparser import ConfigParser
+from shutil import copyfile, rmtree
+
+import pytest
+from bbarchivist import hashutils as bh
+
 try:
     import unittest.mock as mock
 except ImportError:
     import mock
-import pytest
-from bbarchivist import hashutils as bh
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

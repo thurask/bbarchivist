@@ -5,12 +5,14 @@ import os
 import tempfile
 import zipfile
 from shutil import copyfile, rmtree
+
+import bbarchivist.archiveutils as ba
+from bbarchivist.utilities import get_seven_zip, new_enough, prep_seven_zip
+
 try:
     import unittest.mock as mock
 except ImportError:
     import mock
-import bbarchivist.archiveutils as ba
-from bbarchivist.utilities import prep_seven_zip, get_seven_zip, new_enough
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

@@ -2,6 +2,7 @@
 """Generate links from OS/radio/software."""
 
 import sys  # load arguments
+
 from bbarchivist import decorators  # enter to exit
 from bbarchivist import scriptutils  # script stuff
 from bbarchivist import utilities  # increment version, if radio not specified

@@ -4,6 +4,7 @@
 import configparser  # config parsing, duh
 import os  # path work
 import shutil  # moving
+
 from appdirs import AppDirs  # folders
 
 __author__ = "Thurask"
@@ -37,17 +38,14 @@ def config_homepath(homepath, logpath=False):
     :type logpath: bool
     """
     if homepath is None:
-        rawpath = config_rawdir(homepath, logpath)
+        rawpath = config_rawdir(logpath)
         homepath = process_homepath(rawpath, logpath)
     return homepath
 
 
-def config_rawdir(homepath, logpath=False):
+def config_rawdir(logpath=False):
     """
     Get new config dir.
-
-    :param homepath: Path to data directory.
-    :type homepath: str
 
     :param logpath: True if processing log folder, False if processing data files. Default is False.
     :type logpath: bool

@@ -3,13 +3,14 @@
 
 import os  # filesystem read
 import subprocess  # invocation of 7z, cap
-import zipfile  # zip compresssion
 import tarfile  # txz/tbz/tgz/tar compression
+import zipfile  # zip compresssion
+
 from bbarchivist import barutils  # zip tester
-from bbarchivist import utilities  # platform determination
 from bbarchivist import bbconstants  # premade stuff
 from bbarchivist import decorators  # timer
 from bbarchivist import iniconfig  # config parsing
+from bbarchivist import utilities  # platform determination
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

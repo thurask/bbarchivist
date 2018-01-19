@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 """This module is used to operate with bar files."""
 
-import os  # filesystem read
-import zipfile  # zip extract, zip compresssion
-import shutil  # folder operations
 import base64  # encoding for hashes
-import hashlib   # get hashes
-from bbarchivist import utilities  # platform determination
-from bbarchivist import exceptions  # exception handling
+import hashlib  # get hashes
+import os  # filesystem read
+import shutil  # folder operations
+import zipfile  # zip extract, zip compresssion
+
 from bbarchivist import bbconstants  # premade stuff
+from bbarchivist import exceptions  # exception handling
+from bbarchivist import utilities  # platform determination
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

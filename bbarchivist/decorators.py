@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """This module is used for decorators."""
 
-import time  # spinner delay, timer decorator
 import math  # rounding
 import os  # path check
-import sys  # frozen
 import sqlite3  # the sql library
+import sys  # frozen
+import time  # spinner delay, timer decorator
+
 from bbarchivist import dummy  # useless stdout
 from bbarchivist import exceptions  # exceptions
 

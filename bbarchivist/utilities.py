@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 """This module is used for miscellaneous utilities."""
 
-import os  # path work
 import argparse  # argument parser for filters
-import platform  # platform info
 import glob  # cap grabbing
 import hashlib  # base url creation
+import itertools  # spinners gonna spin
+import os  # path work
+import platform  # platform info
+import subprocess  # loader verification
+import sys  # streams, version info
 import threading  # get thread for spinner
 import time  # spinner delay
-import sys  # streams, version info
-import itertools  # spinners gonna spin
-import subprocess  # loader verification
+
 from bbarchivist import bbconstants  # cap location, version, filename bits
 from bbarchivist import compat  # backwards compat
 from bbarchivist import dummy  # useless stdout

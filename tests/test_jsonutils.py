@@ -2,13 +2,15 @@
 """Test the jsonutils module."""
 
 import os
+from shutil import rmtree
+
+import bbarchivist.jsonutils as bj
+import pytest
+
 try:
     import simplejson as json
 except ImportError:
     import json
-from shutil import rmtree
-import pytest
-import bbarchivist.jsonutils as bj
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

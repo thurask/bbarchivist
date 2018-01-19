@@ -3,11 +3,13 @@
 
 import os
 from shutil import rmtree
+
+import bbarchivist.compat as bc
+
 try:
     import unittest.mock as mock
 except ImportError:
     import mock
-import bbarchivist.compat as bc
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

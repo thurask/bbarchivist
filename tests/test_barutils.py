@@ -3,15 +3,17 @@
 
 import os
 import tempfile
-from shutil import rmtree, copyfile, Error
-from hashlib import sha512
 import zipfile
+from hashlib import sha512
+from shutil import Error, copyfile, rmtree
+
+import bbarchivist.barutils as bb
+import pytest
+
 try:
     import unittest.mock as mock
 except ImportError:
     import mock
-import pytest
-import bbarchivist.barutils as bb
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -375,4 +377,3 @@ class TestClassBarutilsBarMover:
         with mock.patch("shutil.move", mock.MagicMock(side_effect=(Error, None))):
             with mock.patch("os.remove", mock.MagicMock(side_effect=None)):
                 bb.persistent_move("snek.zip", "snekx")
-

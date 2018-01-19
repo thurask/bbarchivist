@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """Applies hash functions to files."""
 
-import sys  # load arguments
 import os  # path operations
+import sys  # load arguments
+
 from bbarchivist import hashutils  # main program
-from bbarchivist import utilities  # input validation
 from bbarchivist import scriptutils  # default parser
+from bbarchivist import utilities  # input validation
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

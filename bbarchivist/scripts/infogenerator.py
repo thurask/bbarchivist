@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Makes a nice info file for a folder of autoloaders."""
 
-import sys  # load arguments
 import os  # path operations
-from bbarchivist import utilities  # input validation
+import sys  # load arguments
+
 from bbarchivist import scriptutils  # default parser
+from bbarchivist import utilities  # input validation
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

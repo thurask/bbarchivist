@@ -3,15 +3,16 @@
 
 import os  # filesystem read
 import sys  # load arguments
+
 import requests  # session
+from bbarchivist import archiveutils  # archive work
+from bbarchivist import barutils  # file/folder work
+from bbarchivist import decorators  # timer
+from bbarchivist import hashutils  # hashes, GPG
+from bbarchivist import loadergen  # cap, in Python
+from bbarchivist import networkutils  # download/lookup
 from bbarchivist import scriptutils  # script stuff
 from bbarchivist import utilities  # input validation
-from bbarchivist import decorators  # timer
-from bbarchivist import barutils  # file/folder work
-from bbarchivist import archiveutils  # archive work
-from bbarchivist import networkutils  # download/lookup
-from bbarchivist import loadergen  # cap, in Python
-from bbarchivist import hashutils  # hashes, GPG
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

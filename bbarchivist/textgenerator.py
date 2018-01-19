@@ -2,7 +2,7 @@
 """This module is used for generation of URLs and related text files."""
 
 from bbarchivist.networkutils import get_length  # network
-from bbarchivist.utilities import create_bar_url, fsizer, generate_urls, stripper, newer_103  # utils
+from bbarchivist.utilities import (create_bar_url, fsizer, generate_urls, newer_103, stripper)  # utils
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 """Create one autoloader for personal use."""
 
-import sys  # load arguments
 import os  # path work
 import subprocess  # autoloader running
+import sys  # load arguments
+
 import requests  # session
-from bbarchivist import scriptutils  # script stuff
-from bbarchivist import decorators  # timer
-from bbarchivist import utilities  # input validation
 from bbarchivist import barutils  # file operations
 from bbarchivist import bbconstants  # constants/versions
-from bbarchivist import networkutils  # download/lookup
+from bbarchivist import decorators  # timer
 from bbarchivist import loadergen  # cap wrapper
+from bbarchivist import networkutils  # download/lookup
+from bbarchivist import scriptutils  # script stuff
+from bbarchivist import utilities  # input validation
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

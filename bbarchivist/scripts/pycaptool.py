@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """cap.exe, implemented in Python."""
 
-import sys  # load arguments
 import os  # local dir
-from bbarchivist import utilities  # path checking
+import sys  # load arguments
+
 from bbarchivist import pseudocap  # actually making the loader
 from bbarchivist import scriptutils  # default parser
+from bbarchivist import utilities  # path checking
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 """Generate .exe files with PyInstaller."""
 
-from os import remove, listdir, devnull, getcwd, makedirs
-from os.path import join, basename, exists
+from os import devnull, getcwd, listdir, makedirs, remove
+from os.path import basename, exists, join
 from platform import architecture
-from shutil import copy, rmtree, copytree
-from subprocess import call, STDOUT
+from shutil import copy, copytree, rmtree
+from subprocess import STDOUT, call
+
+from bbarchivist.bbconstants import (CAP, COMMITDATE, JSONDIR, LONGVERSION, VERSION)
+from bbarchivist.utilities import get_seven_zip, prep_seven_zip
 from requests import certs, get
-from bbarchivist.bbconstants import VERSION, LONGVERSION, CAP, JSONDIR, COMMITDATE
-from bbarchivist.utilities import prep_seven_zip, get_seven_zip
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

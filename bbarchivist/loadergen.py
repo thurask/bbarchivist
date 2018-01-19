@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 """This module is used for creation of autoloaders."""
 
-import os  # path work
 import glob  # filename matching
+import os  # path work
 import shutil  # file copying
+
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import exceptions  # exception handling
+from bbarchivist import jsonutils  # json
 from bbarchivist import pseudocap  # implement cap
 from bbarchivist import utilities  # directory handler
-from bbarchivist import jsonutils  # json
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

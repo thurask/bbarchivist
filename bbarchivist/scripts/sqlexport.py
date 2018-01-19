@@ -2,8 +2,9 @@
 """Export SQL database to CSV."""
 
 import sys  # load arguments
-from bbarchivist import sqlutils  # the export function
+
 from bbarchivist import scriptutils  # default parser
+from bbarchivist import sqlutils  # the export function
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

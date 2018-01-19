@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 """This module is used to generate file hashes/checksums."""
 
-import zlib  # crc32/adler32
+import concurrent.futures  # parallelization
 import hashlib  # all other hashes
 import hmac  # escreens is a hmac, news at 11
 import os  # path work
-import concurrent.futures  # parallelization
+import zlib  # crc32/adler32
+
 from bbarchivist import bbconstants  # premade stuff
 from bbarchivist import exceptions  # exceptions
-from bbarchivist import utilities  # cores
 from bbarchivist import iniconfig  # config parsing
+from bbarchivist import utilities  # cores
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

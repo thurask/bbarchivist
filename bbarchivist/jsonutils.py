@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 """This module is used for JSON tools."""
 
+import glob  # filenames
 import os  # path work
+import sys  # frozen status
+
+from bbarchivist import bbconstants  # file location
+from bbarchivist import decorators  # enter to exit
+from bbarchivist import utilities  # lprint
+
 try:
     import simplejson as json
 except ImportError:
     import json
-import glob  # filenames
-import sys  # frozen status
-from bbarchivist import bbconstants  # file location
-from bbarchivist import decorators  # enter to exit
-from bbarchivist import utilities  # lprint
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

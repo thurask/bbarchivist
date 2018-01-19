@@ -1,28 +1,29 @@
 #!/usr/bin/env python3
 """This module contains various utilities for the scripts folder."""
 
-import os  # path work
-import getpass  # invisible password
 import argparse  # generic parser
+import collections  # defaultdict
+import getpass  # invisible password
+import glob  # file lookup
 import hashlib  # hashes
-import sys  # getattr
+import os  # path work
 import shutil  # folder removal
 import subprocess  # running cfp/cap
-import glob  # file lookup
+import sys  # getattr
 import threading  # run stuff in background
-import collections  # defaultdict
+
 import requests  # session
-from bbarchivist import utilities  # little things
-from bbarchivist import decorators  # decorating functions
-from bbarchivist import barutils  # file system work
 from bbarchivist import archiveutils  # archive support
+from bbarchivist import barutils  # file system work
 from bbarchivist import bbconstants  # constants
+from bbarchivist import decorators  # decorating functions
 from bbarchivist import gpgutils  # gpg
 from bbarchivist import hashutils  # file hashes
 from bbarchivist import networkutils  # network tools
-from bbarchivist import textgenerator  # writing text to file
 from bbarchivist import smtputils  # email
 from bbarchivist import sqlutils  # sql
+from bbarchivist import textgenerator  # writing text to file
+from bbarchivist import utilities  # little things
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

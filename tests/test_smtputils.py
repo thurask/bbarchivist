@@ -2,14 +2,16 @@
 """Test the smtputils module."""
 
 import os
-from shutil import rmtree
-from email.mime.text import MIMEText
 from configparser import ConfigParser
+from email.mime.text import MIMEText
+from shutil import rmtree
+
+import bbarchivist.smtputils as bs
+
 try:
     import unittest.mock as mock
 except ImportError:
     import mock
-import bbarchivist.smtputils as bs
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

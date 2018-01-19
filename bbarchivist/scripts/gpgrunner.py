@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Use GPG to sign all files in a directory."""
 
-import sys  # load arguments
-import os  # path operations
 import getpass  # invisible passwords (cf. sudo)
+import os  # path operations
+import sys  # load arguments
+
 from bbarchivist import gpgutils  # main program
-from bbarchivist import utilities  # bool parsing
 from bbarchivist import scriptutils  # default parser
+from bbarchivist import utilities  # bool parsing
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

@@ -2,10 +2,11 @@
 """Calculates escreens codes."""
 
 import sys  # load arguments
+
 from bbarchivist import decorators  # enter to exit
 from bbarchivist import hashutils  # main program
-from bbarchivist import utilities  # input validation
 from bbarchivist import scriptutils  # default parser
+from bbarchivist import utilities  # input validation
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 """This module is used to generate file PGP signatures."""
 
-import os  # path work
 import concurrent.futures  # parallelization
+import os  # path work
+
 import gnupg  # interface b/w Python, GPG
 from bbarchivist import bbconstants  # premade stuff
 from bbarchivist import exceptions  # exceptions
 from bbarchivist import hashutils  # filter stuff
-from bbarchivist import utilities  # cores
 from bbarchivist import iniconfig  # config parsing
+from bbarchivist import utilities  # cores
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

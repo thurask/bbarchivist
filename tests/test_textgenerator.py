@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 """Test the textgenerator module."""
 
-from shutil import rmtree
 import os
+from shutil import rmtree
+
+import bbarchivist.textgenerator as bt
+import httmock
+
 try:
     import unittest.mock as mock
 except ImportError:
     import mock
-import httmock
-import bbarchivist.textgenerator as bt
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

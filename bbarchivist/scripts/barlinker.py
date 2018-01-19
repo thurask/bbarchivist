@@ -2,9 +2,10 @@
 """Generate bar file URL."""
 
 import sys  # load arguments
+
 from bbarchivist import decorators  # enter to exit
-from bbarchivist import utilities  # generation
 from bbarchivist import scriptutils  # default parser
+from bbarchivist import utilities  # generation
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

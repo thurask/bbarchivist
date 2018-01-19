@@ -2,12 +2,14 @@
 """Test the iniconfig module."""
 
 import os
-from shutil import rmtree, copyfile
+from shutil import copyfile, rmtree
+
+import bbarchivist.iniconfig as bi
+
 try:
     import unittest.mock as mock
 except ImportError:
     import mock
-import bbarchivist.iniconfig as bi
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

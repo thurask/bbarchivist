@@ -3,18 +3,20 @@
 
 import argparse
 import os
-import time
 import sys
-from shutil import rmtree, copyfile
+import time
 import zipfile
+from shutil import copyfile, rmtree
+
+import bbarchivist.scriptutils as bs
+import pytest
+from bbarchivist.bbconstants import COMMITDATE, LONGVERSION, VERSION
+from requests import Session
+
 try:
     import unittest.mock as mock
 except ImportError:
     import mock
-import pytest
-from requests import Session
-import bbarchivist.scriptutils as bs
-from bbarchivist.bbconstants import LONGVERSION, COMMITDATE, VERSION
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

@@ -1,21 +1,23 @@
 #!/usr/bin/env python3
 """Test the gpgutils module."""
 
-from shutil import rmtree
-from configparser import ConfigParser
 import os
+from configparser import ConfigParser
+from shutil import rmtree
+
+import pytest
+from bbarchivist import gpgutils as bg
+
 try:
     import unittest.mock as mock
 except ImportError:
     import mock
-import pytest
 try:
     import gnupg
 except ImportError:
     NOGNUPG = True
 else:
     NOGNUPG = False
-from bbarchivist import gpgutils as bg
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

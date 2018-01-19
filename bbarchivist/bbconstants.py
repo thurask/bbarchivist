@@ -3,6 +3,7 @@
 
 import os.path  # for producing cap location constant
 import sys
+
 from ._version import get_versions
 
 __author__ = "Thurask"

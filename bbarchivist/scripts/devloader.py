@@ -2,10 +2,11 @@
 """Generate Dev Alpha autoloader URLs."""
 
 import sys  # load arguments
+
 import requests  # session
 from bbarchivist import decorators  # wrap Ctrl+C
-from bbarchivist import networkutils  # check function
 from bbarchivist import jsonutils  # json
+from bbarchivist import networkutils  # check function
 from bbarchivist import scriptutils  # default parser
 from bbarchivist import textgenerator  # export
 from bbarchivist import utilities  # filesize

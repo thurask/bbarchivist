@@ -2,10 +2,11 @@
 """Check BB10 software releases."""
 
 import sys  # load arguments
-from bbarchivist import networkutils  # lookup
+
 from bbarchivist import decorators  # Ctrl+C wrapping
-from bbarchivist import utilities  # argument filters
+from bbarchivist import networkutils  # lookup
 from bbarchivist import scriptutils  # default parser
+from bbarchivist import utilities  # argument filters
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

@@ -2,6 +2,7 @@
 """Check latest update for TCL API devices."""
 
 import sys  # load arguments
+
 import requests  # session
 from bbarchivist import decorators  # enter to exit
 from bbarchivist import jsonutils  # json

@@ -177,6 +177,3 @@ texinfo_documents = [
      author, 'bbarchivist', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
-

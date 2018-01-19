@@ -2,6 +2,7 @@
 """Grab latest delta update for TCL API devices."""
 
 import sys  # load arguments
+
 from bbarchivist import decorators  # enter to exit
 from bbarchivist import scriptutils  # default parser
 

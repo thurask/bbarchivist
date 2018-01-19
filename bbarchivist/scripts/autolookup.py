@@ -2,12 +2,13 @@
 """Get software release for one/many OS versions."""
 
 import sys  # load arguments
+
 import requests  # session
-from bbarchivist import networkutils  # lookup
-from bbarchivist import utilities  # incrementer
-from bbarchivist import smtputils  # email
-from bbarchivist import scriptutils  # default parser
 from bbarchivist import decorators  # Ctrl+C wrapper
+from bbarchivist import networkutils  # lookup
+from bbarchivist import scriptutils  # default parser
+from bbarchivist import smtputils  # email
+from bbarchivist import utilities  # incrementer
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

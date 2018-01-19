@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """This module is used for dealing with SMTP email sending."""
 
-import smtplib  # smtp connection
 import getpass  # passwords
+import smtplib  # smtp connection
 from email.mime.text import MIMEText  # email formatting
-from bbarchivist import utilities  # file work
+
 from bbarchivist import iniconfig  # config parsing
+from bbarchivist import utilities  # file work
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

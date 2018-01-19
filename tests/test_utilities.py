@@ -3,16 +3,18 @@
 
 import os
 import sys
-from shutil import rmtree, copyfile
 from argparse import ArgumentError
 from platform import system
+from shutil import copyfile, rmtree
+
+import bbarchivist.bbconstants as bc
+import bbarchivist.utilities as bu
+import pytest
+
 try:
     import unittest.mock as mock
 except ImportError:
     import mock
-import pytest
-import bbarchivist.utilities as bu
-import bbarchivist.bbconstants as bc
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

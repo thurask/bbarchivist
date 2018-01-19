@@ -2,7 +2,9 @@
 """Setuptools setup file."""
 
 from sys import version_info
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
+
 import versioneer
 
 __author__ = "Thurask"
