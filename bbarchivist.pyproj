@@ -234,6 +234,9 @@
     <Compile Include="tests\test_hashutils.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="tests\test_iniconfig.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="tests\test_jsonutils.py">
       <SubType>Code</SubType>
     </Compile>

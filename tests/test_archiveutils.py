@@ -521,7 +521,7 @@ class TestClassArchiveutilsConfig:
             os.remove("bbarchivist.ini")
         except (OSError, IOError):
             pass
-        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
+        with mock.patch('bbarchivist.iniconfig.config_homepath', mock.MagicMock(return_value=os.getcwd())):
             assert ba.compress_config_loader(os.getcwd()) == "7z"
 
     def test_compress_loader_legacy(self):
@@ -535,7 +535,7 @@ class TestClassArchiveutilsConfig:
                 os.remove("bbarchivist.ini")
             except (OSError, IOError):
                 pass
-            with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
+            with mock.patch('bbarchivist.iniconfig.config_homepath', mock.MagicMock(return_value=os.getcwd())):
                 ba.compress_config_writer("txz")
                 print(ba.compress_config_loader())
                 assert ba.compress_config_loader(os.getcwd()) == "zip"
@@ -549,7 +549,7 @@ class TestClassArchiveutilsConfig:
                 os.remove("bbarchivist.ini")
             except (OSError, IOError):
                 pass
-            with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
+            with mock.patch('bbarchivist.iniconfig.config_homepath', mock.MagicMock(return_value=os.getcwd())):
                 ba.compress_config_writer("txz")
                 print(ba.compress_config_loader())
                 assert ba.compress_config_loader(os.getcwd()) == "zip"
@@ -562,7 +562,7 @@ class TestClassArchiveutilsConfig:
             os.remove("bbarchivist.ini")
         except (OSError, IOError):
             pass
-        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
+        with mock.patch('bbarchivist.iniconfig.config_homepath', mock.MagicMock(return_value=os.getcwd())):
             with mock.patch('bbarchivist.archiveutils.compress_config_loader', mock.MagicMock(return_value="tbz")):
                 ba.compress_config_writer()
             assert ba.compress_config_loader() == "tbz"

@@ -353,7 +353,7 @@ class TestClassHashutilsConfig:
             os.remove("bbarchivist.ini")
         except (OSError, IOError):
             pass
-        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
+        with mock.patch('bbarchivist.iniconfig.config_homepath', mock.MagicMock(return_value=os.getcwd())):
             assert bh.verifier_config_loader() == self.hashdict
 
     def test_hash_writer(self):
@@ -366,8 +366,7 @@ class TestClassHashutilsConfig:
             os.remove("bbarchivist.ini")
         except (OSError, IOError):
             pass
-        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
-            with mock.patch('bbarchivist.hashutils.verifier_config_loader',
-                            mock.MagicMock(return_value=hash2)):
+        with mock.patch('bbarchivist.iniconfig.config_homepath', mock.MagicMock(return_value=os.getcwd())):
+            with mock.patch('bbarchivist.hashutils.verifier_config_loader', mock.MagicMock(return_value=hash2)):
                 bh.verifier_config_writer()
             assert bh.verifier_config_loader() == hash2

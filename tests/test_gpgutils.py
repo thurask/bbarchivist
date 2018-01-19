@@ -166,7 +166,7 @@ class TestClassGPGutilsConfig:
             os.remove("bbarchivist.ini")
         except (OSError, IOError):
             pass
-        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
+        with mock.patch('bbarchivist.iniconfig.config_homepath', mock.MagicMock(return_value=os.getcwd())):
             assert bg.gpg_config_loader() == (None, None)
 
     def test_gpg_loader_loaded(self):
@@ -191,6 +191,6 @@ class TestClassGPGutilsConfig:
             os.remove("bbarchivist.ini")
         except (OSError, IOError):
             pass
-        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
+        with mock.patch('bbarchivist.iniconfig.config_homepath', mock.MagicMock(return_value=os.getcwd())):
             bg.gpg_config_writer("0xDEADF00D", "swordfish")
             assert bg.gpg_config_loader() == ("0xDEADF00D", "swordfish")

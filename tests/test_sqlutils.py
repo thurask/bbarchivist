@@ -47,7 +47,7 @@ class TestClassSQLUtils:
         Test preparing SQL database.
         """
         apath = os.path.abspath(os.getcwd())
-        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=apath)):
+        with mock.patch('bbarchivist.iniconfig.config_homepath', mock.MagicMock(return_value=apath)):
             bs.prepare_sw_db()
         sqlpath = os.path.join(os.path.abspath(os.getcwd()), "bbarchivist.db")
         assert file_exists(sqlpath)
@@ -61,7 +61,7 @@ class TestClassSQLUtils:
         """
         apath = os.path.abspath(os.getcwd())
         sqlpath = os.path.join(apath, "bbarchivist.db")
-        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=apath)):
+        with mock.patch('bbarchivist.iniconfig.config_homepath', mock.MagicMock(return_value=apath)):
             try:
                 cnxn = sqlite3.connect(sqlpath)
                 with cnxn:
@@ -111,7 +111,7 @@ class TestClassSQLUtils:
         """
         apath = os.path.abspath(os.getcwd())
         sqlpath = os.path.join(apath, "bbarchivist.db")
-        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=apath)):
+        with mock.patch('bbarchivist.iniconfig.config_homepath', mock.MagicMock(return_value=apath)):
             try:
                 cnxn = sqlite3.connect(sqlpath)
                 with cnxn:
@@ -155,7 +155,7 @@ class TestClassSQLUtils:
         """
         apath = os.path.abspath(os.getcwd())
         sqlpath = os.path.join(apath, "bbarchivist.db")
-        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=apath)):
+        with mock.patch('bbarchivist.iniconfig.config_homepath', mock.MagicMock(return_value=apath)):
             try:
                 cnxn = sqlite3.connect(sqlpath)
                 with cnxn:
@@ -182,49 +182,50 @@ class TestClassSQLUtils:
         """
         sqlpath = os.path.join(os.path.abspath(os.getcwd()), "bbarchivist.db")
         csvpath = os.path.join(os.path.abspath(os.getcwd()), "swrelease.csv")
-        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.path.abspath(os.getcwd()))):
-            try:
-                cnxn = sqlite3.connect(sqlpath)
-                with cnxn:
-                    crsr = cnxn.cursor()
-                    crsr.execute("DROP TABLE IF EXISTS Swrelease")
-                    reqid = "INTEGER PRIMARY KEY"
-                    reqs = "TEXT NOT NULL UNIQUE COLLATE NOCASE"
-                    reqs2 = "TEXT"
-                    table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(
-                        *(reqid, reqs, reqs2))
-                    crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
-                    crsr.execute(
-                        "INSERT INTO Swrelease(Os, Software, Available, Date) VALUES (?,?,?,?)",
-                        ("120.OSVERSION",
-                         "130.SWVERSION",
-                         "available",
-                         "1970 January 1"))
-            except sqlite3.Error:
-                assert False
-            with mock.patch("bbarchivist.sqlutils.prepare_path", mock.MagicMock(return_value=sqlpath)):
-                with mock.patch("os.path.exists", mock.MagicMock(return_value=True)):
-                    bs.export_sql_db()
-            with open(csvpath, 'r', newline="\n") as csvfile:
-                csvr = csv.reader(csvfile, dialect='excel')
-                for idx, row in enumerate(csvr):
-                    if idx == 1:
-                        assert "120.OSVERSION" in row[0]
-            with mock.patch("sqlite3.connect", mock.MagicMock(side_effect=sqlite3.Error)):
+        with mock.patch('bbarchivist.iniconfig.config_homepath', mock.MagicMock(return_value=os.path.abspath(os.getcwd()))):
+            with mock.patch("os.path.expanduser", mock.MagicMock(return_value=os.getcwd())):
+                try:
+                    cnxn = sqlite3.connect(sqlpath)
+                    with cnxn:
+                        crsr = cnxn.cursor()
+                        crsr.execute("DROP TABLE IF EXISTS Swrelease")
+                        reqid = "INTEGER PRIMARY KEY"
+                        reqs = "TEXT NOT NULL UNIQUE COLLATE NOCASE"
+                        reqs2 = "TEXT"
+                        table = "Swrelease(Id {0}, Os {1}, Software {1}, Available {2}, Date {2})".format(
+                            *(reqid, reqs, reqs2))
+                        crsr.execute("CREATE TABLE IF NOT EXISTS " + table)
+                        crsr.execute(
+                            "INSERT INTO Swrelease(Os, Software, Available, Date) VALUES (?,?,?,?)",
+                            ("120.OSVERSION",
+                             "130.SWVERSION",
+                             "available",
+                             "1970 January 1"))
+                except sqlite3.Error:
+                    assert False
                 with mock.patch("bbarchivist.sqlutils.prepare_path", mock.MagicMock(return_value=sqlpath)):
                     with mock.patch("os.path.exists", mock.MagicMock(return_value=True)):
                         bs.export_sql_db()
-                        assert "\n" in capsys.readouterr()[0]
-            with mock.patch("os.path.exists", mock.MagicMock(return_value=False)):
-                with pytest.raises(SystemExit):
-                    bs.export_sql_db()
+                with open(csvpath, 'r', newline="\n") as csvfile:
+                    csvr = csv.reader(csvfile, dialect='excel')
+                    for idx, row in enumerate(csvr):
+                        if idx == 1:
+                            assert "120.OSVERSION" in row[0]
+                with mock.patch("sqlite3.connect", mock.MagicMock(side_effect=sqlite3.Error)):
+                    with mock.patch("bbarchivist.sqlutils.prepare_path", mock.MagicMock(return_value=sqlpath)):
+                        with mock.patch("os.path.exists", mock.MagicMock(return_value=True)):
+                            bs.export_sql_db()
+                            assert "\n" in capsys.readouterr()[0]
+                with mock.patch("os.path.exists", mock.MagicMock(return_value=False)):
+                    with pytest.raises(SystemExit):
+                        bs.export_sql_db()
 
     def test_list_sw_releases(self, capsys):
         """
         Test returning all rows from SQL database.
         """
         sqlpath = os.path.join(os.path.abspath(os.getcwd()), "bbarchivist.db")
-        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.path.abspath(os.getcwd()))):
+        with mock.patch('bbarchivist.iniconfig.config_homepath', mock.MagicMock(return_value=os.path.abspath(os.getcwd()))):
             try:
                 cnxn = sqlite3.connect(sqlpath)
                 with cnxn:

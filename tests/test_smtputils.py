@@ -177,7 +177,7 @@ class TestClassSMTPUtils:
             "password": None,
             "is_ssl": False
         }
-        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
+        with mock.patch('bbarchivist.iniconfig.config_homepath', mock.MagicMock(return_value=os.getcwd())):
             with mock.patch('bbarchivist.smtputils.smtp_config_loader', mock.MagicMock(return_value=kwargsmin)):
                 with mock.patch('bbarchivist.utilities.return_and_delete', mock.MagicMock(return_value="Hey! Listen!")):
                     with mock.patch('smtplib.SMTP') as run_amock:
@@ -215,7 +215,7 @@ class TestClassSMTPUtilsConfig:
             os.remove("bbarchivist.ini")
         except (OSError, IOError):
             pass
-        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
+        with mock.patch('bbarchivist.iniconfig.config_homepath', mock.MagicMock(return_value=os.getcwd())):
             with mock.patch('configparser.ConfigParser.read', mock.MagicMock(return_value=self.bogusdict)):
                 assert bs.smtp_config_loader() == self.bogusdict
 
@@ -246,6 +246,6 @@ class TestClassSMTPUtilsConfig:
             pass
         dict2 = self.smtpdict
         dict2['port'] = 6969
-        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
+        with mock.patch('bbarchivist.iniconfig.config_homepath', mock.MagicMock(return_value=os.getcwd())):
             bs.smtp_config_writer(homepath=None, **dict2)
             assert bs.smtp_config_loader() == dict2

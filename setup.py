@@ -25,7 +25,8 @@ def main():
     """
     cond_requires = [
         'python-gnupg>=0.3.9',
-        'beautifulsoup4>=4.5.3'
+        'beautifulsoup4>=4.5.3',
+        'appdirs>=1.4.3'
     ]
     if version_info[1] == 2:  # 3.2; shutilwhich, no simplejson, old requests/defusedxml
         deplist = ['shutilwhich>=1.1.0', 'requests==2.10', 'defusedxml==0.4.1']

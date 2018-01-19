@@ -974,12 +974,22 @@ def prep_logfile():
     Prepare log file, labeling it with current date. Select folder based on frozen status.
     """
     logfile = "{0}.txt".format(time.strftime("%Y_%m_%d_%H%M%S"))
-    root = os.getcwd() if getattr(sys, 'frozen', False) else os.path.expanduser("~")
-    basefolder = os.path.join(root, "lookuplogs")
-    os.makedirs(basefolder, exist_ok=True)
+    basefolder = prep_logfile_folder()
     record = os.path.join(basefolder, logfile)
     open(record, "w").close()
     return record
+
+
+def prep_logfile_folder():
+    """
+    Prepare folder to write log file to.
+    """
+    if getattr(sys, 'frozen', False):
+        basefolder = os.path.join(os.getcwd(), "lookuplogs")
+        os.makedirs(basefolder, exist_ok=True)
+    else:
+        basefolder = iniconfig.config_homepath(None, True)
+    return basefolder
 
 
 def prepends(file, pre, suf):

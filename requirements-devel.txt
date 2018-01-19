@@ -4,6 +4,7 @@ python-gnupg>=0.4.1
 #if you're using GnuPG 2.1: hg+https://bitbucket.org/vinay.sajip/python-gnupg
 defusedxml>=0.4.1
 shutilwhich>=1.1.0
+appdirs>=1.4.3
 ##TESTING
 beautifulsoup4>=4.5.3
 mock>=2.0.0

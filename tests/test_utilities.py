@@ -415,7 +415,7 @@ class TestClassUtilities:
         Test creating a logfile in the home folder.
         """
         monkeypatch.setattr("sys.frozen", False, raising=False)
-        with mock.patch("os.path.expanduser", mock.MagicMock(return_value=os.getcwd())):
+        with mock.patch("bbarchivist.iniconfig.config_homepath", mock.MagicMock(return_value=os.getcwd())):
             assert "temp_utilities" in bu.prep_logfile()
 
     def test_spinner_interrupt(self):
@@ -757,7 +757,7 @@ class TestClassUtilitiesConfig:
             os.remove("bbarchivist.ini")
         except (OSError, IOError):
             pass
-        with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
+        with mock.patch('bbarchivist.iniconfig.config_homepath', mock.MagicMock(return_value=os.getcwd())):
             with mock.patch('bbarchivist.bbconstants.CAP.location', "cap.dat"):
                 assert bu.cappath_config_loader() == "cap.dat"
 
@@ -771,9 +771,9 @@ class TestClassUtilitiesConfig:
             pass
         with mock.patch('bbarchivist.utilities.grab_cap',
                         mock.MagicMock(return_value=os.path.abspath(os.path.join(os.getcwd(), "cap.dat")))):
-            with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
+            with mock.patch('bbarchivist.iniconfig.config_homepath', mock.MagicMock(return_value=os.getcwd())):
                 bu.cappath_config_writer()
         with mock.patch('bbarchivist.utilities.grab_cap',
                         mock.MagicMock(return_value=os.path.abspath(os.path.join(os.getcwd(), "cap.dat")))):
-            with mock.patch('os.path.expanduser', mock.MagicMock(return_value=os.getcwd())):
+            with mock.patch('bbarchivist.iniconfig.config_homepath', mock.MagicMock(return_value=os.getcwd())):
                 assert bu.cappath_config_loader() == os.path.join(os.getcwd(), "cap.dat")

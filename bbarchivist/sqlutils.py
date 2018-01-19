@@ -7,6 +7,7 @@ import os  # paths
 import operator  # for sorting
 import time  # current date
 from bbarchivist import decorators  # sql handlers
+from bbarchivist import iniconfig  # config directory
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -17,7 +18,7 @@ def prepare_path():
     """
     Figure out where the path is.
     """
-    sqlpath = os.path.join(os.path.expanduser("~"), "bbarchivist.db")
+    sqlpath = os.path.join(iniconfig.config_homepath(None), "bbarchivist.db")
     return sqlpath
 
 
@@ -125,6 +126,7 @@ def export_sql_db():
         sortedrows = sorted(rows, key=operator.itemgetter(0))
         csvw.writerow(('OS Version', 'Software Release', 'Available', 'Date Modified'))
         csvw.writerows(sortedrows)
+    print("EXPORTED!\n{0}".format(csvpath))
 
 
 @decorators.sql_excepthandler("False")
