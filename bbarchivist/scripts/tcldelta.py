@@ -35,6 +35,13 @@ def grab_args():
         action="store_true",
         default=False)
     parser.add_argument(
+        "-r",
+        "--remote",
+        dest="remote",
+        help="Get latest OTA versions from remote server",
+        action="store_true",
+        default=False)
+    parser.add_argument(
         "-x",
         "--export",
         dest="export",
@@ -43,7 +50,9 @@ def grab_args():
         default=False)
     args = parser.parse_args(sys.argv[1:])
     parser.set_defaults()
-    if None in (args.curef, args.fvver):
+    if args.curef is None:
+        args = questionnaire(args)
+    elif args.fvver is None and not args.remote:
         args = questionnaire(args)
     tcldelta_main(args.curef, args.fvver, args.download, args.original, args.export)
     decorators.enter_to_exit(True)
@@ -63,7 +72,7 @@ def questionnaire(args):
     return args
 
 
-def tcldelta_main(curef, fvver, download=False, original=False, export=False):
+def tcldelta_main(curef, fvver, download=False, original=False, export=False, remote=False):
     """
     Scan one PRD and produce download URL and filename.
 
@@ -81,7 +90,12 @@ def tcldelta_main(curef, fvver, download=False, original=False, export=False):
 
     :param export: Whether to export XML response to file. Default is False.
     :type export: bool
+
+    :param remote: Whether to get OTA version from remote server. Default is False.
+    :type remote: bool
     """
+    if remote:
+        fvver = scriptutils.tcl_delta_remote(curef)
     scriptutils.tcl_prd_scan(curef, download, mode=2, fvver=fvver, original=original, export=export)
 
 

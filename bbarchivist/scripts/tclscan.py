@@ -47,6 +47,13 @@ def grab_args():
             help="Query OTA updates from a given version instead of full OS",
             default=None)
         parser.add_argument(
+            "-r",
+            "--remote",
+            dest="remote",
+            help="Get latest OTA versions from remote server",
+            action="store_true",
+            default=False)
+        parser.add_argument(
             "-t",
             "--device-type",
             dest="device",
@@ -76,9 +83,9 @@ def execute_args(args):
         prddict = jsonutils.load_json("prds")
         jsonutils.list_prds(prddict)
     elif args.prd is not None:
-        tclscan_single(args.prd, args.download, args.otaver, args.export)
+        tclscan_single(args.prd, args.download, args.otaver, args.export, args.remote)
     else:
-        tclscan_main(args.otaver, args.device, args.export)
+        tclscan_main(args.otaver, args.device, args.export, args.remote)
 
 
 def questionnaire_ota():
@@ -118,7 +125,7 @@ def questionnaire():
     decorators.enter_to_exit(True)
 
 
-def tclscan_single(curef, download=False, ota=None, export=False):
+def tclscan_single(curef, download=False, ota=None, export=False, remote=False):
     """
     Scan one PRD and produce download URL and filename.
 
@@ -133,14 +140,20 @@ def tclscan_single(curef, download=False, ota=None, export=False):
 
     :param export: Whether to export XML response to file. Default is False.
     :type export: bool
+
+    :param remote: Whether to get OTA version from remote server. Default is False.
+    :type remote: bool
     """
+    if remote:
+        remotedict = networkutils.remote_prd_info()
+        ota = remotedict.get(curef, None)
     mode, fvver = scriptutils.tcl_prep_otaver(ota)
     scriptutils.tcl_prd_scan(curef, False, mode=mode, fvver=fvver, export=export)
     if download:
         print("LARGE DOWNLOAD DOESN'T WORK YET")
 
 
-def tclscan_main(ota=None, device=None, export=False):
+def tclscan_main(ota=None, device=None, export=False, remote=False):
     """
     Scan every PRD and produce latest versions.
 
@@ -152,7 +165,13 @@ def tclscan_main(ota=None, device=None, export=False):
 
     :param export: Whether to export XML response to file. Default is False.
     :type export: bool
+
+    :param remote: Whether to get OTA version from remote server. Default is False.
+    :type remote: bool
     """
+    if remote:
+        remotedict = networkutils.remote_prd_info()
+        ota = "LATEST"
     mode, fvver = scriptutils.tcl_prep_otaver(ota)
     scriptutils.tcl_mainscan_preamble(ota)
     prddict = jsonutils.load_json("prds")
@@ -162,6 +181,8 @@ def tclscan_main(ota=None, device=None, export=False):
     for device in prddict.keys():
         print("~{0}~".format(device))
         for curef in prddict[device]:
+            if remote:
+                fvver = remotedict.get(curef, "AAA000")
             checktext = networkutils.tcl_check(curef, sess, mode=mode, fvver=fvver, export=export)
             if checktext is None:
                 continue

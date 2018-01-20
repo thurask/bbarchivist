@@ -586,6 +586,18 @@ def encrypt_header(address, encslave, session=None):
         return None
 
 
+@pem_wrapper
+def remote_prd_info():
+    """
+    Get list of remote OTA versions.
+    """
+    dburl = "https://tclota.birth-online.de/json_lastupdates.php"
+    req = requests.get(dburl)
+    reqj = req.json()
+    otadict = {val["curef"]: val["last_ota"] for val in reqj.values() if val["last_ota"] is not None}
+    return otadict
+
+
 def cchecker_get_tags(root):
     """
     Get country and carrier from XML.

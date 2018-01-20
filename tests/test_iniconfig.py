@@ -59,4 +59,11 @@ class TestClassIniconfig:
         """
         with mock.patch("appdirs.user_data_dir", mock.MagicMock(return_value=os.path.join(os.getcwd(), "newdir", "AppData", "bbarchivist"))):
             with mock.patch("os.path.expanduser", mock.MagicMock(return_value=os.path.join(os.getcwd(), "olddir"))):
-                assert bi.config_homepath(None, False) == os.path.join(os.getcwd(), "newdir", "AppData", "bbarchivist")
+                assert bi.config_homepath(None) == os.path.join(os.getcwd(), "newdir", "AppData", "bbarchivist")
+
+    def test_cache_dir(self):
+        """
+        Test creating cache directory.
+        """
+        with mock.patch("appdirs.user_cache_dir", mock.MagicMock(return_value=os.path.join(os.getcwd(), "newdir", "AppData", "bbarchivist", "Cache"))):
+            bi.config_homepath(None, False, True)

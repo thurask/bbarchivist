@@ -387,6 +387,21 @@ class TestClassScriptutilsTCL:
         bs.tcl_mainscan_printer("PRD-63999-999", "ZZZ999", "AAA000")
         assert "PRD-63999-999: AAA000 to ZZZ999" in capsys.readouterr()[0]
 
+    def test_tcl_remote_delta_good(self):
+        """
+        Test grabbing remote OTA, best case.
+        """
+        with mock.patch("bbarchivist.networkutils.remote_prd_info", mock.MagicMock(return_value={"PRD-63999-999":"AAZ069"})):
+            assert bs.tcl_delta_remote("PRD-63999-999") == "AAZ069"
+
+    def test_tcl_remote_delta_bad(self):
+        """
+        Test grabbing remote OTA, best case.
+        """
+        with mock.patch("bbarchivist.networkutils.remote_prd_info", mock.MagicMock(return_value={"PRD-63999-998":"AAZ069"})):
+            with pytest.raises(SystemExit):
+                bs.tcl_delta_remote("PRD-63999-999")
+
 
 class TestClassScriptutilsSoftware:
     """

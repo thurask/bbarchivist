@@ -950,6 +950,21 @@ def tcl_prep_otaver(ota=None):
     return mode, fvver
 
 
+def tcl_delta_remote(curef):
+    """
+    Prepare remote version for delta scanning.
+
+    :param curef: PRD of the phone variant to check.
+    :type curef: str
+    """
+    remotedict = networkutils.remote_prd_info()
+    fvver = remotedict.get(curef, "AAA000")
+    if fvver == "AAA000":
+        print("NO REMOTE VERSION FOUND!")
+        raise SystemExit
+    return fvver
+
+
 def tcl_mainscan_preamble(ota=None):
     """
     Prepare preamble for TCL scanning.

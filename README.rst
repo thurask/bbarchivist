@@ -73,7 +73,8 @@ Python Libraries
 ~~~~~~~~~~~~~~~~
 
 This library requires the
-`Requests <http://docs.python-requests.org/en/latest/user/install/>`__
+`Requests <http://docs.python-requests.org/en/latest/user/install/>`__,
+`appdirs <https://github.com/ActiveState/appdirs/>`__,
 and `Beautiful Soup 4 <https://www.crummy.com/software/BeautifulSoup/#Download>`__
 libraries. GPG support requires the `python-gnupg <https://pythonhosted.org/python-gnupg/index.html>`__ library.
 

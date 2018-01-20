@@ -335,11 +335,19 @@ def tcl_enc_good_mock(url, request):
 
 
 @httmock.all_requests
-def tcl_enc_bad_mock(url, rquest):
+def tcl_enc_bad_mock(url, request):
     """
     Mock for TCL header checking, worst case.
     """
     return httmock.response(status_code=400, headers={'content-length': 123456})
+
+@httmock.all_requests
+def remote_prd_mock(url, request):
+    """
+    Mock for remote PRD info.
+    """
+    thebody = b'{"PRD-63999-999":{"curef":"PRD-63999-999","variant":"Snek","last_ota":"AAZ888","last_full":"AAZ999"}}'
+    return {'status_code': 200, 'content': thebody}
 
 
 @httmock.all_requests
@@ -872,3 +880,11 @@ class TestClassNetworkutilsTcl:
         with httmock.HTTMock(tcl_enc_bad_mock):
             sentinel = bn.encrypt_header("http://snek.com/snek/update.zip", "snek.com")
         assert sentinel is None
+
+    def test_remote_prd(self):
+        """
+        Test getting remote PRD info.
+        """
+        with httmock.HTTMock(remote_prd_mock):
+            sentinel = bn.remote_prd_info()
+        assert sentinel == {"PRD-63999-999": "AAZ888"}

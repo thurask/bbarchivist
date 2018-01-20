@@ -27,53 +27,66 @@ def config_emptysection(config, section):
     return config
 
 
-def config_homepath(homepath, logpath=False):
+def config_homepath(homepath, logpath=False, cachepath=False):
     """
     Fix path for ini file.
 
     :param homepath: Path to ini file.
     :type homepath: str
 
-    :param logpath: True if processing log folder, False if processing data files. Default is False.
+    :param logpath: True if processing log folder, False if not. Default is False.
     :type logpath: bool
+
+    :param cachepath: True if processing cache folder, False if not. Default is False.
+    :type cachepath: bool
     """
     if homepath is None:
-        rawpath = config_rawdir(logpath)
-        homepath = process_homepath(rawpath, logpath)
+        rawpath = config_rawdir(logpath, cachepath)
+        homepath = process_homepath(rawpath, logpath, cachepath)
     return homepath
 
 
-def config_rawdir(logpath=False):
+def config_rawdir(logpath=False, cachepath=False):
     """
     Get new config dir.
 
-    :param logpath: True if processing log folder, False if processing data files. Default is False.
+    :param logpath: True if processing log folder, False if not. Default is False.
     :type logpath: bool
+
+    :param cachepath: True if processing cache folder, False if not. Default is False.
+    :type cachepath: bool
     """
     apdi = AppDirs("bbarchivist", "bbarchivist")
     if logpath:
         rawpath = apdi.user_log_dir
+    elif cachepath:
+        rawpath = apdi.user_cache_dir
     else:
         rawpath = apdi.user_data_dir
     return rawpath
 
 
-def process_homepath(homepath, logpath=False):
+def process_homepath(homepath, logpath=False, cachepath=False):
     """
     Prepare homepath if it doesn't exist.
 
     :param homepath: Path to data directory.
     :type homepath: str
 
-    :param logpath: True if processing log folder, False if processing data files. Default is False.
+    :param logpath: True if processing log folder, False if not. Default is False.
     :type logpath: bool
+
+    :param cachepath: True if processing cache folder, False if not. Default is False.
+    :type cachepath: bool
     """
     if not os.path.exists(homepath):
         os.makedirs(homepath)
     if logpath:
         migrate_logs(homepath)
-    else:
+    elif not cachepath:
         migrate_files(homepath)
+    else:
+        pass
     return homepath
 
 
