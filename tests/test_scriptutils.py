@@ -9,6 +9,7 @@ import zipfile
 from shutil import copyfile, rmtree
 
 import bbarchivist.scriptutils as bs
+import httmock
 import pytest
 from bbarchivist.bbconstants import COMMITDATE, LONGVERSION, VERSION
 from requests import Session
@@ -58,6 +59,25 @@ class Dummy(object):
         """
         self.text = "snek"
         self.headers = {"content-length": 12345}
+
+
+@httmock.all_requests
+def text_upgrade_mock(url, request):
+    """
+    Mock for writing upgrade files.
+    """
+    content = b"Jackdaws love my big sphinx of quartz" * 5000
+    headers = {'content-length': len(content)}
+    return httmock.response(status_code=200, content=content, headers=headers)
+
+
+@httmock.all_requests
+def text_debrick_mock(url, request):
+    """
+    Mock for writing debrick files.
+    """
+    thebody = b'<?xml version="1.0" encoding="UTF-8"?><updateDetailResponse version="2.2.1" sessionId="6158fdd7-4ac5-41ad-9849-b4ba9f18a3b5"><data authEchoTS="1366644680359"><status code="0"><friendlyMessage>Success</friendlyMessage><technicalMessage>Success</technicalMessage></status><content><updateDirectives><downloadCapOverCellular unit="MB">1035</downloadCapOverCellular><updateRequired>true</updateRequired><directive type="allowOSDowngrades" value="true"/></updateDirectives><transports><leastCostRouting>true</leastCostRouting><transport ordinal="0">serialbypass</transport><transport ordinal="1">wifigan</transport><transport ordinal="2">wifi</transport><transport ordinal="3">wan</transport><transport ordinal="4">wanroam</transport><transport ordinal="5">wanintlroam</transport></transports><softwareReleaseMetadata softwareReleaseVersion="10.3.1.1877" isSecurity="false" filterSetVersion="10.3.1.45" verbiageVersion="10.3.1.6"><cellularChargesMessage>Warning,this could be really expensive.</cellularChargesMessage></softwareReleaseMetadata><fileSets><fileSet url="http://cdn.fs.sl.blackberry.com/fs/qnx/production/f6832b88958f1c4c3f9bbfd44762e0c516760d8a"><package id="gYABgJBzlFCWITrWvadisQkRdpg" name="com.qnx.qcfm.radio.qc8960.wtr5" path="com.qnx.qcfm.radio.qc8960.wtr5/10.3.1.2727/qc8960.wtr5-10.3.1.2727-nto+armle-v7+signed.bar" downloadSize="53283856" operation="add" version="10.3.1.2727" checksum="swnw5y03_MNK3MqWF9227FynZSyIgiW3Nj42Zv96fmgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" type="system:radio"/><package id="gYABgEd1yw2Ezd7gd-uX5-coqaE" name="com.qnx.coreos.qcfm.os.qc8960.factory_sfi.desktop" path="com.qnx.coreos.qcfm.os.qc8960.factory_sfi.desktop/10.3.1.2726/qc8960.factory_sfi.desktop-10.3.1.2726-nto+armle-v7+signed.bar" downloadSize="1909111199" operation="add" version="10.3.1.2726" checksum="eb7KMyZxajwgTkamg3VPHr8mEPT4CxjKF3TbmaoGJjMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" type="system:desktop"/></fileSet></fileSets></content></data><signature><root><cipher>EC521R1</cipher><shaType>SHA512</shaType><sigR>AOm43LzpCmSwglrzvup+oWjb0gRnlmz1DWZnFLTcmfqQ4zPY4w/KmyWXQD9vg6aUQPsfB4Sl7Ejdw/F9G41jNCva</sigR><sigS>AWYQGvQ9JwIDepdt+usc1lX6N3Sk9yElF4ezZNS1w6uhEfjBpRm06rtGA+CWJEAB9tVqvfwE1ByibMz18c6ANOmM</sigS></root><chain ordinal="1"><cipher>EC521R1</cipher><shaType>SHA512</shaType><publicKey notValidUntil="1434256882020" notValidAfter="1434688882020">BAF+BsRg/iDhyw7S3QsKBhc0hvv7xQ5+/QCsxHhzUzjjrQGuY9npBdHxN3hu2dA6NZdCzR+h35T+YNka9bZTe1tjMgB4txezGIuqh3nVmk+Gze69YCZ+22BANs3DNo8q3bYD7K3/kulm2zbZESLq9YnQcCoi336JkSrGNEEPaa1yU27D7Q==</publicKey><sigR>AJSk+Z4JLIyBy3aeSireNR+9Kx+69nLLRublGIq/Y/MrHatkmvKharH48SMZZl3v19p08H8PUfps4f7NgewHOHei</sigR><sigS>AJeRkTgkhkCtQsBi2+oBElFgcbua97vEXco0x5Xs/onMDAvSL0dlbsFXKOtblX6I2pYkUTajAFEZ2MLuCTe5s/l0</sigS></chain></signature></updateDetailResponse>'
+    return {'status_code': 200, 'content': thebody}
 
 
 class TestClassScriptutils:
@@ -111,36 +131,38 @@ class TestClassScriptutils:
         """
         Test exporting links, with upgrade files.
         """
-        with mock.patch('bbarchivist.textgenerator.get_fnone', mock.MagicMock(return_value=True)):
-            bs.export_cchecker(
-                ["http://sn.ek"],
-                None,
-                None,
-                "10.1.1.1111",
-                "10.2.2.2222",
-                "10.3.3.3333",
-                True,
-                None)
-            with open("10.3.3.3333plusapps.txt", "r") as afile:
-                assert len(afile.read()) == 2899
+        with httmock.HTTMock(text_upgrade_mock):
+            with mock.patch('bbarchivist.textgenerator.get_fnone', mock.MagicMock(return_value=True)):
+                bs.export_cchecker(
+                    ["http://sn.ek"],
+                    None,
+                    None,
+                    "10.1.1.1111",
+                    "10.2.2.2222",
+                    "10.3.3.3333",
+                    True,
+                    None)
+                with open("10.3.3.3333plusapps.txt", "r") as afile:
+                    assert len(afile.read()) == 2929
 
     def test_cchecker_export_debrick(self):
         """
         Test exporting links, having to find upgrade files.
         """
-        snek = Dummy()
-        with mock.patch('requests.Session.head', mock.MagicMock(return_value=snek)):
-            bs.export_cchecker(
-                ["http://sn.ek"],
-                "123456",
-                "8500090A",
-                "10.1.1.1111",
-                "10.2.2.2222",
-                "10.3.3.3334",
-                False,
-                None)
-            with open("10.3.3.3334plusapps.txt", "r") as afile:
-                assert len(afile.read()) == 2933
+        with httmock.HTTMock(text_debrick_mock):
+            snek = Dummy()
+            with mock.patch('requests.Session.head', mock.MagicMock(return_value=snek)):
+                bs.export_cchecker(
+                    ["http://sn.ek"],
+                    "123456",
+                    "8500090A",
+                    "10.1.1.1111",
+                    "10.2.2.2222",
+                    "10.3.3.3334",
+                    False,
+                    None)
+                with open("10.3.3.3334plusapps.txt", "r") as afile:
+                    assert len(afile.read()) == 2933
 
     def test_slim_preamble(self, capsys):
         """

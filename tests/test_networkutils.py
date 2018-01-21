@@ -844,6 +844,14 @@ class TestClassNetworkutilsTcl:
             ctxt = bn.tcl_check("PRD-63764-001")
         assert ctxt is None
 
+    def test_tcl_check_timeout(self):
+        """
+        Test checking for Android updates, timeout.
+        """
+        with httmock.HTTMock(timeout_mock):
+            ctxt = bn.tcl_check("PRD-63764-001")
+        assert ctxt is None
+
     def test_tcl_request(self):
         """
         Test checking for Android update URLs.

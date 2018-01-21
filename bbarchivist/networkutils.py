@@ -55,6 +55,31 @@ def pem_wrapper(method):
     return wrapper
 
 
+def try_try_again(method):
+    """
+    Decorator to absorb timeouts, proxy errors, and other common exceptions.
+
+    :param method: Method to use.
+    :type method: function
+    """
+    def wrapper(*args, **kwargs):
+        """
+        Try function, try it again up to five times, and leave gracefully.
+        """
+        tries = 5
+        for i in range(tries):
+            try:
+                result = method(*args, **kwargs)
+            except (requests.exceptions.Timeout, requests.exceptions.ConnectionError, requests.exceptions.ProxyError):
+                continue
+            else:
+                break
+        else:
+            result = None
+        return result
+    return wrapper
+
+
 def generic_session(session=None):
     """
     Create a Requests session object on the fly, if need be.
@@ -324,6 +349,7 @@ def check_prep(curef, mode=4, fvver="AAA000", cltp=2010, cktp=2, rtd=1, chnl=2, 
 
 
 @pem_wrapper
+@try_try_again
 def tcl_check(curef, session=None, mode=4, fvver="AAA000", export=False):
     """
     Check TCL server for updates.
@@ -481,6 +507,7 @@ def download_request_prep(curef, tvver, fwid, salt, vkh, mode=4, fvver="AAA000",
 
 
 @pem_wrapper
+@try_try_again
 def tcl_download_request(curef, tvver, fwid, salt, vkh, session=None, mode=4, fvver="AAA000", export=False):
     """
     Check TCL server for download URLs.
