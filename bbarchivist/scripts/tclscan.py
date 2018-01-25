@@ -148,9 +148,7 @@ def tclscan_single(curef, download=False, ota=None, export=False, remote=False):
         remotedict = networkutils.remote_prd_info()
         ota = remotedict.get(curef, None)
     mode, fvver = scriptutils.tcl_prep_otaver(ota)
-    scriptutils.tcl_prd_scan(curef, False, mode=mode, fvver=fvver, export=export)
-    if download:
-        print("LARGE DOWNLOAD DOESN'T WORK YET")
+    scriptutils.tcl_prd_scan(curef, download, mode=mode, fvver=fvver, export=export, verify=False)
 
 
 def tclscan_main(ota=None, device=None, export=False, remote=False):

@@ -812,7 +812,7 @@ def tclloader_filename(loaderdir, osver, loadername=None):
     return loadername, platform
 
 
-def tcl_download(downloadurl, filename, filesize, filehash):
+def tcl_download(downloadurl, filename, filesize, filehash, verify=True):
     """
     Download autoloader file, rename, and verify.
 
@@ -827,22 +827,26 @@ def tcl_download(downloadurl, filename, filesize, filehash):
 
     :param filehash: SHA-1 hash of autoloader file.
     :type filehash: str
+
+    :param verify: Whether to verify the file after downloading. Default is True.
+    :type verify: bool
     """
     print("FILENAME: {0}".format(filename))
     print("LENGTH: {0}".format(utilities.fsizer(filesize)))
     networkutils.download(downloadurl)
     print("DOWNLOAD COMPLETE")
     os.rename(downloadurl.split("/")[-1], filename)
-    method = hashutils.get_engine("sha1")
-    shahash = hashutils.hashlib_hash(filename, method)
-    if shahash == filehash:
-        print("HASH CHECK OK")
-    else:
-        print(shahash)
-        print("HASH FAILED!")
+    if verify:
+        method = hashutils.get_engine("sha1")
+        shahash = hashutils.hashlib_hash(filename, method)
+        if shahash == filehash:
+            print("HASH CHECK OK")
+        else:
+            print(shahash)
+            print("HASH FAILED!")
 
 
-def tcl_prd_scan(curef, download=False, mode=4, fvver="AAA000", original=True, export=False):
+def tcl_prd_scan(curef, download=False, mode=4, fvver="AAA000", original=True, export=False, verify=True):
     """
     Scan one PRD and produce download URL and filename.
 
@@ -863,6 +867,9 @@ def tcl_prd_scan(curef, download=False, mode=4, fvver="AAA000", original=True, e
 
     :param export: Whether to export XML response to file. Default is False.
     :type export: bool
+
+    :param verify: Whether to verify the file after downloading. Default is True.
+    :type verify: bool
     """
     sess = requests.Session()
     ctext = networkutils.tcl_check(curef, sess, mode, fvver, export)
@@ -877,7 +884,7 @@ def tcl_prd_scan(curef, download=False, mode=4, fvver="AAA000", original=True, e
     filename = tcl_delta_filename(curef, fvver, tvver, filename, original)
     tcl_prd_print(downloadurl, filename, statcode, encslave, sess)
     if statcode == 200 and download:
-        tcl_download(downloadurl, filename, filesize, filehash)
+        tcl_download(downloadurl, filename, filesize, filehash, verify)
 
 
 def tcl_delta_filename(curef, fvver, tvver, filename, original=True):
