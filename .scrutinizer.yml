@@ -1,3 +1,23 @@
-tools:
-    external_code_coverage:
-        runs: 5
+checks:
+  python:
+    code_rating: true
+    duplicate_code: true
+    classes_valid_slots: true
+filter:
+  excluded_paths:
+    - tests/*
+    - bbarchivist/_version.py
+    - versioneer.py
+build:
+  dependencies:
+    before:
+      - pip install -r requirements-devel.txt
+  nodes:
+    tests: true
+    analysis:
+      tests:
+        override:
+          -
+            command: pylint-run
+            use_website_config: true
+          - py-scrutinizer-run

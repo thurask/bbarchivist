@@ -128,3 +128,4 @@ version.txt
 Backup/
 Backup1/
 UpgradeLog.htm
+.pytest_cache/
