@@ -424,8 +424,7 @@ def archivist_gethashes(dirs, hashed, compressed, deleted, radios, osversion, ra
     :type oldstyle: bool
     """
     if hashed and not oldstyle:
-        scriptutils.bulk_info(dirs, osversion, compressed, deleted, radios,
-                                  radioversion, softwareversion)
+        scriptutils.bulk_info(dirs, osversion, compressed, deleted, radios, radioversion, softwareversion)
 
 def archivist_getoldhashes(dirs, hashed, compressed, deleted, radios, hashdict, oldstyle):
     """

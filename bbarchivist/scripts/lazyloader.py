@@ -27,7 +27,8 @@ def grab_args():
     Invoke :func:`lazyloader.lazyloader_main` with arguments.
     """
     if len(sys.argv) > 1:
-        parser = scriptutils.default_parser("bb-lazyloader", "Create one autoloader", ("folder", "osr"))
+        argflags = ("folder", "osr")
+        parser = scriptutils.default_parser("bb-lazyloader", "Create one autoloader", argflags)
         devgroup = parser.add_argument_group("devices", "Device to load (one required)")
         compgroup = devgroup.add_mutually_exclusive_group()
         compgroup.add_argument(

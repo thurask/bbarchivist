@@ -13,9 +13,9 @@ import time  # salt
 import zlib  # encoding
 
 import requests  # downloading
+from bs4 import BeautifulSoup  # scraping
 from bbarchivist import utilities  # parse filesize
 from bbarchivist.bbconstants import SERVERS, TCLMASTERS  # lookup servers
-from bs4 import BeautifulSoup  # scraping
 
 try:
     from defusedxml import ElementTree  # safer XML parsing
@@ -67,7 +67,7 @@ def try_try_again(method):
         Try function, try it again up to five times, and leave gracefully.
         """
         tries = 5
-        for i in range(tries):
+        for _ in range(tries):
             try:
                 result = method(*args, **kwargs)
             except (requests.exceptions.Timeout, requests.exceptions.ConnectionError, requests.exceptions.ProxyError):
@@ -238,7 +238,8 @@ def download_android_tools(downloaddir=None):
         os.removedirs(downloaddir)
     os.mkdir(downloaddir)
     platforms = ("windows", "linux", "darwin")
-    dlurls = ["https://dl.google.com/android/repository/platform-tools-latest-{0}.zip".format(plat) for plat in platforms]
+    baseurl = "https://dl.google.com/android/repository/platform-tools-latest"
+    dlurls = ["{1}-{0}.zip".format(plat, baseurl) for plat in platforms]
     sess = generic_session()
     download_bootstrap(dlurls, outdir="plattools", session=sess)
 
@@ -608,9 +609,9 @@ def encrypt_header(address, encslave, session=None):
     if req.status_code == 206:  # partial
         contentlength = int(req.headers["Content-Length"])
         sentinel = "HEADER FOUND" if contentlength == 4194320 else "NO HEADER FOUND"
-        return sentinel
     else:
-        return None
+        sentinel = None
+    return sentinel
 
 
 @pem_wrapper
@@ -655,7 +656,8 @@ def carrier_checker(mcc, mnc, session=None):
     :type session: requests.Session()
     """
     session = generic_session(session)
-    url = "http://appworld.blackberry.com/ClientAPI/checkcarrier?homemcc={0}&homemnc={1}&devicevendorid=-1&pin=0".format(mcc, mnc)
+    baseurl = "http://appworld.blackberry.com/ClientAPI/checkcarrier"
+    url = "{2}?homemcc={0}&homemnc={1}&devicevendorid=-1&pin=0".format(mcc, mnc, baseurl)
     user_agent = {'User-agent': 'AppWorld/5.1.0.60'}
     req = session.get(url, headers=user_agent)
     root = ElementTree.fromstring(req.text)
@@ -1010,7 +1012,8 @@ def ptcrb_scraper(ptcrbid, session=None):
     """
     baseurl = "https://www.ptcrb.com/certified-devices/device-details/?model={0}".format(ptcrbid)
     sess = generic_session(session)
-    sess.headers.update({"User-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.79 Safari/537.36"})
+    useragent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.79 Safari/537.36"
+    sess.headers.update({"User-agent": useragent})
     soup = generic_soup_parser(baseurl, sess)
     certtable = soup.find_all("table")[1]
     tds = certtable.find_all("td")[1::2]  # every other
@@ -1202,9 +1205,11 @@ def make_droid_skeleton_og(method, build, device, variant="common"):
     roots = root_generator(folder, build, variant)
     base = "bbry_{2}_autoloader_user-{0}-{1}".format(variant, build.upper(), devices[device])
     if method is None:
-        skel = "https://bbapps.download.blackberry.com/Priv/{0}.zip".format(base)
+        baseurl = "https://bbapps.download.blackberry.com/Priv"
+        skel = "{1}/{0}.zip".format(base, baseurl)
     else:
-        skel = "https://ca.blackberry.com/content/dam/{1}/{0}.{2}sum".format(base, roots[device], method.lower())
+        baseurl = "https://ca.blackberry.com/content/dam"
+        skel = "{3}/{1}/{0}.{2}sum".format(base, roots[device], method.lower(), baseurl)
     return skel
 
 
@@ -1473,6 +1478,18 @@ def base_metadata(url, session=None):
     return metadata
 
 
+def base_metadata_url(alternate=None):
+    """
+    Return metadata URL.
+
+    :param alternate: If the URL is for the simulator metadata. Default is False.
+    :type alternate: str
+    """
+    baseurl = "http://downloads.blackberry.com/upr/developers/update/bbndk"
+    tail = "{0}/{0}_metadata".format(alternate) if alternate is not None else "metadata"
+    return "{0}/{1}".format(baseurl, tail)
+
+
 def ndk_metadata(session=None):
     """
     Get BBNDK target metadata.
@@ -1480,7 +1497,8 @@ def ndk_metadata(session=None):
     :param session: Requests session object, default is created on the fly.
     :type session: requests.Session()
     """
-    data = base_metadata("http://downloads.blackberry.com/upr/developers/update/bbndk/metadata", session)
+    ndkurl = base_metadata_url()
+    data = base_metadata(ndkurl, session)
     metadata = [entry for entry in data if entry.startswith(("10.0", "10.1", "10.2"))]
     return metadata
 
@@ -1492,7 +1510,8 @@ def sim_metadata(session=None):
     :param session: Requests session object, default is created on the fly.
     :type session: requests.Session()
     """
-    metadata = base_metadata("http://downloads.blackberry.com/upr/developers/update/bbndk/simulator/simulator_metadata", session)
+    simurl = base_metadata_url("simulator")
+    metadata = base_metadata(simurl, session)
     return metadata
 
 
@@ -1503,7 +1522,8 @@ def runtime_metadata(session=None):
     :param session: Requests session object, default is created on the fly.
     :type session: requests.Session()
     """
-    metadata = base_metadata("http://downloads.blackberry.com/upr/developers/update/bbndk/runtime/runtime_metadata", session)
+    rturl = base_metadata_url("runtime")
+    metadata = base_metadata(rturl, session)
     return metadata
 
 
@@ -1533,7 +1553,8 @@ def devalpha_urls(osversion, skel, session=None):
     :type session: requests.Session()
     """
     session = generic_session(session)
-    url = "http://downloads.blackberry.com/upr/developers/downloads/{0}{1}.exe".format(skel, osversion)
+    baseurl = "http://downloads.blackberry.com/upr/developers/downloads"
+    url = "{2}/{0}{1}.exe".format(skel, osversion, baseurl)
     req = session.head(url)
     if req.status_code == 200:
         finals = (url, req.headers["content-length"])

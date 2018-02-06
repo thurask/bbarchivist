@@ -135,7 +135,7 @@ def tclscan_single(curef, download=False, ota=None, export=False, remote=False):
     :param download: If we'll download the file that this returns. Default is False.
     :type download: bool
 
-    :param ota: The starting version if we're checking OTA updates, None if we're not. Default is None.
+    :param ota: The starting version if OTA, None if not. Default is None.
     :type ota: str
 
     :param export: Whether to export XML response to file. Default is False.
@@ -155,10 +155,10 @@ def tclscan_main(ota=None, device=None, export=False, remote=False):
     """
     Scan every PRD and produce latest versions.
 
-    :param ota: The starting version if we're checking OTA updates, None if we're not. Default is None.
+    :param ota: The starting version if OTA, None if not. Default is None.
     :type ota: str
 
-    :param device: The device to check if we're not checking all of them, None if we are. Default is None.
+    :param device: Specific PRD to check, None if all will be checked. Default is None.
     :type device: str
 
     :param export: Whether to export XML response to file. Default is False.
@@ -176,9 +176,9 @@ def tclscan_main(ota=None, device=None, export=False, remote=False):
     if device is not None:
         prddict = {device: prddict[device]}
     sess = requests.Session()
-    for device in prddict.keys():
-        print("~{0}~".format(device))
-        for curef in prddict[device]:
+    for devx in prddict.keys():
+        print("~{0}~".format(devx))
+        for curef in prddict[devx]:
             if remote:
                 fvver = remotedict.get(curef, "AAA000")
             checktext = networkutils.tcl_check(curef, sess, mode=mode, fvver=fvver, export=export)

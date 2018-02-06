@@ -19,7 +19,8 @@ def grab_args():
     Invoke :func:`bbarchivist.scriptutils.make_info` with those arguments.
     """
     if len(sys.argv) > 1:
-        parser = scriptutils.default_parser("bb-infogen", "Generate info files", flags=("folder", "osr"))
+        argflags = ("folder", "osr")
+        parser = scriptutils.default_parser("bb-infogen", "Generate info files", flags=argflags)
         parser.add_argument(
             "-d",
             "--device",

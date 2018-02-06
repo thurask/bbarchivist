@@ -200,7 +200,7 @@ def valid_carrier(mcc_mnc):
     if not str(mcc_mnc).isdecimal():
         infod = "Non-integer {0}.".format(str(mcc_mnc))
         raise argparse.ArgumentError(argument=None, message=infod)
-    if len(str(mcc_mnc)) > 3 or len(str(mcc_mnc)) == 0:
+    if len(str(mcc_mnc)) > 3 or not str(mcc_mnc):
         infol = "{0} is invalid.".format(str(mcc_mnc))
         raise argparse.ArgumentError(argument=None, message=infol)
     else:
@@ -434,10 +434,11 @@ def prep_seven_zip_path(path, talkative=False):
     """
     if path is None:
         talkaprint("NO 7ZIP\nPLEASE INSTALL p7zip", talkative)
-        return False
+        sentinel = False
     else:
         talkaprint("7ZIP FOUND AT {0}".format(path), talkative)
-        return True
+        sentinel = True
+    return sentinel
 
 
 def prep_seven_zip_posix(talkative=False):
@@ -466,9 +467,10 @@ def prep_seven_zip(talkative=False):
     :type talkative: bool
     """
     if is_windows():
-        return get_seven_zip(talkative) != "error"
+        final = get_seven_zip(talkative) != "error"
     else:
-        return prep_seven_zip_posix(talkative)
+        final = prep_seven_zip_posix(talkative)
+    return final
 
 
 def increment(version, inc=3):
@@ -785,6 +787,9 @@ class Spinner(object):
     """
 
     def __init__(self):
+        """
+        Generate the itertools wheel.
+        """
         self.wheel = itertools.cycle(['-', '/', '|', '\\'])
         self.file = dummy.UselessStdout()
 
@@ -813,6 +818,9 @@ class SpinManager(object):
     """
 
     def __init__(self):
+        """
+        Start the spinner thread.
+        """
         spinner = Spinner()
         self.spinner = spinner
         self.thread = threading.Thread(target=self.loop, args=())

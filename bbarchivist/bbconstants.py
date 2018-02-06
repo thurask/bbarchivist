@@ -12,9 +12,14 @@ __copyright__ = "2015-2018 Thurask"
 
 
 class Datafile(object):
-    """Structure for information about a data file included with this app."""
+    """
+    Structure for information about a data file included with this app.
+    """
 
     def __init__(self, version, datatype, size):
+        """
+        Populate variables.
+        """
         self.version = version
         self.name = datatype
         self.filename = "{0}-{1}.dat".format(datatype, version)

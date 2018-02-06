@@ -85,7 +85,7 @@ def tcldelta_main(curef, fvver, download=False, original=False, export=False, re
     :param download: If we'll download the file that this returns. Default is False.
     :type download: bool
 
-    :param original: If we'll download the file with its original filename instead of delta-safe. Default is False.
+    :param original: If we'll download the file with its original filename. Default is False.
     :type original: bool
 
     :param export: Whether to export XML response to file. Default is False.

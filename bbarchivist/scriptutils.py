@@ -95,7 +95,13 @@ def dpf_flags_folder(parser, flags=None):
     :type flags: tuple(str)
     """
     if "folder" in flags:
-        parser.add_argument("-f", "--folder", dest="folder", help="Working folder", default=None, metavar="DIR", type=utilities.file_exists)
+        parser.add_argument("-f",
+                            "--folder",
+                            dest="folder",
+                            help="Working folder",
+                            default=None,
+                            metavar="DIR",
+                            type=utilities.file_exists)
     return parser
 
 
@@ -111,8 +117,14 @@ def dpf_flags_osr(parser, flags=None):
     """
     if "osr" in flags:
         parser.add_argument("os", help="OS version")
-        parser.add_argument("radio", help="Radio version, 10.x.y.zzzz", nargs="?", default=None)
-        parser.add_argument("swrelease", help="Software version, 10.x.y.zzzz", nargs="?", default=None)
+        parser.add_argument("radio",
+                            help="Radio version, 10.x.y.zzzz",
+                            nargs="?",
+                            default=None)
+        parser.add_argument("swrelease",
+                            help="Software version, 10.x.y.zzzz",
+                            nargs="?",
+                            default=None)
     return parser
 
 
@@ -133,8 +145,12 @@ def default_parser(name=None, desc=None, flags=None, vers=None):
     :param vers: list(str)
     """
     vers = default_parser_vers(vers)
-    parser = argparse.ArgumentParser(prog=name, description=desc, epilog="https://github.com/thurask/bbarchivist")
-    parser.add_argument("-v", "--version", action="version", version="{0} {1} committed {2}".format(parser.prog, vers[0], vers[1]))
+    homeurl = "https://github.com/thurask/bbarchivist"
+    parser = argparse.ArgumentParser(prog=name, description=desc, epilog=homeurl)
+    parser.add_argument("-v",
+                        "--version",
+                        action="version",
+                        version="{0} {1} committed {2}".format(parser.prog, vers[0], vers[1]))
     parser = default_parser_flags(parser, flags)
     return parser
 
@@ -862,7 +878,7 @@ def tcl_prd_scan(curef, download=False, mode=4, fvver="AAA000", original=True, e
     :param fvver: Initial software version, must be specific if downloading OTA deltas.
     :type fvver: str
 
-    :param original: If we'll download the file with its original filename instead of delta-safe. Default is True.
+    :param original: If we'll download the file with its original filename. Default is True.
     :type original: bool
 
     :param export: Whether to export XML response to file. Default is False.
@@ -903,7 +919,7 @@ def tcl_delta_filename(curef, fvver, tvver, filename, original=True):
     :param filename: File name from download URL, passed through if not changing filename.
     :type filename: str
 
-    :param original: If we'll download the file with its original filename instead of delta-safe. Default is True.
+    :param original: If we'll download the file with its original filename. Default is True.
     :type original: bool
     """
     if not original:
@@ -945,7 +961,7 @@ def tcl_prep_otaver(ota=None):
     """
     Prepare variables for OTA versus full check.
 
-    :param ota: The starting version if we're checking OTA updates, None if we're not. Default is None.
+    :param ota: The starting version if OTA, None if not. Default is None.
     :type ota: str
     """
     if ota is not None:
@@ -976,7 +992,7 @@ def tcl_mainscan_preamble(ota=None):
     """
     Prepare preamble for TCL scanning.
 
-    :param ota: The starting version if we're checking OTA updates, None if we're not. Default is None.
+    :param ota: The starting version if OTA, None if not. Default is None.
     :type ota: str
     """
     slim_preamble("TCLSCAN")
@@ -994,7 +1010,7 @@ def tcl_mainscan_printer(curef, tvver, ota=None):
     :param tvver: Target software version.
     :type tvver: str
 
-    :param ota: The starting version if we're checking OTA updates, None if we're not. Default is None.
+    :param ota: The starting version if OTA, None if not. Default is None.
     :type ota: str
     """
     if ota is not None:
@@ -1062,7 +1078,7 @@ def tcl_findprd_checkfilter(prddict, tocheck=None):
     :param prddict: PRD center:[ends] dictionary.
     :type prddict: collections.defaultdict(str: list)
 
-    :param tocheck: Specific PRD(s) to check, None if we're checking all variants in database. Default is None.
+    :param tocheck: Specific PRD(s) to check, None if all will be checked. Default is None.
     :type tocheck: list(str)
     """
     prddict2 = prddict
@@ -1610,7 +1626,8 @@ def bulk_hash(dirs, compressed=True, deleted=True, radios=True, hashdict=None):
     :type hashdict: dict({str: bool})
     """
     print("HASHING LOADERS...")
-    utilities.cond_check(hashutils.verifier, utilities.def_args(dirs), [hashdict], radios, compressed, deleted)
+    defargs = utilities.def_args(dirs)
+    utilities.cond_check(hashutils.verifier, defargs, [hashdict], radios, compressed, deleted)
 
 
 def bulk_verify(dirs, compressed=True, deleted=True, radios=True):
@@ -1634,7 +1651,8 @@ def bulk_verify(dirs, compressed=True, deleted=True, radios=True):
         print("VERIFYING LOADERS...")
         print("KEY: {0}".format(gpgkey))
         restargs = [gpgkey, gpgpass, True]
-        utilities.cond_check(gpgutils.gpgrunner, utilities.def_args(dirs), restargs, radios, compressed, deleted)
+        defargs = utilities.def_args(dirs)
+        utilities.cond_check(gpgutils.gpgrunner, defargs, restargs, radios, compressed, deleted)
 
 
 def enn_ayy(quant):

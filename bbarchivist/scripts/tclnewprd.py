@@ -23,9 +23,14 @@ def grab_args():
         questionnaire()
     else:
         parser = scriptutils.default_parser("bb-tclnewprd", "Check for new PRDs for TCL devices")
-        parser.add_argument("prds", help="Only scan space separated list of PRDs", default=None, nargs="*")
         parser.add_argument(
-            "-f", "--floor",
+            "prds",
+            help="Only scan space separated list of PRDs",
+            default=None,
+            nargs="*")
+        parser.add_argument(
+            "-f",
+            "--floor",
             dest="floor",
             help="When to start, default=1",
             default=1,
@@ -33,7 +38,8 @@ def grab_args():
             choices=range(0, 998),
             metavar="INT")
         parser.add_argument(
-            "-c", "--ceiling",
+            "-c",
+            "--ceiling",
             dest="ceiling",
             help="When to stop, default=60",
             default=None,
@@ -96,7 +102,7 @@ def tclnewprd_main(prds=None, floor=1, ceiling=60, export=False):
     """
     Scan every PRD and produce latest versions.
 
-    :param prds: Specific PRD(s) to check, None if we're checking all variants in database. Default is None.
+    :param prds: Specific PRD(s) to check, None if all will be checked. Default is None.
     :type prds: list(str)
 
     :param floor: When to start. Default is 1.

@@ -14,10 +14,14 @@ def cap_main():
     """
     Run cap.
     """
-    scriptutils.generic_windows_shim("bb-cap", "BlackBerry CAP.", utilities.grab_cap(), bbconstants.CAP.version)
+    sdesc = "BlackBerry CAP."
+    starget = utilities.grab_cap()
+    scriptutils.generic_windows_shim("bb-cap", sdesc, starget, bbconstants.CAP.version)
 
 def cfp_main():
     """
     Run cfp.
     """
-    scriptutils.generic_windows_shim("bb-cfp", "BlackBerry CFP.", utilities.grab_cfp(), bbconstants.CFP.version)
+    sdesc = "BlackBerry CFP."
+    starget = utilities.grab_cfp()
+    scriptutils.generic_windows_shim("bb-cfp", sdesc, starget, bbconstants.CFP.version)

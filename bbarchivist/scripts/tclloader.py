@@ -23,7 +23,8 @@ def grab_args():
     Invoke :func:`tclloader.tclloader_main` with those arguments.
     """
     parser = scriptutils.default_parser("bb-tclloader", "Create autoloaders from TCL templates")
-    parser.add_argument("loaderfile",
+    parser.add_argument(
+        "loaderfile",
         help="Loader zip file or directory",
         type=utilities.file_exists)
     parser.add_argument(

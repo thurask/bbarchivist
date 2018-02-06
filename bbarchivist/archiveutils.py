@@ -119,9 +119,10 @@ def generic_tarfile_verify(filepath, method):
     if smart_is_tarfile(filepath):
         with tarfile.open(filepath, method) as thefile:
             mems = thefile.getmembers()
-        return False if not mems else True
+        sentinel = False if not mems else True
     else:
-        return False
+        sentinel = False
+    return sentinel
 
 
 def generic_tarfile_compress(archivename, filename, method, strength=5):
@@ -287,9 +288,10 @@ def txz_verify(filepath):
     :type filepath: str
     """
     if not utilities.new_enough(3):
-        return None
+        sentinel = None
     else:
-        return generic_tarfile_verify(filepath, "r:xz")
+        sentinel = generic_tarfile_verify(filepath, "r:xz")
+    return sentinel
 
 
 @decorators.timer
@@ -303,7 +305,8 @@ def zip_compress(filepath, filename):
     :param filename: Name of file to pack.
     :type filename: str
     """
-    with zipfile.ZipFile("{0}.zip".format(filepath), 'w', zipfile.ZIP_DEFLATED, allowZip64=True) as zfile:
+    zipf = "{0}.zip".format(filepath)
+    with zipfile.ZipFile(zipf, 'w', zipfile.ZIP_DEFLATED, allowZip64=True) as zfile:
         zfile.write(filename, arcname=os.path.basename(filename))
 
 
@@ -316,9 +319,10 @@ def zip_verify(filepath):
     """
     if zipfile.is_zipfile(filepath):
         brokens = barutils.bar_tester(filepath)
-        return brokens != filepath
+        sentinel = True if brokens != filepath else False
     else:
-        return False
+        sentinel = False
+    return sentinel
 
 
 def filter_method(method, szexe=None):
@@ -623,10 +627,8 @@ def verify_android_tools(tooldir):
     :type tooldir: str
     """
     zipver = [zip_verify(os.path.join(os.path.abspath(tooldir), x)) for x in os.listdir(os.path.abspath(tooldir)) if x.endswith(".zip")]
-    if zipver == [True, True, True]:  # all OK
-        return True
-    else:
-        return False
+    sentinel = True if zipver == [True, True, True] else False  # all OK
+    return sentinel
 
 
 def extract_zip(infile, outpath):
@@ -702,7 +704,8 @@ def pack_tclloader_zip(dirname, filename):
     :param filename: File title, without extension.
     :type filename: str
     """
-    with zipfile.ZipFile("{0}.zip".format(filename), 'w', zipfile.ZIP_DEFLATED, allowZip64=True) as zfile:
+    zipf = "{0}.zip".format(filename)
+    with zipfile.ZipFile(zipf, 'w', zipfile.ZIP_DEFLATED, allowZip64=True) as zfile:
         for root, dirs, files in os.walk(dirname):
             del dirs
             for file in files:

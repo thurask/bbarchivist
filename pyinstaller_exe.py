@@ -7,9 +7,10 @@ from platform import architecture
 from shutil import copy, copytree, rmtree
 from subprocess import STDOUT, call
 
+from requests import certs, get
+
 from bbarchivist.bbconstants import (CAP, COMMITDATE, JSONDIR, LONGVERSION, VERSION)
 from bbarchivist.utilities import get_seven_zip, prep_seven_zip
-from requests import certs, get
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

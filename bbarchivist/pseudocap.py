@@ -27,8 +27,7 @@ def ghetto_convert(intsize):
     newlist.reverse()
     ghetto_hex = "".join(newlist)  # 'CCBBAA'
     ghetto_hex = ghetto_hex.rjust(16, '0')
-    if len(ghetto_hex) == 16:
-        return binascii.unhexlify(bytes(ghetto_hex.upper(), 'ascii'))
+    return binascii.unhexlify(bytes(ghetto_hex.upper()[:16], 'ascii'))
 
 
 def make_sizes(filelist):
@@ -89,7 +88,7 @@ def make_offset(files, folder=None):
     filepad = binascii.unhexlify(fcount)  # 01-06
     trailers = binascii.unhexlify(b'00' * (7 - len(filelist)))  # 00, 1-6x
     capsize = os.path.getsize(capfile)
-    if not len(filelist):  # we need at least one file
+    if not filelist:  # we need at least one file
         raise SystemExit
     sizes = make_sizes(filelist)
     # start of first file; length of cap + length of offset
