@@ -153,11 +153,11 @@ def questionnaire_check(softwareversion, radioversion):
         radioversion = None
         altsw = None
     else:
-        radioversion, altsw = questionnaire_radiocheck(radioversion, altsw)
+        radioversion, altsw = questionnaire_radiocheck(radioversion)
     return softwareversion, radioversion, altsw
 
 
-def questionnaire_radiocheck(radioversion, altsw):
+def questionnaire_radiocheck(radioversion, altsw=None):
     """
     Get radio information in working order.
 

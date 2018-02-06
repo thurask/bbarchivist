@@ -8,6 +8,9 @@ filter:
     - tests/*
     - bbarchivist/_version.py
     - versioneer.py
+tools:
+  external_code_coverage:
+    runs: 5
 build:
   dependencies:
     before:
