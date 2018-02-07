@@ -196,6 +196,14 @@ bbarchivist.scripts.tclloader module
     :undoc-members:
     :show-inheritance:
 
+bbarchivist.scripts.tclnewprd module
+------------------------------------
+
+.. automodule:: bbarchivist.scripts.tclnewprd
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 bbarchivist.scripts.tclscan module
 -----------------------------------
 

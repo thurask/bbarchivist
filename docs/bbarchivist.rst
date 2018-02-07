@@ -19,6 +19,14 @@ bbarchivist.archiveutils module
     :undoc-members:
     :show-inheritance:
 
+bbarchivist.argutils module
+---------------------------
+
+.. automodule:: bbarchivist.argutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 bbarchivist.barutils module
 ---------------------------
 
@@ -159,6 +167,14 @@ bbarchivist.utilities module
 ----------------------------
 
 .. automodule:: bbarchivist.utilities
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+bbarchivist.xmlutils module
+---------------------------
+
+.. automodule:: bbarchivist.xmlutils
     :members:
     :undoc-members:
     :show-inheritance:
