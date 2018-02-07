@@ -10,6 +10,7 @@ from bbarchivist import jsonutils  # json
 from bbarchivist import networkutils  # lookup
 from bbarchivist import scriptutils  # script frontends
 from bbarchivist import utilities  # bool
+from bbarchivist import xmlutils  # xml handling
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -186,7 +187,7 @@ def tclscan_main(ota=None, device=None, export=False, remote=False):
             if checktext is None:
                 continue
             else:
-                tvver, firmwareid, filename, fsize, fhash = networkutils.parse_tcl_check(checktext)
+                tvver, firmwareid, filename, fsize, fhash = xmlutils.parse_tcl_check(checktext)
                 del firmwareid, filename, fsize, fhash
                 scriptutils.tcl_mainscan_printer(curef, tvver, ota)
 

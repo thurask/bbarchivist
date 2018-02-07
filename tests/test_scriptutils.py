@@ -240,10 +240,10 @@ class TestClassScriptutilsTCL:
         Test scanning a PRD.
         """
         with mock.patch("bbarchivist.networkutils.tcl_check", mock.MagicMock(return_value=6)):
-            with mock.patch("bbarchivist.networkutils.parse_tcl_check", mock.MagicMock(return_value=(6, 6, 6, 6, 6))):
+            with mock.patch("bbarchivist.xmlutils.parse_tcl_check", mock.MagicMock(return_value=(6, 6, 6, 6, 6))):
                 with mock.patch("bbarchivist.networkutils.vkhash", mock.MagicMock(return_value=6)):
                     with mock.patch("bbarchivist.networkutils.tcl_download_request", mock.MagicMock(return_value=6)):
-                        with mock.patch("bbarchivist.networkutils.parse_tcl_download_request", mock.MagicMock(return_value=("https://snek.snek/update.zip", None))):
+                        with mock.patch("bbarchivist.xmlutils.parse_tcl_download_request", mock.MagicMock(return_value=("https://snek.snek/update.zip", None))):
                             with mock.patch("bbarchivist.networkutils.getcode", mock.MagicMock(return_value=200)):
                                 bs.tcl_prd_scan("PRD-63116-001")
                                 assert "snek.snek" in capsys.readouterr()[0]
@@ -261,10 +261,10 @@ class TestClassScriptutilsTCL:
         Test scanning a PRD, downloading a file, and passing.
         """
         with mock.patch("bbarchivist.networkutils.tcl_check", mock.MagicMock(return_value=6)):
-            with mock.patch("bbarchivist.networkutils.parse_tcl_check", mock.MagicMock(return_value=(6, 6, "snek.zip", 6, 6))):
+            with mock.patch("bbarchivist.xmlutils.parse_tcl_check", mock.MagicMock(return_value=(6, 6, "snek.zip", 6, 6))):
                 with mock.patch("bbarchivist.networkutils.vkhash", mock.MagicMock(return_value=6)):
                     with mock.patch("bbarchivist.networkutils.tcl_download_request", mock.MagicMock(return_value=6)):
-                        with mock.patch("bbarchivist.networkutils.parse_tcl_download_request", mock.MagicMock(return_value=("https://snek.snek/update.zip", None))):
+                        with mock.patch("bbarchivist.xmlutils.parse_tcl_download_request", mock.MagicMock(return_value=("https://snek.snek/update.zip", None))):
                             with mock.patch("bbarchivist.networkutils.getcode", mock.MagicMock(return_value=200)):
                                 with mock.patch("bbarchivist.networkutils.download", mock.MagicMock(side_effect=None)):
                                     with mock.patch("os.rename", mock.MagicMock(side_effect=None)):
@@ -277,10 +277,10 @@ class TestClassScriptutilsTCL:
         Test scanning a PRD, downloading a file, and failing.
         """
         with mock.patch("bbarchivist.networkutils.tcl_check", mock.MagicMock(return_value=6)):
-            with mock.patch("bbarchivist.networkutils.parse_tcl_check", mock.MagicMock(return_value=(6, 6, "snek.zip", 6, 6))):
+            with mock.patch("bbarchivist.xmlutils.parse_tcl_check", mock.MagicMock(return_value=(6, 6, "snek.zip", 6, 6))):
                 with mock.patch("bbarchivist.networkutils.vkhash", mock.MagicMock(return_value=6)):
                     with mock.patch("bbarchivist.networkutils.tcl_download_request", mock.MagicMock(return_value=6)):
-                        with mock.patch("bbarchivist.networkutils.parse_tcl_download_request", mock.MagicMock(return_value=("https://snek.snek/update.zip", None))):
+                        with mock.patch("bbarchivist.xmlutils.parse_tcl_download_request", mock.MagicMock(return_value=("https://snek.snek/update.zip", None))):
                             with mock.patch("bbarchivist.networkutils.getcode", mock.MagicMock(return_value=200)):
                                 with mock.patch("bbarchivist.networkutils.download", mock.MagicMock(side_effect=None)):
                                     with mock.patch("os.rename", mock.MagicMock(side_effect=None)):
@@ -293,7 +293,7 @@ class TestClassScriptutilsTCL:
         Test scanning for new PRDs.
         """
         with mock.patch("bbarchivist.networkutils.tcl_check", mock.MagicMock(return_value=6)):
-            with mock.patch("bbarchivist.networkutils.parse_tcl_check", mock.MagicMock(return_value=(6, 6, "snek.zip", 6, 6))):
+            with mock.patch("bbarchivist.xmlutils.parse_tcl_check", mock.MagicMock(return_value=(6, 6, "snek.zip", 6, 6))):
                 prdbase = {"KEYone": ["PRD-63116-001", "PRD-63118-003"]}
                 prddict = bs.tcl_findprd_prepdict(prdbase)
                 prddict = bs.tcl_findprd_checkfilter(prddict, ["63119"])

@@ -6,6 +6,7 @@ from hashlib import sha512
 from shutil import rmtree
 
 import bbarchivist.networkutils as bn
+import bbarchivist.xmlutils as bx
 import httmock
 import requests
 
@@ -829,7 +830,7 @@ class TestClassNetworkutilsTcl:
         """
         with httmock.HTTMock(tcl_check_mock):
             ctxt = bn.tcl_check("PRD-63764-001", export=True)
-        tvver, fwver, fname, fsize, fhash = bn.parse_tcl_check(ctxt)
+        tvver, fwver, fname, fsize, fhash = bx.parse_tcl_check(ctxt)
         assert tvver == "AAM693"
         assert fwver == "258098"
         assert fname == "bbry_qc8953_sfi-user-production_signed-AAM693.zip"
@@ -860,7 +861,7 @@ class TestClassNetworkutilsTcl:
             salt = bn.tcl_salt()
             vkh = bn.vkhash("PRD-63764-001", "AAM693", "258098", salt)
             utxt = bn.tcl_download_request("PRD-63764-001", "AAM693", "258098", salt, vkh, export=True)
-        dlurl, encslave = bn.parse_tcl_download_request(utxt)
+        dlurl, encslave = bx.parse_tcl_download_request(utxt)
         del encslave
         assert "/ce570ddc079e2744558f191895e524d02a60476f/cfcdde91ea7f810311d1f973726e390f77a9ff1b/258098/261497" in dlurl
 

@@ -22,6 +22,7 @@ from bbarchivist import smtputils  # email
 from bbarchivist import sqlutils  # sql
 from bbarchivist import textgenerator  # writing text to file
 from bbarchivist import utilities  # little things
+from bbarchivist import xmlutils  # xml handling
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -709,11 +710,11 @@ def tcl_prd_scan(curef, download=False, mode=4, fvver="AAA000", original=True, e
     ctext = networkutils.tcl_check(curef, sess, mode, fvver, export)
     if ctext is None:
         raise SystemExit
-    tvver, firmwareid, filename, filesize, filehash = networkutils.parse_tcl_check(ctext)
+    tvver, firmwareid, filename, filesize, filehash = xmlutils.parse_tcl_check(ctext)
     salt = networkutils.tcl_salt()
     vkhsh = networkutils.vkhash(curef, tvver, firmwareid, salt, mode, fvver)
     updatetext = networkutils.tcl_download_request(curef, tvver, firmwareid, salt, vkhsh, sess, mode, fvver, export)
-    downloadurl, encslave = networkutils.parse_tcl_download_request(updatetext)
+    downloadurl, encslave = xmlutils.parse_tcl_download_request(updatetext)
     statcode = networkutils.getcode(downloadurl, sess)
     filename = tcl_delta_filename(curef, fvver, tvver, filename, original)
     tcl_prd_print(downloadurl, filename, statcode, encslave, sess)
@@ -972,7 +973,7 @@ def tcl_findprd_safehandle(curef, checktext):
     :param checktext: The XML formatted data returned from the first stage API check.
     :type checktext: str
     """
-    tvver, firmwareid, filename, fsize, fhash = networkutils.parse_tcl_check(checktext)
+    tvver, firmwareid, filename, fsize, fhash = xmlutils.parse_tcl_check(checktext)
     del firmwareid, filename, fsize, fhash
     tvver2 = "{0}{1}".format(tvver, " "*8)
     tcl_mainscan_printer(curef, tvver2)

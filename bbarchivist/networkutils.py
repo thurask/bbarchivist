@@ -15,12 +15,8 @@ import zlib  # encoding
 import requests  # downloading
 from bs4 import BeautifulSoup  # scraping
 from bbarchivist import utilities  # parse filesize
+from bbarchivist import xmlutils  # xml work
 from bbarchivist.bbconstants import SERVERS, TCLMASTERS  # lookup servers
-
-try:
-    from defusedxml import ElementTree  # safer XML parsing
-except (ImportError, AttributeError):
-    from xml.etree import ElementTree  # XML parsing
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -377,27 +373,11 @@ def tcl_check(curef, session=None, mode=4, fvver="AAA000", export=False):
         req.encoding = "utf-8"
         response = req.text
         if export:
-            dump_tcl_xml(response)
+            salt = tcl_salt()
+            xmlutils.dump_tcl_xml(response, salt)
     else:
         response = None
     return response
-
-
-def parse_tcl_check(data):
-    """
-    Extract version and file info from TCL update server response.
-
-    :param data: The data to parse.
-    :type data: str
-    """
-    root = ElementTree.fromstring(data)
-    tvver = root.find("VERSION").find("TV").text
-    fwid = root.find("FIRMWARE").find("FW_ID").text
-    fileinfo = root.find("FIRMWARE").find("FILESET").find("FILE")
-    filename = fileinfo.find("FILENAME").text
-    filesize = fileinfo.find("SIZE").text
-    filehash = fileinfo.find("CHECKSUM").text
-    return tvver, fwid, filename, filesize, filehash
 
 
 def tcl_salt():
@@ -407,20 +387,6 @@ def tcl_salt():
     millis = round(time.time() * 1000)
     tail = "{0:06d}".format(random.randint(0, 999999))
     return "{0}{1}".format(str(millis), tail)
-
-
-def dump_tcl_xml(xmldata):
-    """
-    Write XML responses to output directory.
-
-    :param xmldata: Response XML.
-    :type xmldata: str
-    """
-    outfile = os.path.join(os.getcwd(), "logs", "{0}.xml".format(tcl_salt()))
-    if not os.path.exists(os.path.dirname(outfile)):
-        os.makedirs(os.path.dirname(outfile))
-    with open(outfile, "w", encoding="utf-8") as afile:
-        afile.write(xmldata)
 
 
 def unpack_vdkey():
@@ -547,29 +513,10 @@ def tcl_download_request(curef, tvver, fwid, salt, vkh, session=None, mode=4, fv
         req.encoding = "utf-8"
         response = req.text
         if export:
-            dump_tcl_xml(response)
+            xmlutils.dump_tcl_xml(response, salt)
     else:
         response = None
     return response
-
-
-def parse_tcl_download_request(body, mode=4):
-    """
-    Extract file URL and encrypt slave URL from TCL update server response.
-
-    :param data: The data to parse.
-    :type data: str
-
-    :param mode: 4 if downloading autoloaders, 2 if downloading OTA deltas.
-    :type mode: int
-    """
-    root = ElementTree.fromstring(body)
-    slavelist = root.find("SLAVE_LIST").findall("SLAVE")
-    slave = random.choice(slavelist).text
-    dlurl = root.find("FILE_LIST").find("FILE").find("DOWNLOAD_URL").text
-    eslave = root.find("SLAVE_LIST").findall("ENCRYPT_SLAVE")
-    encslave = None if mode == 2 or not eslave else random.choice(eslave).text
-    return "http://{0}{1}".format(slave, dlurl), encslave
 
 
 def encrypt_header_prep(address, encslave):
@@ -626,21 +573,6 @@ def remote_prd_info():
     return otadict
 
 
-def cchecker_get_tags(root):
-    """
-    Get country and carrier from XML.
-
-    :param root: ElementTree we're barking up.
-    :type root: xml.etree.ElementTree.ElementTree
-    """
-    for child in root:
-        if child.tag == "country":
-            country = child.get("name")
-        if child.tag == "carrier":
-            carrier = child.get("name")
-    return country, carrier
-
-
 @pem_wrapper
 def carrier_checker(mcc, mnc, session=None):
     """
@@ -660,8 +592,7 @@ def carrier_checker(mcc, mnc, session=None):
     url = "{2}?homemcc={0}&homemnc={1}&devicevendorid=-1&pin=0".format(mcc, mnc, baseurl)
     user_agent = {'User-agent': 'AppWorld/5.1.0.60'}
     req = session.get(url, headers=user_agent)
-    root = ElementTree.fromstring(req.text)
-    country, carrier = cchecker_get_tags(root)
+    country, carrier = xmlutils.cchecker_get_tags(req.text)
     return country, carrier
 
 
@@ -705,129 +636,10 @@ def carrier_query(npc, device, upgrade=False, blitz=False, forced=None, session=
     upg = "upgrade" if upgrade else "repair"
     forced = "latest" if forced is None else forced
     url = "https://cs.sl.blackberry.com/cse/updateDetails/2.2/"
-    query = '<?xml version="1.0" encoding="UTF-8"?>'
-    query += '<updateDetailRequest version="2.2.1" authEchoTS="1366644680359">'
-    query += "<clientProperties>"
-    query += "<hardware>"
-    query += "<pin>0x2FFFFFB3</pin><bsn>1128121361</bsn>"
-    query += "<imei>004401139269240</imei>"
-    query += "<id>0x{0}</id>".format(device)
-    query += "</hardware>"
-    query += "<network>"
-    query += "<homeNPC>0x{0}</homeNPC>".format(npc)
-    query += "<iccid>89014104255505565333</iccid>"
-    query += "</network>"
-    query += "<software>"
-    query += "<currentLocale>en_US</currentLocale>"
-    query += "<legalLocale>en_US</legalLocale>"
-    query += "</software>"
-    query += "</clientProperties>"
-    query += "<updateDirectives>"
-    query += '<allowPatching type="REDBEND">true</allowPatching>'
-    query += "<upgradeMode>{0}</upgradeMode>".format(upg)
-    query += "<provideDescriptions>false</provideDescriptions>"
-    query += "<provideFiles>true</provideFiles>"
-    query += "<queryType>NOTIFICATION_CHECK</queryType>"
-    query += "</updateDirectives>"
-    query += "<pollType>manual</pollType>"
-    query += "<resultPackageSetCriteria>"
-    query += '<softwareRelease softwareReleaseVersion="{0}" />'.format(forced)
-    query += "<releaseIndependent>"
-    query += '<packageType operation="include">application</packageType>'
-    query += "</releaseIndependent>"
-    query += "</resultPackageSetCriteria>"
-    query += "</updateDetailRequest>"
+    query = xmlutils.prep_carrier_query(npc, device, upg, forced)
     header = {"Content-Type": "text/xml;charset=UTF-8"}
     req = session.post(url, headers=header, data=query)
-    return parse_carrier_xml(req.text, blitz)
-
-
-def carrier_swver_get(root):
-    """
-    Get software release from carrier XML.
-
-    :param root: ElementTree we're barking up.
-    :type root: xml.etree.ElementTree.ElementTree
-    """
-    for child in root.iter("softwareReleaseMetadata"):
-        swver = child.get("softwareReleaseVersion")
-    return swver
-
-
-def carrier_child_fileappend(child, files, baseurl, blitz=False):
-    """
-    Append bar file links to a list from a child element.
-
-    :param child: Child element in use.
-    :type child: xml.etree.ElementTree.Element
-
-    :param files: Filelist.
-    :type files: list(str)
-
-    :param baseurl: Base URL, URL minus the filename.
-    :type baseurl: str
-
-    :param blitz: Whether or not to create a blitz package. False by default.
-    :type blitz: bool
-    """
-    if not blitz:
-        files.append(baseurl + child.get("path"))
-    else:
-        if child.get("type") not in ["system:radio", "system:desktop", "system:os"]:
-            files.append(baseurl + child.get("path"))
-    return files
-
-
-def carrier_child_finder(root, files, baseurl, blitz=False):
-    """
-    Extract filenames, radio and OS from child elements.
-
-    :param root: ElementTree we're barking up.
-    :type root: xml.etree.ElementTree.ElementTree
-
-    :param files: Filelist.
-    :type files: list(str)
-
-    :param baseurl: Base URL, URL minus the filename.
-    :type baseurl: str
-
-    :param blitz: Whether or not to create a blitz package. False by default.
-    :type blitz: bool
-    """
-    osver = radver = ""
-    for child in root.iter("package"):
-        files = carrier_child_fileappend(child, files, baseurl, blitz)
-        if child.get("type") == "system:radio":
-            radver = child.get("version")
-        elif child.get("type") == "system:desktop":
-            osver = child.get("version")
-        elif child.get("type") == "system:os":
-            osver = child.get("version")
-    return osver, radver, files
-
-
-def parse_carrier_xml(data, blitz=False):
-    """
-    Parse the response to a carrier update request and return the juicy bits.
-
-    :param data: The data to parse.
-    :type data: xml
-
-    :param blitz: Whether or not to create a blitz package. False by default.
-    :type blitz: bool
-    """
-    root = ElementTree.fromstring(data)
-    sw_exists = root.find('./data/content/softwareReleaseMetadata')
-    swver = "N/A" if sw_exists is None else ""
-    if sw_exists is not None:
-        swver = carrier_swver_get(root)
-    files = []
-    package_exists = root.find('./data/content/fileSets/fileSet')
-    osver = radver = ""
-    if package_exists is not None:
-        baseurl = "{0}/".format(package_exists.get("url"))
-        osver, radver, files = carrier_child_finder(root, files, baseurl, blitz)
-    return(swver, osver, radver, files)
+    return xmlutils.parse_carrier_xml(req.text, blitz)
 
 
 @pem_wrapper
@@ -845,26 +657,9 @@ def sr_lookup(osver, server, session=None):
     :param session: Requests session object, default is created on the fly.
     :type session: requests.Session()
     """
-    query = '<?xml version="1.0" encoding="UTF-8"?>'
-    query += '<srVersionLookupRequest version="2.0.0"'
-    query += ' authEchoTS="1366644680359">'
-    query += '<clientProperties><hardware>'
-    query += '<pin>0x2FFFFFB3</pin><bsn>1140011878</bsn>'
-    query += '<imei>004402242176786</imei><id>0x8D00240A</id>'
-    query += '<isBootROMSecure>true</isBootROMSecure>'
-    query += '</hardware>'
-    query += '<network>'
-    query += '<vendorId>0x0</vendorId><homeNPC>0x60</homeNPC>'
-    query += '<currentNPC>0x60</currentNPC><ecid>0x1</ecid>'
-    query += '</network>'
-    query += '<software><currentLocale>en_US</currentLocale>'
-    query += '<legalLocale>en_US</legalLocale>'
-    query += '<osVersion>{0}</osVersion>'.format(osver)
-    query += '<omadmEnabled>false</omadmEnabled>'
-    query += '</software></clientProperties>'
-    query += '</srVersionLookupRequest>'
+    query = xmlutils.prep_sr_lookup(osver)
     reqtext = sr_lookup_poster(query, server, session)
-    packtext = sr_lookup_xmlparser(reqtext)
+    packtext = xmlutils.parse_sr_lookup(reqtext)
     return packtext
 
 
@@ -890,38 +685,6 @@ def sr_lookup_poster(query, server, session=None):
     else:
         reqtext = req.text
     return reqtext
-
-
-def sr_lookup_xmlparser(reqtext):
-    """
-    Take the text of a software lookup request response and parse it as XML.
-
-    :param reqtext: Response text, hopefully XML formatted.
-    :type reqtext: str
-    """
-    try:
-        root = ElementTree.fromstring(reqtext)
-    except ElementTree.ParseError:
-        packtext = "SR not in system"
-    else:
-        packtext = sr_lookup_extractor(root)
-    return packtext
-
-
-def sr_lookup_extractor(root):
-    """
-    Take an ElementTree and extract a software release from it.
-
-    :param root: ElementTree we're barking up.
-    :type root: xml.etree.ElementTree.ElementTree
-    """
-    reg = re.compile(r"(\d{1,4}\.)(\d{1,4}\.)(\d{1,4}\.)(\d{1,4})")
-    packages = root.findall('./data/content/')
-    for package in packages:
-        if package.text is not None:
-            match = reg.match(package.text)
-            packtext = package.text if match else "SR not in system"
-            return packtext
 
 
 def sr_lookup_bootstrap(osv, session=None, no2=False):
@@ -976,26 +739,10 @@ def available_bundle_lookup(mcc, mnc, device, session=None):
     session = generic_session(session)
     server = "https://cs.sl.blackberry.com/cse/availableBundles/1.0.0/"
     npc = return_npc(mcc, mnc)
-    query = '<?xml version="1.0" encoding="UTF-8"?>'
-    query += '<availableBundlesRequest version="1.0.0" '
-    query += 'authEchoTS="1366644680359">'
-    query += '<deviceId><pin>0x2FFFFFB3</pin></deviceId>'
-    query += '<clientProperties><hardware><id>0x{0}</id>'.format(device)
-    query += '<isBootROMSecure>true</isBootROMSecure></hardware>'
-    query += '<network><vendorId>0x0</vendorId><homeNPC>0x{0}</homeNPC>'.format(npc)
-    query += '<currentNPC>0x{0}</currentNPC></network><software>'.format(npc)
-    query += '<currentLocale>en_US</currentLocale>'
-    query += '<legalLocale>en_US</legalLocale>'
-    query += '<osVersion>10.0.0.0</osVersion>'
-    query += '<radioVersion>10.0.0.0</radioVersion></software>'
-    query += '</clientProperties><updateDirectives><bundleVersionFilter>'
-    query += '</bundleVersionFilter></updateDirectives>'
-    query += '</availableBundlesRequest>'
+    query = xmlutils.prep_available_bundle(device, npc)
     header = {"Content-Type": "text/xml;charset=UTF-8"}
     req = session.post(server, headers=header, data=query)
-    root = ElementTree.fromstring(req.text)
-    package = root.find('./data/content')
-    bundlelist = [child.attrib["version"] for child in package]
+    bundlelist = xmlutils.parse_available_bundle(req.text)
     return bundlelist
 
 

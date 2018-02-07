@@ -206,6 +206,9 @@
     <Compile Include="bbarchivist\sqlutils.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="bbarchivist\xmlutils.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="bbarchivist\_version.py">
       <SubType>Code</SubType>
     </Compile>
