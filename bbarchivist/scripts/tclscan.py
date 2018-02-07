@@ -8,7 +8,7 @@ from bbarchivist import argutils  # arguments
 from bbarchivist import decorators  # enter to exit
 from bbarchivist import jsonutils  # json
 from bbarchivist import networkutils  # lookup
-from bbarchivist import scriptutils  # default parser
+from bbarchivist import scriptutils  # script frontends
 from bbarchivist import utilities  # bool
 
 __author__ = "Thurask"
@@ -25,7 +25,7 @@ def grab_args():
     if getattr(sys, "frozen", False) and len(sys.argv) == 1:
         questionnaire()
     else:
-        parser = scriptutils.default_parser("bb-tclscan", "Check for updates for TCL devices")
+        parser = argutils.default_parser("bb-tclscan", "Check for updates for TCL devices")
         parser.add_argument("prd", help="Only scan one PRD", default=None, nargs="?")
         parser.add_argument(
             "-l",

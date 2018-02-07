@@ -26,7 +26,7 @@ def grab_args():
     Invoke :func:`carrierchecker.carrierchecker_main` with those arguments.
     """
     if len(sys.argv) > 1:
-        parser = scriptutils.default_parser("bb-cchecker", "Carrier info checking")
+        parser = argutils.default_parser("bb-cchecker", "Carrier info checking")
         parser.add_argument(
             "mcc",
             help="1-3 digit country code",
@@ -393,6 +393,54 @@ def carrierchecker_download(files, directory, osv, radv, swv, family, download=F
         print("\nFINISHED!!!")
 
 
+def carrierchecker_nobundles(mcc, mnc, hwid, family, download=False, upgrade=True, directory=None, export=False, blitz=False, forced=None, selective=False):
+    """
+    Wrap around :mod:`bbarchivist.networkutils` carrier checking.
+
+    :param mcc: Country code.
+    :type mcc: int
+
+    :param mnc: Network code.
+    :type mnc: int
+
+    :param hwid: Device hardware ID.
+    :type hwid: str
+
+    :param family: Device family.
+    :type family: str
+
+    :param download: Whether or not to download. Default is false.
+    :type download: bool
+
+    :param upgrade: Whether or not to use upgrade files. Default is false.
+    :type upgrade: bool
+
+    :param directory: Where to store files. Default is local directory.
+    :type directory: str
+
+    :param export: Whether or not to write URLs to a file. Default is false.
+    :type export: bool
+
+    :param blitz: Whether or not to create a blitz package. Default is false.
+    :type blitz: bool
+
+    :param forced: Force a software release. None to go for latest.
+    :type forced: str
+
+    :param selective: Whether or not to exclude Nuance/other dross. Default is false.
+    :type selective: bool
+    """
+    npc = networkutils.return_npc(mcc, mnc)
+    swv, osv, radv, files = networkutils.carrier_query(npc, hwid, upgrade, blitz, forced)
+    print("SOFTWARE RELEASE: {0}".format(swv))
+    print("OS VERSION: {0}".format(osv))
+    print("RADIO VERSION: {0}".format(radv))
+    files = carrierchecker_selective(files, selective)
+    carrierchecker_export(mcc, mnc, files, hwid, osv, radv, swv, export, upgrade, forced)
+    sess = requests.Session()
+    carrierchecker_download(files, directory, osv, radv, swv, family, download, blitz, sess)
+
+
 def carrierchecker_main(mcc, mnc, device, download=False, upgrade=True, directory=None, export=False, blitz=False, bundles=False, forced=None, selective=False):
     """
     Wrap around :mod:`bbarchivist.networkutils` carrier checking.
@@ -432,7 +480,7 @@ def carrierchecker_main(mcc, mnc, device, download=False, upgrade=True, director
     """
     device, directory = carrierchecker_argfilter(mcc, mnc, device, directory)
     model, family, hwid, country, carrier = carrierchecker_jsonprepare(mcc, mnc, device)
-    scriptutils.slim_preamble("CARRIERCHECKER")
+    argutils.slim_preamble("CARRIERCHECKER")
     print("COUNTRY: {0}".format(country.upper()))
     print("CARRIER: {0}".format(carrier.upper()))
     print("DEVICE: {0}".format(model.upper()))
@@ -442,15 +490,7 @@ def carrierchecker_main(mcc, mnc, device, download=False, upgrade=True, director
     if bundles:
         carrierchecker_bundles(mcc, mnc, hwid)
     else:
-        npc = networkutils.return_npc(mcc, mnc)
-        swv, osv, radv, files = networkutils.carrier_query(npc, hwid, upgrade, blitz, forced)
-        print("SOFTWARE RELEASE: {0}".format(swv))
-        print("OS VERSION: {0}".format(osv))
-        print("RADIO VERSION: {0}".format(radv))
-        files = carrierchecker_selective(files, selective)
-        carrierchecker_export(mcc, mnc, files, hwid, osv, radv, swv, export, upgrade, forced)
-        sess = requests.Session()
-        carrierchecker_download(files, directory, osv, radv, swv, family, download, blitz, sess)
+        carrierchecker_nobundles(mcc, mnc, hwid, family, download, upgrade, directory, export, blitz, forced, selective)
 
 
 if __name__ == "__main__":

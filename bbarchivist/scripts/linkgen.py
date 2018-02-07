@@ -3,6 +3,7 @@
 
 import sys  # load arguments
 
+from bbarchivist import argutils  # arguments
 from bbarchivist import decorators  # enter to exit
 from bbarchivist import scriptutils  # script stuff
 from bbarchivist import utilities  # increment version, if radio not specified
@@ -19,7 +20,7 @@ def grab_args():
     Invoke :func:`linkgen.linkgen_main` with those arguments.
     """
     if len(sys.argv) > 1:
-        parser = scriptutils.default_parser("bb-linkgen", "Bar link generation", ("osr"))
+        parser = argutils.default_parser("bb-linkgen", "Bar link generation", ("osr"))
         parser.add_argument(
             "-r",
             "--radiosw",

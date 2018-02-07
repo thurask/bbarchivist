@@ -8,7 +8,6 @@ from bbarchivist import argutils  # arguments
 from bbarchivist import decorators  # wrap Ctrl+C
 from bbarchivist import jsonutils  # json
 from bbarchivist import networkutils  # check function
-from bbarchivist import scriptutils  # default parser
 from bbarchivist import textgenerator  # export
 from bbarchivist import utilities  # filesize
 
@@ -24,7 +23,7 @@ def grab_args():
     Invoke :func:`devloader.devloader_main` with arguments.
     """
     if len(sys.argv) > 1:
-        parser = scriptutils.default_parser("bb-devloader", "Dev Alpha URL generator")
+        parser = argutils.default_parser("bb-devloader", "Dev Alpha URL generator")
         parser.add_argument(
             "os",
             help="OS version, 10.x.y.zzzz")
@@ -107,7 +106,7 @@ def devloader_main(osversion, export=False, loop=False, ceiling=9999, inc=3):
     :type inc: int
     """
     skels = jsonutils.load_json('devskeletons')
-    scriptutils.slim_preamble("DEVLOADER")
+    argutils.slim_preamble("DEVLOADER")
     sess = requests.Session()
     while True:
         if loop and int(osversion.split(".")[3]) > ceiling:

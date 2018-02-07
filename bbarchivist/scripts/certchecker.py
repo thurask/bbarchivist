@@ -3,6 +3,7 @@
 
 import sys  # load arguments
 
+from bbarchivist import argutils  # arguments
 from bbarchivist import decorators  # enter to exit
 from bbarchivist import jsonutils  # json
 from bbarchivist import networkutils  # check function
@@ -22,7 +23,7 @@ def grab_args():
     """
     datafile = jsonutils.load_json('devices')
     if len(sys.argv) > 1:
-        parser = scriptutils.default_parser("bb-certchecker", "Certification scraper")
+        parser = argutils.default_parser("bb-certchecker", "Certification scraper")
         parser.add_argument(
             "device",
             help="FCCID/HWID/model #, or family",
@@ -135,7 +136,7 @@ def certchecker_main(device, data):
     """
     device = device.upper()
     name, ptcrbid, hwid, fccid = jsonutils.extract_cert(data, device)
-    scriptutils.slim_preamble("CERTCHECKER")
+    argutils.slim_preamble("CERTCHECKER")
     print("DEVICE: {0}".format(device.upper()))
     print("VARIANT: {0}".format(name.upper()))
     if hwid:

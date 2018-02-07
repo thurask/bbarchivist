@@ -23,7 +23,7 @@ def grab_args():
     Invoke :func:`autolookup.autolookup_main` with those arguments.
     """
     if len(sys.argv) > 1:
-        parser = scriptutils.default_parser("bb-autolookup", "Get software releases")
+        parser = argutils.default_parser("bb-autolookup", "Get software releases")
         parser.add_argument("os", help="OS version, 10.x.y.zzzz")
         parser.add_argument(
             "-l", "--loop",
@@ -182,7 +182,7 @@ def autolookup_main(osversion, loop=False, log=False, autogen=False, inc=3, sql=
         smtputils.smtp_config_writer(**smtpc)
     else:
         pword = None
-    scriptutils.slim_preamble("AUTOLOOKUP")
+    argutils.slim_preamble("AUTOLOOKUP")
     record = utilities.prep_logfile() if log else None
     sess = requests.Session()
     while True:

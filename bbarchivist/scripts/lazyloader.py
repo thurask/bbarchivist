@@ -6,6 +6,7 @@ import subprocess  # autoloader running
 import sys  # load arguments
 
 import requests  # session
+from bbarchivist import argutils  # arguments
 from bbarchivist import barutils  # file operations
 from bbarchivist import bbconstants  # constants/versions
 from bbarchivist import decorators  # timer
@@ -28,7 +29,7 @@ def grab_args():
     """
     if len(sys.argv) > 1:
         argflags = ("folder", "osr")
-        parser = scriptutils.default_parser("bb-lazyloader", "Create one autoloader", argflags)
+        parser = argutils.default_parser("bb-lazyloader", "Create one autoloader", argflags)
         devgroup = parser.add_argument_group("devices", "Device to load (one required)")
         compgroup = devgroup.add_mutually_exclusive_group()
         compgroup.add_argument(
@@ -119,8 +120,8 @@ def execute_args(args):
     args.folder = scriptutils.generate_workfolder(args.folder)
     if not utilities.is_windows():
         args.autoloader = False
-    scriptutils.arg_verify_none(args.os, "No OS specified!")
-    scriptutils.arg_verify_none(args.device, "No device specified!")
+    argutils.arg_verify_none(args.os, "No OS specified!")
+    argutils.arg_verify_none(args.device, "No device specified!")
     lazyloader_main(args.device, args.os, args.radio, args.swrelease, args.folder, args.autoloader, args.download, args.altsw, args.core)
 
 
@@ -250,7 +251,7 @@ def lazyloader_main(device, osversion, radioversion=None, softwareversion=None, 
     softwareversion, swc = scriptutils.return_sw_checked(softwareversion, osversion)
     if altsw == "checkme":
         altsw, altchecked = scriptutils.return_radio_sw_checked(altsw, radioversion)
-    scriptutils.standard_preamble("lazyloader", osversion, softwareversion, radioversion, altsw)
+    argutils.standard_preamble("lazyloader", osversion, softwareversion, radioversion, altsw)
     print("DEVICE: {0}".format(bbconstants.DEVICES[device]))
 
     # Make dirs

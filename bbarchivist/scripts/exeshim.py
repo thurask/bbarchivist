@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Python interface for cap/cfp."""
 
+from bbarchivist import argutils  # default parser
 from bbarchivist import bbconstants  # cap/cfp version
-from bbarchivist import scriptutils  # default parser
 from bbarchivist import utilities  # platform
 
 __author__ = "Thurask"
@@ -16,7 +16,7 @@ def cap_main():
     """
     sdesc = "BlackBerry CAP."
     starget = utilities.grab_cap()
-    scriptutils.generic_windows_shim("bb-cap", sdesc, starget, bbconstants.CAP.version)
+    argutils.generic_windows_shim("bb-cap", sdesc, starget, bbconstants.CAP.version)
 
 def cfp_main():
     """
@@ -24,4 +24,4 @@ def cfp_main():
     """
     sdesc = "BlackBerry CFP."
     starget = utilities.grab_cfp()
-    scriptutils.generic_windows_shim("bb-cfp", sdesc, starget, bbconstants.CFP.version)
+    argutils.generic_windows_shim("bb-cfp", sdesc, starget, bbconstants.CFP.version)

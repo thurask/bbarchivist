@@ -3,9 +3,10 @@
 
 import sys  # load arguments
 
+from bbarchivist import argutils  # arguments
 from bbarchivist import decorators  # enter to exit
 from bbarchivist import jsonutils  # json
-from bbarchivist import scriptutils  # default parser
+from bbarchivist import scriptutils  # script frontends
 from bbarchivist import utilities  # bool
 
 __author__ = "Thurask"
@@ -22,7 +23,7 @@ def grab_args():
     if getattr(sys, "frozen", False) and len(sys.argv) == 1:
         questionnaire()
     else:
-        parser = scriptutils.default_parser("bb-tclnewprd", "Check for new PRDs for TCL devices")
+        parser = argutils.default_parser("bb-tclnewprd", "Check for new PRDs for TCL devices")
         parser.add_argument(
             "prds",
             help="Only scan space separated list of PRDs",
@@ -114,7 +115,7 @@ def tclnewprd_main(prds=None, floor=1, ceiling=60, export=False):
     :param export: Whether to export XML response to file. Default is False.
     :type export: bool
     """
-    scriptutils.slim_preamble("TCLNEWPRD")
+    argutils.slim_preamble("TCLNEWPRD")
     prdbase = jsonutils.load_json("prds")
     prddict = scriptutils.tcl_findprd_prepdict(prdbase)
     prddict = scriptutils.tcl_findprd_checkfilter(prddict, prds)

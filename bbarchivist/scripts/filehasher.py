@@ -6,7 +6,6 @@ import sys  # load arguments
 
 from bbarchivist import argutils  # arguments
 from bbarchivist import hashutils  # main program
-from bbarchivist import scriptutils  # default parser
 from bbarchivist import utilities  # input validation
 
 __author__ = "Thurask"
@@ -23,7 +22,7 @@ def filehasher_main():
     hashdict = hashutils.verifier_config_loader()
     hashutils.verifier_config_writer(hashdict)
     if len(sys.argv) > 1:
-        parser = scriptutils.default_parser("bb-filehasher", "Hash files")
+        parser = argutils.default_parser("bb-filehasher", "Hash files")
         parser.add_argument(
             "folder",
             help="Working directory, default is local",

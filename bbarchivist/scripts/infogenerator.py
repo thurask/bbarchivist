@@ -5,7 +5,7 @@ import os  # path operations
 import sys  # load arguments
 
 from bbarchivist import argutils  # arguments
-from bbarchivist import scriptutils  # default parser
+from bbarchivist import scriptutils  # script frontends
 from bbarchivist import utilities  # input validation
 
 __author__ = "Thurask"
@@ -21,7 +21,7 @@ def grab_args():
     """
     if len(sys.argv) > 1:
         argflags = ("folder", "osr")
-        parser = scriptutils.default_parser("bb-infogen", "Generate info files", flags=argflags)
+        parser = argutils.default_parser("bb-infogen", "Generate info files", flags=argflags)
         parser.add_argument(
             "-d",
             "--device",

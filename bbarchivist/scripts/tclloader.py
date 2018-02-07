@@ -9,7 +9,7 @@ from bbarchivist import argutils  # arguments
 from bbarchivist import decorators  # enter to exit
 from bbarchivist import loadergen  # packing loader
 from bbarchivist import networkutils  # download android tools
-from bbarchivist import scriptutils  # default parser
+from bbarchivist import scriptutils  # script frontends
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -22,7 +22,7 @@ def grab_args():
 
     Invoke :func:`tclloader.tclloader_main` with those arguments.
     """
-    parser = scriptutils.default_parser("bb-tclloader", "Create autoloaders from TCL templates")
+    parser = argutils.default_parser("bb-tclloader", "Create autoloaders from TCL templates")
     parser.add_argument(
         "loaderfile",
         help="Loader zip file or directory",
@@ -147,7 +147,7 @@ def tclloader_main(loaderfile, loadername=None, directory=False, localtools=Fals
     :param wipe: If the final loader wipes userdata. Default is True.
     :type wipe: bool
     """
-    scriptutils.slim_preamble("TCLLOADER")
+    argutils.slim_preamble("TCLLOADER")
     loaderdir, osver = scriptutils.tclloader_prep(loaderfile, directory)
     tclloader_extract(loaderfile, loaderdir, directory)
     localtools = tclloader_fastboot(localtools)

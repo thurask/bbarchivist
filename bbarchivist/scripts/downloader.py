@@ -5,6 +5,7 @@ import os  # filesystem read
 import sys  # load arguments
 
 import requests  # session
+from bbarchivist import argutils  # arguments
 from bbarchivist import decorators  # enter to exit
 from bbarchivist import networkutils  # download/lookup
 from bbarchivist import scriptutils  # script stuff
@@ -23,8 +24,7 @@ def grab_args():
     Invoke downloader from :func:`archivist.archivist_main` with arguments.
     """
     if len(sys.argv) > 1:
-        parser = scriptutils.default_parser("bb-downloader", "Download bar files",
-                                            ("folder", "osr"))
+        parser = argutils.default_parser("bb-downloader", "Download bar files", ("folder", "osr"))
         parser.add_argument(
             "-a",
             "--altsw",
@@ -120,7 +120,7 @@ def downloader_main(osversion, radioversion=None, softwareversion=None,
     if altsw:
         altsw, altchecked = scriptutils.return_radio_sw_checked(altsw, radioversion)
     localdir = utilities.dirhandler(localdir, os.getcwd())
-    scriptutils.standard_preamble("downloader", osversion, softwareversion, radioversion, altsw)
+    argutils.standard_preamble("downloader", osversion, softwareversion, radioversion, altsw)
     if not any((debricks, radios, cores)):
         print("NO FILES SPECIFIED, DEFAULTING TO DEBRICKS + RADIOS")
         debricks = True

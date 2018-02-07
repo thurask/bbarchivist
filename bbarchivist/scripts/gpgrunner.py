@@ -5,8 +5,8 @@ import getpass  # invisible passwords (cf. sudo)
 import os  # path operations
 import sys  # load arguments
 
+from bbarchivist import argutils  # arguments
 from bbarchivist import gpgutils  # main program
-from bbarchivist import scriptutils  # default parser
 from bbarchivist import utilities  # bool parsing
 
 __author__ = "Thurask"
@@ -61,7 +61,7 @@ def gpgrunner_main():
 
     Invoke :func:`bbarchivist.gpgutils.gpgrunner` with those arguments.
     """
-    parser = scriptutils.default_parser("bb-gpgrunner", "GPG-sign files")
+    parser = argutils.default_parser("bb-gpgrunner", "GPG-sign files")
     parser.add_argument(
         "folder",
         help="Working directory, default is local",

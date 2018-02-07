@@ -6,7 +6,6 @@ import sys  # load arguments
 from bbarchivist import argutils  # input validation
 from bbarchivist import decorators  # enter to exit
 from bbarchivist import hashutils  # main program
-from bbarchivist import scriptutils  # default parser
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -20,7 +19,7 @@ def escreens_main():
     Invoke :func:`bbarchivist.hashutils.calculate_escreens` with arguments.
     """
     if len(sys.argv) > 1:
-        parser = scriptutils.default_parser("bb-escreens", "Calculate escrens codes")
+        parser = argutils.default_parser("bb-escreens", "Calculate escrens codes")
         parser.add_argument("pin",
                             help="PIN, 8 characters",
                             type=argutils.escreens_pin)

@@ -3,7 +3,7 @@
 
 import sys  # load arguments
 
-from bbarchivist import scriptutils  # default parser
+from bbarchivist import argutils  # arguments
 from bbarchivist import sqlutils  # the export function
 
 __author__ = "Thurask"
@@ -15,7 +15,7 @@ def grab_args():
     """
     Parse arguments from argparse/questionnaire.
     """
-    parser = scriptutils.default_parser("bb-sqlexport", "SQL-related tools")
+    parser = argutils.default_parser("bb-sqlexport", "SQL-related tools")
     parser.add_argument(
         "-p",
         "--pop",

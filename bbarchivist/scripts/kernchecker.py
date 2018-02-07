@@ -3,9 +3,10 @@
 
 import sys  # load arguments
 
+from bbarchivist import argutils  # arguments
 from bbarchivist import decorators  # enter to exit
 from bbarchivist import networkutils  # check function
-from bbarchivist import scriptutils  # default parser
+from bbarchivist import scriptutils  # script frontends
 from bbarchivist import utilities  # lprint
 
 __author__ = "Thurask"
@@ -19,7 +20,7 @@ def grab_args():
 
     Invoke :func:`kernchecker.kernchecker_main` with those arguments.
     """
-    parser = scriptutils.default_parser("bb-kernchecker", "Kernel version scraper.")
+    parser = argutils.default_parser("bb-kernchecker", "Kernel version scraper.")
     parser.add_argument(
         "-u",
         "--utils",
@@ -38,7 +39,7 @@ def kernchecker_main(utils=False):
     :param utils: If we're checking utilities rather than kernels.
     :type utils: bool
     """
-    scriptutils.slim_preamble("KERNCHECKER")
+    argutils.slim_preamble("KERNCHECKER")
     tocheck = "UTILS" if utils else "KERNELS"
     print("\nCHECKING {0}...\n".format(tocheck))
     kernlist = networkutils.kernel_scraper(utils)

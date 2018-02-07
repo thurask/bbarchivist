@@ -6,7 +6,6 @@ import sys  # load arguments
 
 from bbarchivist import argutils  # arguments
 from bbarchivist import pseudocap  # actually making the loader
-from bbarchivist import scriptutils  # default parser
 from bbarchivist import utilities  # path checking
 
 __author__ = "Thurask"
@@ -20,7 +19,7 @@ def pycaptool_main():
 
     Invoke :func:`bbarchivist.pseudocap.make_autoloader` with arguments.
     """
-    parser = scriptutils.default_parser("bb-pseudocap", "BlackBerry CAP, in Python.", ("folder"))
+    parser = argutils.default_parser("bb-pseudocap", "BlackBerry CAP, in Python.", ("folder"))
     parser.add_argument("filename", help="Filename")
     parser.add_argument("files", help="1-6 signed files, space separated", nargs="+")
     parser.set_defaults()

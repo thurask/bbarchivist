@@ -3,8 +3,9 @@
 
 import sys  # load arguments
 
+from bbarchivist import argutils  # arguments
 from bbarchivist import decorators  # enter to exit
-from bbarchivist import scriptutils  # default parser
+from bbarchivist import scriptutils  # script frontends
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -17,7 +18,7 @@ def grab_args():
 
     Invoke a function with those arguments.
     """
-    parser = scriptutils.default_parser("bb-tcldelta", "Check for delta updates for TCL devices")
+    parser = argutils.default_parser("bb-tcldelta", "Check for delta updates for TCL devices")
     parser.add_argument("curef", help="PRD to check", default=None, nargs="?")
     parser.add_argument("fvver", help="Current OS version", default=None, nargs="?")
     parser.add_argument(

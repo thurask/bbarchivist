@@ -6,7 +6,6 @@ import sys  # load arguments
 
 from bbarchivist import argutils  # arguments
 from bbarchivist import archiveutils  # main program
-from bbarchivist import scriptutils  # default parser
 from bbarchivist import utilities  # bool parsing
 
 __author__ = "Thurask"
@@ -20,7 +19,7 @@ def kompressor_main():
 
     Invoke :func:`bbarchivist.barutils.compress` with those arguments.
     """
-    parser = scriptutils.default_parser("bb-kompressor", "Compress files")
+    parser = argutils.default_parser("bb-kompressor", "Compress files")
     parser.add_argument(
         "-m",
         "--method",

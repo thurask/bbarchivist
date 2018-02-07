@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 """Test the scriptutils module."""
 
-import argparse
 import os
-import sys
 import time
 import zipfile
 from shutil import copyfile, rmtree
@@ -11,7 +9,6 @@ from shutil import copyfile, rmtree
 import bbarchivist.scriptutils as bs
 import httmock
 import pytest
-from bbarchivist.bbconstants import COMMITDATE, LONGVERSION, VERSION
 from requests import Session
 
 try:
@@ -163,54 +160,6 @@ class TestClassScriptutils:
                     None)
                 with open("10.3.3.3334plusapps.txt", "r") as afile:
                     assert len(afile.read()) == 2933
-
-    def test_slim_preamble(self, capsys):
-        """
-        Test single line app header.
-        """
-        bs.slim_preamble("snek")
-        assert "SNEK" in capsys.readouterr()[0]
-
-    def test_standard_preamble(self, capsys):
-        """
-        Test multi-line app header.
-        """
-        bs.standard_preamble("snek", "10.3.2.2639", "10.3.2.2474", "10.3.2.2877", "10.3.2.2836")
-        assert "2836" in capsys.readouterr()[0]
-
-    def test_shortversion(self, monkeypatch):
-        """
-        Test version getting, short type.
-        """
-        monkeypatch.setattr("sys.frozen", True, raising=False)
-        with open("version.txt", "w") as afile:
-            afile.write("10.0.10586.1000")
-        assert bs.shortversion() == "10.0.10586.1000"
-        monkeypatch.setattr("sys.frozen", False, raising=False)
-
-    def test_shortversion_unfrozen(self, monkeypatch):
-        """
-        Test version getting, short type, not frozen.
-        """
-        monkeypatch.setattr("sys.frozen", False, raising=False)
-        assert bs.shortversion() == VERSION
-
-    def test_longversion(self, monkeypatch):
-        """
-        Test version getting, long type.
-        """
-        monkeypatch.setattr("sys.frozen", True, raising=False)
-        with open("longversion.txt", "w") as afile:
-            afile.write("10.0.10586.1000\n1970-01-01")
-        assert bs.longversion() == ["10.0.10586.1000", "1970-01-01"]
-        monkeypatch.setattr("sys.frozen", False, raising=False)
-
-    def test_longversion_unfrozen(self, monkeypatch):
-        """
-        Test version getting, long type, not frozen.
-        """
-        monkeypatch.setattr("sys.frozen", False, raising=False)
-        assert bs.longversion() == (LONGVERSION, COMMITDATE)
 
     def test_linkgen(self):
         """
@@ -855,104 +804,6 @@ class TestClassScriptutilsSevenzip:
         with mock.patch('bbarchivist.utilities.prep_seven_zip', mock.MagicMock(return_value=False)):
             with mock.patch('builtins.input', mock.MagicMock(return_value="y")):
                 assert bs.get_sz_executable("7z") == ("zip", "")
-
-
-class TestClassScriptutilsArguments:
-    """
-    Test argparse parser generation.
-    """
-    @classmethod
-    def setup_class(cls):
-        """
-        Create parser for testing.
-        """
-        cls.parser = bs.default_parser("name", "Formats C:", flags=("folder", "osr"), vers=["deadbeef", "1970-01-01"])
-
-    def test_parser_name(self):
-        """
-        Test if parser has the name set.
-        """
-        assert self.parser.prog == "name"
-
-    def test_parser_desc(self):
-        """
-        Test if parser has the desc set.
-        """
-        assert self.parser.description == "Formats C:"
-
-    def test_parser_epilog(self):
-        """
-        Test if parser has the epilog set.
-        """
-        assert self.parser.epilog == "https://github.com/thurask/bbarchivist"
-
-    def test_parser_version(self):
-        """
-        Test if parser has the version set.
-        """
-        verarg = [x for x in self.parser._actions if isinstance(x, argparse._VersionAction)][0]
-        assert verarg.version == "name deadbeef committed 1970-01-01"
-
-    def test_parser_args(self):
-        """
-        Test arg parsing.
-        """
-        pargs = self.parser.parse_args(["10.3.2.2876"])
-        args = vars(pargs)
-        assert args["folder"] is None
-        assert args["radio"] is None
-        assert args["swrelease"] is None
-        assert args["os"] == "10.3.2.2876"
-
-    def test_external_version(self):
-        """
-        Test version modification.
-        """
-        newpar = bs.external_version(self.parser, "|SNEKSNEK")
-        verarg = [x for x in newpar._actions if isinstance(x, argparse._VersionAction)][0]
-        assert verarg.version == "name deadbeef committed 1970-01-01|SNEKSNEK"
-
-    def test_arg_verify_none(self, capsys):
-        """
-        Test if argument is None.
-        """
-        with pytest.raises(argparse.ArgumentError):
-            bs.arg_verify_none(None, "SNEK!")
-
-
-class TestClassScriptutilsShim:
-    """
-    Test CFP/CAP shim.
-    """
-    def setup_method(self, method):
-        """
-        Mock sys.argv.
-        """
-        self.oldsysargv = sys.argv
-        sys.argv = ["cap.exe", "help"]
-
-    def teardown_method(self, method):
-        """
-        Unmock sys.argv.
-        """
-        sys.argv = self.oldsysargv
-
-    def test_windows_shim_posix(self, capsys):
-        """
-        Test CFP/CAP shim on non-Windows.
-        """
-        with mock.patch('platform.system', mock.MagicMock(return_value="Wandows")):
-            bs.generic_windows_shim("cap", "CAP!", "cap.exe", "3.10")
-            assert "Sorry, Windows only." in capsys.readouterr()[0]
-
-    def test_windows_shim_windows(self, capsys):
-        """
-        Test CFP/CAP shim on Windows.
-        """
-        with mock.patch('platform.system', mock.MagicMock(return_value="Windows")):
-            with mock.patch('subprocess.call', mock.MagicMock(side_effect=print("Snek!"))):
-                bs.generic_windows_shim("cap", "CAP!", "cap.exe", "3.10")
-                assert "Snek!" in capsys.readouterr()[0]
 
 
 class TestClassScriptutilsIntegrity:

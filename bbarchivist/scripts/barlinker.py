@@ -3,8 +3,8 @@
 
 import sys  # load arguments
 
+from bbarchivist import argutils  # arguments
 from bbarchivist import decorators  # enter to exit
-from bbarchivist import scriptutils  # default parser
 from bbarchivist import utilities  # generation
 
 __author__ = "Thurask"
@@ -27,7 +27,7 @@ def barlinker_main():
     Wrap around :mod:`bbarchivist.utilities` link generation.
     """
     if len(sys.argv) > 1:
-        parser = scriptutils.default_parser("bb-barlinker", "Bar file link generator.")
+        parser = argutils.default_parser("bb-barlinker", "Bar file link generator.")
         parser.add_argument("appname", help="Full app name (ex. 'sys.pim.calendar')")
         parser.add_argument("appver", help="App version (ex. '10.3.2.371')")
         parser.add_argument("software", help="Software version of OS")

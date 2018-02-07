@@ -3,9 +3,9 @@
 
 import sys  # load arguments
 
+from bbarchivist import argutils  # arguments
 from bbarchivist import decorators  # Ctrl+C wrapping
 from bbarchivist import networkutils  # lookup
-from bbarchivist import scriptutils  # default parser
 from bbarchivist import utilities  # argument filters
 
 __author__ = "Thurask"
@@ -18,7 +18,7 @@ def grab_args():
     Parse arguments from argparse/questionnaire.
     """
     if len(sys.argv) > 1:
-        parser = scriptutils.default_parser("bb-swlookup", "Check software releases")
+        parser = argutils.default_parser("bb-swlookup", "Check software releases")
         parser.add_argument("sw", help="Software version, 10.x.y.zzzz")
         parser.add_argument(
             "-l", "--loop",
@@ -85,7 +85,7 @@ def swlookup_main(swversion, loop=False, ceiling=9999):
     :param ceiling: When to stop loop. Default is 9999 (i.e. 10.x.y.9999).
     :type ceiling: int
     """
-    scriptutils.slim_preamble("SWLOOKUP")
+    argutils.slim_preamble("SWLOOKUP")
     while True:
         terminator(swversion, ceiling, loop)
         print("NOW SCANNING: {0}".format(swversion), end="\r")

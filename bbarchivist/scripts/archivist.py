@@ -28,8 +28,7 @@ def grab_args():
     Invoke :func:`archivist.archivist_main` with those arguments.
     """
     if len(sys.argv) > 1:
-        parser = scriptutils.default_parser("bb-archivist", "Create many autoloaders",
-                                            ("folder", "osr"))
+        parser = argutils.default_parser("bb-archivist", "Create autoloaders", ("folder", "osr"))
         negategroup = parser.add_argument_group(
             "negators",
             "Disable program functionality")
@@ -583,7 +582,7 @@ def archivist_main(osversion, radioversion=None, softwareversion=None,
     if hashed and hashdict is None:
         hashdict = hashutils.verifier_config_loader()
         hashutils.verifier_config_writer(hashdict)
-    scriptutils.standard_preamble("archivist", osversion, softwareversion, radioversion, altsw)
+    argutils.standard_preamble("archivist", osversion, softwareversion, radioversion, altsw)
     # Generate download URLs
     baseurl, alturl = scriptutils.get_baseurls(softwareversion, altsw)
     osurls, radiourls, cores = utilities.generate_urls(softwareversion, osversion, radioversion, True)

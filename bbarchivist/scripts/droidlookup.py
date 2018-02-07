@@ -8,7 +8,6 @@ from bbarchivist import argutils  # arguments
 from bbarchivist import decorators  # Ctrl+C wrapping
 from bbarchivist import jsonutils  # json
 from bbarchivist import networkutils  # lookup
-from bbarchivist import scriptutils  # default parser
 from bbarchivist import utilities  # argument filters
 
 __author__ = "Thurask"
@@ -23,7 +22,7 @@ def grab_args():
     Invoke :func:`droidlookup.droidlookup_main` with those arguments.
     """
     if len(sys.argv) > 1:
-        parser = scriptutils.default_parser("bb-droidlookup", "Get Android autoloaders")
+        parser = argutils.default_parser("bb-droidlookup", "Get Android autoloaders")
         parser.add_argument(
             "branch",
             help="OS branch, 3 letters")
@@ -259,7 +258,7 @@ def droidlookup_main(device, branch, floor=0, ceil=999, method=None):
     :param method: None for regular OS links, "hash256/512" for SHA256 or 512 hash.
     :type method: str
     """
-    scriptutils.slim_preamble("DROIDLOOKUP")
+    argutils.slim_preamble("DROIDLOOKUP")
     text = "DEVICE: ALL" if isinstance(device, list) else "DEVICE: {0}".format(device.upper())
     print(text)
     sess = requests.Session()
