@@ -3,7 +3,6 @@
 
 import os
 import sys
-from argparse import ArgumentError
 from platform import system
 from shutil import copyfile, rmtree
 
@@ -351,8 +350,8 @@ class TestClassUtilities:
         cap = bc.Datafile("3.11.0.20", "cap", 9252412)
         cap.location = os.path.join(os.getcwd(), cap.filename)
         with mock.patch("bbarchivist.utilities.cappath_config_loader", mock.MagicMock(side_effect=IndexError)):
-                with mock.patch("bbarchivist.utilities.cappath_config_writer", mock.MagicMock(side_effect=None)):
-                    assert bu.grab_capini(cap) == bc.CAP.location
+            with mock.patch("bbarchivist.utilities.cappath_config_writer", mock.MagicMock(side_effect=None)):
+                assert bu.grab_capini(cap) == bc.CAP.location
 
     def test_grab_cfp(self):
         """

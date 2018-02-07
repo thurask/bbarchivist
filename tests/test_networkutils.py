@@ -667,7 +667,7 @@ class TestClassNetworkutilsParsing:
             for key in findings:
                 assert findings[key] == "10.3.2.516"
 
-    def test_sr_lookup_bootstrap_filtered(self):
+    def test_sr_lookup_bootstrap_filt(self):
         """
         Test multiple software lookups, with filter.
         """
@@ -829,12 +829,12 @@ class TestClassNetworkutilsTcl:
         """
         with httmock.HTTMock(tcl_check_mock):
             ctxt = bn.tcl_check("PRD-63764-001", export=True)
-        tv, fw, fn, fs, fh = bn.parse_tcl_check(ctxt)
-        assert tv == "AAM693"
-        assert fw == "258098"
-        assert fn == "bbry_qc8953_sfi-user-production_signed-AAM693.zip"
-        assert fs == "2712821341"
-        assert fh == "97a9f933c70fbe7c106037aaba19c6aedd9136d2"
+        tvver, fwver, fname, fsize, fhash = bn.parse_tcl_check(ctxt)
+        assert tvver == "AAM693"
+        assert fwver == "258098"
+        assert fname == "bbry_qc8953_sfi-user-production_signed-AAM693.zip"
+        assert fsize == "2712821341"
+        assert fhash == "97a9f933c70fbe7c106037aaba19c6aedd9136d2"
 
     def test_tcl_check_fail(self):
         """
@@ -861,6 +861,7 @@ class TestClassNetworkutilsTcl:
             vkh = bn.vkhash("PRD-63764-001", "AAM693", "258098", salt)
             utxt = bn.tcl_download_request("PRD-63764-001", "AAM693", "258098", salt, vkh, export=True)
         dlurl, encslave = bn.parse_tcl_download_request(utxt)
+        del encslave
         assert "/ce570ddc079e2744558f191895e524d02a60476f/cfcdde91ea7f810311d1f973726e390f77a9ff1b/258098/261497" in dlurl
 
     def test_tcl_request_fail(self):

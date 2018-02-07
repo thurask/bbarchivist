@@ -1,4 +1,4 @@
-1#!/usr/bin/env python3
+#!/usr/bin/env python3
 """Test the sqlutils module."""
 
 import csv
@@ -6,9 +6,9 @@ import os
 import sqlite3
 from shutil import rmtree
 
+import bbarchivist.argutils as ba
 import bbarchivist.sqlutils as bs
 import pytest
-from bbarchivist.argutils import file_exists
 
 try:
     import unittest.mock as mock
@@ -52,7 +52,7 @@ class TestClassSQLUtils:
         with mock.patch('bbarchivist.iniconfig.config_homepath', mock.MagicMock(return_value=apath)):
             bs.prepare_sw_db()
         sqlpath = os.path.join(os.path.abspath(os.getcwd()), "bbarchivist.db")
-        assert file_exists(sqlpath)
+        assert ba.file_exists(sqlpath)
         with mock.patch("sqlite3.connect", mock.MagicMock(side_effect=sqlite3.Error)):
             bs.prepare_sw_db()
             assert "\n" in capsys.readouterr()[0]

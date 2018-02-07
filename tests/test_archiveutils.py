@@ -130,7 +130,7 @@ class TestClassArchiveutilsCompression:
             ba.pack_tclloader("loader_folder", "snek")
         assert ba.zip_verify("snek.zip")
         if os.path.exists("snek.zip"):
-                os.remove("snek.zip")
+            os.remove("snek.zip")
 
     def test_compress_zip_fail(self):
         """
@@ -262,7 +262,7 @@ class TestClassArchiveutilsCompression:
         cfit = ba.compressfilter(os.getcwd(), "arcsonly")
         assert sorted(cfit) == sorted(fileshere)
         if os.path.exists("compfilter.zip"):
-                os.remove("compfilter.zip")
+            os.remove("compfilter.zip")
 
 
 class TestClassArchiveutilsMethods:
@@ -507,7 +507,7 @@ class TestClassArchiveutilsVerifier:
         Test checking 7-Zip verification.
         """
         with mock.patch('bbarchivist.archiveutils.sz_verify', mock.MagicMock(return_value=True)):
-            assert ba.decide_verifier("snek.7z","7z.exe")
+            assert ba.decide_verifier("snek.7z", "7z.exe")
 
 
 class TestClassArchiveutilsConfig:
@@ -589,14 +589,14 @@ class TestClassArchiveutils:
     def test_android_tools(self):
         """
         Test Android SDK platform tools utilities.
-        """ 
+        """
         ba.verify_android_tools("tooldir")
         ba.extract_android_tools("tooldir")
-        
+
 
     def test_android_tools_fail(self):
         """
         Test when verification fails.
         """
         with mock.patch('bbarchivist.archiveutils.zip_verify', mock.MagicMock(return_value=False)):
-            assert ba.verify_android_tools("tooldir") == False
+            assert not ba.verify_android_tools("tooldir")

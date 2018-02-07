@@ -3,7 +3,6 @@
 
 import hashlib
 import os
-from configparser import ConfigParser
 from shutil import copyfile, rmtree
 
 import pytest
@@ -237,15 +236,15 @@ class TestClassHashutils:
             b"ED5D3F26 tempfile.txt"]
         if confload["md4"]:
             stocklines.extend([
-            b"MD4",
-            b"DF26ADA1A895F94E1F1257FAD984E809 tempfile.txt"])
+                b"MD4",
+                b"DF26ADA1A895F94E1F1257FAD984E809 tempfile.txt"])
         stocklines.extend([
             b"MD5",
             b"822E1187FDE7C8D55AFF8CC688701650 tempfile.txt"])
         if confload["sha0"]:
             stocklines.extend([
-            b"SHA0",
-            b"D26B25F6170DAF49E31E68BF57F6164815C368D8 tempfile.txt"])
+                b"SHA0",
+                b"D26B25F6170DAF49E31E68BF57F6164815C368D8 tempfile.txt"])
         stocklines.extend([
             b"SHA1",
             b"71DC7CE8F27C11B792BE3F169ECF985865E276D0 tempfile.txt",
@@ -259,28 +258,28 @@ class TestClassHashutils:
             b"B66A5E8AA9B9705748C2EE585B0E1A3A41288D2DAFC3BE2DB12FA89D2F2A3E14F9DEC11DE4BA865BB51EAA6C2CFEB294139455E34DA7D827A19504B0906C01C1 tempfile.txt"])
         if confload["ripemd160"]:
             stocklines.extend([
-            b"RIPEMD160",
-            b"F3E191024C33768E2589E2EFCA53D55F4E4945EE tempfile.txt"])
+                b"RIPEMD160",
+                b"F3E191024C33768E2589E2EFCA53D55F4E4945EE tempfile.txt"])
         if confload["whirlpool"]:
             stocklines.extend([
                 b"WHIRLPOOL",
                 b"9835D12F3CB3EA3934635E4A7CC918E489379ED69D894EBC2C09BBF99FE72567BFD26C919AD666E170752ABFC4B8C37B376F5102F9E5DE59AF2B65EFC2E01293 tempfile.txt"])
         if confload["sha3224"]:
             stocklines.extend([
-            b"SHA3224",
-            b"93CC89107B9BD807DEAD1AE95CE8C4B0F9B8ACB2A3EEF704E2FAD109 tempfile.txt"])
+                b"SHA3224",
+                b"93CC89107B9BD807DEAD1AE95CE8C4B0F9B8ACB2A3EEF704E2FAD109 tempfile.txt"])
         if confload["sha3256"]:
             stocklines.extend([
-            b"SHA3256",
-            b"A9797B62D8B3573C9134406F42E601219E086150E6C2F32C90C5CEE0149B6877 tempfile.txt"])
+                b"SHA3256",
+                b"A9797B62D8B3573C9134406F42E601219E086150E6C2F32C90C5CEE0149B6877 tempfile.txt"])
         if confload["sha3384"]:
             stocklines.extend([
-            b"SHA3384",
-            b"1AE83352968F601E16EFF076F5967DD356EDCE4C4C5629E3939123B7507EFBAAFD1DABC1E459F8E47F7A05DF718E5927 tempfile.txt"])
+                b"SHA3384",
+                b"1AE83352968F601E16EFF076F5967DD356EDCE4C4C5629E3939123B7507EFBAAFD1DABC1E459F8E47F7A05DF718E5927 tempfile.txt"])
         if confload["sha3512"]:
             stocklines.extend([
-            b"SHA3512",
-            b"2CA12B585486D0F775F9FD438A73525B37B1214BC36A8B0AE611D0F1261E8D32B47B923B406C46CC80CC178598D41D42ABEE3EAE5B1C23164B817342E22580E2 tempfile.txt"])
+                b"SHA3512",
+                b"2CA12B585486D0F775F9FD438A73525B37B1214BC36A8B0AE611D0F1261E8D32B47B923B406C46CC80CC178598D41D42ABEE3EAE5B1C23164B817342E22580E2 tempfile.txt"])
         stocklines2 = []
         for item in stocklines:
             item2 = item.strip()

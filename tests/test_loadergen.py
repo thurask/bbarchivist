@@ -6,9 +6,9 @@ import zipfile
 from hashlib import sha512
 from shutil import copyfile, rmtree
 
+import bbarchivist.bbconstants as bc
 import bbarchivist.loadergen as bl
 import pytest
-from bbarchivist.bbconstants import FLASHBAT, FLASHSH
 
 try:
     import unittest.mock as mock
@@ -242,7 +242,7 @@ class TestClassLoadergenTcl:
         copyfile("smack.dat", os.path.join("snek", "flashall.bat"))
         copyfile("smack.dat", os.path.join("snek", "flashall.sh"))
         with zipfile.ZipFile("snek.zip", 'w', zipfile.ZIP_DEFLATED, allowZip64=True) as zfile:
-            for root, dirs, files in os.walk("snek"):
+            for root, _, files in os.walk("snek"):
                 for file in files:
                     abs_filename = os.path.join(root, file)
                     abs_arcname = abs_filename.replace("autoloader-signed{0}".format(os.sep), "")
@@ -268,7 +268,7 @@ class TestClassLoadergenTcl:
         copyfile("smack.dat", os.path.join("snek2", "flashall.bat"))
         copyfile("smack.dat", os.path.join("snek2", "flashall.sh"))
         with zipfile.ZipFile("snek2.zip", 'w', zipfile.ZIP_DEFLATED, allowZip64=True) as zfile:
-            for root, dirs, files in os.walk("snek2"):
+            for root, _, files in os.walk("snek2"):
                 for file in files:
                     abs_filename = os.path.join(root, file)
                     abs_arcname = abs_filename.replace("autoloader-signed{0}".format(os.sep), "")
@@ -281,7 +281,7 @@ class TestClassLoadergenTcl:
         """
         if not os.path.exists("batcheck"):
             os.mkdir("batcheck")
-        bl.generate_tclloader_script("batcheck", FLASHBAT.location, FLASHSH.location, False)
+        bl.generate_tclloader_script("batcheck", bc.FLASHBAT.location, bc.FLASHSH.location, False)
         assert os.path.getsize(os.path.join("batcheck", "flashall.bat")) == 2797
         assert os.path.getsize(os.path.join("batcheck", "flashall.sh")) == 2787
 
@@ -290,6 +290,7 @@ class TestClassLoadergenTcl:
         Test handling platform dependencies.
         """
         oems, radios = bl.generate_tclloader_deps("bbry_qc8953krypton")
+        del oems
         assert "dsglobal" in radios
 
     def test_tclloader_ends(self):

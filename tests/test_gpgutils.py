@@ -50,6 +50,7 @@ class GPGFileMock(object):
         """
         "Sign a file".
         """
+        del file, detach, keyid, passphrase, output
         print("MOCKED!")
 
 

@@ -3,7 +3,7 @@
 
 import os
 from hashlib import sha512
-from shutil import copyfile, rmtree
+from shutil import rmtree
 
 import bbarchivist.pseudocap as bp
 import pytest
