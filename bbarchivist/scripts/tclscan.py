@@ -4,6 +4,7 @@
 import sys  # load arguments
 
 import requests  # session
+from bbarchivist import argutils  # arguments
 from bbarchivist import decorators  # enter to exit
 from bbarchivist import jsonutils  # json
 from bbarchivist import networkutils  # lookup
@@ -59,7 +60,7 @@ def grab_args():
             dest="device",
             help="Scan only one device",
             default=None,
-            type=utilities.droidlookup_devicetype)
+            type=argutils.droidlookup_devicetype)
         parser.add_argument(
             "-x",
             "--export",

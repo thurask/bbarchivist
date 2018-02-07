@@ -4,6 +4,7 @@
 import sys  # load arguments
 
 import requests  # session
+from bbarchivist import argutils  # arguments
 from bbarchivist import decorators  # Ctrl+C wrapper
 from bbarchivist import networkutils  # lookup
 from bbarchivist import scriptutils  # default parser
@@ -53,7 +54,7 @@ def grab_args():
             dest="increment",
             help="Loop increment, default = 3",
             default=3,
-            type=utilities.positive_integer,
+            type=argutils.positive_integer,
             metavar="INT")
         parser = frozen_args(parser)
         parser.add_argument(

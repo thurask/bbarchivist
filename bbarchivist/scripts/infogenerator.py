@@ -4,6 +4,7 @@
 import os  # path operations
 import sys  # load arguments
 
+from bbarchivist import argutils  # arguments
 from bbarchivist import scriptutils  # default parser
 from bbarchivist import utilities  # input validation
 
@@ -27,7 +28,7 @@ def grab_args():
             help="Device (Android only)",
             nargs="?",
             default=None,
-            type=utilities.droidlookup_devicetype)
+            type=argutils.droidlookup_devicetype)
         parser.set_defaults()
         args = parser.parse_args(sys.argv[1:])
         execute_args(args)

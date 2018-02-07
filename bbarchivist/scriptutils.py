@@ -13,6 +13,7 @@ import sys  # getattr
 import threading  # run stuff in background
 
 import requests  # session
+from bbarchivist import argutils  # arguments
 from bbarchivist import archiveutils  # archive support
 from bbarchivist import barutils  # file system work
 from bbarchivist import bbconstants  # constants
@@ -101,7 +102,7 @@ def dpf_flags_folder(parser, flags=None):
                             help="Working folder",
                             default=None,
                             metavar="DIR",
-                            type=utilities.file_exists)
+                            type=argutils.file_exists)
     return parser
 
 

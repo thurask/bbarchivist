@@ -4,6 +4,7 @@
 import sys  # load arguments
 
 import requests  # session
+from bbarchivist import argutils  # arguments
 from bbarchivist import decorators  # Ctrl+C wrapping
 from bbarchivist import jsonutils  # json
 from bbarchivist import networkutils  # lookup
@@ -40,7 +41,7 @@ def grab_args():
             dest="device",
             help="Device to check",
             nargs="?",
-            type=utilities.droidlookup_devicetype,
+            type=argutils.droidlookup_devicetype,
             default=None)
         parser.add_argument(
             "-c",
@@ -57,7 +58,7 @@ def grab_args():
             "--type",
             help="Check SHA256/512 hashes instead",
             default=None,
-            type=utilities.droidlookup_hashtype)
+            type=argutils.droidlookup_hashtype)
         parser.add_argument(
             "-s",
             "--single",

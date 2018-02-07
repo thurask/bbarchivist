@@ -5,11 +5,11 @@ import shutil  # directory work
 import sys  # load arguments
 
 from bbarchivist import archiveutils  # zip work
+from bbarchivist import argutils  # arguments
 from bbarchivist import decorators  # enter to exit
 from bbarchivist import loadergen  # packing loader
 from bbarchivist import networkutils  # download android tools
 from bbarchivist import scriptutils  # default parser
-from bbarchivist import utilities  # argument filters
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -26,7 +26,7 @@ def grab_args():
     parser.add_argument(
         "loaderfile",
         help="Loader zip file or directory",
-        type=utilities.file_exists)
+        type=argutils.file_exists)
     parser.add_argument(
         "-n",
         "--name",

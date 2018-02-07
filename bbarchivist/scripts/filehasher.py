@@ -4,6 +4,7 @@
 import os  # path operations
 import sys  # load arguments
 
+from bbarchivist import argutils  # arguments
 from bbarchivist import hashutils  # main program
 from bbarchivist import scriptutils  # default parser
 from bbarchivist import utilities  # input validation
@@ -28,7 +29,7 @@ def filehasher_main():
             help="Working directory, default is local",
             nargs="?",
             default=None,
-            type=utilities.file_exists)
+            type=argutils.file_exists)
         parser.add_argument(
             "-s",
             "--selective",

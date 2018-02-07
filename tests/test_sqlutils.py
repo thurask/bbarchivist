@@ -8,7 +8,7 @@ from shutil import rmtree
 
 import bbarchivist.sqlutils as bs
 import pytest
-from bbarchivist.utilities import file_exists
+from bbarchivist.argutils import file_exists
 
 try:
     import unittest.mock as mock

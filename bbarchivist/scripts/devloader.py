@@ -4,6 +4,7 @@
 import sys  # load arguments
 
 import requests  # session
+from bbarchivist import argutils  # arguments
 from bbarchivist import decorators  # wrap Ctrl+C
 from bbarchivist import jsonutils  # json
 from bbarchivist import networkutils  # check function
@@ -44,7 +45,7 @@ def grab_args():
             dest="increment",
             help="Loop increment, default = 3",
             default=3,
-            type=utilities.positive_integer,
+            type=argutils.positive_integer,
             metavar="INT")
         parser.add_argument(
             "-c", "--ceiling",

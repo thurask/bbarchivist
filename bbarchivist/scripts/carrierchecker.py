@@ -6,6 +6,7 @@ import sys  # load arguments
 import webbrowser  # code list
 
 import requests  # session
+from bbarchivist import argutils  # arguments
 from bbarchivist import bbconstants  # versions/constants
 from bbarchivist import decorators  # enter to exit
 from bbarchivist import jsonutils  # json
@@ -29,13 +30,13 @@ def grab_args():
         parser.add_argument(
             "mcc",
             help="1-3 digit country code",
-            type=utilities.valid_carrier,
+            type=argutils.valid_carrier,
             nargs="?",
             default=None)
         parser.add_argument(
             "mnc",
             help="1-3 digit carrier code",
-            type=utilities.valid_carrier,
+            type=argutils.valid_carrier,
             nargs="?",
             default=None)
         parser.add_argument(
@@ -173,7 +174,7 @@ def questionnaire_3digit(message):
         except ValueError:
             continue
         else:
-            if trip == utilities.valid_carrier(trip):
+            if trip == argutils.valid_carrier(trip):
                 return trip
 
 

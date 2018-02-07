@@ -71,6 +71,9 @@
     <Content Include="run_cov_tests_nogpg.bat" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="bbarchivist\argutils.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="bbarchivist\barutils.py">
       <SubType>Code</SubType>
     </Compile>
@@ -213,6 +216,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="tests\test_archiveutils.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="tests\test_argutils.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="tests\test_barutils.py">

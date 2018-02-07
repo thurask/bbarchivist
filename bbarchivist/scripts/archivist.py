@@ -5,6 +5,7 @@ import os  # filesystem read
 import sys  # load arguments
 
 import requests  # session
+from bbarchivist import argutils  # arguments
 from bbarchivist import archiveutils  # archive work
 from bbarchivist import barutils  # file/folder work
 from bbarchivist import decorators  # timer
@@ -113,7 +114,7 @@ def grab_args():
                 metavar="METHOD",
                 help="Compression method",
                 nargs="?",
-                type=utilities.valid_method,
+                type=argutils.valid_method,
                 default=None)
         parser.add_argument(
             "-c",

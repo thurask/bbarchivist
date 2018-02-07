@@ -4,6 +4,7 @@
 import os  # path operations
 import sys  # load arguments
 
+from bbarchivist import argutils  # arguments
 from bbarchivist import archiveutils  # main program
 from bbarchivist import scriptutils  # default parser
 from bbarchivist import utilities  # bool parsing
@@ -27,7 +28,7 @@ def kompressor_main():
         nargs="?",
         default=None,
         dest="method",
-        type=utilities.valid_method)
+        type=argutils.valid_method)
     parser.add_argument(
         "-nv",
         "--no-verify",

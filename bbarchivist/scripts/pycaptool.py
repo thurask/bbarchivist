@@ -4,6 +4,7 @@
 import os  # local dir
 import sys  # load arguments
 
+from bbarchivist import argutils  # arguments
 from bbarchivist import pseudocap  # actually making the loader
 from bbarchivist import scriptutils  # default parser
 from bbarchivist import utilities  # path checking
@@ -27,7 +28,7 @@ def pycaptool_main():
     args.folder = utilities.dirhandler(args.folder, os.getcwd())
     if not args.filename.endswith(".exe"):
         args.filename += ".exe"
-    args.files = utilities.signed_file_args(args.files)
+    args.files = argutils.signed_file_args(args.files)
     pseudocap.make_autoloader(args.filename, args.files, args.folder)
 
 
