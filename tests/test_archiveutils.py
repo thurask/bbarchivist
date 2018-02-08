@@ -7,6 +7,7 @@ import zipfile
 from shutil import copyfile, rmtree
 
 import bbarchivist.archiveutils as ba
+import bbarchivist.sevenziputils as bs
 from bbarchivist.utilities import get_seven_zip, new_enough, prep_seven_zip
 
 try:
@@ -80,7 +81,7 @@ class TestClassArchiveutilsCompression:
         if exists:
             szexe = get_seven_zip(False)
             ba.compress(os.getcwd(), method="7z", szexe=szexe)
-            result = ba.sz_verify("Z10_BIGLOADER.7z", szexe)
+            result = bs.sz_verify("Z10_BIGLOADER.7z", szexe)
             if os.path.exists("Z10_BIGLOADER.7z"):
                 os.remove("Z10_BIGLOADER.7z")
             assert result
@@ -95,7 +96,7 @@ class TestClassArchiveutilsCompression:
         if exists:
             szexe = get_seven_zip(False)
             with mock.patch("subprocess.call", mock.MagicMock(return_value=2)):
-                ba.sz_compress(os.getcwd(), "7z", szexe=szexe, errors=True)
+                bs.sz_compress(os.getcwd(), "7z", szexe=szexe, errors=True)
                 assert "FATAL ERROR" in capsys.readouterr()[0]
         else:
             pass
@@ -108,7 +109,7 @@ class TestClassArchiveutilsCompression:
         if exists:
             szexe = get_seven_zip(False)
             ba.pack_tclloader("loader_folder", "snek")
-            result = ba.sz_verify("snek.7z", szexe)
+            result = bs.sz_verify("snek.7z", szexe)
             if os.path.exists("snek.7z"):
                 os.remove("snek.7z")
             assert result
@@ -371,7 +372,7 @@ class TestClassArchiveutilsVerifier:
                 szexe = get_seven_zip(False)
                 if not os.path.exists("Q10.7z"):
                     ba.compress(verdir, "7z", szexe, True)
-                assert ba.sz_verify(filepath, szexe)
+                assert bs.sz_verify(filepath, szexe)
 
     def test_verify_sz_fail(self):
         """
@@ -385,7 +386,7 @@ class TestClassArchiveutilsVerifier:
                 pass
             else:
                 szexe = get_seven_zip(False)
-                assert not ba.sz_verify(filepath, szexe)
+                assert not bs.sz_verify(filepath, szexe)
 
     def test_verify_zip(self):
         """
@@ -506,7 +507,7 @@ class TestClassArchiveutilsVerifier:
         """
         Test checking 7-Zip verification.
         """
-        with mock.patch('bbarchivist.archiveutils.sz_verify', mock.MagicMock(return_value=True)):
+        with mock.patch('bbarchivist.sevenziputils.sz_verify', mock.MagicMock(return_value=True)):
             assert ba.decide_verifier("snek.7z", "7z.exe")
 
 

@@ -200,6 +200,9 @@
     <Compile Include="bbarchivist\scripts\__init__.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="bbarchivist\sevenziputils.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="bbarchivist\smtputils.py">
       <SubType>Code</SubType>
     </Compile>

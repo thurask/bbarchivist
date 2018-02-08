@@ -2,7 +2,6 @@
 """This module is used to operate with archives."""
 
 import os  # filesystem read
-import subprocess  # invocation of 7z, cap
 import tarfile  # txz/tbz/tgz/tar compression
 import zipfile  # zip compresssion
 
@@ -10,6 +9,7 @@ from bbarchivist import barutils  # zip tester
 from bbarchivist import bbconstants  # premade stuff
 from bbarchivist import decorators  # timer
 from bbarchivist import iniconfig  # config parsing
+from bbarchivist import sevenziputils  # 7z
 from bbarchivist import utilities  # platform determination
 
 __author__ = "Thurask"
@@ -30,80 +30,6 @@ def smart_is_tarfile(filepath):
         return False
     else:
         return istar
-
-
-def szcodes():
-    """
-    Return dictionary of 7-Zip error codes.
-    """
-    szc = {
-        0: "NO ERRORS",
-        1: "COMPLETED WITH WARNINGS",
-        2: "FATAL ERROR",
-        7: "COMMAND LINE ERROR",
-        8: "OUT OF MEMORY ERROR",
-        255: "USER STOPPED PROCESS"
-    }
-    return szc
-
-
-@decorators.timer
-def sz_compress(filepath, filename, szexe=None, strength=5, errors=False):
-    """
-    Pack a file into a LZMA2 7z file.
-
-    :param filepath: Basename of file, no extension.
-    :type filepath: str
-
-    :param filename: Name of file to pack.
-    :type filename: str
-
-    :param szexe: Path to 7z executable.
-    :type szexe: str
-
-    :param strength: Compression strength. 5 is normal, 9 is ultra.
-    :type strength: int
-
-    :param errors: Print completion status message. Default is false.
-    :type errors: bool
-    """
-    strength = str(strength)
-    szc = szcodes()
-    rawname = os.path.dirname(filepath)
-    thr = str(utilities.get_core_count())
-    fold = os.path.join(rawname, filename)
-    cmd = '{0} a -mx{1} -m0=lzma2 -mmt{2} "{3}.7z" "{4}"'.format(szexe, strength, thr, filepath, fold)
-    excode = sz_subprocess(cmd)
-    if errors:
-        print(szc[excode])
-
-
-def sz_subprocess(cmd):
-    """
-    Subprocess wrapper for 7-Zip commands.
-
-    :param cmd: Command to pass to subprocess.
-    :type cmd: str
-    """
-    with open(os.devnull, 'wb') as dnull:
-        output = subprocess.call(cmd, stdout=dnull, stderr=subprocess.STDOUT, shell=True)
-    return output
-
-
-def sz_verify(filepath, szexe=None):
-    """
-    Verify that a .7z file is valid and working.
-
-    :param filepath: Filename.
-    :type filepath: str
-
-    :param szexe: Path to 7z executable.
-    :type szexe: str
-    """
-    filepath = os.path.abspath(filepath)
-    cmd = '{0} t "{1}"'.format(szexe, filepath)
-    excode = sz_subprocess(cmd)
-    return excode == 0
 
 
 def generic_tarfile_verify(filepath, method):
@@ -477,8 +403,8 @@ def prep_compress_function(method="7z", szexe=None, errors=False):
     :param errors: Print completion status message. Default is false.
     :type errors: bool
     """
-    methods = {"7z": sz_compress, "tgz": tgz_compress, "txz": txz_compress, "tbz": tbz_compress,
-               "tar": tar_compress, "zip": zip_compress}
+    methods = {"7z": sevenziputils.sz_compress, "tgz": tgz_compress, "txz": txz_compress,
+               "tbz": tbz_compress, "tar": tar_compress, "zip": zip_compress}
     args = [szexe] if method == "7z" else []
     if method in ("7z", "tbz", "tgz"):
         args.append(calculate_strength())
@@ -545,7 +471,7 @@ def decide_verifier(file, szexe=None):
     """
     print("VERIFYING: {0}".format(file))
     if file.endswith(".7z") and szexe is not None:
-        verif = sz_verify(os.path.abspath(file), szexe)
+        verif = sevenziputils.sz_verify(os.path.abspath(file), szexe)
     else:
         verif = tarzip_verifier(file)
     decide_verifier_printer(file, verif)
@@ -672,26 +598,10 @@ def pack_tclloader(dirname, filename):
     :type filename: str
     """
     if utilities.prep_seven_zip():
-        pack_tclloader_sz(dirname, filename)
+        strength = calculate_strength()
+        sevenziputils.pack_tclloader_sz(dirname, filename, strength)
     else:
         pack_tclloader_zip(dirname, filename)
-
-
-def pack_tclloader_sz(dirname, filename):
-    """
-    Compress Android autoloader folder into a 7z file.
-
-    :param dirname: Target folder.
-    :type dirname: str
-
-    :param filename: File title, without extension.
-    :type filename: str
-    """
-    szexe = utilities.get_seven_zip()
-    strength = calculate_strength()
-    thr = str(utilities.get_core_count())
-    cmd = '{0} a -mx{1} -m0=lzma2 -mmt{2} "{3}.7z" "./{4}/*"'.format(szexe, strength, thr, filename, dirname)
-    sz_subprocess(cmd)
 
 
 def pack_tclloader_zip(dirname, filename):
