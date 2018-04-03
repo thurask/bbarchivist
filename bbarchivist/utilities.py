@@ -474,7 +474,7 @@ def filter_urls(osurls, radiourls, osversion):
     splitos = [int(i) for i in osversion.split(".")]
     osurls[2] = filter_1031(osurls[2], splitos, 5)  # Z3 10.3.1+
     osurls[3] = filter_1031(osurls[3], splitos, 6)  # Passport 10.3.1+
-    osurls[0], radiourls[0] = pop_stl1(osurls[0], radiourls[0], splitos)  # STL100-1 10.3.3+
+    osurls, radiourls = pop_stl1(osurls, radiourls, splitos)  # STL100-1 10.3.3+
     return osurls, radiourls
 
 
@@ -497,23 +497,23 @@ def filter_1031(osurl, splitos, device):
     return osurl
 
 
-def pop_stl1(osurl, radiourl, splitos):
+def pop_stl1(osurls, radiourls, splitos):
     """
     Replace STL100-1 links in 10.3.3+.
 
-    :param osurl: OS URL to modify.
-    :type osurl: str
+    :param oslist: List of OS platforms.
+    :type oslist: list(str)
 
-    :param radiourl: Radio URL to modify.
-    :type radiourl: str
+    :param radlist: List of radio platforms.
+    :type radlist: list(str)
 
     :param splitos: OS version, split and cast to int: [10, 3, 3, 2205]
     :type splitos: list(int)
     """
     if newer_103(splitos, 3):
-        osurl = osurl.replace("winchester", "qc8960")  # duplicates get filtered out later
-        radiourl = radiourl.replace("m5730", "qc8960")
-    return osurl, radiourl
+        osurls = osurls[1:]
+        radiourls = radiourls[1:]
+    return osurls, radiourls
 
 
 def filter_osversion(osurl, device, filterdict):

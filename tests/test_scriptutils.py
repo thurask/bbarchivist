@@ -171,7 +171,7 @@ class TestClassScriptutils:
         time.sleep(2)  # wait for file creation
         with open("TEMPFILE.txt", "r") as afile:
             data = afile.read()
-        assert len(data) == 2485
+        assert len(data) == 2518
         if os.path.exists("TEMPFILE.txt"):
             os.remove("TEMPFILE.txt")
 
@@ -185,7 +185,7 @@ class TestClassScriptutils:
         time.sleep(2)  # wait for file creation
         with open("TEMPFILE.txt", "r") as afile:
             data = afile.read()
-        assert len(data) == 2421
+        assert len(data) == 2454
         if os.path.exists("TEMPFILE.txt"):
             os.remove("TEMPFILE.txt")
 

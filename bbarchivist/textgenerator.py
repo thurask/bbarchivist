@@ -288,7 +288,7 @@ def url_gen_filter(osversion, oslist, radlist):
     :param osversion: OS version.
     :type osversion: str
 
-    :param radlist: List of OS platforms.
+    :param oslist: List of OS platforms.
     :type oslist: list(str)
 
     :param radlist: List of radio platforms.
@@ -332,8 +332,9 @@ def url_gen(osversion, radioversion, softwareversion):
     oslist = ["STL100-1", "QC8960", "VERIZON QC8960", "Z3", "PASSPORT"]
     oses, radios, cores = generate_urls(softwareversion, osversion, radioversion, True)
     vzw = create_bar_url(softwareversion, "qc8960.verizon_sfi.desktop", osversion)
-    oses.insert(2, vzw)
-    cores.insert(2, oses[2].replace(".desktop", ""))
+    vzwpoint = 2 if "winchester" in oses[0] else 1
+    oses.insert(vzwpoint, vzw)
+    cores.insert(vzwpoint, oses[vzwpoint].replace(".desktop", ""))
     oslist, radlist = url_gen_filter(osversion, oslist, radlist)
     ospairs = url_gen_dicter(oslist, oses)
     corepairs = url_gen_dicter(oslist, cores)
