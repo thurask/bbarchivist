@@ -102,7 +102,7 @@ def get_sevenzip():
     """
     Get 7-Zip.
     """
-    szver = "1801"
+    szver = "1805"
     szurl = "http://www.7-zip.org/a/7z{0}-extra.7z".format(szver)
     psz = prep_seven_zip()
     if psz:
