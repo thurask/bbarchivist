@@ -30,6 +30,8 @@
     <Content Include=".scrutinizer.yml" />
     <Content Include=".travis.yml" />
     <Content Include="appveyor.yml" />
+    <Content Include="bbarchivist\datfiles\flashall.bat-4.dat" />
+    <Content Include="bbarchivist\datfiles\flashall.sh-4.dat" />
     <Content Include="bbarchivist\json\appstoremove.json">
       <SubType>Code</SubType>
     </Content>
@@ -38,8 +40,6 @@
     </Content>
     <Content Include="bbarchivist\datfiles\cap-3.11.0.27.dat" />
     <Content Include="bbarchivist\datfiles\cfp-3.10.0.57.dat" />
-    <Content Include="bbarchivist\datfiles\flashall.bat-1.dat" />
-    <Content Include="bbarchivist\datfiles\flashall.sh-1.dat" />
     <Content Include="bbarchivist\json\devskeletons.json">
       <SubType>Code</SubType>
     </Content>
