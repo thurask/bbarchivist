@@ -335,7 +335,7 @@ class TestClassScriptutilsTCL:
         Test checking for a file header.
         """
         with mock.patch("bbarchivist.networkutils.encrypt_header", mock.MagicMock(return_value="\nHEADER FOUND")):
-            bs.tcl_prd_print("https://snek.snek/update.zip", "update.zip", 200, "127.0.0.1", Session())
+            bs.tcl_prd_print("televisionversion", "https://snek.snek/update.zip", "update.zip", 200, "127.0.0.1", Session())
             assert "HEADER FOUND" in capsys.readouterr()[0]
 
     def test_tcl_deltaname(self):

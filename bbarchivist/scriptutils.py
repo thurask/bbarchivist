@@ -717,7 +717,7 @@ def tcl_prd_scan(curef, download=False, mode=4, fvver="AAA000", original=True, e
     downloadurl, encslave = xmlutils.parse_tcl_download_request(updatetext)
     statcode = networkutils.getcode(downloadurl, sess)
     filename = tcl_delta_filename(curef, fvver, tvver, filename, original)
-    tcl_prd_print(downloadurl, filename, statcode, encslave, sess)
+    tcl_prd_print(tvver, downloadurl, filename, statcode, encslave, sess)
     if statcode == 200 and download:
         tcl_download(downloadurl, filename, filesize, filehash, verify)
 
@@ -747,7 +747,7 @@ def tcl_delta_filename(curef, fvver, tvver, filename, original=True):
     return filename
 
 
-def tcl_prd_print(downloadurl, filename, statcode, encslave, session):
+def tcl_prd_print(tvver, downloadurl, filename, statcode, encslave, session):
     """
     Print output from PRD scanning.
 
@@ -766,6 +766,7 @@ def tcl_prd_print(downloadurl, filename, statcode, encslave, session):
     :param session: Session object.
     :type session: requests.Session
     """
+    print("OS: {0}".format(tvver))
     print("{0}: HTTP {1}".format(filename, statcode))
     print(downloadurl)
     if encslave is not None:
@@ -909,7 +910,7 @@ def tcl_findprd_checkfilter(prddict, tocheck=None):
     return prddict2
 
 
-def tcl_findprd_centerscan(center, prddict, session, floor=0, ceiling=999, export=False):
+def tcl_findprd_centerscan(center, prddict, session, floor=0, ceiling=999, export=False, noprefix=False):
     """
     Individual scanning for the center of a PRD.
 
@@ -930,14 +931,17 @@ def tcl_findprd_centerscan(center, prddict, session, floor=0, ceiling=999, expor
 
     :param export: Whether to export XML response to file. Default is False.
     :type export: bool
+
+    :param noprefix: Whether to skip adding "PRD-" prefix. Default is False.
+    :type noprefix: bool
     """
     tails = [int(i) for i in prddict[center]]
     safes = [g for g in range(floor, ceiling) if g not in tails]
     print("SCANNING ROOT: {0}{1}".format(center, " "*8))
-    tcl_findprd_safescan(safes, center, session, export)
+    tcl_findprd_safescan(safes, center, session, export, noprefix)
 
 
-def tcl_findprd_safescan(safes, center, session, export=False):
+def tcl_findprd_safescan(safes, center, session, export=False, noprefix=False):
     """
     Scan for PRDs known not to be in database.
 
@@ -952,9 +956,13 @@ def tcl_findprd_safescan(safes, center, session, export=False):
 
     :param export: Whether to export XML response to file. Default is False.
     :type export: bool
+
+    :param noprefix: Whether to skip adding "PRD-" prefix. Default is False.
+    :type noprefix: bool
     """
     for j in safes:
-        curef = "PRD-{}-{:03}".format(center, j)
+        prefix = "" if noprefix else "PRD-"
+        curef = "{2}{0}-{1:03}".format(center, j, prefix)
         print("NOW SCANNING: {0}".format(curef), end="\r")
         checktext = networkutils.tcl_check(curef, session, export)
         if checktext is None:
@@ -979,7 +987,7 @@ def tcl_findprd_safehandle(curef, checktext):
     tcl_mainscan_printer(curef, tvver2)
 
 
-def tcl_findprd(prddict, floor=0, ceiling=999, export=False):
+def tcl_findprd(prddict, floor=0, ceiling=999, export=False, noprefix=False):
     """
     Check for new PRDs based on PRD database.
 
@@ -994,10 +1002,13 @@ def tcl_findprd(prddict, floor=0, ceiling=999, export=False):
 
     :param export: Whether to export XML response to file. Default is False.
     :type export: bool
+
+    :param noprefix: Whether to skip adding "PRD-" prefix. Default is False.
+    :type noprefix: bool
     """
     sess = requests.Session()
     for center in sorted(prddict.keys()):
-        tcl_findprd_centerscan(center, prddict, sess, floor, ceiling, export)
+        tcl_findprd_centerscan(center, prddict, sess, floor, ceiling, export, noprefix)
 
 
 def linkgen_sdk_dicter(indict, origtext, newtext):

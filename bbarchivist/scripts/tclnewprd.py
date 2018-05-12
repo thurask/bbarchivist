@@ -54,6 +54,13 @@ def grab_args():
             help="Write XML to logs folder",
             action="store_true",
             default=False)
+        parser.add_argument(
+            "-np",
+            "--no-prefix",
+            dest="noprefix",
+            help="Don't add PRD- prefix",
+            action="store_true",
+            default=False)
         args = parser.parse_args(sys.argv[1:])
         parser.set_defaults()
         execute_args(args)
@@ -96,10 +103,10 @@ def execute_args(args):
         print("INVALID RANGE!")
         raise SystemExit
     args.ceiling += 1  # because range() is a half-open interval
-    tclnewprd_main(args.prds, args.floor, args.ceiling, args.export)
+    tclnewprd_main(args.prds, args.floor, args.ceiling, args.export, args.noprefix)
 
 
-def tclnewprd_main(prds=None, floor=1, ceiling=60, export=False):
+def tclnewprd_main(prds=None, floor=1, ceiling=60, export=False, noprefix=False):
     """
     Scan every PRD and produce latest versions.
 
@@ -114,12 +121,15 @@ def tclnewprd_main(prds=None, floor=1, ceiling=60, export=False):
 
     :param export: Whether to export XML response to file. Default is False.
     :type export: bool
+
+    :param noprefix: Whether to skip adding "PRD-" prefix. Default is False.
+    :type noprefix: bool
     """
     argutils.slim_preamble("TCLNEWPRD")
     prdbase = jsonutils.load_json("prds")
     prddict = scriptutils.tcl_findprd_prepdict(prdbase)
     prddict = scriptutils.tcl_findprd_checkfilter(prddict, prds)
-    scriptutils.tcl_findprd(prddict, floor, ceiling, export)
+    scriptutils.tcl_findprd(prddict, floor, ceiling, export, noprefix)
 
 
 if __name__ == "__main__":
