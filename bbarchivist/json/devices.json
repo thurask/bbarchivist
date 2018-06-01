@@ -668,11 +668,123 @@
       "ptcrbid": ""
     },
     {
-      "device": "UNKNOWN",
-      "family": "UNRELEASED",
+      "device": "KEY2",
+      "family": "KEY2",
       "name": "BBF100-1",
       "hwid": "",
       "fccid": "BBF100-1",
+      "ptcrbid": ""
+    },
+    {
+      "device": "KEY2",
+      "family": "KEY2",
+      "name": "BBF100-2",
+      "hwid": "",
+      "fccid": "BBF100-2",
+      "ptcrbid": "36774"
+    },
+    {
+      "device": "KEY2",
+      "family": "KEY2",
+      "name": "BBF100-3",
+      "hwid": "",
+      "fccid": "BBF100-3",
+      "ptcrbid": ""
+    },
+    {
+      "device": "KEY2",
+      "family": "KEY2",
+      "name": "BBF100-4",
+      "hwid": "",
+      "fccid": "BBF100-4",
+      "ptcrbid": ""
+    },
+    {
+      "device": "KEY2",
+      "family": "KEY2",
+      "name": "BBF100-15",
+      "hwid": "",
+      "fccid": "BBF100-5",
+      "ptcrbid": ""
+    },
+    {
+      "device": "KEY2",
+      "family": "KEY2",
+      "name": "BBF100-6",
+      "hwid": "",
+      "fccid": "BBF100-6",
+      "ptcrbid": ""
+    },
+    {
+      "device": "KEY2",
+      "family": "KEY2",
+      "name": "BBF100-8",
+      "hwid": "",
+      "fccid": "BBF100-8",
+      "ptcrbid": ""
+    },
+    {
+      "device": "KEY2",
+      "family": "KEY2",
+      "name": "BBF100-9",
+      "hwid": "",
+      "fccid": "BBF100-9",
+      "ptcrbid": ""
+    },
+    {
+      "device": "UNKNOWN",
+      "family": "UNRELEASED",
+      "name": "BBE100-1",
+      "hwid": "",
+      "fccid": "BBE100-1",
+      "ptcrbid": ""
+    },
+    {
+      "device": "UNKNOWN",
+      "family": "UNRELEASED",
+      "name": "BBE100-2",
+      "hwid": "",
+      "fccid": "BBE100-2",
+      "ptcrbid": ""
+    },
+    {
+      "device": "UNKNOWN",
+      "family": "UNRELEASED",
+      "name": "BBE100-3",
+      "hwid": "",
+      "fccid": "BBE100-3",
+      "ptcrbid": ""
+    },
+    {
+      "device": "UNKNOWN",
+      "family": "UNRELEASED",
+      "name": "BBE100-4",
+      "hwid": "",
+      "fccid": "BBE100-4",
+      "ptcrbid": ""
+    },
+    {
+      "device": "UNKNOWN",
+      "family": "UNRELEASED",
+      "name": "BBE100-5",
+      "hwid": "",
+      "fccid": "BBE100-5",
+      "ptcrbid": ""
+    },
+    {
+      "device": "UNKNOWN",
+      "family": "UNRELEASED",
+      "name": "BBG100-1",
+      "hwid": "",
+      "fccid": "BBG100-1",
+      "ptcrbid": ""
+    },
+    {
+      "device": "UNKNOWN",
+      "family": "UNRELEASED",
+      "name": "BBH100-1",
+      "hwid": "",
+      "fccid": "BBH100-1",
       "ptcrbid": ""
     },
     {

@@ -730,12 +730,15 @@ def generate_tclloader_deps(platform):
     elif platform == "bbry_qc8953krypton":  # Motion
         oems = ["oem_att", "oem_common", "oem_sprint", "oem_russia"]
         radios = ["americas", "cdma", "dscn", "dsglobal", "ssglobal"]
+    elif platform == "bbry_sdm660":  # KEY2
+        oems = ["oem_att", "oem_china", "oem_common", "oem_india", "oem_indonesia", "oem_sprint", "oem_russia"]
+        radios = ["americas", "cn", "dsglobal", "dsjapan", "global", "japan"]
     return oems, radios
 
 
 def generate_tclloader_looseends(imgout, platform):
     """
-    Rename files that need to be renamed.
+    Handle files that need to be handled.
 
     :param imgout: Directory that files are to be copied to.
     :type imgout: str
@@ -746,12 +749,27 @@ def generate_tclloader_looseends(imgout, platform):
     if platform == "bbry_qc8953":  # KEYone
         pass  # no special exceptions
     elif platform == "bbry_qc8953krypton":  # Motion
-        oldglobal = os.path.join(imgout, "NON-HLOS-ssglobal.bin")
-        newglobal = os.path.join(imgout, "NON-HLOS-global.bin")
-        os.rename(oldglobal, newglobal)  # SS intl model has different name than modem
-        oldamericas = os.path.join(imgout, "NON-HLOS-americas.bin")
-        newamericas = os.path.join(imgout, "NON-HLOS-dsamericas.bin")
-        shutil.copy(oldamericas, newamericas)  # DS/SS americas model use same modem
+        looseends_krypton(imgout, platform)
+    elif platform == "bbry_sdm660":  # KEY2
+        pass  # TODO: KEY2 autoloader
+
+
+def looseends_krypton(imgout, platform):
+    """
+    Handle files that need to be handled, for the Motion platform.
+
+    :param imgout: Directory that files are to be copied to.
+    :type imgout: str
+
+    :param platform: Platform type (i.e. subdirectory of target/product).
+    :type platform: str
+    """
+    oldglobal = os.path.join(imgout, "NON-HLOS-ssglobal.bin")
+    newglobal = os.path.join(imgout, "NON-HLOS-global.bin")
+    os.rename(oldglobal, newglobal)  # SS intl model has different name than modem
+    oldamericas = os.path.join(imgout, "NON-HLOS-americas.bin")
+    newamericas = os.path.join(imgout, "NON-HLOS-dsamericas.bin")
+    shutil.copy(oldamericas, newamericas)  # DS/SS americas model use same modem
 
 
 def generate_tclloader_img(imgin, imgout, platform):

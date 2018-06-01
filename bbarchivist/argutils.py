@@ -148,7 +148,7 @@ def droidlookup_devicetype(device):
     :param device: Android autoloader types to check.
     :type device: str
     """
-    devices = ("Priv", "DTEK50", "DTEK60", "KEYone", "Aurora", "Motion")
+    devices = ("Priv", "DTEK50", "DTEK60", "KEYone", "Aurora", "Motion", "KEY2")
     if device is None:
         return None
     else:

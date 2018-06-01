@@ -290,8 +290,10 @@ class TestClassLoadergenTcl:
         Test handling platform dependencies.
         """
         oems, radios = bl.generate_tclloader_deps("bbry_qc8953krypton")
-        del oems
+        oems2, radios2 = bl.generate_tclloader_deps("bbry_sdm660")
+        del oems, oems2
         assert "dsglobal" in radios
+        assert "dsjapan" in radios2
 
     def test_tclloader_ends(self):
         """
@@ -302,4 +304,5 @@ class TestClassLoadergenTcl:
         copyfile("smack.dat", os.path.join("krypton", "NON-HLOS-ssglobal.bin"))
         copyfile("smack.dat", os.path.join("krypton", "NON-HLOS-americas.bin"))
         bl.generate_tclloader_looseends("krypton", "bbry_qc8953krypton")
+        bl.generate_tclloader_looseends("krypton", "bbry_sdm660")
         assert sorted(os.listdir("krypton")) == ["NON-HLOS-americas.bin", "NON-HLOS-dsamericas.bin", "NON-HLOS-global.bin"]

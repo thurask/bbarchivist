@@ -751,6 +751,9 @@ def tcl_prd_print(tvver, downloadurl, filename, statcode, encslave, session):
     """
     Print output from PRD scanning.
 
+    :param tvver: Target software version.
+    :type tvver: str
+
     :param downloadurl: File to download.
     :type downloadurl: str
 

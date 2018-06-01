@@ -501,11 +501,11 @@ def pop_stl1(osurls, radiourls, splitos):
     """
     Replace STL100-1 links in 10.3.3+.
 
-    :param oslist: List of OS platforms.
-    :type oslist: list(str)
+    :param osurls: List of OS platforms.
+    :type osurls: list(str)
 
-    :param radlist: List of radio platforms.
-    :type radlist: list(str)
+    :param radiourls: List of radio platforms.
+    :type radiourls: list(str)
 
     :param splitos: OS version, split and cast to int: [10, 3, 3, 2205]
     :type splitos: list(int)
