@@ -282,8 +282,8 @@ class TestClassLoadergenTcl:
         if not os.path.exists("batcheck"):
             os.mkdir("batcheck")
         bl.generate_tclloader_script("batcheck", bc.FLASHBAT.location, bc.FLASHSH.location, False)
-        assert os.path.getsize(os.path.join("batcheck", "flashall.bat")) == 2797
-        assert os.path.getsize(os.path.join("batcheck", "flashall.sh")) == 2787
+        assert os.path.getsize(os.path.join("batcheck", "flashall.bat")) == 2846
+        assert os.path.getsize(os.path.join("batcheck", "flashall.sh")) == 2856
 
     def test_tclloader_deps(self):
         """
