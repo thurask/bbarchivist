@@ -115,10 +115,26 @@ bbarchivist.loadergen module
     :undoc-members:
     :show-inheritance:
 
+bbarchivist.loadergentcl module
+-------------------------------
+
+.. automodule:: bbarchivist.loadergentcl
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 bbarchivist.networkutils module
 -------------------------------
 
 .. automodule:: bbarchivist.networkutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+bbarchivist.networkutilstcl module
+----------------------------------
+
+.. automodule:: bbarchivist.networkutilstcl
     :members:
     :undoc-members:
     :show-inheritance:
@@ -135,6 +151,14 @@ bbarchivist.scriptutils module
 ------------------------------
 
 .. automodule:: bbarchivist.scriptutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+bbarchivist.scriptutilstcl module
+---------------------------------
+
+.. automodule:: bbarchivist.scriptutilstcl
     :members:
     :undoc-members:
     :show-inheritance:
@@ -173,6 +197,14 @@ bbarchivist.utilities module
 
 bbarchivist.xmlutils module
 ---------------------------
+
+.. automodule:: bbarchivist.xmlutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+bbarchivist.xmlutilstcl module
+------------------------------
 
 .. automodule:: bbarchivist.xmlutils
     :members:
