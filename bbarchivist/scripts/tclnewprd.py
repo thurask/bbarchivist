@@ -61,6 +61,13 @@ def grab_args():
             help="Don't add PRD- prefix",
             action="store_true",
             default=False)
+        parser.add_argument(
+            "-k",
+            "--key2",
+            dest="key2mode",
+            help="Use KEY2 syntax",
+            action="store_true",
+            default=False)
         args = parser.parse_args(sys.argv[1:])
         parser.set_defaults()
         execute_args(args)
@@ -103,10 +110,10 @@ def execute_args(args):
         print("INVALID RANGE!")
         raise SystemExit
     args.ceiling += 1  # because range() is a half-open interval
-    tclnewprd_main(args.prds, args.floor, args.ceiling, args.export, args.noprefix)
+    tclnewprd_main(args.prds, args.floor, args.ceiling, args.export, args.noprefix, args.key2mode)
 
 
-def tclnewprd_main(prds=None, floor=1, ceiling=60, export=False, noprefix=False):
+def tclnewprd_main(prds=None, floor=1, ceiling=60, export=False, noprefix=False, key2mode=False):
     """
     Scan every PRD and produce latest versions.
 
@@ -124,12 +131,15 @@ def tclnewprd_main(prds=None, floor=1, ceiling=60, export=False, noprefix=False)
 
     :param noprefix: Whether to skip adding "PRD-" prefix. Default is False.
     :type noprefix: bool
+
+    :param key2mode: Whether to use new-style prefix. Default is False.
+    :type key2mode: bool
     """
     argutils.slim_preamble("TCLNEWPRD")
     prdbase = jsonutils.load_json("prds")
     prddict = scriptutils.tcl_findprd_prepdict(prdbase)
     prddict = scriptutils.tcl_findprd_checkfilter(prddict, prds)
-    scriptutils.tcl_findprd(prddict, floor, ceiling, export, noprefix)
+    scriptutils.tcl_findprd(prddict, floor, ceiling, export, noprefix, key2mode)
 
 
 if __name__ == "__main__":

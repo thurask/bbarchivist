@@ -862,8 +862,8 @@ def tcl_findprd_prepd_middle(prda):
     :param prda: List of PRD-xxxxx-yyy entries.
     :type prda: list(str)
     """
-    prds = [x.split(" ")[0].replace("PRD-", "").split("-") for x in prda]
-    prdx = list({x[0]: x[1]} for x in prds)
+    prds = [x.split(" ")[0].replace("PRD-", "").replace("APBI-PRD", "").replace("-", "") for x in prda]
+    prdx = list({x[0:5]: x[5:]} for x in prds)
     return prdx
 
 
@@ -908,12 +908,12 @@ def tcl_findprd_checkfilter(prddict, tocheck=None):
     if tocheck is not None:
         prddict2 = collections.defaultdict(list)
         for toch in tocheck:
-            toch = toch.replace("PRD-", "")
+            toch = toch.replace("PRD-", "").replace("APBI-PRD", "")
             prddict2[toch] = prddict[toch]
     return prddict2
 
 
-def tcl_findprd_centerscan(center, prddict, session, floor=0, ceiling=999, export=False, noprefix=False):
+def tcl_findprd_centerscan(center, prddict, session, floor=0, ceiling=999, export=False, noprefix=False, key2mode=False):
     """
     Individual scanning for the center of a PRD.
 
@@ -937,14 +937,41 @@ def tcl_findprd_centerscan(center, prddict, session, floor=0, ceiling=999, expor
 
     :param noprefix: Whether to skip adding "PRD-" prefix. Default is False.
     :type noprefix: bool
+
+    :param key2mode: Whether to use new-style prefix. Default is False.
+    :type key2mode: bool
     """
     tails = [int(i) for i in prddict[center]]
     safes = [g for g in range(floor, ceiling) if g not in tails]
     print("SCANNING ROOT: {0}{1}".format(center, " "*8))
-    tcl_findprd_safescan(safes, center, session, export, noprefix)
+    tcl_findprd_safescan(safes, center, session, export, noprefix, key2mode)
 
 
-def tcl_findprd_safescan(safes, center, session, export=False, noprefix=False):
+def tcl_findprd_prepcuref(center, tail, noprefix=False, key2mode=False):
+    """
+    Prepare candidate PRD.
+
+    :param center: PRD-center-tail.
+    :type center: str
+
+    :param tail: PRD-center-tail.
+    :type tail: int
+
+    :param noprefix: Whether to skip adding "PRD-" prefix. Default is False.
+    :type noprefix: bool
+
+    :param key2mode: Whether to use new-style prefix. Default is False.
+    :type key2mode: bool
+    """
+    if key2mode:
+        curef = "APBI-PRD{0}{1:03}".format(center, tail)
+    else:
+        prefix = "" if noprefix else "PRD-"
+        curef = "{2}{0}-{1:03}".format(center, tail, prefix)
+    return curef
+
+
+def tcl_findprd_safescan(safes, center, session, export=False, noprefix=False, key2mode=False):
     """
     Scan for PRDs known not to be in database.
 
@@ -962,10 +989,12 @@ def tcl_findprd_safescan(safes, center, session, export=False, noprefix=False):
 
     :param noprefix: Whether to skip adding "PRD-" prefix. Default is False.
     :type noprefix: bool
+
+    :param key2mode: Whether to use new-style prefix. Default is False.
+    :type key2mode: bool
     """
     for j in safes:
-        prefix = "" if noprefix else "PRD-"
-        curef = "{2}{0}-{1:03}".format(center, j, prefix)
+        curef = tcl_findprd_prepcuref(center, j, noprefix, key2mode)
         print("NOW SCANNING: {0}".format(curef), end="\r")
         checktext = networkutils.tcl_check(curef, session, export)
         if checktext is None:
@@ -990,7 +1019,7 @@ def tcl_findprd_safehandle(curef, checktext):
     tcl_mainscan_printer(curef, tvver2)
 
 
-def tcl_findprd(prddict, floor=0, ceiling=999, export=False, noprefix=False):
+def tcl_findprd(prddict, floor=0, ceiling=999, export=False, noprefix=False, key2mode=False):
     """
     Check for new PRDs based on PRD database.
 
@@ -1008,10 +1037,13 @@ def tcl_findprd(prddict, floor=0, ceiling=999, export=False, noprefix=False):
 
     :param noprefix: Whether to skip adding "PRD-" prefix. Default is False.
     :type noprefix: bool
+
+    :param key2mode: Whether to use new-style prefix. Default is False.
+    :type key2mode: bool
     """
     sess = requests.Session()
     for center in sorted(prddict.keys()):
-        tcl_findprd_centerscan(center, prddict, sess, floor, ceiling, export, noprefix)
+        tcl_findprd_centerscan(center, prddict, sess, floor, ceiling, export, noprefix, key2mode)
 
 
 def linkgen_sdk_dicter(indict, origtext, newtext):

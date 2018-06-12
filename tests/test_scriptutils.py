@@ -338,6 +338,12 @@ class TestClassScriptutilsTCL:
             bs.tcl_prd_print("televisionversion", "https://snek.snek/update.zip", "update.zip", 200, "127.0.0.1", Session())
             assert "HEADER FOUND" in capsys.readouterr()[0]
 
+    def test_tcl_key2curef(self):
+        """
+        Test generating Athena CUREF.
+        """
+        assert bs.tcl_findprd_prepcuref("63824", 69, key2mode=True) == "APBI-PRD63824069"
+
     def test_tcl_deltaname(self):
         """
         Test generating delta-safe filenames.
