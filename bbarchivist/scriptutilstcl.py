@@ -347,7 +347,7 @@ def tcl_findprd_centerscan(center, prddict, session, floor=0, ceiling=999, expor
     """
     tails = [int(i) for i in prddict[center]]
     safes = [g for g in range(floor, ceiling) if g not in tails]
-    print("SCANNING ROOT: {0}{1}".format(center, " "*8))
+    print("SCANNING ROOT: {0}{1}".format(center, " "*12))
     tcl_findprd_safescan(safes, center, session, export, noprefix, key2mode)
 
 
@@ -419,7 +419,7 @@ def tcl_findprd_safehandle(curef, checktext):
     """
     tvver, firmwareid, filename, fsize, fhash = xmlutilstcl.parse_tcl_check(checktext)
     del firmwareid, filename, fsize, fhash
-    tvver2 = "{0}{1}".format(tvver, " "*8)
+    tvver2 = "{0}{1}".format(tvver, " "*12)
     tcl_mainscan_printer(curef, tvver2)
 
 
