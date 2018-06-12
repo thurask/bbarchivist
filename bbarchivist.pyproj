@@ -107,6 +107,12 @@
     <Compile Include="bbarchivist\archiveutils.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="bbarchivist\loadergentcl.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="bbarchivist\networkutilstcl.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="bbarchivist\scripts\barlinker.py">
       <SubType>Code</SubType>
     </Compile>
@@ -200,6 +206,9 @@
     <Compile Include="bbarchivist\scripts\__init__.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="bbarchivist\scriptutilstcl.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="bbarchivist\sevenziputils.py">
       <SubType>Code</SubType>
     </Compile>
@@ -210,6 +219,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="bbarchivist\xmlutils.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="bbarchivist\xmlutilstcl.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="bbarchivist\_version.py">
@@ -255,13 +267,22 @@
     <Compile Include="tests\test_loadergen.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="tests\test_loadergentcl.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="tests\test_networkutils.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="tests\test_networkutilstcl.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="tests\test_pseudocap.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="tests\test_scriptutils.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="tests\test_scriptutilstcl.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="tests\test_smtputils.py">

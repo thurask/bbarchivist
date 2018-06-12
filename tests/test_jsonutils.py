@@ -4,8 +4,8 @@
 import os
 from shutil import rmtree
 
-import bbarchivist.jsonutils as bj
 import pytest
+import bbarchivist.jsonutils as bj
 
 try:
     import simplejson as json

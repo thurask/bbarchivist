@@ -4,8 +4,8 @@
 import os
 from shutil import rmtree
 
-import bbarchivist.decorators as bd
 import pytest
+import bbarchivist.decorators as bd
 
 try:
     import unittest.mock as mock

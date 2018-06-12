@@ -6,9 +6,9 @@ import os
 import sqlite3
 from shutil import rmtree
 
+import pytest
 import bbarchivist.argutils as ba
 import bbarchivist.sqlutils as bs
-import pytest
 
 try:
     import unittest.mock as mock

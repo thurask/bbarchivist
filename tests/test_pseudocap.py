@@ -5,8 +5,8 @@ import os
 from hashlib import sha512
 from shutil import rmtree
 
-import bbarchivist.pseudocap as bp
 import pytest
+import bbarchivist.pseudocap as bp
 
 try:
     import unittest.mock as mock

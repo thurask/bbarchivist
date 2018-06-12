@@ -5,7 +5,7 @@ import sys  # load arguments
 
 from bbarchivist import argutils  # arguments
 from bbarchivist import decorators  # enter to exit
-from bbarchivist import scriptutils  # script frontends
+from bbarchivist import scriptutilstcl  # script frontends
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -96,8 +96,8 @@ def tcldelta_main(curef, fvver, download=False, original=False, export=False, re
     :type remote: bool
     """
     if remote:
-        fvver = scriptutils.tcl_delta_remote(curef)
-    scriptutils.tcl_prd_scan(curef, download, mode=2, fvver=fvver, original=original, export=export)
+        fvver = scriptutilstcl.tcl_delta_remote(curef)
+    scriptutilstcl.tcl_prd_scan(curef, download, mode=2, fvver=fvver, original=original, export=export)
 
 
 if __name__ == "__main__":

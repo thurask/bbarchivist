@@ -7,10 +7,10 @@ import requests  # session
 from bbarchivist import argutils  # arguments
 from bbarchivist import decorators  # enter to exit
 from bbarchivist import jsonutils  # json
-from bbarchivist import networkutils  # lookup
-from bbarchivist import scriptutils  # script frontends
+from bbarchivist import networkutilstcl  # lookup
+from bbarchivist import scriptutilstcl  # script frontends
 from bbarchivist import utilities  # bool
-from bbarchivist import xmlutils  # xml handling
+from bbarchivist import xmlutilstcl  # xml handling
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -147,10 +147,10 @@ def tclscan_single(curef, download=False, ota=None, export=False, remote=False):
     :type remote: bool
     """
     if remote:
-        remotedict = networkutils.remote_prd_info()
+        remotedict = networkutilstcl.remote_prd_info()
         ota = remotedict.get(curef, None)
-    mode, fvver = scriptutils.tcl_prep_otaver(ota)
-    scriptutils.tcl_prd_scan(curef, download, mode=mode, fvver=fvver, export=export, verify=False)
+    mode, fvver = scriptutilstcl.tcl_prep_otaver(ota)
+    scriptutilstcl.tcl_prd_scan(curef, download, mode=mode, fvver=fvver, export=export, verify=False)
 
 
 def tclscan_main(ota=None, device=None, export=False, remote=False):
@@ -170,10 +170,10 @@ def tclscan_main(ota=None, device=None, export=False, remote=False):
     :type remote: bool
     """
     if remote:
-        remotedict = networkutils.remote_prd_info()
+        remotedict = networkutilstcl.remote_prd_info()
         ota = "LATEST"
-    mode, fvver = scriptutils.tcl_prep_otaver(ota)
-    scriptutils.tcl_mainscan_preamble(ota)
+    mode, fvver = scriptutilstcl.tcl_prep_otaver(ota)
+    scriptutilstcl.tcl_mainscan_preamble(ota)
     prddict = jsonutils.load_json("prds")
     if device is not None:
         prddict = {device: prddict[device]}
@@ -183,13 +183,13 @@ def tclscan_main(ota=None, device=None, export=False, remote=False):
         for curef in prddict[devx]:
             if remote:
                 fvver = remotedict.get(curef, "AAA000")
-            checktext = networkutils.tcl_check(curef, sess, mode=mode, fvver=fvver, export=export)
+            checktext = networkutilstcl.tcl_check(curef, sess, mode=mode, fvver=fvver, export=export)
             if checktext is None:
                 continue
             else:
-                tvver, firmwareid, filename, fsize, fhash = xmlutils.parse_tcl_check(checktext)
+                tvver, firmwareid, filename, fsize, fhash = xmlutilstcl.parse_tcl_check(checktext)
                 del firmwareid, filename, fsize, fhash
-                scriptutils.tcl_mainscan_printer(curef, tvver, ota)
+                scriptutilstcl.tcl_mainscan_printer(curef, tvver, ota)
 
 
 if __name__ == "__main__":

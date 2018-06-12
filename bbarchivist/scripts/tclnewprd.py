@@ -6,7 +6,7 @@ import sys  # load arguments
 from bbarchivist import argutils  # arguments
 from bbarchivist import decorators  # enter to exit
 from bbarchivist import jsonutils  # json
-from bbarchivist import scriptutils  # script frontends
+from bbarchivist import scriptutilstcl  # script frontends
 from bbarchivist import utilities  # bool
 
 __author__ = "Thurask"
@@ -137,9 +137,9 @@ def tclnewprd_main(prds=None, floor=1, ceiling=60, export=False, noprefix=False,
     """
     argutils.slim_preamble("TCLNEWPRD")
     prdbase = jsonutils.load_json("prds")
-    prddict = scriptutils.tcl_findprd_prepdict(prdbase)
-    prddict = scriptutils.tcl_findprd_checkfilter(prddict, prds)
-    scriptutils.tcl_findprd(prddict, floor, ceiling, export, noprefix, key2mode)
+    prddict = scriptutilstcl.tcl_findprd_prepdict(prdbase)
+    prddict = scriptutilstcl.tcl_findprd_checkfilter(prddict, prds)
+    scriptutilstcl.tcl_findprd(prddict, floor, ceiling, export, noprefix, key2mode)
 
 
 if __name__ == "__main__":

@@ -7,9 +7,9 @@ import sys  # load arguments
 from bbarchivist import archiveutils  # zip work
 from bbarchivist import argutils  # arguments
 from bbarchivist import decorators  # enter to exit
-from bbarchivist import loadergen  # packing loader
+from bbarchivist import loadergentcl  # packing loader
 from bbarchivist import networkutils  # download android tools
-from bbarchivist import scriptutils  # script frontends
+from bbarchivist import scriptutilstcl  # script frontends
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -148,12 +148,12 @@ def tclloader_main(loaderfile, loadername=None, directory=False, localtools=Fals
     :type wipe: bool
     """
     argutils.slim_preamble("TCLLOADER")
-    loaderdir, osver = scriptutils.tclloader_prep(loaderfile, directory)
+    loaderdir, osver = scriptutilstcl.tclloader_prep(loaderfile, directory)
     tclloader_extract(loaderfile, loaderdir, directory)
     localtools = tclloader_fastboot(localtools)
-    loadername, platform = scriptutils.tclloader_filename(loaderdir, osver, loadername)
+    loadername, platform = scriptutilstcl.tclloader_filename(loaderdir, osver, loadername)
     print("CREATING LOADER")
-    loadergen.generate_tclloader(loaderdir, loadername, platform, localtools, wipe)
+    loadergentcl.generate_tclloader(loaderdir, loadername, platform, localtools, wipe)
     shutil.rmtree("plattools")
     tclloader_compress(compress, loadername)
     print("LOADER COMPLETE!")
