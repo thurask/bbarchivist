@@ -149,3 +149,15 @@ class TestClassLoadergentcl:
         bl.generate_tclloader_looseends("krypton", "bbry_qc8953krypton")
         bl.generate_tclloader_looseends("krypton", "bbry_sdm660")
         assert sorted(os.listdir("krypton")) == ["NON-HLOS-americas.bin", "NON-HLOS-dsamericas.bin", "NON-HLOS-global.bin"]
+
+    def test_tclloader_platscripts(self):
+        """
+        Test handling platform-specific scripts.
+        """
+        assert bl.generate_tclloader_scripttype("bbry_sdm660")[0] == bc.FLASHBATBBF.location
+        assert "vendor" in bl.generate_tclloader_platimg("bbry_sdm660")
+        assert os.path.join("MBNs", "mdtpsecapp.signed.mbn") in bl.generate_tclloader_platmbn("bbry_sdm660")
+        assert "BTFM.bin" in bl.generate_tclloader_platother("bbry_sdm660")
+        assert bl.generate_tclloader_scripttype("thesearethedaysofmiracleandwonder")[0] == None
+        assert bl.generate_tclloader_platmbn("thesearethedaysofmiracleandwonder")[0] == None
+        assert bl.generate_tclloader_platother("thesearethedaysofmiracleandwonder")[0] == None

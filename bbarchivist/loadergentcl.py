@@ -184,18 +184,21 @@ def generate_tclloader_carriter(sigin, sigout, prods):
         generate_tclloader_csig(sigin, sigout, carr)
 
 
-def generate_tclloader_mbn(mdnin, mdnout):
+def generate_tclloader_mbn(mbnin, mbnout, platform):
     """
     Generate mbn files.
 
-    :param mdnin: Directory containing files to copy.
-    :type mdnin: str
+    :param mbnin: Directory containing files to copy.
+    :type mbnin: str
 
-    :param mdnout: Directory that files are to be copied to.
-    :type mdnout: str
+    :param mbnout: Directory that files are to be copied to.
+    :type mbnout: str
+
+    :param platform: Platform type (i.e. subdirectory of target/product).
+    :type platform: str
     """
-    files = ["devcfg.mbn", "devcfg_cn.mbn", "rpm.mbn", "tz.mbn"]
-    point_point_bulk(mdnin, mdnout, files)
+    files = generate_tclloader_platmbn(platform)
+    point_point_bulk(mbnin, mbnout, files)
 
 
 def generate_tclloader_omniset(omnin, omnilist, prefix, suffix, filt):
@@ -334,6 +337,54 @@ def looseends_krypton(imgout):
     shutil.copy(oldamericas, newamericas)  # DS/SS americas model use same modem
 
 
+def generate_tclloader_platimg(platform):
+    """
+    Generate platform-specific .img files.
+
+    :param platform: Platform type (i.e. subdirectory of target/product).
+    :type platform: str
+    """
+    imgs = ["recovery", "system", "userdata", "cache", "boot"]
+    if "bbry_sdm660" in platform:
+        imgs.append("vendor")
+    return imgs
+
+
+def generate_tclloader_platmbn(platform):
+    """
+    Generate platform-specific MBN files.
+
+    :param platform: Platform type (i.e. subdirectory of target/product).
+    :type platform: str
+    """
+    if "bbry_sdm660" in platform:
+        mbnx = ["devcfg.mbn", "pmic.elf", "xbl.elf", "rpm.mbn", "tz.mbn"]
+        mbny = ["hyp.signed.mbn", "cmnlib.signed.mbn", "cmnlib64.signed.mbn", "keymaster64.signed.mbn", "mdtpsecapp.signed.mbn"]
+        mbnz = [os.path.join("MBNs", mbn) for mbn in mbny]
+        mbns = mbnx + mbnz
+    elif "bbry_qc8953" in platform:
+        mbns = ["devcfg.mbn", "devcfg_cn.mbn", "rpm.mbn", "tz.mbn"]
+    else:
+        mbns = [None]
+    return mbns
+
+
+def generate_tclloader_platother(platform):
+    """
+    Generate platform-specific other files.
+
+    :param platform: Platform type (i.e. subdirectory of target/product).
+    :type platform: str
+    """
+    if "bbry_sdm660" in platform:
+        others = ["dspso.bin", "BTFM.bin", "abl.elf"]
+    elif "bbry_qc8953" in platform:
+        others = ["adspso.bin", "emmc_appsboot.mbn", "sbl1_signed.mbn"]
+    else:
+        others = [None]
+    return others
+
+
 def generate_tclloader_img(imgin, imgout, platform):
     """
     Generate partition images and radios.
@@ -347,16 +398,32 @@ def generate_tclloader_img(imgin, imgout, platform):
     :param platform: Platform type (i.e. subdirectory of target/product).
     :type platform: str
     """
-    imgs = ["recovery", "system", "userdata", "cache", "boot"]
+    imgs = generate_tclloader_platimg(platform)
     point_point_bulk(imgin, imgout, ["{0}.img".format(img) for img in imgs])
     oems, radios = generate_tclloader_deps(platform)
     oems = generate_tclloader_oemfilt(imgin, oems)
     point_point_bulk(imgin, imgout, ["{0}.img".format(oem) for oem in oems])
     radios = generate_tclloader_radfilt(imgin, radios)
     point_point_bulk(imgin, imgout, ["NON-HLOS-{0}.bin".format(rad) for rad in radios])
-    others = ["adspso.bin", "emmc_appsboot.mbn", "sbl1_signed.mbn"]
+    others = generate_tclloader_platother(platform)
     point_point_bulk(imgin, imgout, others)
     generate_tclloader_looseends(imgout, platform)
+
+
+def generate_tclloader_scripttype(platform):
+    """
+    Get the right scripts for the right platform.
+
+    :param platform: Platform type (i.e. subdirectory of target/product).
+    :type platform: str
+    """
+    if "bbry_sdm660" in platform:
+        scripts = (bbconstants.FLASHBATBBF.location, bbconstants.FLASHSHBBF.location)
+    elif "bbry_qc8953" in platform:
+        scripts = (bbconstants.FLASHBAT.location, bbconstants.FLASHSH.location)
+    else:
+        scripts = (None, None)
+    return scripts
 
 
 def generate_tclloader(localdir, dirname, platform, localtools=False, wipe=True):
@@ -384,7 +451,8 @@ def generate_tclloader(localdir, dirname, platform, localtools=False, wipe=True)
     os.makedirs(hostdir)
     imgdir = os.path.join(dirname, "img")
     os.makedirs(imgdir)
-    generate_tclloader_script(dirname, bbconstants.FLASHBAT.location, bbconstants.FLASHSH.location, wipe)
+    platscripts = generate_tclloader_scripttype(platform)
+    generate_tclloader_script(dirname, platscripts[0], platscripts[1], wipe)
     if localtools:
         hdir = os.path.join(localdir, "host")
         generate_tclloader_host(hdir, hostdir)
@@ -397,4 +465,4 @@ def generate_tclloader(localdir, dirname, platform, localtools=False, wipe=True)
     generate_tclloader_sig(sdir, imgdir)
     generate_tclloader_carriers(sdir, imgdir)
     qdir = os.path.join(pdir, "qcbc")
-    generate_tclloader_mbn(qdir, imgdir)
+    generate_tclloader_mbn(qdir, imgdir, platform)

@@ -30,8 +30,10 @@
     <Content Include=".scrutinizer.yml" />
     <Content Include=".travis.yml" />
     <Content Include="appveyor.yml" />
-    <Content Include="bbarchivist\datfiles\flashall.bat-4.dat" />
-    <Content Include="bbarchivist\datfiles\flashall.sh-4.dat" />
+    <Content Include="bbarchivist\datfiles\flashall.bat-5.dat" />
+    <Content Include="bbarchivist\datfiles\flashall.sh-5.dat" />
+    <Content Include="bbarchivist\datfiles\flashallbbf.bat-5.dat" />
+    <Content Include="bbarchivist\datfiles\flashallbbf.sh-5.dat" />
     <Content Include="bbarchivist\json\appstoremove.json">
       <SubType>Code</SubType>
     </Content>

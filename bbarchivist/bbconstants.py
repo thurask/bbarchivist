@@ -69,9 +69,13 @@ CAP = Datafile("3.11.0.27", "cap", 9252412)
 #: CFP
 CFP = Datafile("3.10.0.57", "cfp", 16361984)
 #: flashall.bat.dat
-FLASHBAT = Datafile("4", "flashall.bat", 2881)
+FLASHBAT = Datafile("5", "flashall.bat", 2930)
 #: flashall.sh.dat
-FLASHSH = Datafile("4", "flashall.sh", 2863)
+FLASHSH = Datafile("5", "flashall.sh", 2932)
+#: flashallbbf.bat.dat
+FLASHBATBBF = Datafile("5", "flashallbbf.bat", 3689)
+#: flashallbbf.sh.dat
+FLASHSHBBF = Datafile("5", "flashallbbf.sh", 3526)
 #: JSON storage directory.
 JSONDIR = os.path.join(DIRECTORY, "json")
 #: Lookup server list.

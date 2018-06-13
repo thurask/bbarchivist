@@ -5,7 +5,7 @@ import os
 import subprocess
 
 import requests
-from bbarchivist.bbconstants import CAP, CFP, FLASHBAT, FLASHSH
+from bbarchivist.bbconstants import CAP, CFP, FLASHBAT, FLASHBATBBF, FLASHSH, FLASHSHBBF
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
@@ -107,6 +107,8 @@ def main():
     files = prep_file(CFP, files)
     files = prep_file(FLASHBAT, files)
     files = prep_file(FLASHSH, files)
+    files = prep_file(FLASHBATBBF, files)
+    files = prep_file(FLASHSHBBF, files)
     outdir = os.path.join(os.getcwd(), "bbarchivist", "datfiles")
     if files:
         for file in files:
