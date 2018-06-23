@@ -206,7 +206,7 @@ bbarchivist.xmlutils module
 bbarchivist.xmlutilstcl module
 ------------------------------
 
-.. automodule:: bbarchivist.xmlutils
+.. automodule:: bbarchivist.xmlutilstcl
     :members:
     :undoc-members:
     :show-inheritance:
