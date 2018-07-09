@@ -129,7 +129,7 @@ If you wish to contribute to this project, please do the following:
 Documentation
 -------------
 
-An overview of change history can be found in the `CHANGES <CHANGES>`__ file.
+An overview of change history can be found in the `CHANGES <CHANGES.rst>`__ file.
 
 Online documentation is hosted at `ReadTheDocs <https://bbarchivist.readthedocs.io>`__.
 
