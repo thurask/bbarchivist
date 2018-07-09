@@ -38,7 +38,7 @@ A Python 3.2+ package for various BlackBerry 10/BlackBerry Android-related funct
 Packaged Executables
 --------------------
 
-As of version 2.3.0 (18 December 2015), a few scripts are packaged as Windows executables on `GitHub <https://github.com/thurask/bbarchivist/releases>`__.
+As of version 2.3.0 (18 December 2015), most scripts are packaged as Windows executables on `GitHub <https://github.com/thurask/bbarchivist/releases>`__.
 
 To use, just download the bbarchivist-<version>-<system bit> archive attached to the latest release, unpack somewhere and double click an executable.
 
@@ -49,7 +49,7 @@ Alternatively, if you require full functionality or Linux/Mac/BSD support, keep 
 Installation
 ------------
 
-Requires Python >=3.2, with 3.6 or later preferred.
+Requires Python >=3.2, with 3.7 or later preferred.
 
 To get the latest stable version, install with pip:
 
@@ -112,7 +112,7 @@ and `httmock <https://github.com/patrys/httmock>`__. Install from the :code:`req
 
 If you're testing on Python 3.2, install the `mock backport <https://pypi.org/project/mock/>`__ as well.
 
-Coverage requires installation of pytest-cov.
+Coverage requires installation of `pytest-cov <https://github.com/pytest-dev/pytest-cov>`__.
 
 Testing of GnuPG/7-Zip functions requires setting up GnuPG/7-Zip in the first place.
 
@@ -133,7 +133,7 @@ An overview of change history can be found in the `CHANGES <CHANGES.rst>`__ file
 
 Online documentation is hosted at `ReadTheDocs <https://bbarchivist.readthedocs.io>`__.
 
-Docs use Sphinx for automatic generation.
+Docs use `Sphinx <http://www.sphinx-doc.org/en/master/>`__ for automatic generation.
 
 License
 -------

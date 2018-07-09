@@ -26,6 +26,7 @@
     <Content Include=".coveragerc" />
     <Content Include=".coveralls.yml" />
     <Content Include=".gitattributes" />
+    <Content Include=".gitchangelog.rc" />
     <Content Include=".gitignore" />
     <Content Include=".scrutinizer.yml" />
     <Content Include=".travis.yml" />
@@ -54,6 +55,7 @@
     <Content Include="bbarchivist\json\prds.json">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="CHANGES.rst" />
     <Content Include="docs\bbarchivist.rst" />
     <Content Include="docs\bbarchivist.scripts.rst" />
     <Content Include="docs\html.bat" />
