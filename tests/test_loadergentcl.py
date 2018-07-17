@@ -90,7 +90,7 @@ class TestClassLoadergentcl:
                     abs_filename = os.path.join(root, file)
                     abs_arcname = abs_filename.replace("autoloader-signed{0}".format(os.sep), "")
                     zfile.write(abs_filename, abs_arcname)
-        assert os.path.getsize("snek.zip") == 5754
+        assert os.path.getsize("snek.zip") == 5444
 
     def test_tclloader_network(self):
         """

@@ -24,7 +24,11 @@ def point_point_copy(inpath, outpath, filename):
     :param filename: Filename.
     :type filename: str
     """
-    shutil.copy(os.path.join(inpath, filename), os.path.join(outpath, filename))
+    if os.sep in filename:
+        filex = os.path.basename(filename)
+    else:
+        filex = filename
+    shutil.copy(os.path.join(inpath, filename), os.path.join(outpath, filex))
 
 
 def point_point_bulk(inpath, outpath, files):
