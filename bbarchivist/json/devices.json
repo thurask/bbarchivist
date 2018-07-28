@@ -732,40 +732,40 @@
       "ptcrbid": ""
     },
     {
-      "device": "UNKNOWN",
-      "family": "UNRELEASED",
+      "device": "KEY2LE",
+      "family": "KEY2LE",
       "name": "BBE100-1",
       "hwid": "",
       "fccid": "BBE100-1",
       "ptcrbid": ""
     },
     {
-      "device": "UNKNOWN",
-      "family": "UNRELEASED",
+      "device": "KEY2LE",
+      "family": "KEY2LE",
       "name": "BBE100-2",
       "hwid": "",
       "fccid": "BBE100-2",
-      "ptcrbid": ""
+      "ptcrbid": "38042"
     },
     {
-      "device": "UNKNOWN",
-      "family": "UNRELEASED",
+      "device": "KEY2LE",
+      "family": "KEY2LE",
       "name": "BBE100-3",
       "hwid": "",
       "fccid": "BBE100-3",
       "ptcrbid": ""
     },
     {
-      "device": "UNKNOWN",
-      "family": "UNRELEASED",
+      "device": "KEY2LE",
+      "family": "KEY2LE",
       "name": "BBE100-4",
       "hwid": "",
       "fccid": "BBE100-4",
       "ptcrbid": ""
     },
     {
-      "device": "UNKNOWN",
-      "family": "UNRELEASED",
+      "device": "KEY2LE",
+      "family": "KEY2LE",
       "name": "BBE100-5",
       "hwid": "",
       "fccid": "BBE100-5",

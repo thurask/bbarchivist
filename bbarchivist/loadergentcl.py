@@ -323,7 +323,7 @@ def generate_tclloader_looseends(imgout, platform):
     elif platform == "bbry_qc8953krypton":  # Motion
         looseends_krypton(imgout)
     elif platform == "bbry_sdm660":  # KEY2
-        pass  # TODO: KEY2 autoloader
+        pass  # no special exceptions
 
 
 def looseends_krypton(imgout):

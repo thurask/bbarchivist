@@ -691,7 +691,7 @@ def make_droid_skeleton(method, build, device, variant="common"):
     """
     # No Aurora
     oglist = ("Priv", "DTEK50", "DTEK60")  # BlackBerry
-    bbmlist = ("KEYone", "Motion", "KEY2")   # BB Mobile
+    bbmlist = ("KEYone", "Motion", "KEY2", "KEY2LE")   # BB Mobile
     if device in oglist:
         skel = make_droid_skeleton_og(method, build, device, variant)
     elif device in bbmlist:
