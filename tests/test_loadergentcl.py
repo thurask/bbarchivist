@@ -133,10 +133,12 @@ class TestClassLoadergentcl:
         Test handling platform dependencies.
         """
         oems, radios = bl.generate_tclloader_deps("bbry_qc8953krypton")
-        oems2, radios2 = bl.generate_tclloader_deps("bbry_sdm660")
-        del oems, oems2
+        oems660, radios660 = bl.generate_tclloader_deps("bbry_sdm660")
+        oems636, radios636 = bl.generate_tclloader_deps("bbry_sdm636")
+        del oems, oems660, oems636
         assert "dsglobal" in radios
-        assert "dsjapan" in radios2
+        assert "dsjapan" in radios660
+        assert "dsamericas" in radios636
 
     def test_tclloader_ends(self):
         """

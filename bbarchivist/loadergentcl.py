@@ -305,6 +305,9 @@ def generate_tclloader_deps(platform):
     elif platform == "bbry_sdm660":  # KEY2
         oems = ["oem_att", "oem_china", "oem_common", "oem_india", "oem_indonesia", "oem_sprint", "oem_russia"]
         radios = ["americas", "cn", "dsglobal", "dsjapan", "global", "japan"]
+    elif platform == "bbry_sdm636":  # KEY2LE
+        oems = ["oem_china", "oem_common", "oem_india", "oem_russia"]
+        radios = ["americas", "dsamericas", "global", "dsglobal", "dscn"]
     return oems, radios
 
 
@@ -322,7 +325,7 @@ def generate_tclloader_looseends(imgout, platform):
         pass  # no special exceptions
     elif platform == "bbry_qc8953krypton":  # Motion
         looseends_krypton(imgout)
-    elif platform == "bbry_sdm660":  # KEY2
+    elif platform in ("bbry_sdm660", "bbry_sdm636"):  # KEY2/KEY2LE
         pass  # no special exceptions
 
 
@@ -349,7 +352,7 @@ def generate_tclloader_platimg(platform):
     :type platform: str
     """
     imgs = ["recovery", "system", "userdata", "cache", "boot"]
-    if "bbry_sdm660" in platform:
+    if platform in ("bbry_sdm660", "bbry_sdm636"):
         imgs.append("vendor")
     return imgs
 
@@ -361,12 +364,12 @@ def generate_tclloader_platmbn(platform):
     :param platform: Platform type (i.e. subdirectory of target/product).
     :type platform: str
     """
-    if "bbry_sdm660" in platform:
+    if platform in ("bbry_sdm660", "bbry_sdm636"):
         mbnx = ["devcfg.mbn", "pmic.elf", "xbl.elf", "rpm.mbn", "tz.mbn"]
         mbny = ["hyp.signed.mbn", "cmnlib.signed.mbn", "cmnlib64.signed.mbn", "keymaster64.signed.mbn", "mdtpsecapp.signed.mbn"]
         mbnz = [os.path.join("MBNs", mbn) for mbn in mbny]
         mbns = mbnx + mbnz
-    elif "bbry_qc8953" in platform:
+    elif platform in ("bbry_qc8953", "bbry_qc8953krypton"):
         mbns = ["devcfg.mbn", "devcfg_cn.mbn", "rpm.mbn", "tz.mbn"]
     else:
         mbns = [None]
@@ -380,9 +383,9 @@ def generate_tclloader_platother(platform):
     :param platform: Platform type (i.e. subdirectory of target/product).
     :type platform: str
     """
-    if "bbry_sdm660" in platform:
+    if platform in ("bbry_sdm660", "bbry_sdm636"):
         others = ["dspso.bin", "BTFM.bin", "abl.elf"]
-    elif "bbry_qc8953" in platform:
+    elif platform in ("bbry_qc8953", "bbry_qc8953krypton"):
         others = ["adspso.bin", "emmc_appsboot.mbn", "sbl1_signed.mbn"]
     else:
         others = [None]
@@ -421,9 +424,9 @@ def generate_tclloader_scripttype(platform):
     :param platform: Platform type (i.e. subdirectory of target/product).
     :type platform: str
     """
-    if "bbry_sdm660" in platform:
+    if platform in ("bbry_sdm660", "bbry_sdm636"):
         scripts = (bbconstants.FLASHBATBBF.location, bbconstants.FLASHSHBBF.location)
-    elif "bbry_qc8953" in platform:
+    elif platform in ("bbry_qc8953", "bbry_qc8953krypton"):
         scripts = (bbconstants.FLASHBAT.location, bbconstants.FLASHSH.location)
     else:
         scripts = (None, None)
