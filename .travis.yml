@@ -24,6 +24,7 @@ install:
     - if [[ $TRAVIS_PYTHON_VERSION == 3.2 ]]; then pip install pytest=="2.9.2"; elif [[ $TRAVIS_PYTHON_VERSION == 3.3 ]]; then pip install pytest=="3.2.5"; else pip install pytest; fi
     - if [[ $TRAVIS_PYTHON_VERSION != 3.2 ]]; then pip install codeclimate-test-reporter; fi
     - if [[ $TRAVIS_PYTHON_VERSION == 3.2 ]]; then pip uninstall --yes defusedxml; fi
+    - if [[ $TRAVIS_PYTHON_VERSION == 3.2 ]]; then pip install pytest-cov=="2.5.1"; elif [[ $TRAVIS_PYTHON_VERSION == 3.3 ]]; then pip install pytest-cov=="2.5.1"; fi
     - pip install scrutinizer-ocular
 script:
     - py.test -v --cov=bbarchivist
