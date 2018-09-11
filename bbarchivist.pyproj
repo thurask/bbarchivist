@@ -70,6 +70,8 @@
     <Content Include="pytest.ini" />
     <Content Include="README.rst" />
     <Content Include="requirements-devel.txt" />
+    <Content Include="requirements-distrib.txt" />
+    <Content Include="requirements.txt" />
     <Content Include="setup.cfg" />
     <Content Include="run_cov_tests.bat" />
     <Content Include="run_cov_tests_nogpg.bat" />
