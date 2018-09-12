@@ -2,9 +2,10 @@ Changelog
 =========
 
 
-(unreleased)
+3.9.0 (2018-09-12)
 ------------
-- Key2 loader support.
+- SDM636 loader support.
+- KEY2 loader support.
 - Add new syntax option to newprd.
 - Add (temp) bbb5 devcfg to loader.
 - Add no prefix switch for newprd.
