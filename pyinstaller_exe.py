@@ -70,7 +70,8 @@ def get_ucrt_dlls():
     Get some magic voodoo Windows DLLs.
     """
     tail = bit_tail()
-    folder = join("C:\\", "Program Files (x86)", "Windows Kits", "10", "Redist", "ucrt", "DLLs", tail)
+    pfiles = "Program Files (x86)" if tail == "x64" else "Program Files"
+    folder = join("C:\\", pfiles, "Windows Kits", "10", "Redist", "ucrt", "DLLs", tail)
     return folder
 
 
