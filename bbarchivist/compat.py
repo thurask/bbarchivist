@@ -6,13 +6,26 @@ __license__ = "WTFPL v2"
 __copyright__ = "2015-2018 Thurask"
 
 
+def clock():
+    """
+    Backwards compatibility wrapper for system clock.
+    """
+    try:
+        from time import perf_counter as clock
+    except ImportError:  # 3.2
+        from time import clock
+    finally:
+        wclock = clock()
+    return wclock
+
+
 def enum_cpus():
     """
     Backwards compatibility wrapper for CPU count.
     """
     try:
         from os import cpu_count
-    except ImportError:
+    except ImportError:  # 3.2, 3.3
         from multiprocessing import cpu_count
     finally:
         cpus = cpu_count()
@@ -28,7 +41,7 @@ def where_which(path):
     """
     try:
         from shutil import which
-    except ImportError:
+    except ImportError:  # 3.2
         from shutilwhich import which
     finally:
         thepath = which(path)

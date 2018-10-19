@@ -7,6 +7,7 @@ import sqlite3  # the sql library
 import sys  # frozen
 import time  # spinner delay, timer decorator
 
+from bbarchivist import compat  # backwards compat
 from bbarchivist import dummy  # useless stdout
 from bbarchivist import exceptions  # exceptions
 
@@ -44,9 +45,9 @@ def timer(method):
         """
         Start clock, do function with args, print rounded elapsed time.
         """
-        starttime = time.clock()
+        starttime = compat.clock()
         method(*args, **kwargs)
-        endtime = time.clock() - starttime
+        endtime = compat.clock() - starttime
         endtime_proper = math.ceil(endtime * 100) / 100  # rounding
         mins, secs = divmod(endtime_proper, 60)
         hrs, mins = divmod(mins, 60)
