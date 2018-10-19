@@ -5,7 +5,6 @@ import math  # rounding
 import os  # path check
 import sqlite3  # the sql library
 import sys  # frozen
-import time  # spinner delay, timer decorator
 
 from bbarchivist import compat  # backwards compat
 from bbarchivist import dummy  # useless stdout
@@ -45,9 +44,9 @@ def timer(method):
         """
         Start clock, do function with args, print rounded elapsed time.
         """
-        starttime = compat.clock()
+        starttime = compat.perf_clock()
         method(*args, **kwargs)
-        endtime = compat.clock() - starttime
+        endtime = compat.perf_clock() - starttime
         endtime_proper = math.ceil(endtime * 100) / 100  # rounding
         mins, secs = divmod(endtime_proper, 60)
         hrs, mins = divmod(mins, 60)

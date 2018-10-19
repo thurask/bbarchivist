@@ -6,7 +6,7 @@ __license__ = "WTFPL v2"
 __copyright__ = "2015-2018 Thurask"
 
 
-def clock():
+def perf_clock():
     """
     Backwards compatibility wrapper for system clock.
     """
