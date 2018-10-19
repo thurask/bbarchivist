@@ -1,11 +1,14 @@
+image:
+- Visual Studio 2017
+
 environment:
   CODECOV_TOKEN:
     secure: U/Icc3L/5XW50cUc/aui8k8eJauXjFVZL0rSbarLwASIyQc4yQpn5SJIbdtbBXRu
   matrix:
-    - PYTHON: "C:\\Python35"
     - PYTHON: "C:\\Python36"
-    - PYTHON: "C:\\Python35-x64"
+    - PYTHON: "C:\\Python37"
     - PYTHON: "C:\\Python36-x64"
+    - PYTHON: "C:\\Python37-x64"
 
 install:
   - set PATH="%PYTHON%";"%PYTHON%\Scripts";%PATH%
