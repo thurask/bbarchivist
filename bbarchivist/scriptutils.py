@@ -1113,7 +1113,7 @@ def prep_info(filepath, osver, device=None):
     """
     fileext = ".zip" if device else ".7z"
     files = os.listdir(filepath)
-    absfiles = [os.path.join(filepath, x) for x in files if x.endswith((fileext, ".exe"))]
+    absfiles = sorted([os.path.join(filepath, x) for x in files if x.endswith((fileext, ".exe"))])
     fname = os.path.join(filepath, "!{0}_OSINFO!.txt".format(osver))
     return fname, absfiles
 
