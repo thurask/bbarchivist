@@ -4,7 +4,8 @@ Changelog
 
 (unreleased)
 ------------
-
+- Randomly generate user agents for most web operations.
+- Fix compatibility with time.clock.
 
 
 3.9.0 (2018-09-12)

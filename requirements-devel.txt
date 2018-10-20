@@ -5,6 +5,7 @@ python-gnupg>=0.4.1
 defusedxml>=0.4.1
 shutilwhich>=1.1.0
 appdirs>=1.4.3
+user_agent>=0.1.9
 ##TESTING
 beautifulsoup4>=4.5.3
 mock>=2.0.0

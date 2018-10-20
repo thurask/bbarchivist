@@ -7,6 +7,7 @@ import os  # filesystem read
 import re  # regexes
 
 import requests  # downloading
+import user_agent  # user agent
 from bs4 import BeautifulSoup  # scraping
 from bbarchivist import utilities  # parse filesize
 from bbarchivist import xmlutils  # xml work
@@ -70,14 +71,19 @@ def try_try_again(method):
     return wrapper
 
 
-def generic_session(session=None):
+def generic_session(session=None, uagent_type=None):
     """
     Create a Requests session object on the fly, if need be.
 
     :param session: Requests session object, created if this is None.
     :type session: requests.Session()
+
+    :param uagent_type: To force a desktop/tablet/smartphone User-Agent. Default is None.
+    :type uagent_type: string
     """
     sess = requests.Session() if session is None else session
+    uagent = user_agent.generate_user_agent(device_type=uagent_type)
+    sess.headers.update({"User-Agent": uagent})
     return sess
 
 
@@ -303,7 +309,7 @@ def carrier_checker(mcc, mnc, session=None):
     session = generic_session(session)
     baseurl = "http://appworld.blackberry.com/ClientAPI/checkcarrier"
     url = "{2}?homemcc={0}&homemnc={1}&devicevendorid=-1&pin=0".format(mcc, mnc, baseurl)
-    user_agent = {'User-agent': 'AppWorld/5.1.0.60'}
+    user_agent = {'User-Agent': 'AppWorld/5.1.0.60'}
     req = session.get(url, headers=user_agent)
     country, carrier = xmlutils.cchecker_get_tags(req.text)
     return country, carrier
@@ -471,9 +477,7 @@ def ptcrb_scraper(ptcrbid, session=None):
     :type session: requests.Session()
     """
     baseurl = "https://www.ptcrb.com/certified-devices/device-details/?model={0}".format(ptcrbid)
-    sess = generic_session(session)
-    useragent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.79 Safari/537.36"
-    sess.headers.update({"User-agent": useragent})
+    sess = generic_session(session, uagent_type="desktop")
     soup = generic_soup_parser(baseurl, sess)
     certtable = soup.find_all("table")[1]
     tds = certtable.find_all("td")[1::2]  # every other
