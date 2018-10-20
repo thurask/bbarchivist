@@ -309,8 +309,8 @@ def carrier_checker(mcc, mnc, session=None):
     session = generic_session(session)
     baseurl = "http://appworld.blackberry.com/ClientAPI/checkcarrier"
     url = "{2}?homemcc={0}&homemnc={1}&devicevendorid=-1&pin=0".format(mcc, mnc, baseurl)
-    user_agent = {'User-Agent': 'AppWorld/5.1.0.60'}
-    req = session.get(url, headers=user_agent)
+    uagent = {'User-Agent': 'AppWorld/5.1.0.60'}
+    req = session.get(url, headers=uagent)
     country, carrier = xmlutils.cchecker_get_tags(req.text)
     return country, carrier
 
