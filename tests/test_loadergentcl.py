@@ -8,7 +8,6 @@ from shutil import copyfile, rmtree
 import bbarchivist.bbconstants as bc
 import bbarchivist.loadergentcl as bl
 
-
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
 __copyright__ = "2018 Thurask"

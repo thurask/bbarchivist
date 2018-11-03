@@ -5,8 +5,8 @@ import hashlib
 import os
 from shutil import copyfile, rmtree
 
-from bbarchivist import hashutils as bh
 import pytest
+from bbarchivist import hashutils as bh
 
 try:
     import unittest.mock as mock

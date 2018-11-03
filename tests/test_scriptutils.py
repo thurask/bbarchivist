@@ -6,9 +6,9 @@ import time
 import zipfile
 from shutil import copyfile, rmtree
 
+import bbarchivist.scriptutils as bs
 import httmock
 import pytest
-import bbarchivist.scriptutils as bs
 
 try:
     import unittest.mock as mock

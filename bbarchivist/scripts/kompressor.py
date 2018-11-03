@@ -4,8 +4,8 @@
 import os  # path operations
 import sys  # load arguments
 
-from bbarchivist import argutils  # arguments
 from bbarchivist import archiveutils  # main program
+from bbarchivist import argutils  # arguments
 from bbarchivist import utilities  # bool parsing
 
 __author__ = "Thurask"

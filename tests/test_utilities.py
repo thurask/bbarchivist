@@ -6,9 +6,9 @@ import sys
 from platform import system
 from shutil import copyfile, rmtree
 
-import pytest
 import bbarchivist.bbconstants as bc
 import bbarchivist.utilities as bu
+import pytest
 
 try:
     import unittest.mock as mock

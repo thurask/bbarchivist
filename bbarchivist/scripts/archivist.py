@@ -5,8 +5,8 @@ import os  # filesystem read
 import sys  # load arguments
 
 import requests  # session
-from bbarchivist import argutils  # arguments
 from bbarchivist import archiveutils  # archive work
+from bbarchivist import argutils  # arguments
 from bbarchivist import barutils  # file/folder work
 from bbarchivist import decorators  # timer
 from bbarchivist import hashutils  # hashes, GPG

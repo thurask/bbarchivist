@@ -4,8 +4,8 @@
 import os
 from shutil import rmtree
 
-import httmock
 import bbarchivist.textgenerator as bt
+import httmock
 
 try:
     import unittest.mock as mock

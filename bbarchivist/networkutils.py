@@ -8,10 +8,10 @@ import re  # regexes
 
 import requests  # downloading
 import user_agent  # user agent
-from bs4 import BeautifulSoup  # scraping
 from bbarchivist import utilities  # parse filesize
 from bbarchivist import xmlutils  # xml work
 from bbarchivist.bbconstants import SERVERS  # lookup servers
+from bs4 import BeautifulSoup  # scraping
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

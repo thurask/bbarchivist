@@ -5,9 +5,9 @@ import os
 from hashlib import sha512
 from shutil import rmtree
 
+import bbarchivist.networkutils as bn
 import httmock
 import requests
-import bbarchivist.networkutils as bn
 
 try:
     import unittest.mock as mock

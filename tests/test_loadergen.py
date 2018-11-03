@@ -5,8 +5,8 @@ import os
 from hashlib import sha512
 from shutil import copyfile, rmtree
 
-import pytest
 import bbarchivist.loadergen as bl
+import pytest
 
 try:
     import unittest.mock as mock

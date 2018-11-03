@@ -7,8 +7,8 @@ import zipfile
 from hashlib import sha512
 from shutil import Error, copyfile, rmtree
 
-import pytest
 import bbarchivist.barutils as bb
+import pytest
 
 try:
     import unittest.mock as mock

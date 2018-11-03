@@ -4,11 +4,10 @@
 import os
 from shutil import rmtree
 
-import httmock
-import requests
 import bbarchivist.networkutilstcl as bn
 import bbarchivist.xmlutilstcl as bx
-
+import httmock
+import requests
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"

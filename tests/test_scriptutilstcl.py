@@ -4,9 +4,9 @@
 import os
 from shutil import rmtree
 
+import bbarchivist.scriptutilstcl as bs
 import pytest
 from requests import Session
-import bbarchivist.scriptutilstcl as bs
 
 try:
     import unittest.mock as mock
