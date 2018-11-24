@@ -303,10 +303,10 @@ def generate_tclloader_deps(platform):
         oems = ["oem_att", "oem_common", "oem_sprint", "oem_russia"]
         radios = ["americas", "cdma", "dscn", "dsglobal", "ssglobal"]
     elif platform == "bbry_sdm660":  # KEY2
-        oems = ["oem_att", "oem_china", "oem_common", "oem_india", "oem_indonesia", "oem_sprint", "oem_russia"]
+        oems = ["oem_att", "oem_china", "oem_common", "oem_india", "oem_indonesia", "oem_sprint", "oem_russia", "oem_eea"]
         radios = ["americas", "cn", "dsglobal", "dsjapan", "global", "japan"]
     elif platform == "bbry_sdm636":  # KEY2LE
-        oems = ["oem_china", "oem_common", "oem_india", "oem_russia"]
+        oems = ["oem_china", "oem_common", "oem_india", "oem_russia", "oem_eea"]
         radios = ["americas", "dsamericas", "global", "dsglobal", "dscn"]
     return oems, radios
 
