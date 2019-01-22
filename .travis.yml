@@ -1,17 +1,8 @@
 language: python
-dist: trusty
+dist: xenial
 python:
-    - "3.2"
-    - "3.3"
-    - "3.4"
-    - "3.5"
     - "3.6"
-    - "3.7-dev"
-    - "nightly"
-matrix:
-    allow_failures:
-        - python: "3.7-dev"
-        - python: "nightly"
+    - "3.7"
 addons:
     apt:
         packages:
@@ -19,16 +10,14 @@ addons:
 install:
     - pip install .
     - pip install -r requirements-devel.txt
-    - if [[ $TRAVIS_PYTHON_VERSION == 3.2 ]]; then pip install coverage=="3.7.1"; else pip install coverage; fi
+    - pip install coverage
     - pip install codecov
-    - if [[ $TRAVIS_PYTHON_VERSION == 3.2 ]]; then pip install pytest=="2.9.2"; elif [[ $TRAVIS_PYTHON_VERSION == 3.3 ]]; then pip install pytest=="3.2.5"; else pip install pytest; fi
-    - if [[ $TRAVIS_PYTHON_VERSION != 3.2 ]]; then pip install codeclimate-test-reporter; fi
-    - if [[ $TRAVIS_PYTHON_VERSION == 3.2 ]]; then pip uninstall --yes defusedxml; fi
-    - if [[ $TRAVIS_PYTHON_VERSION == 3.2 ]]; then pip install pytest-cov=="2.5.1"; elif [[ $TRAVIS_PYTHON_VERSION == 3.3 ]]; then pip install pytest-cov=="2.5.1"; fi
+    - pip install codeclimate-test-reporter
+    - if [[ $TRAVIS_PYTHON_VERSION == 3.6 ]]; then pip uninstall --yes defusedxml; fi
     - pip install scrutinizer-ocular
 script:
     - py.test -v --cov=bbarchivist
 after_success:
     - codecov
-    - if [[ $TRAVIS_PYTHON_VERSION != 3.2 ]]; then CODECLIMATE_REPO_TOKEN=$CODECLIMATE_REPO_TOKEN codeclimate-test-reporter; fi
+    - CODECLIMATE_REPO_TOKEN=$CODECLIMATE_REPO_TOKEN codeclimate-test-reporter
     - ocular --data-file ".coverage" --config-file ".coveragerc"
