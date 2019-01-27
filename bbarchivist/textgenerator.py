@@ -6,7 +6,7 @@ from bbarchivist.utilities import (create_bar_url, fsizer, generate_urls, newer_
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2015-2018 Thurask"
+__copyright__ = "2015-2019 Thurask"
 
 
 def system_link_writer(target, urls, avlty=False):

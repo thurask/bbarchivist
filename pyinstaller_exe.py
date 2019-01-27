@@ -14,7 +14,7 @@ from bbarchivist.utilities import get_seven_zip, prep_seven_zip
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2016-2018 Thurask"
+__copyright__ = "2016-2019 Thurask"
 
 
 def write_versions():

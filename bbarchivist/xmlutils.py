@@ -10,7 +10,7 @@ except (ImportError, AttributeError):
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2018 Thurask"
+__copyright__ = "2018-2019 Thurask"
 
 
 def cchecker_get_tags(roottext):

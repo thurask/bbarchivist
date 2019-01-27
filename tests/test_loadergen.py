@@ -15,7 +15,7 @@ except ImportError:
 
 __author__ = "Thurask"
 __license__ = "WTFPL v2"
-__copyright__ = "2015-2018 Thurask"
+__copyright__ = "2015-2019 Thurask"
 
 
 def setup_module(module):
