@@ -35,8 +35,10 @@ def main():
         deplist = ['shutilwhich>=1.1.0', 'requests==2.10', 'defusedxml==0.4.1']
     elif version_info[1] == 3:  # 3.3; simplejson, old requests/defusedxml
         deplist = ['simplejson>=3.10.0', 'requests>=2.10.0,<2.18.4', 'defusedxml==0.4.1']
-    else:  # 3.4+; simplejson, new requests/defusedxml
-        deplist = ['simplejson>=3.10.0', 'requests>=2.10.0', 'defusedxml>=0.4.1']
+    elif version_info[1] == 4:  # 3.4; simplejson, old defusedxml, new requests
+        deplist = ['simplejson>=3.10.0', 'requests>=2.10.0', 'defusedxml==0.5.0']
+    else:  # 3.5+; simplejson, new requests/defusedxml
+        deplist = ['simplejson>=3.10.0', 'requests>=2.10.0', 'defusedxml>=0.5.0']
     cond_requires.extend(deplist)
     scriptlist = [
         'bb-archivist=bbarchivist.scripts.archivist:grab_args',
