@@ -50,6 +50,15 @@ def tcl_request_mock(url, request):
 
 
 @httmock.all_requests
+def tcl_request_mocks3(url, request):
+    """
+    Mock for TCL download URL request, S3.
+    """
+    badbody = b'<?xml version="1.0" encoding="utf-8"?>\n<GOTU><FILE_LIST><FILE><FILE_ID>261497</FILE_ID><S3_DOWNLOAD_URL>/ce570ddc079e2744558f191895e524d02a60476f/cfcdde91ea7f810311d1f973726e390f77a9ff1b/258098/261497</S3_DOWNLOAD_URL></FILE></FILE_LIST><SLAVE_LIST><S3_SLAVE>g2slave-ap-north-01.tctmobile.com</S3_SLAVE><S3_SLAVE>g2slave-ap-north-01.tctmobile.com</S3_SLAVE><S3_SLAVE>g2slave-eu-west-01.tctmobile.com</S3_SLAVE><S3_SLAVE>g2slave-eu-west-01.tctmobile.com</S3_SLAVE><S3_SLAVE>g2slave-us-east-01.tctmobile.com</S3_SLAVE><S3_SLAVE>g2slave-us-east-01.tctmobile.com</S3_SLAVE></SLAVE_LIST></GOTU>\n'
+    return {'status_code': 200, 'content': badbody}
+
+
+@httmock.all_requests
 def tcl_enc_good_mock(url, request):
     """
     Mock for TCL header checking, best case.
@@ -129,6 +138,18 @@ class TestClassNetworkutilstcl:
         Test checking for Android update URLs.
         """
         with httmock.HTTMock(tcl_request_mock):
+            salt = bn.tcl_salt()
+            vkh = bn.vkhash("PRD-63764-001", "AAM693", "258098", salt)
+            utxt = bn.tcl_download_request("PRD-63764-001", "AAM693", "258098", salt, vkh, export=True)
+        dlurl, encslave = bx.parse_tcl_download_request(utxt)
+        del encslave
+        assert "/ce570ddc079e2744558f191895e524d02a60476f/cfcdde91ea7f810311d1f973726e390f77a9ff1b/258098/261497" in dlurl
+
+    def test_tcl_request_s3(self):
+        """
+        Test checking for Android update URLs, S3.
+        """
+        with httmock.HTTMock(tcl_request_mocks3):
             salt = bn.tcl_salt()
             vkh = bn.vkhash("PRD-63764-001", "AAM693", "258098", salt)
             utxt = bn.tcl_download_request("PRD-63764-001", "AAM693", "258098", salt, vkh, export=True)

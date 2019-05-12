@@ -60,8 +60,13 @@ def parse_tcl_download_request(body, mode=4):
     """
     root = ElementTree.fromstring(body)
     slavelist = root.find("SLAVE_LIST").findall("SLAVE")
-    slave = random.choice(slavelist).text
-    dlurl = root.find("FILE_LIST").find("FILE").find("DOWNLOAD_URL").text
+    if slavelist:
+        slave = random.choice(slavelist).text
+        dlurl = root.find("FILE_LIST").find("FILE").find("DOWNLOAD_URL").text
+    else:
+        slavelist2 = root.find("SLAVE_LIST").findall("S3_SLAVE")
+        slave = random.choice(slavelist2).text
+        dlurl = root.find("FILE_LIST").find("FILE").find("S3_DOWNLOAD_URL").text
     eslave = root.find("SLAVE_LIST").findall("ENCRYPT_SLAVE")
     encslave = None if mode == 2 or not eslave else random.choice(eslave).text
     return "http://{0}{1}".format(slave, dlurl), encslave

@@ -4,6 +4,7 @@ Changelog
 
 (unreleased)
 ------------
+- Add S3 URL fallback.
 - Use 7z 19.00.
 - oem_eea support.
 - Randomly generate user agents for most web operations.
