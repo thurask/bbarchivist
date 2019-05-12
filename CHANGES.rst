@@ -4,11 +4,13 @@ Changelog
 
 (unreleased)
 ------------
+- oem_b2b support.
 - Add S3 URL fallback.
 - Use 7z 19.00.
 - oem_eea support.
 - Randomly generate user agents for most web operations.
 - Fix compatibility with time.clock.
+
 
 3.9.0 (2018-09-12)
 ------------
