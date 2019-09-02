@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-(unreleased)
+4.0.0 (2019-09-02)
 ------------
 - oem_b2b support.
 - Add S3 URL fallback.

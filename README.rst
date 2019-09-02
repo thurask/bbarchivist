@@ -42,6 +42,8 @@ As of version 2.3.0 (18 December 2015), most scripts are packaged as Windows exe
 
 To use, just download the bbarchivist-<version>-<system bit> archive attached to the latest release, unpack somewhere and double click an executable.
 
+As of version 4.0.0 (2 September 2019), 32-bit Windows executables have been discontinued.
+
 Executables are prepared with `PyInstaller <http://www.pyinstaller.org>`__. Distributing them as of Windows 10 and Python 3.5+ requires the Windows 10 SDK, thanks to `Universal CRT <https://blogs.msdn.microsoft.com/vcblog/2015/03/03/introducing-the-universal-crt>`__.
 
 Alternatively, if you require full functionality or Linux/Mac/BSD support, keep reading.
