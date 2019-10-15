@@ -200,7 +200,7 @@ def txz_compress(filepath, filename):
     :param filename: Name of file to pack.
     :type filename: str
     """
-    if not utilities.new_enough(3):
+    if not utilities.new_enough(3, 3):
         pass
     else:
         generic_tarfile_compress("{0}.tar.xz".format(filepath), filename, "w:xz")
@@ -213,7 +213,7 @@ def txz_verify(filepath):
     :param filepath: Filename.
     :type filepath: str
     """
-    if not utilities.new_enough(3):
+    if not utilities.new_enough(3, 3):
         sentinel = None
     else:
         sentinel = generic_tarfile_verify(filepath, "r:xz")
@@ -261,7 +261,7 @@ def filter_method(method, szexe=None):
     :param szexe: Path to 7z executable, if needed.
     :type szexe: str
     """
-    if not utilities.new_enough(3) and method == "txz":
+    if not utilities.new_enough(3, 3) and method == "txz":
         method = "zip"  # fallback
     method = filter_method_nosz(method, szexe)
     return method
@@ -525,7 +525,7 @@ def compress_config_loader(homepath=None):
     """
     compini = iniconfig.generic_loader('compression', homepath)
     method = compini.get('method', fallback="7z")
-    if not utilities.new_enough(3) and method == "txz":
+    if not utilities.new_enough(3, 3) and method == "txz":
         method = "zip"  # for 3.2 compatibility
     return method
 

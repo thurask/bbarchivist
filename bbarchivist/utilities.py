@@ -68,14 +68,23 @@ def grab_cfp():
     return grab_datafile(bbconstants.CFP)
 
 
-def new_enough(minver):
+def new_enough(majver, minver):
     """
     Check if we're at or above a minimum Python version.
 
-    :param minver: Minimum Python version (3.minver).
+    :param majver: Minimum major Python version (majver.minver).
+    :type majver: int
+
+    :param minver: Minimum minor Python version (majver.minver).
     :type minver: int
     """
-    return False if minver > sys.version_info[1] else True
+    if majver > sys.version_info[0]:
+        sentinel = False
+    elif majver == sys.version_info[0] and minver > sys.version_info[1]:
+        sentinel = False
+    else:
+        sentinel = True
+    return sentinel
 
 
 def dirhandler(directory, defaultdir):

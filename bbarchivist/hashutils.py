@@ -184,7 +184,7 @@ def get_engine(hashtype):
                    "sha256": hashlib.sha256(),
                    "sha384": hashlib.sha384(),
                    "sha512": hashlib.sha512()}
-    if utilities.new_enough(6):
+    if utilities.new_enough(3, 6):
         hashengines.update({"sha3224": hashlib.sha3_224(),
                             "sha3256": hashlib.sha3_256(),
                             "sha3384": hashlib.sha3_384(),
@@ -279,7 +279,7 @@ def hash_writer(source, dest, workingdir, kwargs=None):
         base_hash("sha512", source, workingdir, block, target, kwargs)
         base_hash("ripemd160", source, workingdir, block, target, kwargs)
         base_hash("whirlpool", source, workingdir, block, target, kwargs)
-        if utilities.new_enough(6):
+        if utilities.new_enough(3, 6):
             base_hash("sha3224", source, workingdir, block, target, kwargs)
             base_hash("sha3256", source, workingdir, block, target, kwargs)
             base_hash("sha3384", source, workingdir, block, target, kwargs)

@@ -60,7 +60,7 @@ def valid_method_poptxz(methodlist):
     :param methodlist: List of all methods.
     :type methodlist: tuple(str)
     """
-    if not utilities.new_enough(3):
+    if not utilities.new_enough(3, 3):
         methodlist = [x for x in bbconstants.METHODS if x != "txz"]
     return methodlist
 

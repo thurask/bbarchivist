@@ -223,13 +223,19 @@ class TestClassUtilitiesPlatform:
         """
         Test if we're at or above some Python version.
         """
-        assert bu.new_enough(sys.version_info[1])
+        assert bu.new_enough(sys.version_info[0], sys.version_info[1])
 
     def test_new_enough_old(self):
         """
-        Test if our Python version is too old.
+        Test if our Python version is too old in minor terms.
         """
-        assert not bu.new_enough(sys.version_info[1] + 1)
+        assert not bu.new_enough(sys.version_info[0], sys.version_info[1] + 1)
+
+    def test_new_enough_really_old(self):
+        """
+        Test if our Python version is too old in major terms.
+        """
+        assert not bu.new_enough(sys.version_info[0] + 1, sys.version_info[1] + 1)
 
 
 class TestClassUtilitiesLoaders:

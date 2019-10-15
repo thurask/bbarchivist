@@ -2,6 +2,11 @@ Changelog
 =========
 
 
+(unreleased)
+------------
+- Extend baseline version checker.
+
+
 4.0.0 (2019-09-02)
 ------------
 - oem_b2b support.

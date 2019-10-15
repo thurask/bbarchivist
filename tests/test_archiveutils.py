@@ -192,7 +192,7 @@ class TestClassArchiveutilsCompression:
         """
         Test xz compression.
         """
-        if not new_enough(3):
+        if not new_enough(3, 3):
             pass
         else:
             ba.compress(os.getcwd(), "txz")
@@ -204,7 +204,7 @@ class TestClassArchiveutilsCompression:
         """
         Test xz compression failure.
         """
-        if not new_enough(3):
+        if not new_enough(3, 3):
             pass
         else:
             with mock.patch("tarfile.TarFile.getmembers", mock.MagicMock(return_value=False)):
@@ -303,7 +303,7 @@ class TestClassArchiveutilsMethods:
         """
         Test method checking, Python 3.2.
         """
-        if new_enough(3):
+        if new_enough(3, 3):
             pass
         else:
             assert ba.filter_method("txz", None) == "zip"
@@ -459,7 +459,7 @@ class TestClassArchiveutilsVerifier:
         """
         Test tar.xz verification.
         """
-        if not new_enough(3):
+        if not new_enough(3, 3):
             pass
         else:
             verdir = os.path.abspath(os.path.join(os.getcwd(), "verifiers"))
@@ -472,7 +472,7 @@ class TestClassArchiveutilsVerifier:
         """
         Test tar.xz verification failure.
         """
-        if not new_enough(3):
+        if not new_enough(3, 3):
             pass
         else:
             with mock.patch('bbarchivist.archiveutils.smart_is_tarfile', mock.MagicMock(return_value=False)):
@@ -531,7 +531,7 @@ class TestClassArchiveutilsConfig:
         """
         Test reading compression settings, Python 3.2.
         """
-        if new_enough(3):
+        if new_enough(3, 3):
             pass
         else:
             try:
